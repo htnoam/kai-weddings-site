@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+
+<!-- Google Tag Manager -->
+<script>
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-57LN8GKW');
+</script>
+<!-- End Google Tag Manager -->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thank You | KAI Luxury Destination Weddings</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+    :root {
+        --brand-gold: #a19273;
+        --brand-gold-hover: #8e7f5e;
+        --warm-beige: #F7F5F2;
+        --text-dark: #1a1a1a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+        font-family: 'Montserrat', sans-serif;
+        background-color: var(--warm-beige);
+        color: var(--text-dark);
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+    }
+
+    /* ── HERO BACKGROUND ── */
+    .page-bg {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+        overflow: hidden;
+    }
+
+    .page-bg__img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        z-index: 0;
+    }
+
+    .page-bg__overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.28);
+        z-index: 1;
+    }
+
+    /* ── CARD ── */
+    .card {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 560px;
+        background: #f8f6f2;
+        border-radius: 6px;
+        border: 1px solid rgba(255,255,255,0.4);
+        box-shadow: 0 25px 70px rgba(0,0,0,0.08);
+        padding: 56px 28px 52px;
+        text-align: center;
+    }
+
+    @media (min-width: 640px) {
+        .card { padding: 70px 60px 64px; }
+    }
+
+    /* ── CHECKMARK ── */
+    .check-circle {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: 1px solid rgba(161,146,115,0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 28px;
+    }
+
+    /* ── TYPOGRAPHY ── */
+    .eyebrow {
+        font-size: 10px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--brand-gold);
+        margin-bottom: 12px;
+        font-weight: 400;
+    }
+
+    .card h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(26px, 6vw, 38px);
+        font-weight: 400;
+        color: var(--text-dark);
+        line-height: 1.2;
+        letter-spacing: -0.01em;
+        margin-bottom: 14px;
+    }
+
+    .card p.sub {
+        font-size: 13px;
+        color: #888;
+        line-height: 1.75;
+        font-weight: 300;
+        max-width: 360px;
+        margin: 0 auto 36px;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+        width: 32px;
+        height: 1px;
+        background: rgba(161,146,115,0.35);
+        margin: 0 auto 32px;
+    }
+
+    /* ── BUTTONS ── */
+    .btn-gold {
+        display: inline-block;
+        background: var(--brand-gold);
+        color: white;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 11px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        font-weight: 500;
+        padding: 17px 36px;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: background 0.3s ease, transform 0.3s ease;
+        box-shadow: 0 4px 15px rgba(161,146,115,0.2);
+        margin-bottom: 14px;
+        width: 100%;
+    }
+
+    .btn-gold:hover {
+        background: var(--brand-gold-hover);
+        transform: translateY(-2px);
+    }
+
+    .btn-outline {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: 1px solid rgba(161,146,115,0.5);
+        color: var(--brand-gold);
+        font-family: 'Montserrat', sans-serif;
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        font-weight: 500;
+        padding: 16px 36px;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+    .btn-outline:hover {
+        background: var(--brand-gold);
+        color: white;
+        border-color: var(--brand-gold);
+        transform: translateY(-2px);
+    }
+
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        max-width: 320px;
+        margin: 0 auto;
+    }
+
+    /* ── TRUST ROW ── */
+    .trust-row {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        margin-top: 28px;
+        flex-wrap: wrap;
+    }
+
+    .trust-item {
+        font-size: 11px;
+        color: #888;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .trust-item span.check { color: var(--brand-gold); }
+
+    /* ── FOOTER LINE ── */
+    .card-footer {
+        margin-top: 32px;
+        padding-top: 24px;
+        border-top: 1px solid #eaeaea;
+    }
+
+    .card-footer p {
+        font-size: 13px;
+        color: #aaa;
+        font-style: italic;
+        font-family: 'Playfair Display', serif;
+        margin-bottom: 14px;
+    }
+
+    .social-row {
+        display: flex;
+        justify-content: center;
+        gap: 22px;
+    }
+
+    .social-row a {
+        color: var(--brand-gold);
+        transition: color 0.25s ease;
+    }
+
+    .social-row a:hover { color: var(--text-dark); }
+</style>
+</head>
+<body>
+
+<!-- Google Tag Manager (noscript) -->
+<noscript>
+<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-57LN8GKW"
+height="0" width="0" style="display:none;visibility:hidden"></iframe>
+</noscript>
+<!-- End Google Tag Manager -->
+
+<div class="page-bg">
+
+    <!-- Background image — same as contact section -->
+    <img src="pictures/contact/1.jpg" alt="" class="page-bg__img">
+    <div class="page-bg__overlay"></div>
+
+    <!-- Card -->
+    <div class="card">
+
+        <!-- Checkmark -->
+        <div class="check-circle">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a19273" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 13l4 4L19 7"/>
+            </svg>
+        </div>
+
+        <p class="eyebrow">Message Received</p>
+
+        <h1>We'll be in touch<br>very soon.</h1>
+
+        <div class="divider"></div>
+
+        <p class="sub">
+            Thank you for reaching out.<br>
+            One of our planners will personally review your details and get back to you within 24 hours.
+        </p>
+
+        <!-- Buttons -->
+        <div class="btn-group">
+            <a href="https://www.instagram.com/kai_wedding_planners/" target="_blank" class="btn-gold" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" style="flex-shrink:0;"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="white" stroke="none"/></svg>
+                Follow Us on Instagram
+            </a>
+            <a class='btn-outline' href='/'>Back to Website</a>
+        </div>
+
+        <!-- Trust -->
+        <div class="trust-row">
+            <div class="trust-item"><span class="check">✓</span> Personally reviewed</div>
+            <div class="trust-item"><span class="check">✓</span> Response within 24 hours</div>
+        </div>
+
+        <!-- Instagram CTA -->
+        <div style="margin-top: 32px; padding: 28px 24px; background: #1a1a1a; border-radius: 10px; text-align: center;">
+            <p style="font-family: 'Playfair Display', serif; font-size: 16px; color: #ffffff; margin-bottom: 6px; font-weight: 400;">While you wait, come say hi 👋</p>
+            <p style="font-family: 'Montserrat', sans-serif; font-size: 11px; color: rgba(255,255,255,0.55); font-weight: 300; line-height: 1.7; margin-bottom: 18px;">Follow us on Instagram for real wedding inspiration, behind-the-scenes and destination ideas.</p>
+            <a href="https://www.instagram.com/kai_wedding_planners/" target="_blank"
+               style="display: inline-flex; align-items: center; gap: 8px; background: var(--brand-gold); color: white; font-family: 'Montserrat', sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; font-weight: 500; padding: 12px 24px; border-radius: 50px; text-decoration: none; white-space: nowrap;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="white" stroke="none"/></svg>
+                @kai_wedding_planners
+            </a>
+            <div style="margin-top: 18px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <p style="font-family: 'Montserrat', sans-serif; font-size: 10px; color: rgba(255,255,255,0.35); letter-spacing: 1px; margin-bottom: 10px;">Know someone planning a destination wedding?</p>
+                <a href="https://api.whatsapp.com/send?text=Just%20found%20KAI%20-%20a%20luxury%20destination%20wedding%20planner%20in%20Europe.%20Check%20them%20out%3A%20https%3A%2F%2Fkaiweddings.com" target="_blank"
+                   style="display: inline-flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.6); font-family: 'Montserrat', sans-serif; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 2px;">
+                    Share with a friend
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="card-footer">
+            <p>Or reach out directly</p>
+            <div class="social-row">
+                <a href="https://instagram.com/kai_wedding_planners" target="_blank" aria-label="Instagram">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+                </a>
+                <a href="https://wa.me/972528344374?text=Hi%2C%20I%27m%20interested%20in%20planning%20a%20destination%20wedding%20with%20KAI%20Planners" target="_blank" aria-label="WhatsApp">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.532 5.862L.057 23.428a.5.5 0 00.609.61l5.7-1.495A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.9a9.9 9.9 0 01-5.031-1.371l-.36-.214-3.733.979.999-3.648-.235-.374A9.861 9.861 0 012.1 12C2.1 6.533 6.533 2.1 12 2.1c5.467 0 9.9 4.433 9.9 9.9 0 5.467-4.433 9.9-9.9 9.9z"/></svg>
+                </a>
+                <a href="/cdn-cgi/l/email-protection#563e333a3a39163d373f213332323f3831257835393b" aria-label="Email">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+                </a>
+            </div>

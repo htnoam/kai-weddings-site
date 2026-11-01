@@ -1,0 +1,2977 @@
+<!DOCTYPE html>
+<html lang="he" dir="ltr">
+<head>
+
+    <!-- Google Tag Manager -->
+<script>
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-57LN8GKW');
+</script>
+<!-- End Google Tag Manager -->
+
+
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAI | Luxury Destination Weddings</title>
+    <meta name="description" content="KAI Destination Planners — luxury destination weddings across Europe and beyond. Full planning, venue sourcing, and on-site coordination. Greece, Italy, Cyprus, France and worldwide.">
+    <link rel="icon" type="image/png" href="logo/logo_clear.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Montserrat:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.10/build/css/intlTelInput.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root { 
+            --brand-gold: #a19273; 
+            --brand-gold-hover: #8e7f5e;
+            --warm-beige: #F7F5F2; 
+            --text-dark: #1a1a1a;
+            --text-medium: #333333;
+            --text-gray: #666666;
+            --input-border: #99948a;
+        }
+        
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            background-color: var(--warm-beige); 
+            color: var(--text-dark); 
+            margin: 0; 
+            scroll-behavior: smooth; 
+            -webkit-font-smoothing: antialiased;
+            font-size: 16px;
+            line-height: 1.65;
+        }
+
+        .font-serif { font-family: 'Playfair Display', serif; font-variant-ligatures: none; }
+
+        * { font-variant-ligatures: none; }
+        
+        .reveal { opacity: 0; transform: translateY(20px); transition: all 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        .hero p { font-size: 18px; line-height: 1.7; max-width: 640px; }
+
+        header {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 60px;
+        }
+
+        header.scrolled {
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 15px 60px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        header .logo { color: white; transition: color 0.3s ease; }
+        header.scrolled .logo { color: var(--text-dark); }
+
+        @media (max-width: 768px) {
+            header, header.scrolled {
+                padding: 10px 20px;
+                background-color: rgba(255,255,255,0.15);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
+            header.scrolled { background-color: rgba(255,255,255,0.75); }
+        }
+
+        .gold-button {
+            background-color: var(--brand-gold);
+            color: white;
+            padding: 18px 45px;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 500;
+            border-radius: 4px;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            display: inline-block;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 15px rgba(161, 146, 115, 0.2);
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+        }
+        .gold-button:hover {
+            background-color: var(--brand-gold-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(161, 146, 115, 0.3);
+        }
+
+        .compact-input {
+            border: 1.5px solid var(--input-border);
+            padding: 16px;
+            font-size: 15px;
+            outline: none;
+            background-color: #ffffff;
+            width: 100%;
+            transition: all 0.3s ease;
+            color: var(--text-dark);
+            border-radius: 2px;
+        }
+        .compact-input::placeholder { color: #666; letter-spacing: 1px; }
+        .compact-input:focus { border-color: var(--brand-gold); background-color: #fff; }
+
+        .iti { width: 100%; }
+
+        .section-title-container {
+            display: flex; align-items: center; justify-content: center;
+            gap: 15px; margin-bottom: 40px;
+        }
+        .title-line {
+            height: 1px; background-color: var(--brand-gold);
+            flex-grow: 1; max-width: 60px; opacity: 0.3;
+        }
+
+        .grid-image-container { overflow: hidden; aspect-ratio: 3/4; margin-bottom: 18px; background-color: #f2f2f2; }
+        .grid-image-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s cubic-bezier(0.165, 0.84, 0.44, 1), filter 0.5s ease; }
+        .grid-item:hover img { transform: scale(1.05); filter: brightness(1.03); }
+
+        .process-grid { display: flex; }
+        .process-step { transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); position: relative; padding-bottom: 15px; }
+        .process-step::after { content: ''; position: absolute; bottom: 0; left: 0; width: 25px; height: 1px; background-color: transparent; transition: all 0.4s ease; }
+
+        @media (min-width: 768px) {
+            .process-grid:hover .process-step { opacity: 0.65; }
+            .process-step:hover { opacity: 1 !important; transform: translateY(-2px); }
+            .process-step:hover::after { background-color: var(--brand-gold); width: 50px; }
+        }
+
+        /* =====================================================
+           HERO — FIXED
+           ===================================================== */
+
+        /* DESKTOP hero: pushed below the 50px fixed header,
+           height reduced so image is not over-cropped           */
+        .hero {
+            /* Push the section below the fixed header */
+            margin-top: 50px;
+            /* Height = viewport minus the header so image fills the rest cleanly */
+            height: calc(100vh - 50px);
+            background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.3)),
+                        url('pictures/hero/hero.webp');
+            background-size: cover;
+            background-position: center top; /* anchor top so nothing is cut off */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+
+        /* =====================================================
+           END HERO FIX
+           ===================================================== */
+
+        @keyframes wa-wave1 {
+            0%   { transform: scale(1);   opacity: 0.35; }
+            100% { transform: scale(2.0); opacity: 0; }
+        }
+        @keyframes wa-wave2 {
+            0%   { transform: scale(1);   opacity: 0.25; }
+            100% { transform: scale(2.4); opacity: 0; }
+        }
+        @keyframes wa-wave3 {
+            0%   { transform: scale(1);   opacity: 0.15; }
+            100% { transform: scale(2.8); opacity: 0; }
+        }
+
+        .whatsapp-btn {
+            position: fixed; bottom: 28px; left: 28px;
+            background-color: #25d366; width: 54px; height: 54px;
+            border-radius: 50%; display: none; align-items: center; justify-content: center;
+            z-index: 1000; transition: background 0.3s ease;
+        }
+        .whatsapp-btn::before,
+        .whatsapp-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: #25d366;
+            z-index: -1;
+        }
+        .whatsapp-btn::before {
+            animation: wa-wave1 2.5s ease-out infinite;
+        }
+        .whatsapp-btn::after {
+            animation: wa-wave2 2.5s ease-out infinite 0.6s;
+        }
+        .whatsapp-btn-wave3 {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: #25d366;
+            z-index: -1;
+            animation: wa-wave3 2.5s ease-out infinite 1.2s;
+        }
+        .whatsapp-btn:hover { background-color: #1db954; }
+        .whatsapp-btn:hover::before,
+        .whatsapp-btn:hover::after,
+        .whatsapp-btn:hover .whatsapp-btn-wave3 { animation-play-state: paused; opacity: 0; }
+
+        @media (min-width: 769px) {
+            .whatsapp-btn { display: flex; }
+        }
+        @media (max-width: 768px) {
+            .whatsapp-btn { display: none !important; }
+        }
+
+        .gallery-grid-refined { display: grid; grid-template-columns: repeat(1, 1fr); gap: 24px; max-width: 1200px; margin: 0 auto; }
+        @media (min-width: 768px) { .gallery-grid-refined { grid-template-columns: repeat(3, 1fr); } }
+
+        .gallery-img-wrapper { position: relative; overflow: hidden; aspect-ratio: 4/5; background-color: #f2f2f2; border-radius: 2px; }
+        .gallery-image { width: 100%; height: 100%; object-fit: cover; filter: contrast(1.05) saturate(0.95) brightness(0.98) sepia(0.08); transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); display: block; }
+
+        #destinations-editorial {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/e/ec/World_map_blank_without_borders.svg');
+            background-repeat: no-repeat; background-position: center -25%; background-size: 95%;
+            padding: 160px 20px 140px; position: relative;
+        }
+        #destinations-editorial::after {
+            content: ""; position: absolute; inset: 0;
+            background: radial-gradient(ellipse at center, rgba(247,245,242,0.93) 0%, rgba(247,245,242,0.93) 60%, rgba(247,245,242,0.93) 100%);
+            pointer-events: none;
+        }
+
+        .dest-list-container { position: relative; z-index: 2; max-width: 1100px; margin: 0 auto; }
+
+        .editorial-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 60px; max-width: 1200px; margin: 40px auto 0; }
+
+        .editorial-item { cursor: pointer; transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1); position: relative; text-align: center; min-width: 120px; transform-origin: center; }
+        .editorial-name { font-family: 'Playfair Display', serif; font-size: 35px; color: #1a1a1a; margin-bottom: 5px; font-weight: 400; transition: all 0.5s ease; letter-spacing: 0px; }
+        .editorial-desc { font-family: 'Montserrat', sans-serif; font-size: 13px; color: #666; font-weight: 300; letter-spacing: 0.5px; transition: all 0.5s ease; min-width: 150px; max-width: 200px; margin: 0 auto; line-height: 1.6; }
+        .editorial-grid:hover .editorial-item { opacity: 0.4; }
+        .editorial-item:hover { opacity: 1 !important; transform: scale(1.12); }
+        .editorial-item:hover .editorial-name { color: var(--brand-gold); letter-spacing: 1.5px; }
+        .editorial-item:hover .editorial-desc { color: var(--text-dark); }
+
+        .cta-button {
+            background: #a19273; color: white; padding: 18px 42px; font-size: 13px;
+            letter-spacing: 0.16em; text-transform: uppercase; font-weight: 500;
+            border: 1px solid transparent; border-radius: 4px; transition: all 0.35s ease;
+            position: relative; overflow: hidden;
+        }
+        .cta-button:hover { background: transparent; color: #a19273; border: 1px solid #a19273; transform: translateY(-2px); }
+        .cta-button::after { content: ''; position: absolute; bottom: 0; left: 50%; width: 0%; height: 1px; background: #a19273; transition: all 0.35s ease; transform: translateX(-50%); }
+        .cta-button:hover::after { width: 100%; }
+
+        .cta-link { position: relative; display: inline-block; font-size: 16px; letter-spacing: 0.12em; color: #1a1a1a; padding-bottom: 6px; transition: all 0.3s ease; }
+        .cta-link:hover { letter-spacing: 0.18em; transform: translateY(-1px); }
+        .cta-link:hover::after { transform: scaleX(1); }
+
+        p { font-size: 16px; line-height: 1.7; color: #444444; }
+        .hero h1 { letter-spacing: -0.3px; }
+        .section-title-container h2, #gallery h2, #destinations-editorial h2 { letter-spacing: 0.18em; }
+        #destinations-editorial p { font-size: 15px; line-height: 1.6; }
+        #services h3 { font-size: 22px; margin-top: 14px; }
+        #services p { font-size: 15.5px; line-height: 1.7; }
+        #about-contact p { line-height: 1.75; }
+        #final-contact-section input { font-size: 15px; }
+        .eyebrow { letter-spacing: 0.25em; font-size: 12px; opacity: 0.7; }
+
+        #services .mobile-service-desc { font-size: 13px !important; line-height: 1.5 !important; }
+        #services .mobile-service-title { font-size: 15px !important; line-height: 1.25 !important; }
+        #destinations-editorial .mobile-divider { border-bottom: 1px solid #e5e7eb !important; }
+
+        .destinations-scroll {
+            display: flex; overflow-x: auto; gap: 0;
+            -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 8px;
+        }
+        .destinations-scroll::-webkit-scrollbar { display: none; }
+        .destination-card { flex: 0 0 45vw; max-width: 260px; border-right: 1px solid #e5e7eb; padding: 18px 16px; }
+        .destination-card:last-child { border-right: none; }
+        .destination-card p { max-width: 130px; }
+        .mobile-cta-dark {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2418 100%);
+            padding: 40px 24px; text-align: center;
+        }
+
+        /* ============================================================
+           VISUAL BREAK — Magazine-style editorial pause sections
+           ============================================================ */
+        .visual-break {
+            position: relative;
+            width: 100%;
+            height: 68vh;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .visual-break__img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transform: scale(1.04);
+            transition: transform 1.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+            will-change: transform;
+        }
+
+        .visual-break.vb-entered .visual-break__img {
+            transform: scale(1);
+        }
+
+        .visual-break__overlay {
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(
+                    to top,
+                    rgba(0, 0, 0, 0.62) 0%,
+                    rgba(0, 0, 0, 0.18) 50%,
+                    rgba(0, 0, 0, 0.08) 100%
+                );
+            z-index: 1;
+        }
+
+        .visual-break__caption {
+            position: relative;
+            z-index: 2;
+            padding: 0 28px 36px;
+            width: 100%;
+        }
+
+        .visual-break__rule {
+            display: block;
+            width: 32px;
+            height: 1px;
+            background: rgba(161, 146, 115, 0.75);
+            margin-bottom: 14px;
+        }
+
+        .visual-break__text {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(17px, 4.5vw, 26px);
+            font-weight: 400;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.92);
+            letter-spacing: 0.02em;
+            line-height: 1.45;
+            margin: 0;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 1s ease 0.3s, transform 1s ease 0.3s;
+        }
+
+        .visual-break.vb-entered .visual-break__text {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .visual-break__sub {
+            display: block;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 9px;
+            font-weight: 400;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.45);
+            margin-top: 10px;
+            opacity: 0;
+            transition: opacity 1s ease 0.55s;
+        }
+
+        .visual-break.vb-entered .visual-break__sub {
+            opacity: 1;
+        }
+
+        @media (min-width: 768px) {
+            .visual-break { height: 72vh; }
+            .visual-break__caption { padding: 0 72px 56px; }
+            .visual-break__rule { width: 44px; margin-bottom: 18px; }
+        }
+
+        /* ===== SERVICES CARD GRID (MOBILE) ===== */
+        .svc-card-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 14px !important;
+            padding: 4px 0 0;
+            width: 100%;
+        }
+
+        .svc-card {
+            display: block !important;
+            background: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.06);
+            min-width: 0;
+            transition: transform 0.2s ease;
+        }
+
+        .svc-card:active { transform: scale(0.97); }
+
+        .svc-card__img {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            overflow: hidden;
+            display: block;
+        }
+
+        .svc-card__img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .svc-card__body { padding: 12px 12px 14px; }
+
+        .svc-card__title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px !important;
+            font-weight: 500;
+            color: #1a1a1a;
+            line-height: 1.35;
+            margin: 0 0 3px;
+            letter-spacing: 0.3px;
+            font-variant-ligatures: none;
+            font-feature-settings: "liga" 0, "clig" 0;
+        }
+
+        .svc-card__desc {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px !important;
+            color: #aaa;
+            font-weight: 300;
+            line-height: 1.4 !important;
+            margin: 0;
+            letter-spacing: 0.01em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (min-width: 768px) {
+            .svc-card-grid { display: none !important; }
+        }
+
+        /* ===== COMPACT IMAGE TRIO ===== */
+        .trio-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 7px;
+            padding: 28px 20px;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .trio-grid__item {
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            border-radius: 6px;
+        }
+
+        .trio-grid__item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        @media (min-width: 769px) {
+            .trio-grid { display: none; }
+        }
+
+        /* ===== MOBILE-ONLY STYLES ===== */
+        @media (max-width: 768px) {
+
+            .hero { padding-top: 70px; }
+
+            .hero h1 {
+                font-size: 28px !important;
+                line-height: 1.2 !important;
+                letter-spacing: -0.3px;
+            }
+
+            .hero p {
+                font-size: 15px !important;
+                max-width: 290px;
+                margin: 0 auto;
+                line-height: 1.75;
+            }
+
+            .hero .gold-button {
+                margin-top: 28px !important;
+                padding: 16px 32px !important;
+                font-size: 12px !important;
+                letter-spacing: 2px;
+            }
+
+            header .logo { font-size: 13px !important; }
+
+            header .gold-button {
+                font-size: 9px !important;
+                padding: 5px 8px !important;
+            }
+
+            .whatsapp-btn {
+                width: 60px;
+                height: 60px;
+                bottom: 20px;
+                left: 20px;
+                opacity: 0.9;
+                transform: scale(0.9);
+            }
+
+            .whatsapp-btn svg {
+                width: 28px;
+                height: 28px;
+            }
+
+            #destinations-editorial {
+                padding: 40px 0 0;
+                background-size: 280%;
+                background-position: 30% 25%;
+            }
+
+            .mobile-hero-eyebrow {
+                font-size: 11px !important;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                color: rgba(255,255,255,0.85);
+                font-family: 'Montserrat', sans-serif;
+                font-weight: 400;
+                margin-bottom: 12px;
+                text-shadow: 0 2px 10px rgba(0,0,0,0.25);
+            }
+
+            .mobile-hero-headline {
+                font-family: 'Playfair Display', serif;
+                font-size: 34px !important;
+                line-height: 1.15 !important;
+                color: #ffffff;
+                margin-bottom: 12px;
+                font-weight: 500;
+                margin-top: 24px;
+                text-shadow:
+                    0 4px 20px rgba(0,0,0,0.25),
+                    0 8px 40px rgba(0,0,0,0.15);
+            }
+
+            .mobile-hero-sub {
+                font-size: 14px !important;
+                color: rgba(255,255,255,0.9);
+                font-weight: 300;
+                letter-spacing: 0.04em;
+                line-height: 1.7 !important;
+                max-width: 260px;
+                margin: 0 auto 22px;
+                text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            }
+
+            .mobile-hero-divider {
+                width: 36px;
+                height: 1.5px;
+                background: rgba(255,255,255,0.6);
+                margin: 0 auto 18px;
+            }
+
+            .mobile-cta-primary {
+                display: block;
+                max-width: 300px;
+                margin: 0 auto;
+            }
+
+            .mobile-hero-note {
+                font-size: 10px;
+                color: rgba(255,255,255,0.5);
+                letter-spacing: 1px;
+                margin-top: 10px;
+            }
+
+            .mobile-full-exp {
+                background: #fff;
+                padding: 32px 22px 28px;
+            }
+
+            .mobile-full-exp-eyebrow {
+                font-size: 9px;
+                letter-spacing: 5px;
+                text-transform: uppercase;
+                color: var(--brand-gold);
+                text-align: center;
+                margin-bottom: 8px;
+                font-weight: 500;
+            }
+
+            .mobile-full-exp-title {
+                font-family: 'Playfair Display', serif;
+                font-size: 22px;
+                color: #1a1a1a;
+                text-align: center;
+                line-height: 1.3;
+                margin-bottom: 6px;
+                font-weight: 400;
+            }
+
+            .mobile-full-exp-subtitle {
+                font-size: 12px !important;
+                color: #888;
+                text-align: center;
+                line-height: 1.7 !important;
+                max-width: 260px;
+                margin: 0 auto 24px;
+                font-weight: 300;
+            }
+
+            .mobile-exp-block {
+                display: flex;
+                align-items: flex-start;
+                gap: 14px;
+                padding: 16px 0;
+                border-top: 1px solid #f0ede8;
+            }
+
+            .mobile-exp-block:last-of-type {
+                border-bottom: 1px solid #f0ede8;
+            }
+
+            .mobile-exp-icon {
+                width: 32px;
+                height: 32px;
+                flex-shrink: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-top: 2px;
+            }
+
+            .mobile-exp-icon svg {
+                width: 18px;
+                height: 18px;
+                stroke: var(--brand-gold);
+                fill: none;
+                stroke-width: 1.5;
+            }
+
+            .mobile-exp-label {
+                font-size: 11px;
+                font-weight: 600;
+                letter-spacing: 1.5px;
+                text-transform: uppercase;
+                color: #1a1a1a;
+                margin-bottom: 3px;
+            }
+
+            .mobile-exp-desc {
+                font-size: 12px !important;
+                color: #888;
+                line-height: 1.6 !important;
+                font-weight: 300;
+            }
+        }
+
+        .mobile-cta-primary {
+            display: block; width: 100%; background: var(--brand-gold); color: white;
+            text-align: center; font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+            font-weight: 500; padding: 17px 20px; border-radius: 3px; text-decoration: none;
+            transition: background 0.3s ease; box-shadow: 0 4px 14px rgba(161,146,115,0.25);
+        }
+        .mobile-cta-primary:hover { background: var(--brand-gold-hover); }
+
+        .mobile-cta-dark-btn {
+            display: block; width: 100%; background: #1a1a1a; color: white;
+            text-align: center; font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+            font-weight: 500; padding: 17px 20px; border-radius: 3px; text-decoration: none;
+            transition: background 0.3s ease;
+        }
+        .mobile-cta-dark-btn:hover { background: #2d2d2d; }
+
+        .why-choose-subtitle-mobile {
+            font-family: 'Playfair Display', serif; font-style: italic; color: #888;
+            font-size: 13px !important; margin-top: 6px; line-height: 1.7 !important;
+            max-width: 300px; margin-left: auto; margin-right: auto;
+        }
+
+        .mobile-dest-cta { display: block; text-align: center; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #1a1a1a; font-weight: 500; padding: 14px 0 4px; text-decoration: none; }
+        .mobile-dest-cta span { border-bottom: 1px solid var(--brand-gold); padding-bottom: 2px; }
+
+        .mobile-section-gap { margin-top: 0 !important; }
+
+        /* =====================================================
+           MOBILE HERO IMAGE — FIXED
+           Push image below the 50px fixed header.
+           Use padding-top trick to preserve the image's exact
+           natural aspect ratio (949/1431 = 66.3%)
+           ===================================================== */
+        .mobile-hero-image {
+            margin-top: 50px; /* exactly equals the fixed header height */
+            width: 100%;
+            position: relative;
+            /* aspect-ratio = height/width of original image: 949/1431 */
+            padding-top: 66.3%;
+            overflow: hidden;
+        }
+
+        .mobile-hero-image img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center center;
+            display: block;
+        }
+        /* =====================================================
+           END MOBILE HERO IMAGE FIX
+           ===================================================== */
+
+        .mobile-hero-content-new {
+            background: #ffffff;
+            padding: 30px 22px 34px;
+            text-align: center;
+        }
+
+        .mobile-eyebrow {
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #a19273;
+            margin-bottom: 10px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .mobile-headline {
+            font-family: 'Playfair Display', serif;
+            font-size: 25px;
+            line-height: 1.25;
+            color: #1a1a1a;
+            margin-bottom: 14px;
+        }
+
+        .mobile-sub {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 22px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .mobile-note {
+            font-size: 10px;
+            color: #999;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+
+        #main-header .logo {
+            color: #1a1a1a !important;
+        }
+
+        /* ============================================================
+           DESTINATIONS MOBILE REDESIGN START
+           ============================================================ */
+
+        @media (max-width: 768px) {
+            .destinations-scroll { display: none !important; }
+            .dest-swipe-hint { display: none !important; }
+        }
+
+        /* DESTINATIONS POLISH START */
+        @media (max-width: 768px) {
+            .dest-vcard-list {
+                display: flex;
+                flex-direction: column;
+                padding: 0 16px;
+                gap: 10px;
+                position: relative;
+                z-index: 2;
+            }
+
+            .dest-vcard {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 16px 16px;
+                border-radius: 16px;
+                background: #ffffff;
+                box-shadow: 0 2px 14px rgba(0,0,0,0.06);
+                text-decoration: none;
+                gap: 12px;
+                transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+                cursor: pointer;
+                border: 1px solid rgba(0,0,0,0.04);
+                position: relative;
+            }
+
+            .dest-vcard:active {
+                transform: scale(1.01);
+                box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+                background: #faf8f5;
+            }
+
+            .dest-vcard__text {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .dest-vcard__badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+                font-family: 'Montserrat', sans-serif;
+                font-size: 9px;
+                font-weight: 500;
+                letter-spacing: 1.5px;
+                text-transform: uppercase;
+                color: #a19273;
+                background: rgba(161,146,115,0.08);
+                border: 1px solid rgba(161,146,115,0.2);
+                border-radius: 20px;
+                padding: 3px 9px;
+                margin-bottom: 6px;
+            }
+
+            .dest-vcard__name {
+                font-family: 'Playfair Display', serif;
+                font-size: 26px;
+                font-weight: 400;
+                color: #1a1a1a;
+                line-height: 1.15;
+                margin: 0 0 5px;
+                letter-spacing: 0.01em;
+            }
+
+            .dest-vcard__desc {
+                font-family: 'Montserrat', sans-serif;
+                font-size: 11px !important;
+                color: #888;
+                font-weight: 300;
+                line-height: 1.55 !important;
+                margin: 0;
+                letter-spacing: 0.01em;
+                max-width: 180px;
+            }
+
+            .dest-vcard__right {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex-shrink: 0;
+            }
+
+            .dest-vcard__thumb {
+                width: 80px;
+                height: 80px;
+                border-radius: 12px;
+                overflow: hidden;
+                flex-shrink: 0;
+                background-color: #ede9e3;
+            }
+
+            .dest-vcard__thumb img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+                transition: transform 0.45s cubic-bezier(0.165, 0.84, 0.44, 1);
+            }
+
+            .dest-vcard:active .dest-vcard__thumb img {
+                transform: scale(1.06);
+            }
+
+            .dest-vcard__arrow {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                background: rgba(161,146,115,0.08);
+                color: #a19273;
+                font-size: 13px;
+                opacity: 0.6;
+                flex-shrink: 0;
+                transition: transform 0.2s ease, opacity 0.2s ease;
+            }
+
+            .dest-vcard:active .dest-vcard__arrow {
+                transform: translateX(3px);
+                opacity: 1;
+            }
+
+            .dest-vcard-cta {
+                margin: 8px 0 4px;
+                padding: 22px 20px;
+                background: #ffffff;
+                border-radius: 16px;
+                text-align: center;
+                border: 1px solid rgba(161,146,115,0.18);
+                box-shadow: 0 2px 14px rgba(0,0,0,0.04);
+            }
+
+            .dest-vcard-cta__headline {
+                font-family: 'Playfair Display', serif;
+                font-size: 15px !important;
+                color: #1a1a1a !important;
+                margin: 0 0 14px !important;
+                font-style: normal;
+                line-height: 1.5 !important;
+                font-weight: 400;
+            }
+        }
+        /* DESTINATIONS POLISH END */
+
+        @media (min-width: 769px) {
+            .dest-vcard-list { display: none !important; }
+        }
+
+        /* ============================================================
+           DESTINATIONS MOBILE REDESIGN END
+           ============================================================ */
+
+        /* ============================================================
+           TASK 4 — TRUST SIGNALS BLOCK REPLACEMENT (MOBILE)
+           ============================================================ */
+        @media (max-width: 768px) {
+            .trust-signals-mobile-replacement {
+                padding: 40px 24px 44px;
+                text-align: center;
+                background: white;
+                border-top: 1px solid rgba(0,0,0,0.05);
+                border-bottom: 1px solid rgba(0,0,0,0.05);
+            }
+
+            .trust-signals-mobile-replacement .ts-headline {
+                font-family: 'Playfair Display', serif;
+                font-size: 17px;
+                font-weight: 400;
+                letter-spacing: 0.22em;
+                text-transform: uppercase;
+                color: #b5a88b;
+                margin: 0 0 18px;
+                line-height: 1.3;
+            }
+
+            .trust-signals-mobile-replacement .ts-subline {
+                font-family: 'Montserrat', sans-serif;
+                font-size: 13px;
+                font-weight: 400;
+                letter-spacing: 0.12em;
+                color: #1a1a1a;
+                margin: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 14px;
+                flex-wrap: nowrap;
+                white-space: nowrap;
+            }
+
+            .trust-signals-mobile-replacement .ts-dot {
+                display: inline-block;
+                width: 3px;
+                height: 3px;
+                background: #c5b99a;
+                border-radius: 50%;
+                opacity: 0.6;
+                flex-shrink: 0;
+            }
+        }
+
+        /* ============================================================
+           HAMBURGER FIX START STICKY TOP MENU
+           ============================================================ */
+
+        @media (max-width: 768px) {
+
+            header#main-header {
+                height: 60px !important;
+                padding: 0 20px !important;
+                background: rgba(255,255,255,0.92) !important;
+                backdrop-filter: blur(12px) !important;
+                -webkit-backdrop-filter: blur(12px) !important;
+                border-bottom: 1px solid rgba(110, 23, 26, 0.05) !important;
+                box-shadow: none !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                z-index: 1100 !important;
+                
+            }
+
+            header#main-header.scrolled {
+                height: 50px !important;
+                padding: 0 20px !important;
+                background: rgba(255,255,255,0.92) !important;
+                backdrop-filter: blur(12px) !important;
+                -webkit-backdrop-filter: blur(12px) !important;
+                border-bottom: 1px solid rgba(0,0,0,0.05) !important;
+            }
+
+            header#main-header > .logo,
+            header#main-header > a.gold-button {
+                display: none !important;
+            }
+
+            .mob-hamburger {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                gap: 4px;
+                width: 32px;
+                height: 32px;
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 0;
+                flex-shrink: 0;
+                z-index: 1200;
+                position: relative;
+                opacity: 0;
+                pointer-events: none;
+                transform: translateY(-4px);
+                transition: opacity 0.3s ease, transform 0.3s ease;
+            }
+
+            header#main-header.scrolled .mob-hamburger {
+                opacity: 1;
+                pointer-events: auto;
+                transform: translateY(0);
+                transition-delay: 0.15s;
+            }
+
+            .mob-hamburger span {
+                display: block;
+                width: 18px;
+                height: 2px;
+                background: #1a1a1a;
+                border-radius: 2px;
+                transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+                transform-origin: center;
+            }
+
+            .mob-hamburger.open span:nth-child(1) {
+                transform: translateY(6px) rotate(45deg);
+            }
+            .mob-hamburger.open span:nth-child(2) {
+                opacity: 0;
+                transform: scaleX(0);
+            }
+            .mob-hamburger.open span:nth-child(3) {
+                transform: translateY(-6px) rotate(-45deg);
+            }
+
+            .mob-logo-center {
+                display: block !important;
+                position: absolute;
+                top: 55%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-family: 'Playfair Display', serif !important;
+                font-weight: 400 !important;
+                font-style: normal !important;
+                font-size: 18px;
+                letter-spacing: 1.6px;        
+                text-transform: uppercase;
+                color: #1a1a1a;
+                text-decoration: none;
+                white-space: nowrap;
+                pointer-events: none;
+                z-index: 1;
+                text-align: center;
+                line-height: 1.3;
+                opacity: 1;
+                transition: opacity 0.25s ease;
+                -webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+text-rendering: optimizeLegibility;
+            }
+
+            header#main-header.scrolled .mob-logo-center {
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            .mob-header-cta {
+                display: block !important;
+                font-family: 'Montserrat', sans-serif;
+                font-size: 10px;
+                letter-spacing: 1.2px;
+                text-transform: uppercase;
+                font-weight: 500;
+                padding: 7px 13px;
+                background: rgba(181,168,139,0.9);
+                color: white;
+                border-radius: 3px;
+                text-decoration: none;
+                white-space: nowrap;
+                flex-shrink: 0;
+                line-height: 1;
+                opacity: 0;
+                pointer-events: none;
+                transform: translateY(-4px);
+                transition: opacity 0.3s ease, transform 0.3s ease, background 0.25s ease;
+            }
+
+            header#main-header.scrolled .mob-header-cta {
+                opacity: 1;
+                pointer-events: auto;
+                transform: translateY(0);
+                transition-delay: 0.15s;
+            }
+
+            .mob-header-cta:active {
+                background: rgba(158,146,118,0.95);
+            }
+        }
+
+        .mob-drawer-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.18);
+            z-index: 1050;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s ease;
+        }
+
+        .mob-drawer-backdrop.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .mob-drawer-panel {
+            display: none;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 75% !important;
+            max-width: 320px !important;
+            min-width: unset !important;
+            height: 100vh !important;
+            background: #f8f7f5 !important;
+            z-index: 1150 !important;
+            box-shadow: 8px 0 24px rgba(0,0,0,0.07);
+            padding: 80px 28px 40px !important;
+            transform: translateX(-100%) !important;
+            transition: transform 0.35s ease !important;
+            box-sizing: border-box !important;
+            overflow-y: auto;
+        }
+
+        .mob-drawer-panel.open {
+            transform: translateX(0) !important;
+        }
+
+        .mob-drawer-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(26,26,26,0.4);
+            margin-bottom: 44px;
+            display: block;
+        }
+
+        .mob-menu-item {
+            display: block;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(26,26,26,0.8);
+            text-decoration: none;
+            text-align: left;
+            padding: 18px 0;
+            font-weight: 400;
+            transition: color 0.2s ease, opacity 0.2s ease;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+        }
+
+        .mob-menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .mob-menu-item:active {
+            color: var(--brand-gold);
+            opacity: 0.7;
+        }
+
+        @media (min-width: 769px) {
+            .mob-logo-center {
+                display: block !important;
+                pointer-events: none;
+            }
+
+            .mob-drawer-backdrop,
+            .mob-drawer-panel {
+                display: none !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mob-drawer-backdrop,
+            .mob-drawer-panel {
+                display: block !important;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .mob-drawer-backdrop,
+            .mob-drawer-panel {
+                display: block !important;
+            }
+        }
+
+        /* ============================================================
+           HAMBURGER FIX END
+           ============================================================ */
+
+
+           .mobile-benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 18px 0 22px;
+    font-size: 14px;
+    color: #555;
+}
+
+.mobile-benefits span {
+    display: block;
+}
+
+.mobile-trust {
+    margin-top: 18px;
+    font-size: 12px;
+    color: #888;
+    text-align: center;
+    line-height: 1.6;
+}
+
+.mob-drawer-brand-fixed {
+    position: absolute;
+    top: 26px;
+    left: 60px; /* יושב בדיוק ליד ה-X */
+
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #1a1a1a;
+    opacity: 0.7;
+
+    white-space: nowrap;
+}
+
+
+<script>
+function openMobMenu() {
+    document.getElementById("mobDrawerPanel").style.transform = "translateX(0)";
+    document.getElementById("mobDrawerBackdrop").style.opacity = "1";
+    document.getElementById("mobDrawerBackdrop").style.visibility = "visible";
+}
+</script>
+
+<script>
+function closeMobMenu() {
+    document.getElementById("mobDrawerPanel").style.transform = "translateX(-100%)";
+    document.getElementById("mobDrawerBackdrop").style.opacity = "0";
+    document.getElementById("mobDrawerBackdrop").style.visibility = "hidden";
+}
+</script>
+
+    </style>
+</head>
+<body>
+
+    <body>
+
+<!-- Google Tag Manager (noscript) -->
+<noscript>
+<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-57LN8GKW"
+height="0" width="0" style="display:none;visibility:hidden"></iframe>
+</noscript>
+<!-- End Google Tag Manager -->
+
+<!-- ============================================================
+     HAMBURGER FIX START — Mobile Side Drawer Elements
+     ============================================================ -->
+
+<!-- MOBILE SIDE DRAWER BACKDROP -->
+<!-- WhatsApp floating button — desktop only -->
+<a href="https://wa.me/972528344374?text=Hi%2C%20I%27m%20interested%20in%20planning%20a%20destination%20wedding%20with%20KAI%20Planners" target="_blank" class="whatsapp-btn" aria-label="WhatsApp">
+    <div class="whatsapp-btn-wave3"></div>
+    <svg viewBox="0 0 448 512" width="24" height="24" fill="white"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-5.5-2.8-23.2-8.5-44.2-27.1-16.4-14.6-27.4-32.6-30.6-38.1-3.2-5.6-.3-8.6 2.5-11.4 2.5-2.5 5.5-6.5 8.3-9.7 2.8-3.3 3.7-5.6 5.6-9.3 1.9-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 13.2 5.8 23.5 9.2 31.5 11.8 13.3 4.2 25.4 3.6 35 2.2 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+</a>
+
+<div class="mob-drawer-backdrop" id="mobDrawerBackdrop"></div>
+
+<!-- MOBILE SIDE DRAWER PANEL — slides from left -->
+<div class="mob-drawer-panel" id="mobDrawerPanel" style="position:fixed!important;top:0!important;left:0!important;width:75%!important;max-width:320px!important;height:100vh!important;box-sizing:border-box!important;transform:translateX(-100%);transition:transform 0.5s cubic-bezier(0.77,0,0.175,1);">
+
+    <!-- CLOSE BUTTON -->
+    <button id="mobDrawerClose" onclick="closeMobMenu()" aria-label="Close menu" style="position:absolute;top:24px;left:24px;width:20px;height:20px;background:none;border:none;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transform:translateY(-1px);">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <line x1="2" y1="2" x2="18" y2="18" stroke="#1a1a1a" stroke-width="1.25" stroke-linecap="round"/>
+            <line x1="18" y1="2" x2="2" y2="18" stroke="#1a1a1a" stroke-width="1.25" stroke-linecap="round"/>
+        </svg>
+    </button>
+
+    <!-- BRAND -->
+    <span class="mob-drawer-brand-fixed" style="position:absolute;top:24px;left:72px;font-size:13px;letter-spacing:2.5px;text-transform:uppercase;color:#1a1a1a;opacity:0.7;white-space:nowrap;">
+        KAI EVENT PLANNERS
+    </span>
+
+    <!-- LABEL -->
+    <span class="mob-drawer-label" style="display:block;margin-bottom:10px;">Menu</span>
+
+    <!-- NAV -->
+    <nav id="mobDrawerNav" style="opacity:0;transform:translateY(10px);transition:all 0.6s ease 0.2s;">
+        <a href="#services" class="mob-menu-item" onclick="closeMobMenu()">Services</a>
+        <a href="#destinations-editorial" class="mob-menu-item" onclick="closeMobMenu()">Destinations</a>
+        <a href="#gallery" class="mob-menu-item" onclick="closeMobMenu()">Gallery</a>
+        <a href="#about-contact" class="mob-menu-item" onclick="closeMobMenu()">About</a>
+        <a href="#final-contact-section" class="mob-menu-item" onclick="closeMobMenu()">Contact</a>
+    </nav>
+
+<!-- LINE -->
+<div style="margin-top:50px;margin-bottom:24px;width:60px;height:1.5px;background:#dcdcdc;margin-left:auto;margin-right:auto;"></div>
+
+<!-- SOCIAL ICONS -->
+<div style="display:flex;justify-content:center;gap:34px;margin-bottom:30px;">
+    
+    <a href="https://wa.me/972528344374?text=Hi%2C%20I%27m%20interested%20in%20planning%20a%20destination%20wedding%20with%20KAI%20Planners" target="_blank" style="font-size:24px;color:#1a1a1a;opacity:0.5;text-decoration:none;transition:all 0.3s ease;"
+       onmouseover="this.style.color='#c5a47e';this.style.opacity='1';"
+       onmouseout="this.style.color='#1a1a1a';this.style.opacity='0.5';">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <a href="https://instagram.com/kai_wedding_planners" target="_blank" style="font-size:24px;color:#1a1a1a;opacity:0.5;text-decoration:none;transition:all 0.3s ease;"
+       onmouseover="this.style.color='#c5a47e';this.style.opacity='1';"
+       onmouseout="this.style.color='#1a1a1a';this.style.opacity='0.5';">
+        <i class="fab fa-instagram"></i>
+    </a>
+
+    <a href="/cdn-cgi/l/email-protection#a8d1c7dddae8cdc5c9c1c486cbc7c5" style="font-size:24px;color:#1a1a1a;opacity:0.5;text-decoration:none;transition:all 0.3s ease;" onmouseover="this.style.color='#c5a47e';this.style.opacity='1';" onmouseout="this.style.color='#1a1a1a';this.style.opacity='0.5';">
+        <i class="far fa-envelope"></i>
+    </a>
+
+</div>
+
+<div style="display:flex;justify-content:center;margin-top:20px;margin-bottom:40px;">
+    <img src="pictures/logo/LOGO_CLEAR.png" alt="KAI Logo" style="width:46px;opacity:0.55;">
+</div>
+
+</div>
+
+<!-- ============================================================
+     HAMBURGER FIX END
+     ============================================================ -->
+
+<div id="successOverlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none transition-all duration-500 z-50">
+    <div id="successBox" class="bg-white rounded-2xl px-10 py-12 text-center shadow-2xl transform scale-95 opacity-0 transition-all duration-500">
+        <div class="mb-6">
+            <div class="w-16 h-16 mx-auto rounded-full border border-gray-300 flex items-center justify-center">
+                <svg class="w-8 h-8 text-black" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>
+            </div>
+        </div>
+        <h3 class="text-xl font-light tracking-wide mb-2">We've received your request</h3>
+        <p class="text-gray-500 text-sm">We'll be in touch within 24 hours.</p>
+        <button onclick="closeSuccessModal()" class="mt-6 bg-[#a19273] text-white px-8 py-3 text-sm tracking-[0.15em] uppercase hover:bg-[#8a7d61] transition">Back to website</button>
+    </div>
+</div>
+
+
+
+<!-- ============================================================
+     HAMBURGER FIX START — Header with mobile elements injected
+     ============================================================ -->
+<header id="main-header" class="header">
+
+    <!-- MOBILE: Hamburger (left) -->
+    <button class="mob-hamburger" id="mobHamburger" aria-label="Open menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- MOBILE: Centered logo (two lines, visible at top only) -->
+    <div class="mob-logo-center">
+    <span class="logo-line-1">DESTINATION WEDDING PLANNERS</span>
+    <span class="logo-line-2">KAI EVENTS</span>
+</div>
+
+    <!-- MOBILE: CTA (right, appears on scroll) -->
+    <a href="#final-contact-section" class="mob-header-cta" onclick="closeMobMenu()">LET'S TALK</a>
+
+    <!-- DESKTOP: Logo — kept pixel-perfect, hidden on mobile via CSS -->
+    <div class="logo-main">
+        <span class="logo-line-1">DESTINATION WEDDING PLANNERS</span>
+        <span class="logo-line-2">KAI EVENTS</span>
+    </div>
+
+    <!-- DESKTOP: CTA — kept pixel-perfect, hidden on mobile via CSS -->
+    <a href="#final-contact-section" class="header-cta">
+        LET'S TALK
+    </a>
+
+</header>
+<!-- ============================================================
+     HAMBURGER FIX END
+     ============================================================ -->
+
+<!-- MOBILE HERO — UPDATED (CONVERSION FOCUSED) -->
+<div class="block md:hidden" style="margin-top: 60px; background: #faf9f7; text-align: center; padding: 48px 28px 0;">
+
+    <!-- HEADLINE -->
+    <h1 style="font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 400; color: #1a1a1a; line-height: 1.2; letter-spacing: -0.3px; margin: 0 0 20px;">
+        Luxury Destination<br>Weddings
+    </h1>
+
+    <!-- SUBTEXT -->
+    <p style="font-family: 'Montserrat', sans-serif; font-size: 14px; color: #888; font-weight: 300; line-height: 1.75; margin: 0 0 32px; max-width: 280px; margin-left: auto; margin-right: auto;">
+        Expert planning across Europe — from venue to guest experience.
+    </p>
+
+    <!-- CTA -->
+    <a href="#final-contact-section" class="mobile-cta-primary" style="max-width: 320px; margin: 0 auto 36px; display: block;">
+        START YOUR WEDDING PLAN
+    </a>
+
+    <!-- HERO IMAGE -->
+    <div style="border-radius: 20px 20px 0 0; overflow: hidden; margin: 0 -28px;">
+        <img src="pictures/hero/hero.webp" alt="Luxury destination wedding" style="width: 100%; height: 65vw; object-fit: cover; object-position: center 75%; display: block;">
+    </div>
+
+</div>
+
+
+<!-- ===== HERO (DESKTOP) =====
+     margin-top: 50px  → starts exactly below the fixed header
+     height: calc(100vh - 50px) → fills the rest of the viewport
+     background-position: center top → image anchored top, not zoomed -->
+<section class="hero hidden md:flex relative items-center justify-center text-center overflow-hidden">
+    <div class="absolute inset-0 bg-black/5 md:bg-black/5 z-0"></div>
+    <div class="relative z-10 px-6 max-w-4xl">
+
+        <!-- MOBILE — refined hero -->
+        <div class="block md:hidden">
+            <p class="mobile-hero-eyebrow">Destination Weddings<br>· Europe & Beyond ·</p>
+            <h1 class="mobile-hero-headline">Luxury Destination<br>Weddings</h1>
+            <div class="mobile-hero-divider"></div>
+            <p class="mobile-hero-sub">Full venue buyouts.<br>Multi-day celebrations.<br>Seamless guest experience.</p>
+            <div style="margin-top: 28px;">
+                <a href="#final-contact-section" class="mobile-cta-primary" style="max-width:300px; margin:0 auto;">
+                    Check Availability
+                </a>
+            </div>
+            <p style="font-size:10px; color:rgba(255,255,255,0.4); letter-spacing:1px; margin-top:10px;">· Free consultation ·</p>
+        </div>
+
+        <!-- DESKTOP -->
+        <div class="hidden md:block">
+            <p class="text-[11px] tracking-[5px] uppercase text-white/55 mb-6 font-light">Europe & Beyond · Destination Weddings</p>
+            <h1 class="font-serif text-[54px] text-white mb-5 leading-[1.15] reveal active" style="letter-spacing: -0.5px;">
+                Bespoke Destination<br>Weddings
+            </h1>
+            <div style="width: 40px; height: 1px; background: rgba(161,146,115,0.7); margin: 0 auto 26px;"></div>
+            <p class="text-[15px] text-white/80 font-light mb-10 max-w-[400px] mx-auto leading-[2] reveal active">
+                Every detail handled.<br>Every moment considered.<br>Every wedding, entirely yours.
+            </p>
+            <div class="reveal active flex flex-col items-center gap-3">
+                <a href="#final-contact-section" class="gold-button !w-auto px-10" style="font-size:11px; letter-spacing: 3px;">Start Planning My Wedding</a>
+                <p style="font-size:10px; color:rgba(255,255,255,0.38); letter-spacing:1.5px; margin-top:4px;">Free consultation</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scroll arrow — desktop only -->
+    <div class="hidden md:flex" style="position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); flex-direction: column; align-items: center; gap: 6px; animation: heroArrowBounce 2.2s ease-in-out infinite;">
+        <span style="font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.45); font-family: 'Montserrat', sans-serif;">Scroll</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+    </div>
+
+</section>
+
+<style>
+@keyframes heroArrowBounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.6; }
+    50%       { transform: translateX(-50%) translateY(7px); opacity: 1; }
+}
+</style>
+
+<!-- ===== FULL EXPERIENCE SECTION (MOBILE ONLY) ===== -->
+<div class="block md:hidden hidden mobile-full-exp" style="padding-bottom: 40px;">
+    <p class="mobile-full-exp-eyebrow">Beyond Wedding Planning</p>
+    <h2 class="mobile-full-exp-title">Complete Destination<br>Experiences</h2>
+    <p class="mobile-full-exp-subtitle">Not just a wedding day — a full destination experience.</p>
+
+    <div class="mobile-exp-block">
+        <div class="mobile-exp-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+        </div>
+        <div>
+            <p class="mobile-exp-label">Full Hotel Buyouts</p>
+            <p class="mobile-exp-desc">Exclusive venues — entirely yours.</p>
+        </div>
+    </div>
+
+    <div class="mobile-exp-block">
+        <div class="mobile-exp-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+        </div>
+        <div>
+            <p class="mobile-exp-label">Multi-Day Celebrations</p>
+            <p class="mobile-exp-desc">From welcome dinner to farewell brunch — every moment curated.</p>
+        </div>
+    </div>
+
+    <div class="mobile-exp-block">
+        <div class="mobile-exp-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <rect x="1" y="3" width="15" height="13" rx="1"/>
+                <path d="M16 8h4l3 3v5h-7V8z"/>
+                <circle cx="5.5" cy="18.5" r="2.5"/>
+                <circle cx="18.5" cy="18.5" r="2.5"/>
+            </svg>
+        </div>
+        <div>
+            <p class="mobile-exp-label">Guest Transportation</p>
+            <p class="mobile-exp-desc">Arrival to departure — fully managed.</p>
+        </div>
+    </div>
+
+    <div style="margin-top: 24px;">
+        <a href="#final-contact-section" class="mobile-cta-dark-btn">Check Your Date Availability</a>
+    </div>
+</div>
+
+<!-- ===== COMPACT IMAGE GRID (2×3) ===== -->
+<div class="trio-grid">
+    <div class="trio-grid__item"><img src="pictures/GALLERY/GALLERY(1).jpg" alt="" role="presentation"></div>
+    <div class="trio-grid__item"><img src="pictures/GALLERY/GALLERY(4).webp" alt="" role="presentation"></div>
+    <div class="trio-grid__item"><img src="pictures/GALLERY/GALLERY(5).jpg" alt="" role="presentation"></div>
+    <div class="trio-grid__item"><img src="pictures/GALLERY/GALLERY(2).jpg" alt="" role="presentation"></div>
+    <div class="trio-grid__item"><img src="pictures/GALLERY/GALLERY(3).jpg" alt="" role="presentation"></div>
+    <div class="trio-grid__item"><img src="pictures/GALLERY/GALLERY(6).jpg" alt="" role="presentation"></div>
+</div>
+
+<!-- ===== MOBILE VALUE BOX ===== -->
+<div class="block md:hidden bg-transparent px-5" style="margin-top: 20px;">
+    <div class="bg-white/75 backdrop-blur-md rounded-[20px] px-6 pt-7 pb-10 space-y-4 mb-12 ">
+
+        <h2 class="font-serif text-[22px] leading-[1.3] text-[#1a1a1a]">
+            Your Wedding.<br>Fully Taken Care Of.
+        </h2>
+        <div class="text-[13px] text-gray-500 leading-[1.8] font-light space-y-2">
+            <p>Planning from abroad shouldn't feel complicated.</p>
+            <p>At Kai Events, we handle every detail — so you stay present, completely at ease.</p>
+        </div>
+
+        <!-- FEAR BUSTER -->
+        <div style="background: #f8f6f2; border-left: 2px solid #a89f86; border-radius: 6px; padding: 14px 16px; margin-top: 4px;">
+            <p style="font-size: 12px; color: #1a1a1a; font-weight: 500; margin-bottom: 4px; font-family: 'Montserrat', sans-serif;">Planning from thousands of miles away?</p>
+            <p style="font-size: 12px; color: #888; line-height: 1.7; font-family: 'Montserrat', sans-serif; font-weight: 300; margin: 0;">One of our planners is physically present throughout your entire wedding day — so nothing is ever left to chance.</p>
+        </div>
+
+        <div style="margin-top: 20px; margin-bottom: 20px; border-bottom: 1px solid rgba(0,0,0,0.08);"></div>
+
+        <p style="font-size: 14px; font-weight: 500; color: #1a1a1a; margin-bottom: 12px; margin-top: 0;">Everything handled, end to end</p>
+
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a89f86" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.9; flex-shrink:0;">
+                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            <span style="font-size: 13px; color: rgba(0,0,0,0.75); letter-spacing: 0.2px; font-family: 'Montserrat', sans-serif; font-weight: 400;">Full hotel buyouts</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a89f86" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.9; flex-shrink:0;">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            <span style="font-size: 13px; color: rgba(0,0,0,0.75); letter-spacing: 0.2px; font-family: 'Montserrat', sans-serif; font-weight: 400;">Multi-day celebrations</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a89f86" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.9; flex-shrink:0;">
+                <rect x="1" y="3" width="15" height="13" rx="1"/>
+                <path d="M16 8h4l3 3v5h-7V8z"/>
+                <circle cx="5.5" cy="18.5" r="2.5"/>
+                <circle cx="18.5" cy="18.5" r="2.5"/>
+            </svg>
+            <span style="font-size: 13px; color: rgba(0,0,0,0.75); letter-spacing: 0.2px; font-family: 'Montserrat', sans-serif; font-weight: 400;">Guest logistics</span>
+        </div>
+
+        <div class="pt-2">
+            <a href="#final-contact-section" class="gold-button !text-[11px] !tracking-[3px]">CHECK AVAILABILITY</a>
+        </div>
+        <div class="mt-5 w-full overflow-hidden rounded-2xl">
+            <img src="dinner.png" class="w-full h-[38vh] object-cover object-center">
+        </div>
+    </div>
+</div>
+
+<!-- ===== ABOUT / DESKTOP ONLY ===== -->
+<section id="about-contact" class="relative py-4 md:pt-20 md:pb-0 bg-white">
+    <div class="max-w-6xl mx-auto px-8 relative">
+        <div class="block md:hidden"></div>
+        <div class="hidden md:block">
+            <div class="relative w-full md:w-[70%]">
+                <div class="overflow-hidden rounded-[12px] shadow-[0_25px_70px_rgba(0,0,0,0.12)]">
+                    <img src="dinner.png" class="w-full h-[780px] md:h-[880px] object-cover transition duration-700 hover:scale-105">
+                </div>
+                <div class="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent rounded-[12px] pointer-events-none"></div>
+            </div>
+            <div class="relative md:absolute md:top-1/2 md:right-[-40px] md:-translate-y-1/2 bg-[#f8f6f2] p-10 md:p-14 rounded-[14px] shadow-[0_30px_80px_rgba(0,0,0,0.12)] max-w-[540px] mt-10 md:mt-0">
+                <p class="text-[11px] tracking-[6px] uppercase text-[#a19273] mb-5">
+                    <span class="whitespace-nowrap">Destination Weddings</span> in Europe
+                </p>
+                <h2 class="font-serif text-[36px] md:text-[34px] leading-[1.2] mb-6 text-[#1a1a1a]">
+                    Your Wedding.<br>Fully Taken Care Of.
+                </h2>
+                <div class="space-y-4 mb-6">
+                    <p class="text-[15px] md:text-[16px] text-[#444] leading-[1.9] font-light">
+                        Planning from abroad shouldn't feel complicated.
+                    </p>
+                    <p class="text-[15px] md:text-[16px] text-[#444] leading-[1.9] font-light">
+                        At Kai Events, we handle every detail — so you stay present, completely at ease.
+                    </p>
+                </div>
+
+                <!-- FEAR BUSTER -->
+                <div style="background: #edeae4; border-left: 2px solid #a89f86; border-radius: 6px; padding: 14px 16px; margin-bottom: 20px;">
+                    <p style="font-size: 13px; color: #1a1a1a; font-weight: 600; margin-bottom: 4px; font-family: 'Montserrat', sans-serif;">Planning from thousands of miles away?</p>
+                    <p style="font-size: 13px; color: #555; line-height: 1.7; font-family: 'Montserrat', sans-serif; font-weight: 400; margin: 0;">One of our planners is physically present throughout your entire wedding day — so nothing is ever left to chance.</p>
+                </div>
+
+                <!-- ICONS -->
+                <div style="margin-bottom: 24px;">
+                    <p style="font-size: 15px; font-weight: 600; color: #1a1a1a; margin-bottom: 16px; font-family: 'Montserrat', sans-serif;">Everything handled, end to end</p>
+                    <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 14px;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a89f86" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.9; flex-shrink:0;"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        <span style="font-size: 15px; color: #333; font-family: 'Montserrat', sans-serif; font-weight: 400;">Full hotel buyouts</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 14px;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a89f86" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.9; flex-shrink:0;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <span style="font-size: 15px; color: #333; font-family: 'Montserrat', sans-serif; font-weight: 400;">Multi-day celebrations</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 24px;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a89f86" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.9; flex-shrink:0;"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                        <span style="font-size: 15px; color: #333; font-family: 'Montserrat', sans-serif; font-weight: 400;">Guest logistics</span>
+                    </div>
+                </div>
+
+                <div class="flex justify-center">
+                    <a href="#final-contact-section" class="gold-button" style="width:auto; padding:20px 60px; letter-spacing:5px;">Check Availability</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== SERVICES ===== -->
+<section id="services" class="py-4 md:py-24 bg-white">
+    <div class="max-w-6xl mx-auto px-6 md:px-8 text-center">
+
+        <div class="section-title-container mb-8 md:mb-12">
+            <div class="title-line"></div>
+            <h2 class="font-serif text-[20px] md:text-[28px] text-[#1a1a1a] tracking-[0.2em] uppercase">Our Services</h2>
+            <div class="title-line"></div>
+        </div>
+
+        <!-- DESKTOP -->
+        <div class="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 md:gap-x-10 gap-y-8 md:gap-y-10">
+            <div class="group bg-[#fcfcfb] p-5 md:p-6 rounded-sm shadow-[0_6px_20px_rgba(0,0,0,0.03)] transition-all duration-300 hover:shadow-[0_12px_30px_rgba(0,0,0,0.06)]">
+                <div class="w-full h-[300px] md:h-[340px] overflow-hidden mb-5"><img src="pictures/SERVICES/1.webp" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"></div>
+                <h3 class="font-serif text-[18px] md:text-[20px] mb-2 text-[#1a1a1a] font-medium">Full Wedding Planning</h3>
+                <p class="font-serif text-[14px] md:text-[15px] text-gray-500 leading-relaxed px-2">From first idea to wedding day — entirely managed.</p>
+            </div>
+            <div class="group bg-[#fcfcfb] p-5 md:p-6 rounded-sm shadow-[0_6px_20px_rgba(0,0,0,0.03)] transition-all duration-300 hover:shadow-[0_12px_30px_rgba(0,0,0,0.06)]">
+                <div class="w-full h-[300px] md:h-[340px] overflow-hidden mb-5"><img src="pictures/SERVICES/2.jpg" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"></div>
+                <h3 class="font-serif text-[18px] md:text-[20px] mb-2 text-[#1a1a1a] font-medium">Wedding Production</h3>
+                <p class="font-serif text-[14px] md:text-[15px] text-gray-500 leading-relaxed px-2">Multi-day celebrations, fully coordinated abroad.</p>
+            </div>
+            <div class="group bg-[#fcfcfb] p-5 md:p-6 rounded-sm shadow-[0_6px_20px_rgba(0,0,0,0.03)] transition-all duration-300 hover:shadow-[0_12px_30px_rgba(0,0,0,0.06)]">
+                <div class="w-full h-[300px] md:h-[340px] overflow-hidden mb-5"><img src="pictures/SERVICES/3.jpg" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"></div>
+                <h3 class="font-serif text-[18px] md:text-[20px] mb-2 text-[#1a1a1a] font-medium">Venue & Supplier Sourcing</h3>
+                <p class="font-serif text-[14px] md:text-[15px] text-gray-500 leading-relaxed px-2">Exceptional venues and trusted partners, hand-selected.</p>
+            </div>
+            <div class="group bg-[#fcfcfb] p-5 md:p-6 rounded-sm shadow-[0_6px_20px_rgba(0,0,0,0.03)] transition-all duration-300 hover:shadow-[0_12px_30px_rgba(0,0,0,0.06)]">
+                <div class="w-full h-[300px] md:h-[340px] overflow-hidden mb-5"><img src="pictures/SERVICES/4.webp" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"></div>
+                <h3 class="font-serif text-[18px] md:text-[20px] mb-2 text-[#1a1a1a] font-medium">Design & Guest Experience</h3>
+                <p class="font-serif text-[14px] md:text-[15px] text-gray-500 leading-relaxed px-2">A cohesive vision — from aesthetic to atmosphere.</p>
+            </div>
+            <div class="group bg-[#fcfcfb] p-5 md:p-6 rounded-sm shadow-[0_6px_20px_rgba(0,0,0,0.03)] transition-all duration-300 hover:shadow-[0_12px_30px_rgba(0,0,0,0.06)]">
+                <div class="w-full h-[300px] md:h-[340px] overflow-hidden mb-5"><img src="pictures/SERVICES/5.jpg" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"></div>
+                <h3 class="font-serif text-[18px] md:text-[20px] mb-2 text-[#1a1a1a] font-medium">Logistics Management</h3>
+                <p class="font-serif text-[14px] md:text-[15px] text-gray-500 leading-relaxed px-2">Timelines, transport, operations — seamless end to end.</p>
+            </div>
+            <div class="group bg-[#fcfcfb] p-5 md:p-6 rounded-sm shadow-[0_6px_20px_rgba(0,0,0,0.03)] transition-all duration-300 hover:shadow-[0_12px_30px_rgba(0,0,0,0.06)]">
+                <div class="w-full h-[300px] md:h-[340px] overflow-hidden mb-5"><img src="pictures/SERVICES/6.jpg" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"></div>
+                <h3 class="font-serif text-[18px] md:text-[20px] mb-2 text-[#1a1a1a] font-medium">On-Site Coordination</h3>
+                <p class="font-serif text-[14px] md:text-[15px] text-gray-500 leading-relaxed px-2">Full presence on the day — so you don't have to think about a thing.</p>
+            </div>
+        </div>
+
+        <!-- MOBILE CARD GRID -->
+        <div class="svc-card-grid md:hidden">
+            <div class="svc-card">
+                <div class="svc-card__img"><img src="pictures/SERVICES/1.webp" alt="Full Wedding Planning"></div>
+                <div class="svc-card__body">
+                    <h3 class="svc-card__title">Full Wedding Planning</h3>
+                </div>
+            </div>
+            <div class="svc-card">
+                <div class="svc-card__img"><img src="pictures/SERVICES/2.jpg" alt="Wedding Production"></div>
+                <div class="svc-card__body">
+                    <h3 class="svc-card__title">Wedding Production</h3>
+                </div>
+            </div>
+            <div class="svc-card">
+                <div class="svc-card__img"><img src="pictures/SERVICES/3.jpg" alt="Venue & Supplier Sourcing"></div>
+                <div class="svc-card__body">
+                    <h3 class="svc-card__title">Venue & Vendor Sourcing</h3>
+                </div>
+            </div>
+            <div class="svc-card">
+                <div class="svc-card__img"><img src="pictures/SERVICES/4.webp" alt="Design & Guest Experience"></div>
+                <div class="svc-card__body">
+                    <h3 class="svc-card__title">Design & Guest Experience</h3>
+                </div>
+            </div>
+            <div class="svc-card">
+                <div class="svc-card__img"><img src="pictures/SERVICES/5.jpg" alt="Logistics Management"></div>
+                <div class="svc-card__body">
+                    <h3 class="svc-card__title">Logistics Management</h3>
+                </div>
+            </div>
+            <div class="svc-card">
+                <div class="svc-card__img"><img src="pictures/SERVICES/6.jpg" alt="On-Site Coordination"></div>
+                <div class="svc-card__body">
+                    <h3 class="svc-card__title">On-Site Coordination</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ===== MOBILE CTA BLOCK 1 ===== -->
+<div class="block md:hidden bg-[#f0ede8] px-6 py-10 text-center border-t border-gray-100">
+    <p class="text-[10px] tracking-[4px] uppercase text-[#a19273] mb-3">Begin Your Journey</p>
+    <h3 class="font-serif text-[22px] text-[#1a1a1a] leading-[1.3] mb-3">Your Wedding Starts Here.</h3>
+    <p style="font-size:13px !important;" class="text-gray-500 mb-6 font-light leading-relaxed max-w-[260px] mx-auto">
+        Tell us your vision — we'll guide you from the very first step.</p>
+    <form id="miniForm" class="flex flex-col gap-3 w-full max-w-[900px] mx-auto items-center md:flex-row md:gap-4">
+        <input type="hidden" name="_subject" value="New Wedding Lead">
+        <input type="text" name="name" placeholder="Full Name" autocomplete="name" class="compact-input w-full md:flex-1 h-[44px] !text-[13px] !placeholder-gray-400 !border-gray-200">
+        <input type="email" name="email" placeholder="Email Address" autocomplete="email" class="compact-input w-full md:flex-1 h-[44px] !text-[13px] !placeholder-gray-400 !border-gray-200" required>
+        <button type="submit" class="gold-button !text-[11px] !tracking-[3px] !py-4">GET STARTED</button>
+    </form>
+    <script>
+    document.getElementById('miniForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const data = new FormData(this);
+        await fetch('https://formspree.io/f/mgopvjoy', {
+            method: 'POST', body: data, headers: { 'Accept': 'application/json' }
+        });
+        window.location.href = 'thank-you.html';
+    });
+    </script>
+</div>
+
+<!-- ===== DESKTOP CTA BLOCK 1 ===== -->
+<div class="hidden md:block bg-[#f0ede8] py-16 border-t border-gray-100">
+    <div class="max-w-4xl mx-auto px-8 text-center">
+        <p class="text-[10px] tracking-[4px] uppercase text-[#a19273] mb-3">Begin Your Journey</p>
+        <h3 class="font-serif text-[32px] text-[#1a1a1a] leading-[1.3] mb-3">Your Wedding Starts Here.</h3>
+        <p class="text-gray-500 mb-8 font-light leading-relaxed text-[15px]">
+            Tell us your vision — we'll guide you from the very first step.</p>
+        <form id="miniFormDesktop" class="flex flex-row gap-4 w-full max-w-[700px] mx-auto items-center">
+            <input type="hidden" name="_subject" value="New Wedding Lead">
+            <input type="text" name="name" placeholder="Full Name" autocomplete="name" class="compact-input flex-1 h-[52px] !text-[14px] !placeholder-gray-400 !border-gray-200">
+            <input type="email" name="email" placeholder="Email Address" autocomplete="email" class="compact-input flex-1 h-[52px] !text-[14px] !placeholder-gray-400 !border-gray-200" required>
+            <button type="submit" class="gold-button !text-[11px] !tracking-[3px] !py-4 !w-auto px-8">GET STARTED</button>
+        </form>
+        <script>
+        document.getElementById('miniFormDesktop').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const data = new FormData(this);
+            await fetch('https://formspree.io/f/mgopvjoy', {
+                method: 'POST', body: data, headers: { 'Accept': 'application/json' }
+            });
+            window.location.href = 'thank-you.html';
+        });
+        </script>
+    </div>
+</div>
+
+<!-- ===== FROM VISION ===== -->
+<section id="process" class="bg-white">
+    <div class="relative w-full h-[56vw] md:h-[55vh] flex items-center justify-center overflow-hidden">
+        <img src="vision.webp" alt="From Vision to Reality" class="hidden md:block absolute inset-0 w-full h-full object-cover z-10">
+        <img src="pictures/vision/vision.webp" alt="From Vision to Reality" class="block md:hidden absolute inset-0 w-full h-full object-cover z-10">
+        <div class="absolute inset-0 bg-black/15 z-15"></div>
+        <div class="hidden md:block relative z-20 w-full h-full max-w-7xl mx-auto px-20 reveal">
+            <div class="absolute top-[40%] left-[16%] text-white">
+                <h2 class="font-serif text-[48px] leading-none font-light tracking-[0.1em]">From vision</h2>
+            </div>
+            <div class="absolute top-[40%] right-[16%] text-white flex flex-col items-start">
+                <h2 class="font-serif text-[48px] leading-none font-light tracking-[0.1em] mb-2">To reality</h2>
+                <p class="text-[11px] font-medium tracking-[2.5px] uppercase text-white/90">Every detail is thoughtfully curated</p>
+            </div>
+        </div>
+        <div class="md:hidden absolute z-20 text-right" style="top: 40%; right: 8%;">
+            <h2 class="font-serif text-[16px] leading-[1.3] font-light tracking-[0.08em] text-white/90 mb-0 whitespace-nowrap">From vision · To reality</h2>
+            <p class="text-[7px] font-medium tracking-[1px] uppercase text-white/60 text-center mt-1">Every detail is thoughtfully curated</p>
+        </div>
+    </div>
+</section>
+
+<!-- ===== WHY CHOOSE US ===== -->
+<div class="py-16 md:py-24 bg-[#fcfcfb]">
+    <div class="max-w-7xl mx-auto px-6 md:px-8">
+        <div class="text-center mb-10 md:mb-16">
+            <div class="flex items-center justify-center gap-5 mb-3">
+                <div class="h-[1px] w-10 bg-[#a19273] opacity-30"></div>
+                <h2 class="font-serif text-[18px] md:text-[32px] tracking-[0.10em] uppercase text-[#1a1a1a]">Why couples choose us</h2>
+                <div class="h-[1px] w-10 bg-[#a19273] opacity-30"></div>
+            </div>
+            <p class="hidden md:block font-serif italic text-gray-500 text-[15px] mt-2">Peace of mind, from first conversation to wedding day</p>
+            <p class="block md:hidden why-choose-subtitle-mobile">From full venue buyouts to multi-day celebrations — every detail managed.</p>
+        </div>
+
+        <!-- DESKTOP -->
+        <div class="hidden md:flex process-grid flex-wrap md:flex-nowrap justify-between gap-x-6 gap-y-12 items-start reveal">
+            <div class="process-step flex flex-col items-start w-full md:max-w-[18%]">
+                <span class="step-number text-[36px] text-[#a19273] italic">01</span>
+                <h3 class="step-title text-[14px] tracking-[1.5px] uppercase font-bold mb-3 text-[#1a1a1a] flex items-center whitespace-nowrap">Experienced Team</h3>
+                <p class="text-[14px] leading-[1.8] text-gray-600 font-light">Deep expertise and trusted relationships with venues worldwide.</p>
+            </div>
+            <div class="process-step flex flex-col items-start w-full md:max-w-[18%]">
+                <span class="step-number text-[36px] text-[#a19273] italic">02</span>
+                <h3 class="step-title text-[14px] tracking-[1.5px] uppercase font-bold mb-3 text-[#1a1a1a] flex items-center whitespace-nowrap">Fully Managed</h3>
+                <p class="text-[14px] leading-[1.8] text-gray-600 font-light">Planning, logistics, coordination — handled entirely by us.</p>
+            </div>
+            <div class="process-step flex flex-col items-start w-full md:max-w-[18%]">
+                <span class="step-number text-[36px] text-[#a19273] italic">03</span>
+                <h3 class="step-title text-[14px] tracking-[1.5px] uppercase font-bold mb-3 text-[#1a1a1a] flex items-center whitespace-nowrap">Tailored To You</h3>
+                <p class="text-[14px] leading-[1.8] text-gray-600 font-light">Designed around your vision, your style, your priorities.</p>
+            </div>
+            <div class="process-step flex flex-col items-start w-full md:max-w-[18%]">
+                <span class="step-number text-[36px] text-[#a19273] italic">04</span>
+                <h3 class="step-title text-[14px] tracking-[1.5px] uppercase font-bold mb-3 text-[#1a1a1a] flex items-center whitespace-nowrap">Ceremony Styles</h3>
+                <p class="text-[14px] leading-[1.8] text-gray-600 font-light">Symbolic, civil, Jewish, multicultural — all handled with care.</p>
+            </div>
+            <div class="process-step flex flex-col items-start w-full md:max-w-[18%]">
+                <span class="step-number text-[36px] text-[#a19273] italic">05</span>
+                <h3 class="step-title text-[14px] tracking-[1.5px] uppercase font-bold mb-3 text-[#1a1a1a] flex items-center whitespace-nowrap">Stress-Free</h3>
+                <p class="text-[14px] leading-[1.8] text-gray-600 font-light">You stay present. We handle everything else.</p>
+            </div>
+        </div>
+
+        <!-- MOBILE -->
+        <div class="flex md:hidden flex-col gap-0 reveal">
+            <div class="flex items-start gap-4 py-5 border-b border-gray-100">
+                <span class="text-[38px] text-[#a19273] italic leading-none w-[48px] flex-shrink-0">01</span>
+                <div><h3 class="text-[12px] tracking-[1.5px] uppercase font-bold mb-1 text-[#1a1a1a]">Experienced Team</h3><p style="font-size:13px !important;" class="leading-[1.7] text-gray-600 font-light">Deep expertise and trusted relationships worldwide.</p></div>
+            </div>
+            <div class="flex items-start gap-4 py-5 border-b border-gray-100">
+                <span class="text-[38px] text-[#a19273] italic leading-none w-[48px] flex-shrink-0">02</span>
+                <div><h3 class="text-[12px] tracking-[1.5px] uppercase font-bold mb-1 text-[#1a1a1a]">Fully Managed</h3><p style="font-size:13px !important;" class="leading-[1.7] text-gray-600 font-light">Planning, logistics, coordination — entirely handled.</p></div>
+            </div>
+            <div class="flex items-start gap-4 py-5 border-b border-gray-100">
+                <span class="text-[38px] text-[#a19273] italic leading-none w-[48px] flex-shrink-0">03</span>
+                <div><h3 class="text-[12px] tracking-[1.5px] uppercase font-bold mb-1 text-[#1a1a1a]">Tailored To You</h3><p style="font-size:13px !important;" class="leading-[1.7] text-gray-600 font-light">Designed around your vision, style and priorities.</p></div>
+            </div>
+            <div class="flex items-start gap-4 py-5 border-b border-gray-100">
+                <span class="text-[38px] text-[#a19273] italic leading-none w-[48px] flex-shrink-0">04</span>
+                <div><h3 class="text-[12px] tracking-[1.5px] uppercase font-bold mb-1 text-[#1a1a1a]">Ceremony Styles</h3><p style="font-size:13px !important;" class="leading-[1.7] text-gray-600 font-light">Symbolic, civil, Jewish, multicultural — all handled with care.</p></div>
+            </div>
+            <div class="flex items-start gap-4 py-5">
+                <span class="text-[38px] text-[#a19273] italic leading-none w-[48px] flex-shrink-0">05</span>
+                <div><h3 class="text-[12px] tracking-[1.5px] uppercase font-bold mb-1 text-[#1a1a1a]">Stress-Free</h3><p style="font-size:13px !important;" class="leading-[1.7] text-gray-600 font-light">You stay present. We handle everything else.</p></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ===== MOBILE CTA BLOCK 2 ===== -->
+<div class="block md:hidden bg-[#f8f6f2] px-6 py-10 text-center">
+    <div class="h-[1px] bg-[#a19273] opacity-20 mb-6 mx-auto w-8"></div>
+    <h3 class="font-serif text-[22px] text-[#1a1a1a] leading-[1.4] mb-3 font-light">Every wedding we plan<br>is one of a kind.</h3>
+    <p style="font-size:13px !important;" class="text-gray-400 mb-7 font-light leading-relaxed max-w-[260px] mx-auto font-serif italic">
+        We take on a limited number of weddings each year — to make sure every couple gets our full attention.
+    </p>
+    <a href="#final-contact-section" class="gold-button !text-[11px] !tracking-[3px] !py-4">Check Availability</a>
+    <div class="h-[1px] bg-[#a19273] opacity-20 mt-6 mx-auto w-8"></div>
+</div>
+
+<!-- ===== DESKTOP CTA BLOCK 2 ===== -->
+<div class="hidden md:block bg-[#f8f6f2] py-20 text-center">
+    <div class="max-w-2xl mx-auto px-8">
+        <div class="h-[1px] bg-[#a19273] opacity-20 mb-8 mx-auto w-12"></div>
+        <h3 class="font-serif text-[36px] text-[#1a1a1a] leading-[1.4] mb-4 font-light">Every wedding we plan<br>is one of a kind.</h3>
+        <p class="text-gray-400 mb-8 font-light leading-relaxed text-[16px] font-serif italic max-w-[480px] mx-auto">
+            We take on a limited number of weddings each year — to make sure every couple gets our full attention.
+        </p>
+        <a href="#final-contact-section" class="gold-button !text-[11px] !tracking-[3px] !py-5 !w-auto px-12">Check Availability</a>
+        <div class="h-[1px] bg-[#a19273] opacity-20 mt-8 mx-auto w-12"></div>
+    </div>
+</div>
+
+
+<!-- ===== GALLERY ===== -->
+<section id="gallery" class="py-12 md:py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-6 md:px-8">
+        <div class="text-center mb-8 md:mb-10">
+            <div class="flex items-center justify-center gap-5 mb-3">
+                <div class="h-[1px] w-10 bg-[#a19273] opacity-30"></div>
+                <h2 class="font-serif text-[22px] md:text-[32px] tracking-[0.25em] uppercase text-[#1a1a1a]">Real Weddings</h2>
+                <div class="h-[1px] w-10 bg-[#a19273] opacity-30"></div>
+            </div>
+            <p class="font-serif italic text-gray-500 text-[14px] md:text-[17px] mt-3">A glimpse into the moments we create</p>
+        </div>
+
+        <!-- HERO IMAGE — both -->
+        <div class="mb-3 overflow-hidden group relative rounded-xl">
+            <img src="pictures/GALLERY2/8.png" class="w-full h-[50vh] md:h-[65vh] object-cover transition-transform duration-700 group-hover:scale-[1.03]" alt="Wedding Highlight">
+            <div class="absolute inset-0 bg-black/25 group-hover:bg-black/35 transition duration-500"></div>
+            <div class="absolute bottom-6 left-6 md:bottom-8 md:left-8 text-white">
+                <p class="font-serif text-[18px] md:text-[24px] tracking-wide drop-shadow-[0_3px_10px_rgba(0,0,0,0.6)]">Athens Riviera</p>
+                <p class="text-[11px] md:text-[14px] font-medium tracking-[2px] uppercase text-white/90 drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)]">Sunset Ceremony</p>
+            </div>
+        </div>
+
+        <!-- MOBILE: premium editorial layout -->
+        <div class="md:hidden" style="padding: 0 4px;">
+
+            <!-- Row 1: Full width -->
+            <div class="overflow-hidden rounded-xl mb-[20px]" style="height:300px;">
+                <img src="pictures/GALLERY2/1.jpg" class="w-full h-full object-cover" alt="Wedding">
+            </div>
+
+            <!-- Row 2: 2 columns -->
+            <div class="grid grid-cols-2 mb-[20px]" style="gap:12px;">
+                <div class="overflow-hidden rounded-xl" style="height:220px;">
+                    <img src="pictures/GALLERY2/2.jpg" class="w-full h-full object-cover" alt="Wedding">
+                </div>
+                <div class="overflow-hidden rounded-xl" style="height:220px;">
+                    <img src="pictures/GALLERY2/3.jpg" class="w-full h-full object-cover" alt="Wedding">
+                </div>
+            </div>
+
+            <!-- Row 3: Full width -->
+            <div class="overflow-hidden rounded-xl mb-[20px]" style="height:280px;">
+                <img src="pictures/GALLERY2/4.jpg" class="w-full h-full object-cover" alt="Wedding">
+            </div>
+
+            <!-- Row 4: 2 columns -->
+            <div class="grid grid-cols-2 mb-[20px]" style="gap:12px;">
+                <div class="overflow-hidden rounded-xl" style="height:240px;">
+                    <img src="pictures/GALLERY2/5.JPG" class="w-full h-full object-cover" alt="Wedding">
+                </div>
+                <div class="overflow-hidden rounded-xl" style="height:240px;">
+                    <img src="pictures/GALLERY2/6.jpg" class="w-full h-full object-cover" alt="Wedding">
+                </div>
+            </div>
+
+            <!-- Row 5: Full width -->
+            <div class="overflow-hidden rounded-xl mb-[20px]" style="height:300px;">
+                <img src="pictures/GALLERY2/7.jpg" class="w-full h-full object-cover" alt="Wedding">
+            </div>
+
+            <!-- Row 6: 2 columns -->
+            <div class="grid grid-cols-2 mb-[20px]" style="gap:12px;">
+                <div class="overflow-hidden rounded-xl" style="height:220px;">
+                    <img src="pictures/GALLERY2/8.png" class="w-full h-full object-cover" alt="Wedding">
+                </div>
+                <div class="overflow-hidden rounded-xl" style="height:220px;">
+                    <img src="pictures/GALLERY2/9.jpg" class="w-full h-full object-cover" alt="Wedding">
+                </div>
+            </div>
+
+            <!-- Row 7: Full width -->
+            <div class="overflow-hidden rounded-xl mb-[20px]" style="height:280px;">
+                <img src="pictures/GALLERY2/10.jpg" class="w-full h-full object-cover" alt="Wedding">
+            </div>
+
+            <!-- Row 8: 2 columns -->
+            <div class="grid grid-cols-2 mb-[20px]" style="gap:12px;">
+                <div class="overflow-hidden rounded-xl" style="height:240px;">
+                    <img src="pictures/GALLERY2/11.jpg" class="w-full h-full object-cover" alt="Wedding">
+                </div>
+                <div class="overflow-hidden rounded-xl" style="height:240px;">
+                    <img src="pictures/GALLERY2/12.jpg" class="w-full h-full object-cover" alt="Wedding">
+                </div>
+            </div>
+
+            <!-- Row 9: Full width -->
+            <div class="overflow-hidden rounded-xl mb-[20px]" style="height:300px;">
+                <img src="pictures/GALLERY2/13.jpg" class="w-full h-full object-cover" alt="Wedding">
+            </div>
+
+            <!-- Row 10: 2 columns -->
+            <div class="grid grid-cols-2 mb-[4px]" style="gap:12px;">
+                <div class="overflow-hidden rounded-xl" style="height:220px;">
+                    <img src="pictures/GALLERY2/14.jpg" class="w-full h-full object-cover" alt="Wedding">
+                </div>
+                <div class="overflow-hidden rounded-xl" style="height:220px;">
+                    <img src="pictures/GALLERY2/15.jpg" class="w-full h-full object-cover" alt="Wedding">
+                </div>
+            </div>
+
+        </div>
+
+        <!-- DESKTOP: full grid -->
+        <div class="hidden md:grid md:grid-cols-3 gap-3">
+            <div class="md:col-span-2 h-[420px] overflow-hidden relative group">
+                <img src="pictures/GALLERY2/2.jpg" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" alt="Wedding">
+                <div class="absolute inset-0 bg-black/15 group-hover:bg-black/30 transition duration-500"></div>
+            </div>
+            <div class="h-[420px] overflow-hidden relative group">
+                <img src="pictures/GALLERY2/3.jpg" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" alt="Wedding">
+                <div class="absolute inset-0 bg-black/15 group-hover:bg-black/30 transition duration-500"></div>
+            </div>
+            <div class="overflow-hidden relative group">
+                <img src="pictures/GALLERY2/4.jpg" class="w-full h-[260px] object-cover transition-transform duration-700 group-hover:scale-[1.04]" alt="Wedding">
+                <div class="absolute inset-0 bg-black/15 group-hover:bg-black/30 transition duration-500"></div>
+            </div>
+            <div class="overflow-hidden relative group">
+                <img src="pictures/GALLERY2/5.JPG" class="w-full h-[260px] object-cover transition-transform duration-700 group-hover:scale-[1.04]" alt="Wedding">
+                <div class="absolute inset-0 bg-black/15 group-hover:bg-black/30 transition duration-500"></div>
+            </div>
+            <div class="overflow-hidden relative group">
+                <img src="pictures/GALLERY2/6.jpg" class="w-full h-[260px] object-cover transition-transform duration-700 group-hover:scale-[1.04]" alt="Wedding">
+                <div class="absolute inset-0 bg-black/15 group-hover:bg-black/30 transition duration-500"></div>
+            </div>
+        </div>
+
+        <div class="mt-4 md:mt-10 overflow-hidden relative group rounded-xl">
+            <img src="pictures/GALLERY2/7.jpg" class="w-full h-[38vh] md:h-[48vh] object-cover transition-transform duration-700 group-hover:scale-[1.03]" alt="Wedding Experience">
+            <div class="absolute inset-0 bg-black/35"></div>
+            <div class="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-6">
+                <h3 class="font-serif text-[20px] md:text-[36px] mb-4 drop-shadow-[0_3px_12px_rgba(0,0,0,0.6)]">Let's create something unforgettable</h3>
+                <a href="#final-contact-section" class="border border-white px-8 py-3 text-[11px] md:text-sm tracking-[2px] uppercase hover:bg-white hover:text-black transition duration-300">Start Planning</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== TRUST SIGNALS — FROM IDEA TO EXECUTION ===== -->
+<div class="block md:hidden trust-signals-mobile-replacement">
+    <p class="ts-headline">FROM IDEA TO EXECUTION</p>
+    <p class="ts-subline">
+        <span>Concept</span>
+        <span class="ts-dot"></span>
+        <span>Production</span>
+        <span class="ts-dot"></span>
+        <span>Guest Experience</span>
+    </p>
+</div>
+
+<!-- DESKTOP VERSION -->
+<div class="hidden md:block bg-white py-16 border-t border-b border-gray-100">
+    <div class="max-w-5xl mx-auto px-8 text-center">
+        <p style="font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 400; letter-spacing: 0.3em; text-transform: uppercase; color: #b5a88b; margin-bottom: 28px;">From Idea to Execution</p>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 48px;">
+            <span style="font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 400; color: #1a1a1a; letter-spacing: 0.05em;">Concept</span>
+            <span style="width: 40px; height: 1px; background: rgba(181,168,139,0.4); display: block; flex-shrink: 0;"></span>
+            <span style="font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 400; color: #1a1a1a; letter-spacing: 0.05em;">Production</span>
+            <span style="width: 40px; height: 1px; background: rgba(181,168,139,0.4); display: block; flex-shrink: 0;"></span>
+            <span style="font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 400; color: #1a1a1a; letter-spacing: 0.05em;">Guest Experience</span>
+        </div>
+    </div>
+</div>
+
+
+<!-- ============================================================
+     DESTINATIONS POLISH START
+     ============================================================ -->
+<!-- ===== DESTINATIONS ===== -->
+<section id="destinations-editorial" class="relative overflow-hidden">
+    <div class="dest-list-container reveal">
+
+        <!-- Mobile headline -->
+        <div class="block md:hidden text-center px-6 mb-6">
+            <h2 class="font-serif text-[20px] text-[#1a1a1a] leading-[1.5] mb-2 tracking-[0.01em] uppercase" style="font-weight: 500;">Where do you imagine<br>your wedding?</h2>
+            <p class="font-sans text-[12px] text-gray-400 tracking-[0.5px]">Choose the atmosphere that feels right</p>
+        </div>
+
+        <!-- Desktop headline -->
+        <div class="hidden md:flex items-center justify-center gap-6 mb-3 px-6">
+            <div class="h-[1px] bg-[#d1cdc7] flex-grow max-w-[70px]"></div>
+            <h2 class="font-serif text-[20px] md:text-[32px] tracking-[0.25em] uppercase text-[#1a1a1a]">Our Destinations</h2>
+            <div class="h-[1px] bg-[#d1cdc7] flex-grow max-w-[70px]"></div>
+        </div>
+
+        <p class="hidden md:block font-serif italic text-gray-500 text-[13px] md:text-[15px] max-w-xl mx-auto leading-relaxed mb-6 md:mb-20 text-center px-6">
+            Exceptional weddings across Europe and beyond always tailored to where you dream of.
+        </p>
+
+        <!-- DESKTOP GRID — unchanged -->
+        <div class="editorial-grid mb-12 hidden md:grid">
+            <div class="editorial-item"><h3 class="editorial-name mb-2">Greece</h3><p class="editorial-desc">Islands, seaside venues, effortless elegance</p></div>
+            <div class="editorial-item"><h3 class="editorial-name mb-2">Cyprus</h3><p class="editorial-desc">Coastal celebrations, relaxed atmosphere</p></div>
+            <div class="editorial-item"><h3 class="editorial-name mb-2">Italy</h3><p class="editorial-desc">Villas, countryside, timeless settings</p></div>
+            <div class="editorial-item"><h3 class="editorial-name mb-2">France</h3><p class="editorial-desc">Châteaux, refined aesthetics, elevated feel</p></div>
+            <div class="editorial-item"><h3 class="editorial-name mb-2">Worldwide</h3><p class="editorial-desc">Tailored celebrations anywhere in the world</p></div>
+        </div>
+
+        <!-- MOBILE HORIZONTAL SCROLL — hidden on mobile via CSS -->
+        <div class="block md:hidden mb-2">
+            <div class="destinations-scroll px-6">
+                <div class="destination-card">
+                    <h3 class="font-serif text-[24px] text-[#1a1a1a] font-normal mb-1">Greece</h3>
+                    <p style="font-size:12px !important;" class="text-gray-500 font-light leading-relaxed">Islands, seaside venues, effortless elegance</p>
+                </div>
+                <div class="destination-card">
+                    <h3 class="font-serif text-[24px] text-[#1a1a1a] font-normal mb-1">Cyprus</h3>
+                    <p style="font-size:12px !important;" class="text-gray-500 font-light leading-relaxed">Coastal celebrations, relaxed atmosphere</p>
+                </div>
+                <div class="destination-card">
+                    <h3 class="font-serif text-[24px] text-[#1a1a1a] font-normal mb-1">Italy</h3>
+                    <p style="font-size:12px !important;" class="text-gray-500 font-light leading-relaxed">Villas, countryside, timeless settings</p>
+                </div>
+                <div class="destination-card">
+                    <h3 class="font-serif text-[24px] text-[#1a1a1a] font-normal mb-1">France</h3>
+                    <p style="font-size:12px !important;" class="text-gray-500 font-light leading-relaxed">Châteaux, city lights, romantic charm</p>
+                </div>
+                <div class="destination-card" style="border-right:none; padding-right:24px;">
+                    <h3 class="font-serif text-[24px] text-[#1a1a1a] font-normal mb-1">Worldwide</h3>
+                    <p style="font-size:12px !important;" class="text-gray-500 font-light leading-relaxed">Tailored celebrations, anywhere</p>
+                </div>
+            </div>
+            <p class="dest-swipe-hint" style="font-size:10px !important; color:#d1d5db; text-align:center; margin-top:4px; letter-spacing:0.2em; text-transform:uppercase;">Swipe →</p>
+        </div>
+
+        <!-- MOBILE VERTICAL CARD LIST -->
+        <div class="dest-vcard-list">
+
+            <!-- Greece -->
+            <a href="#final-contact-section" class="dest-vcard">
+                <div class="dest-vcard__text">
+                    <span class="dest-vcard__badge">★ Most Popular</span>
+                    <h3 class="dest-vcard__name">Greece</h3>
+                    <p class="dest-vcard__desc">Seaside, vibrant, and perfect for large celebrations</p>
+                </div>
+                <div class="dest-vcard__right">
+                    <div class="dest-vcard__thumb">
+                        <img src="pictures/Locations/greece.jpg" alt="Greece wedding">
+                    </div>
+                    <span class="dest-vcard__arrow">→</span>
+                </div>
+            </a>
+
+            <!-- Cyprus -->
+            <a href="#final-contact-section" class="dest-vcard">
+                <div class="dest-vcard__text">
+                    <h3 class="dest-vcard__name">Cyprus</h3>
+                    <p class="dest-vcard__desc">Relaxed coastal weddings with easy access</p>
+                </div>
+                <div class="dest-vcard__right">
+                    <div class="dest-vcard__thumb">
+                        <img src="pictures/Locations/cyprus.png" alt="Cyprus wedding">
+                    </div>
+                    <span class="dest-vcard__arrow">→</span>
+                </div>
+            </a>
+
+            <!-- Italy -->
+            <a href="#final-contact-section" class="dest-vcard">
+                <div class="dest-vcard__text">
+                    <h3 class="dest-vcard__name">Italy</h3>
+                    <p class="dest-vcard__desc">Elegant villas, timeless atmosphere</p>
+                </div>
+                <div class="dest-vcard__right">
+                    <div class="dest-vcard__thumb">
+                        <img src="pictures/Locations/italy.jpg" alt="Italy wedding">
+                    </div>
+                    <span class="dest-vcard__arrow">→</span>
+                </div>
+            </a>
+
+            <!-- France -->
+            <a href="#final-contact-section" class="dest-vcard">
+                <div class="dest-vcard__text">
+                    <h3 class="dest-vcard__name">France</h3>
+                    <p class="dest-vcard__desc">Château weddings with a refined, luxury feel</p>
+                </div>
+                <div class="dest-vcard__right">
+                    <div class="dest-vcard__thumb">
+                        <img src="pictures/Locations/france.webp" alt="France wedding">
+                    </div>
+                    <span class="dest-vcard__arrow">→</span>
+                </div>
+            </a>
+
+            <!-- Worldwide -->
+            <a href="#final-contact-section" class="dest-vcard">
+                <div class="dest-vcard__text">
+                    <h3 class="dest-vcard__name">Worldwide</h3>
+                    <p class="dest-vcard__desc">Completely tailored, anywhere in the world</p>
+                </div>
+                <div class="dest-vcard__right">
+                    <div class="dest-vcard__thumb">
+                        <img src="pictures/GALLERY/GALLERY(2).jpg" alt="Worldwide weddings">
+                    </div>
+                    <span class="dest-vcard__arrow">→</span>
+                </div>
+            </a>
+
+            <!-- CTA block -->
+            <div class="dest-vcard-cta">
+                <p class="dest-vcard-cta__headline">Not sure which destination fits you?</p>
+                <a href="#final-contact-section" class="mobile-cta-primary">Get a personalized recommendation</a>
+            </div>
+
+        </div>
+
+        <!-- Mobile destinations CTA hidden -->
+        <div style="display:none!important;"></div>
+
+        <!-- Desktop CTA -->
+        <div class="hidden md:block mt-4 md:mt-24 text-center px-6 pb-2 md:pb-0">
+            <a href="#final-contact-section" class="cta-link">CONTACT US FOR MORE DESTINATIONS →</a>
+        </div>
+
+    </div>
+</section>
+<!-- ============================================================
+     DESTINATIONS POLISH END
+     ============================================================ -->
+
+<!-- ===== EMOTIONAL STATEMENT ===== -->
+<div class="block md:hidden bg-[#f8f6f2] px-6 py-6 text-center" style="margin-bottom: 30px;">
+    <div class="h-[1px] bg-[#a19273] opacity-20 mb-4 mx-auto w-10"></div>
+    <p class="font-serif italic text-[17px] leading-[1.65] text-[#1a1a1a] max-w-[370px] mx-auto">
+        "We don't just plan weddings.<br>We create experiences your guests </br> will never forget."    </p>
+    <div class="h-[1px] bg-[#a19273] opacity-20 mt-4 mx-auto w-10"></div>
+</div>
+
+<!-- DESKTOP VERSION -->
+<div class="hidden md:block bg-[#f8f6f2] py-24 text-center">
+    <div class="max-w-3xl mx-auto px-8">
+        <div class="h-[1px] bg-[#a19273] opacity-20 mb-10 mx-auto w-16"></div>
+        <p class="font-serif italic text-[26px] leading-[1.6] text-[#1a1a1a]" style="max-width: 700px; margin: 0 auto;">
+            "We don't just plan weddings.<br>We create experiences your guests will never forget."
+        </p>
+        <div class="h-[1px] bg-[#a19273] opacity-20 mt-10 mx-auto w-16"></div>
+    </div>
+</div>
+
+<!-- ===== CONTACT FORM ===== -->
+<!-- ===== FAQ ===== -->
+<div class="block md:hidden bg-white px-6 py-10 border-t border-gray-100">
+    <div class="flex items-center justify-center gap-5 mb-8">
+        <div class="h-[1px] w-8 bg-[#a19273] opacity-30"></div>
+        <h2 class="font-serif text-[18px] tracking-[0.2em] uppercase text-[#1a1a1a]">Questions</h2>
+        <div class="h-[1px] w-8 bg-[#a19273] opacity-30"></div>
+    </div>
+    <div id="faq-list" class="space-y-0">
+
+        <div class="faq-item border-b border-gray-100">
+            <button class="faq-q w-full text-left py-4 flex justify-between items-center" onclick="toggleFaq(this)">
+                <span class="font-serif text-[15px] text-[#1a1a1a] pr-4 leading-snug">Do you work with couples planning from abroad?</span>
+                <span class="faq-icon text-[#a19273] text-[18px] flex-shrink-0 transition-transform duration-300">+</span>
+            </button>
+            <div class="faq-a hidden pb-4">
+                <p style="font-size:13px !important;" class="text-gray-500 font-light leading-relaxed">Yes — most of our couples plan their wedding entirely remotely. We handle everything on the ground and keep you updated at every step. You'll feel like you're right here with us.</p>
+            </div>
+        </div>
+
+        <div class="faq-item border-b border-gray-100">
+            <button class="faq-q w-full text-left py-4 flex justify-between items-center" onclick="toggleFaq(this)">
+                <span class="font-serif text-[15px] text-[#1a1a1a] pr-4 leading-snug">What's included in your service?</span>
+                <span class="faq-icon text-[#a19273] text-[18px] flex-shrink-0 transition-transform duration-300">+</span>
+            </button>
+            <div class="faq-a hidden pb-4">
+                <p style="font-size:13px !important;" class="text-gray-500 font-light leading-relaxed">From venue sourcing and supplier coordination to guest logistics, accommodation, and on-site management — we cover everything from the first call to the last dance.</p>
+            </div>
+        </div>
+
+        <div class="faq-item border-b border-gray-100">
+            <button class="faq-q w-full text-left py-4 flex justify-between items-center" onclick="toggleFaq(this)">
+                <span class="font-serif text-[15px] text-[#1a1a1a] pr-4 leading-snug">Will someone from KAI be present on the wedding day?</span>
+                <span class="faq-icon text-[#a19273] text-[18px] flex-shrink-0 transition-transform duration-300">+</span>
+            </button>
+            <div class="faq-a hidden pb-4">
+                <p style="font-size:13px !important;" class="text-gray-500 font-light leading-relaxed">Always. One of our senior planners is physically on-site throughout your entire wedding day — managing every detail so you can be fully present and enjoy every moment.</p>
+            </div>
+        </div>
+
+        <div class="faq-item border-b border-gray-100">
+            <button class="faq-q w-full text-left py-4 flex justify-between items-center" onclick="toggleFaq(this)">
+                <span class="font-serif text-[15px] text-[#1a1a1a] pr-4 leading-snug">How far in advance should we start planning?</span>
+                <span class="faq-icon text-[#a19273] text-[18px] flex-shrink-0 transition-transform duration-300">+</span>
+            </button>
+            <div class="faq-a hidden pb-4">
+                <p style="font-size:13px !important;" class="text-gray-500 font-light leading-relaxed">For destination weddings we recommend 12–18 months in advance, especially for peak dates. That said, we've pulled off beautiful weddings in less time — reach out and we'll let you know what's possible.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-q w-full text-left py-4 flex justify-between items-center" onclick="toggleFaq(this)">
+                <span class="font-serif text-[15px] text-[#1a1a1a] pr-4 leading-snug">What destinations do you work in?</span>
+                <span class="faq-icon text-[#a19273] text-[18px] flex-shrink-0 transition-transform duration-300">+</span>
+            </button>
+            <div class="faq-a hidden pb-4">
+                <p style="font-size:13px !important;" class="text-gray-500 font-light leading-relaxed">We specialize in Greece, Cyprus, Italy, and France — but we plan weddings worldwide. If you have a dream destination in mind, we'll make it work.</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- DESKTOP FAQ -->
+<div class="hidden md:block bg-white py-20 border-t border-gray-100">
+    <div class="max-w-5xl mx-auto px-8">
+        <div class="flex items-center justify-center gap-5 mb-14">
+            <div class="h-[1px] w-10 bg-[#a19273] opacity-30"></div>
+            <h2 class="font-serif text-[28px] tracking-[0.2em] uppercase text-[#1a1a1a]">Questions</h2>
+            <div class="h-[1px] w-10 bg-[#a19273] opacity-30"></div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0 60px;">
+            <div>
+                <div style="border-bottom: 1px solid #f3f0ec;">
+                    <button class="faq-q w-full text-left py-5 flex justify-between items-center" onclick="toggleFaq(this)">
+                        <span class="font-serif text-[17px] text-[#1a1a1a] pr-4 leading-snug">Do you work with couples planning from abroad?</span>
+                        <span class="faq-icon text-[#a19273] text-[20px] flex-shrink-0">+</span>
+                    </button>
+                    <div class="faq-a hidden pb-5">
+                        <p class="text-gray-500 font-light leading-relaxed text-[14px]">Yes — most of our couples plan their wedding entirely remotely. We handle everything on the ground and keep you updated at every step. You'll feel like you're right here with us.</p>
+                    </div>
+                </div>
+                <div style="border-bottom: 1px solid #f3f0ec;">
+                    <button class="faq-q w-full text-left py-5 flex justify-between items-center" onclick="toggleFaq(this)">
+                        <span class="font-serif text-[17px] text-[#1a1a1a] pr-4 leading-snug">Will someone from KAI be present on the wedding day?</span>
+                        <span class="faq-icon text-[#a19273] text-[20px] flex-shrink-0">+</span>
+                    </button>
+                    <div class="faq-a hidden pb-5">
+                        <p class="text-gray-500 font-light leading-relaxed text-[14px]">Always. One of our senior planners is physically on-site throughout your entire wedding day — managing every detail so you can be fully present and enjoy every moment.</p>
+                    </div>
+                </div>
+                <div>
+                    <button class="faq-q w-full text-left py-5 flex justify-between items-center" onclick="toggleFaq(this)">
+                        <span class="font-serif text-[17px] text-[#1a1a1a] pr-4 leading-snug">What destinations do you work in?</span>
+                        <span class="faq-icon text-[#a19273] text-[20px] flex-shrink-0">+</span>
+                    </button>
+                    <div class="faq-a hidden pb-5">
+                        <p class="text-gray-500 font-light leading-relaxed text-[14px]">We specialize in Greece, Cyprus, Italy, and France — but we plan weddings worldwide. If you have a dream destination in mind, we'll make it work.</p>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div style="border-bottom: 1px solid #f3f0ec;">
+                    <button class="faq-q w-full text-left py-5 flex justify-between items-center" onclick="toggleFaq(this)">
+                        <span class="font-serif text-[17px] text-[#1a1a1a] pr-4 leading-snug">What's included in your service?</span>
+                        <span class="faq-icon text-[#a19273] text-[20px] flex-shrink-0">+</span>
+                    </button>
+                    <div class="faq-a hidden pb-5">
+                        <p class="text-gray-500 font-light leading-relaxed text-[14px]">From venue sourcing and supplier coordination to guest logistics, accommodation, and on-site management — we cover everything from the first call to the last dance.</p>
+                    </div>
+                </div>
+                <div>
+                    <button class="faq-q w-full text-left py-5 flex justify-between items-center" onclick="toggleFaq(this)">
+                        <span class="font-serif text-[17px] text-[#1a1a1a] pr-4 leading-snug">How far in advance should we start planning?</span>
+                        <span class="faq-icon text-[#a19273] text-[20px] flex-shrink-0">+</span>
+                    </button>
+                    <div class="faq-a hidden pb-5">
+                        <p class="text-gray-500 font-light leading-relaxed text-[14px]">For destination weddings we recommend 12–18 months in advance, especially for peak dates. That said, we've pulled off beautiful weddings in less time — reach out and we'll let you know what's possible.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section id="final-contact-section" class="relative min-h-[100vh] flex items-start md:items-center justify-center py-[70px] md:py-[120px] md:mt-[60px] overflow-hidden">
+    <div class="absolute inset-0 z-0">
+        <img src="pictures/contact/1.jpg" alt="Wedding Destination" class="w-full h-full object-cover object-center">
+        <div class="absolute inset-0 bg-black/25"></div>
+    </div>
+    <div class="relative z-10 w-full max-w-2xl px-4 md:px-6 reveal mt-4 md:mt-0">
+        <div class="bg-[#f8f6f2] py-[44px] md:py-[70px] px-[22px] md:px-[60px] shadow-[0_25px_70px_rgba(0,0,0,0.08)] rounded-[6px] text-center border border-white/40">
+
+            <p class="text-[10px] tracking-[4px] uppercase text-[#a19273] mb-3">Begin Your Journey</p>
+
+            <h2 class="font-serif text-[26px] md:text-[42px] text-[#1a1a1a] leading-[1.2] tracking-[-0.01em] mb-[10px] md:mb-[16px]">
+                Let's Plan Your Wedding
+            </h2>
+
+            <p class="font-sans text-[#888] text-[13px] md:text-[15px] leading-[1.7] mb-[24px] md:mb-[36px] font-light">
+                Tell us about your vision — we'll take it from there.
+            </p>
+
+            <form id="mainForm" class="space-y-[14px] md:space-y-[20px] mb-[24px] md:mb-[40px]">
+                <input type="hidden" name="_subject" value="New Wedding Lead">
+                <input type="text" name="name" placeholder="Full Name" autocomplete="name" required class="w-full bg-[#ffffff] border border-[#dcdcdc] py-[14px] md:py-[16px] px-[16px] md:px-[18px] rounded-[6px] text-[14px] text-[#1a1a1a] outline-none focus:border-[#000] transition-all duration-300 placeholder:text-[#999]">
+                <input type="email" name="email" placeholder="Email Address" autocomplete="email" required class="w-full bg-[#ffffff] border border-[#dcdcdc] py-[14px] md:py-[16px] px-[16px] md:px-[18px] rounded-[6px] text-[14px] text-[#1a1a1a] outline-none focus:border-[#000] transition-all duration-300 placeholder:text-[#999]">
+                <div style="position: relative;">
+                    <input type="tel" id="phone3" name="phone" placeholder="Phone Number (optional)" autocomplete="tel" class="w-full bg-[#ffffff] border border-[#dcdcdc] py-[14px] md:py-[16px] px-[16px] md:px-[18px] rounded-[6px] text-[14px] text-[#1a1a1a] outline-none focus:border-[#000] transition-all duration-300 placeholder:text-[#999]">
+                    <span style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 10px; color: #ccc; letter-spacing: 0.5px; pointer-events: none;">optional</span>
+                </div>
+                <div class="text-left">
+                    <label class="flex items-start gap-2 cursor-pointer">
+                        <input type="checkbox" name="consent" required class="mt-1 accent-[#a19273]">
+                        <span class="text-[11px] md:text-[12px] text-[#888] font-light leading-[1.6]">
+                            I agree to the use of my details for contact and updates in accordance with the
+                            <a href="privacy-policy.html" target="_blank" class="underline text-[#a19273] hover:text-[#000] transition-all">Privacy Policy</a>.
+                        </span>
+                    </label>
+                </div>
+                <div class="pt-[4px] md:pt-[10px]">
+                    <button type="submit" class="cta-button w-full md:w-auto !text-[12px] !py-[16px] !px-[28px]">
+                        Start Planning My Wedding
+                    </button>
+                    <p style="font-size:11px !important;" class="text-gray-400 mt-3">We respond within 24 hours · No obligation</p>
+                </div>
+            </form>
+
+            <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+            document.getElementById('mainForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const data = new FormData(this);
+                await fetch('https://formspree.io/f/mgopvjoy', {
+                    method: 'POST',
+                    body: data,
+                    headers: { 'Accept': 'application/json' }
+                });
+                window.location.href = 'thank-you.html';
+            });
+            </script>
+
+            <div class="flex flex-col md:flex-row justify-center items-center gap-[10px] md:gap-[30px] mb-[22px] md:mb-[40px] text-[11px] md:text-[13px] text-[#555] font-medium">
+                <span class="flex items-center gap-2"><span class="text-[#a19273]">✓</span> Personally reviewed</span>
+                <span class="flex items-center gap-2"><span class="text-[#a19273]">✓</span> Response within 24 hours</span>
+            </div>
+
+            <div class="h-[1px] bg-[#eaeaea] w-full mb-[18px] md:mb-[25px]"></div>
+            <p class="text-[14px] md:text-[15px] text-[#888] mb-4 font-light italic">Prefer to reach out directly?</p>
+            <div class="flex justify-center gap-[28px]">
+                <a href="https://instagram.com/kai_wedding_planners" target="_blank" class="text-[#a19273] hover:text-[#000] transition-all">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+                </a>
+                <a href="https://wa.me/972528344374?text=Hi%2C%20I%27m%20interested%20in%20planning%20a%20destination%20wedding%20with%20KAI%20Planners" target="_blank" class="text-[#a19273] hover:text-[#000] transition-all">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.532 5.862L.057 23.428a.5.5 0 00.609.61l5.7-1.495A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.9a9.9 9.9 0 01-5.031-1.371l-.36-.214-3.733.979.999-3.648-.235-.374A9.861 9.861 0 012.1 12C2.1 6.533 6.533 2.1 12 2.1c5.467 0 9.9 4.433 9.9 9.9 0 5.467-4.433 9.9-9.9 9.9z"/></svg>
+                </a>
+                <a href="/cdn-cgi/l/email-protection#335b475d5c525e73545e525a5f1d505c5e" class="text-[#a19273] hover:text-[#000] transition-all">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ===== WHATSAPP STICKY (MOBILE) ===== -->
+<div class="block md:hidden" id="wa-sticky" style="position: fixed; bottom: 24px; left: 24px; z-index: 900; opacity: 0; transform: translateY(20px); pointer-events: none;">
+    <a href="https://wa.me/972528344374?text=Hi%2C%20I%27m%20interested%20in%20planning%20a%20destination%20wedding%20with%20KAI%20Planners" target="_blank"
+       style="display: flex; align-items: center; justify-content: center; width: 54px; height: 54px; background: #25d366; border-radius: 50%; box-shadow: 0 4px 20px rgba(37,211,102,0.4); text-decoration: none; position: relative;">
+        <div style="position:absolute;inset:0;border-radius:50%;background:#25d366;animation:wa-wave1 2.5s ease-out infinite;z-index:-1;"></div>
+        <div style="position:absolute;inset:0;border-radius:50%;background:#25d366;animation:wa-wave2 2.5s ease-out infinite 0.6s;z-index:-1;"></div>
+        <svg viewBox="0 0 448 512" width="24" height="24" fill="white"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-5.5-2.8-23.2-8.5-44.2-27.1-16.4-14.6-27.4-32.6-30.6-38.1-3.2-5.6-.3-8.6 2.5-11.4 2.5-2.5 5.5-6.5 8.3-9.7 2.8-3.3 3.7-5.6 5.6-9.3 1.9-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 13.2 5.8 23.5 9.2 31.5 11.8 13.3 4.2 25.4 3.6 35 2.2 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+    </a>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+    <button onclick="closeLightbox()" style="position:absolute; top:20px; right:20px; background:none; border:none; color:white; font-size:28px; cursor:pointer; line-height:1; opacity:0.8;">✕</button>
+    <button onclick="lightboxNav(-1)" style="position:absolute; left:16px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.15); border:none; color:white; font-size:24px; cursor:pointer; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center;">‹</button>
+    <img id="lightbox-img" src="" style="max-width:100%; max-height:90vh; object-fit:contain; border-radius:6px;">
+    <button onclick="lightboxNav(1)" style="position:absolute; right:16px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.15); border:none; color:white; font-size:24px; cursor:pointer; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center;">›</button>
+</div>
+
+<!-- FAQ JS -->
+<script>
+function toggleFaq(btn) {
+    const answer = btn.nextElementSibling;
+    const icon = btn.querySelector('.faq-icon');
+    const isOpen = !answer.classList.contains('hidden');
+    document.querySelectorAll('.faq-a').forEach(a => a.classList.add('hidden'));
+    document.querySelectorAll('.faq-icon').forEach(i => { i.textContent = '+'; i.style.transform = 'rotate(0deg)'; });
+    if (!isOpen) {
+        answer.classList.remove('hidden');
+        icon.textContent = '×';
+        icon.style.transform = 'rotate(90deg)';
+    }
+}
+</script>
+
+<!-- ===== FOOTER ===== -->
+<footer id="footer" class="py-8 bg-white border-t border-gray-100 text-center">
+    <div class="max-w-6xl mx-auto px-8 flex flex-col items-center">
+
+        <img src="logo/logo_clear.png" alt="KAI Logo" class="h-12 md:h-20 object-contain mb-4 opacity-90">
+
+        <div class="text-[10px] tracking-[2.5px] uppercase text-gray-400">
+            © 2026 KAI LUXURY WEDDING PLANNERS. ALL RIGHTS RESERVED.
+        </div>
+
+    </div>
+</footer>
+
+<!-- ===== DESKTOP HEADER STYLES ===== -->
+<style>
+    .header {
+        position: fixed;
+        background: #f5f3ef;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        z-index: 999;
+        transition: background 0.3s ease, backdrop-filter 0.3s ease;
+    }
+
+    .header .menu-toggle,
+    .header .header-cta {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .logo-main {
+        position: absolute;
+        top: 60%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-family: 'Playfair Display', serif;
+        text-align: center;
+        transition: opacity 0.3s ease;
+    }
+
+/* שורה ראשונה */
+.mob-logo-center .logo-line-1 {
+        display: block;
+        font-family: serif;
+        font-size: 15px;
+        font-weight: 400;
+        letter-spacing: 1px;
+        white-space: nowrap;
+        color: #1a1a1a;
+        text-transform: uppercase;
+    }
+
+/* שורה שנייה */
+.mob-logo-center .logo-line-2 {
+        display: block;
+        font-family: serif;
+        font-size: 12.5px;
+        font-weight: 400 !important;
+        font-style: normal !important;
+            font-variant-ligatures: common-ligatures;
+    font-feature-settings: "liga" 1, "clig" 1;
+        letter-spacing: 0.7px;
+        margin-top: 2px;
+        color: rgba(26,26,26,0.65);
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .header.scrolled {
+        height: 50px;
+        background: #f5f3ef;
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .menu-toggle,
+    .header-cta {
+        transition: all 0.3s ease;
+    }
+
+    .header.scrolled .menu-toggle,
+    .header.scrolled .header-cta {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+        transition-delay: 0.15s;
+    }
+
+    .header.scrolled .logo-main {
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.2s ease;
+    }
+
+    /* Desktop — hide logo on scroll, show hamburger+CTA always */
+    @media (min-width: 769px) {
+        header#main-header.scrolled .mob-logo-center {
+            opacity: 0;
+            pointer-events: none;
+        }
+    }
+
+    .header-cta {
+        font-size: 11px;
+        padding: 6px 12px;
+        background: rgba(181,168,139,0.85);
+        color: white;
+        border-radius: 3px;
+        text-decoration: none;
+        letter-spacing: 1.2px;
+        transition: all 0.25s ease;
+    }
+
+    .menu-toggle {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        cursor: pointer;
+    }
+
+    .menu-toggle span {
+        width: 18px;
+        height: 2px;
+        background: #1a1a1a;
+    }
+
+    @media (min-width: 769px) {
+        header#main-header {
+            display: grid !important;
+            grid-template-columns: 1fr auto 1fr !important;
+            align-items: center !important;
+            height: 60px !important;
+            padding: 0 28px !important;
+            background: #f5f3ef !important;
+            backdrop-filter: none !important;
+            border-bottom: 1px solid rgba(0,0,0,0.06) !important;
+        }
+
+        header#main-header.scrolled {
+            height: 60px !important;
+            background: #f5f3ef !important;
+            backdrop-filter: blur(12px) !important;
+            border-bottom: 1px solid rgba(0,0,0,0.07) !important;
+        }
+
+        /* עמודה שמאל — המבורגר */
+        header#main-header .mob-hamburger {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            gap: 4px !important;
+            width: 32px !important;
+            height: 32px !important;
+            background: none !important;
+            border: none !important;
+            cursor: pointer !important;
+            padding: 0 !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+            transform: none !important;
+            transition-delay: 0s !important;
+            justify-self: start !important;
+        }
+
+        header#main-header .mob-hamburger span {
+            display: block !important;
+            width: 18px !important;
+            height: 2px !important;
+            background: #1a1a1a !important;
+            border-radius: 2px !important;
+        }
+
+        /* עמודה אמצע — לוגו */
+        header#main-header .mob-logo-center {
+            display: block !important;
+            position: static !important;
+            transform: none !important;
+            top: auto !important;
+            left: auto !important;
+            text-align: center !important;
+            opacity: 1 !important;
+            pointer-events: none !important;
+            justify-self: center !important;
+        }
+
+        header#main-header.scrolled .mob-logo-center {
+            opacity: 1 !important;
+        }
+
+        /* עמודה ימין — CTA */
+        header#main-header .mob-header-cta {
+            display: block !important;
+            font-size: 11px !important;
+            letter-spacing: 1.5px !important;
+            padding: 8px 18px !important;
+            background: rgba(161,146,115,0.9) !important;
+            color: white !important;
+            border-radius: 3px !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+            transform: none !important;
+            transition: background 0.25s ease !important;
+            transition-delay: 0s !important;
+            justify-self: end !important;
+            white-space: nowrap !important;
+        }
+
+        header#main-header .mob-header-cta:hover {
+            background: #8e7f5e !important;
+        }
+
+        .logo-main,
+        .header-cta { display: none !important; }
+    }
+
+    @media (min-width: 769px) {
+        #footer { padding-bottom: 32px !important; }
+    }
+
+    @media (max-width: 768px) {
+        #footer { padding-bottom: 32px !important; }
+        .logo-main,
+        .header-cta { display: none !important; }
+    }
+</style>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.10/build/js/intlTelInput.min.js"></script>
+<script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    const header = document.getElementById('main-header');
+    const waSticky = document.getElementById('wa-sticky');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) header.classList.add('scrolled');
+        else header.classList.remove('scrolled');
+
+        // Show WhatsApp sticky when services section is reached
+        if (waSticky) {
+            const trigger = document.getElementById('services');
+            const threshold = document.body.scrollHeight * 0.05;
+            waSticky.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            if (window.scrollY > threshold) {
+                waSticky.style.opacity = '1';
+                waSticky.style.transform = 'translateY(0)';
+                waSticky.style.pointerEvents = 'auto';
+            } else {
+                waSticky.style.opacity = '0';
+                waSticky.style.transform = 'translateY(20px)';
+                waSticky.style.pointerEvents = 'none';
+            }
+        }
+    });
+
+    function initIntlTel() {
+        const phoneIds = ['phone1', 'phone2', 'phone3'];
+        phoneIds.forEach(id => {
+            const input = document.querySelector("#" + id);
+            if (input) {
+                window.intlTelInput(input, {
+                    initialCountry: "auto",
+                    separateDialCode: true,
+                    geoIpLookup: function(callback) {
+                        fetch("https://ipapi.co/json").then(res => res.json()).then(data => callback(data.country_code)).catch(() => callback("us"));
+                    },
+                    utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.10/build/js/utils.js"
+                });
+            }
+        });
+    }
+    initIntlTel();
+
+    const form = document.getElementById("mainForm");
+    const overlay = document.getElementById("successOverlay");
+    const box = document.getElementById("successBox");
+
+    if (form) {
+        form.addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const data = new FormData(form);
+            try {
+                await fetch('https://formspree.io/f/mgopvjoy', { method: "POST", body: data, headers: { 'Accept': 'application/json' } });
+            } catch (error) {}
+            window.location.href = 'thank-you.html';
+        });
+    }
+
+    document.querySelectorAll('a[href="#final-contact-section"]').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('final-contact-section').scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+    // ── Visual Break entrance animations ──────────────────────────────
+    const vbObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('vb-entered');
+                vbObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('[data-vb]').forEach(el => vbObserver.observe(el));
+
+    // ============================================================
+    // HAMBURGER FIX START — Mobile side drawer JS
+    // ============================================================
+    const mobHamburger = document.getElementById('mobHamburger');
+    const mobDrawerPanel = document.getElementById('mobDrawerPanel');
+    const mobDrawerBackdrop = document.getElementById('mobDrawerBackdrop');
+
+    function openMobMenu() {
+        mobHamburger.classList.add('open');
+        mobDrawerPanel.classList.add('open');
+        mobDrawerBackdrop.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        document.getElementById("mobDrawerNav").style.opacity = "1";
+document.getElementById("mobDrawerNav").style.transform = "translateY(0)";
+    }
+
+    function closeMobMenu() {
+        mobHamburger.classList.remove('open');
+        mobDrawerPanel.classList.remove('open');
+        mobDrawerBackdrop.classList.remove('open');
+        document.body.style.overflow = '';
+        document.getElementById("mobDrawerNav").style.opacity = "0";
+document.getElementById("mobDrawerNav").style.transform = "translateY(10px)";
+    }
+
+    window.closeMobMenu = closeMobMenu;
+
+    if (mobHamburger) {
+        mobHamburger.addEventListener('click', function() {
+            if (mobDrawerPanel.classList.contains('open')) {
+                closeMobMenu();
+            } else {
+                openMobMenu();
+            }
+        });
+    }
+
+    if (mobDrawerBackdrop) {
+        mobDrawerBackdrop.addEventListener('click', function() {
+            closeMobMenu();
+        });
+    }
+
+    // Smooth scroll for drawer menu items
+    document.querySelectorAll('.mob-menu-item').forEach(link => {
+        link.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                e.preventDefault();
+                closeMobMenu();
+                setTimeout(() => {
+                    const target = document.querySelector(href);
+                    if (target) target.scrollIntoView({ behavior: 'smooth' });
+                }, 350);
+            }
+        });
+    });
+    // LIGHTBOX
+    let galleryImages = [];
+    let currentIndex = 0;
+
+    function buildGalleryList() {
+        galleryImages = Array.from(document.querySelectorAll('#gallery img')).map(img => img.src);
+    }
+
+    function openLightbox(src) {
+        buildGalleryList();
+        currentIndex = galleryImages.indexOf(src);
+        document.getElementById('lightbox-img').src = src;
+        document.getElementById('lightbox').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function lightboxNav(dir) {
+        currentIndex = (currentIndex + dir + galleryImages.length) % galleryImages.length;
+        document.getElementById('lightbox-img').src = galleryImages[currentIndex];
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightbox').style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    document.getElementById('lightbox').addEventListener('click', function(e) {
+        if (e.target === this) closeLightbox();
+    });
+
+    // Swipe support
+    let touchStartX = 0;
+    document.getElementById('lightbox').addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+    document.getElementById('lightbox').addEventListener('touchend', e => {
+        const diff = touchStartX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 50) lightboxNav(diff > 0 ? 1 : -1);
+    });
+
+    // ============================================================
+    // HAMBURGER FIX END
+    // ============================================================
+    document.querySelectorAll('#gallery img').forEach(img => {
+        img.style.cursor = 'pointer';
+        img.addEventListener('click', function() {
+            openLightbox(this.src);
+        });
+    });
+
+    // Make trio-grid images clickable for lightbox
+    document.querySelectorAll('.trio-grid img').forEach(img => {
+        img.style.cursor = 'pointer';
+        img.addEventListener('click', function() {
+            buildGalleryList();
+            // Add trio images to gallery list if not already there
+            const trioSrcs = Array.from(document.querySelectorAll('.trio-grid img')).map(i => i.src);
+            const allSrcs = [...new Set([...galleryImages, ...trioSrcs])];
+            galleryImages = allSrcs;
+            currentIndex = galleryImages.indexOf(this.src);
+            document.getElementById('lightbox-img').src = this.src;
+            document.getElementById('lightbox').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        });
+    });
+</script>
+
+<script>
+window.closeSuccessModal = function () {
+    const overlay = document.getElementById("successOverlay");
+    const box = document.getElementById("successBox");
+    overlay.classList.add("opacity-0", "pointer-events-none");
+    box.
