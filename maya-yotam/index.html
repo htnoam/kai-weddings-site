@@ -176,9 +176,10 @@ footer p { margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1
       <p style="margin: 0; font-size: 13px; line-height: 1.5; color: var(--soft); text-wrap: balance;">מידע על טיסות מומלצות בקבוצת הווטסאפ הייעודית שתפתח בקרוב</p>
     </div>
     <div class="two">
-      <div class="field"><label class="lbl" for="first">שם פרטי</label><input id="first" type="text" autocomplete="given-name"></div>
-      <div class="field"><label class="lbl" for="last">שם משפחה</label><input id="last" type="text" autocomplete="family-name"></div>
+      <div class="field"><label class="lbl" for="first">שם פרטי</label><input id="first" type="text" autocomplete="given-name" placeholder="Dana"></div>
+      <div class="field"><label class="lbl" for="last">שם משפחה</label><input id="last" type="text" autocomplete="family-name" placeholder="Levi"></div>
     </div>
+    <p style="margin: -12px 0 0; font-size: 13px; color: var(--soft);">נא למלא את השמות באנגלית</p>
     <div class="field"><label class="lbl" for="phone">טלפון (וואטסאפ)</label><input id="phone" type="tel" dir="ltr" autocomplete="tel" placeholder="050-0000000"></div>
 
     <div class="field">
@@ -248,8 +249,8 @@ footer p { margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1
       card.innerHTML =
         '<div class="comp-title">אורח ' + n + '</div>' +
         '<div class="two">' +
-          '<div class="field"><label class="lbl" for="cf' + n + '">שם פרטי</label><input class="cf" id="cf' + n + '" type="text"></div>' +
-          '<div class="field"><label class="lbl" for="cl' + n + '">שם משפחה</label><input class="cl" id="cl' + n + '" type="text"></div>' +
+          '<div class="field"><label class="lbl" for="cf' + n + '">שם פרטי</label><input class="cf" id="cf' + n + '" type="text" placeholder="First name"></div>' +
+          '<div class="field"><label class="lbl" for="cl' + n + '">שם משפחה</label><input class="cl" id="cl' + n + '" type="text" placeholder="Last name"></div>' +
         '</div>' +
         '<div class="seg" role="group" aria-label="גיל אורח ' + n + '">' +
           TYPES.map(function (t) {
@@ -280,6 +281,8 @@ footer p { margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1
   $('rsvp').addEventListener('submit', function (e) {
     e.preventDefault();
     if (!$('first').value.trim() || !$('last').value.trim()) { $('err').textContent = 'נא למלא שם פרטי ושם משפחה.'; $('err').hidden = false; $('first').focus(); return; }
+    var heb = [].slice.call(document.querySelectorAll(attend === 'no' ? '#first, #last' : '#first, #last, #comp-list .cf, #comp-list .cl')).filter(function (el) { return /[֐-׿]/.test(el.value); });
+    if (heb.length) { $('err').textContent = 'נא לכתוב את השמות באנגלית.'; $('err').hidden = false; heb[0].focus(); return; }
     $('err').hidden = true;
     saveComp();
     var companions = [];
