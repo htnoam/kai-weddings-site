@@ -7,9 +7,9 @@
 <title>Guest List</title>
 </head>
 <body style="margin:0;background:#F4F2EE">
-<!-- Admin entry: loads the guest screen from the folder above, so there is only one copy to maintain. -->
+<!-- Loads the shared page from /app so every event uses the same code. -->
 <script>
-fetch('../', { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (html) { document.open(); document.write(html); document.close(); });
+fetch('/app/manage.html', { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (html) { document.open(); document.write(html); document.close(); });
 </script>
 </body>
 </html>

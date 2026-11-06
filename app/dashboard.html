@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>KAI Events</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Cormorant+Garamond:wght@600&display=swap">
+<style>
+/* Events dashboard: one row per event, with counts and links. Same look as the guest screen. */
+:root {
+  --bg: #F4F2EE; --surface: #FFFFFF; --soft-surface: #FAF9F6;
+  --ink: #2E3A9E; --ink-dark: #232D80; --ink-soft: #F0F1FA;
+  --text: #1F1F21; --muted: #4A4A50; --soft: #6E6E75;
+  --line: #D6D4CE; --hair: #E4E1DA;
+  --ok: #2F6B2F; --ok-bg: #E3EEDF; --warn: #8A5A12; --tent: #2E3A9E; --bad: #9B2C2C;
+  --sans: 'Assistant', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.4 var(--sans); }
+[hidden] { display: none !important; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.top { background: var(--surface); border-bottom: 1px solid var(--hair); }
+.top-in { padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.brand { font: 600 24px/1 var(--serif); color: var(--ink); }
+.btn { height: 32px; padding: 0 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); font-weight: 500; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; text-decoration: none; color: var(--text); font-size: 13.5px; }
+.btn:hover { background: var(--soft-surface); }
+.btn.primary { background: var(--ink); border-color: var(--ink); color: #FFFFFF; font-weight: 600; }
+.btn.primary:hover { background: var(--ink-dark); }
+.btn.sm { height: 26px; padding: 0 8px; font-size: 12.5px; }
+.wrap { padding: 12px 16px 40px; }
+.gate { background: var(--surface); border: 1px solid var(--hair); border-radius: 6px; padding: 32px 20px; text-align: center; color: var(--muted); }
+.tablewrap { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 1100px; font-size: 13.5px; }
+th { text-align: left; font-size: 12.5px; font-weight: 600; color: var(--muted); background: #F1EFEA; border-bottom: 1px solid var(--line); border-right: 1px solid var(--hair); padding: 7px 10px; white-space: nowrap; }
+td { border-bottom: 1px solid var(--hair); border-right: 1px solid var(--hair); padding: 6px 10px; vertical-align: middle; white-space: nowrap; }
+th:last-child, td:last-child { border-right: none; }
+tbody tr:hover td { background: #F8F7F3; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.couple { font-weight: 700; font-size: 14.5px; }
+.sub { color: var(--soft); font-size: 12.5px; }
+.c-ok { color: var(--ok); font-weight: 700; } .c-tent { color: var(--tent); font-weight: 600; } .c-warn { color: var(--warn); font-weight: 600; } .c-bad { color: var(--bad); font-weight: 600; }
+.links { display: flex; gap: 4px; flex-wrap: nowrap; }
+.empty { padding: 28px; text-align: center; color: var(--soft); }
+.overlay { position: fixed; inset: 0; z-index: 60; background: rgba(31,31,33,.45); display: flex; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 64px 16px 24px; }
+.dialog { width: 100%; max-width: 460px; background: #FFFFFF; border-radius: 8px; padding: 22px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 30px 60px -20px rgba(0,0,0,.4); }
+.dialog h2 { margin: 0; font-size: 19px; }
+.f { display: flex; flex-direction: column; gap: 3px; font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.f input { height: 36px; border: 1px solid var(--line); border-radius: 4px; padding: 0 10px; font-size: 14.5px; font-weight: 400; color: var(--text); }
+.hint { font-size: 12.5px; color: var(--soft); }
+.hint b { color: var(--ink); font-weight: 600; }
+.err { margin: 0; color: var(--bad); font-size: 13.5px; }
+.act { display: flex; gap: 8px; justify-content: flex-end; }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 24px; z-index: 70; background: var(--text); color: #FFFFFF; border-radius: 6px; padding: 10px 16px; font-size: 14px; max-width: calc(100% - 32px); }
+.toast.bad { background: var(--bad); }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <span class="brand">KAI Events</span>
+    <div style="display:flex;gap:8px">
+      <button type="button" class="btn" id="refresh">Refresh</button>
+      <button type="button" class="btn primary" id="new">+ New Event</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="gate" id="gate">Loading events…</div>
+  <div class="tablewrap" id="list" hidden>
+    <table>
+      <thead><tr>
+        <th>Event</th><th>Date</th><th>Location</th>
+        <th class="num">Guests</th><th class="num">Confirmed</th><th class="num">Adults</th><th class="num">Children</th><th class="num">Babies</th>
+        <th class="num">Tentative</th><th class="num">Pending</th><th class="num">Declined</th>
+        <th>Open</th><th>Copy link</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div class="empty" id="empty" hidden>No events yet. Click “+ New Event” to open the first one.</div>
+  </div>
+</main>
+
+<div class="overlay" id="dlg" hidden>
+  <form class="dialog" id="form" role="dialog" aria-modal="true" aria-labelledby="dlg-title" novalidate>
+    <h2 id="dlg-title">New Event</h2>
+    <label class="f">Couple names (in English) *<input id="n-couple" placeholder="e.g. Dana & Omer" autocomplete="off"></label>
+    <div class="hint">Links will be: <b id="n-link">weddings.kaiwedd.com/…</b></div>
+    <label class="f">Wedding date<input id="n-date" type="date"></label>
+    <label class="f">Location<input id="n-place" placeholder="e.g. Limassol, Cyprus" autocomplete="off"></label>
+    <p class="hint" style="margin:0">A folder and a guest sheet will be created in Drive › KAI EVENTS.</p>
+    <p class="err" id="n-err" hidden></p>
+    <div class="act">
+      <button type="button" class="btn" id="n-cancel">Cancel</button>
+      <button type="submit" class="btn primary" id="n-save">Create Event</button>
+    </div>
+  </form>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function () {
+  'use strict';
+  var API = 'https://script.google.com/macros/s/AKfycbwu6hLPWCdnjcX8NVWjCHjQHNrP5Tjj-lx76JgHN7OEfZYDx30dP0FAJVVAbL3s06WQ/exec';
+  var KEY = 'htnoam23';
+  var SITE = 'https://weddings.kaiwedd.com/';
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var EVENTS = [];
+
+  function api(action, data) {
+    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ action: action, k: KEY }, data || {})) })
+      .then(function (r) { return r.json(); })
+      .then(function (res) { if (!res.ok) { var e = new Error(res.error || 'Something went wrong.'); e.server = true; throw e; } return res; });
+  }
+  function toast(msg, bad) { var t = $('toast'); clearTimeout(toast.t); t.className = 'toast' + (bad ? ' bad' : ''); t.textContent = msg; t.hidden = false; toast.t = setTimeout(function () { t.hidden = true; }, 3500); }
+  function slugify(s) { return String(s || '').toLowerCase().replace(/&/g, ' ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40); }
+  function fmtDate(d) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d || ''); if (!m) return d || '';
+    return Number(m[3]) + ' ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][Number(m[2]) - 1] + ' ' + m[1];
+  }
+
+  function load() {
+    $('gate').hidden = false; $('gate').textContent = 'Loading events…';
+    return api('events').then(function (res) { EVENTS = res.events; render(); })
+      .catch(function (e) { $('gate').textContent = e.server ? e.message : 'Couldn’t load the events. Check your connection and click Refresh.'; });
+  }
+  function render() {
+    $('gate').hidden = true; $('list').hidden = false;
+    $('empty').hidden = EVENTS.length > 0;
+    $('rows').innerHTML = EVENTS.map(function (ev) {
+      var c = ev.counts || {}, n = function (v, cls) { return '<td class="num' + '"><span class="' + (v ? cls : 'sub') + '">' + (v == null ? '—' : v) + '</span></td>'; };
+      return '<tr>' +
+        '<td><div class="couple">' + esc(ev.couple) + '</div><div class="sub">/' + esc(ev.slug) + (ev.error ? ' · ' + esc(ev.error) : '') + '</div></td>' +
+        '<td>' + esc(fmtDate(ev.date)) + '</td><td>' + esc(ev.place) + '</td>' +
+        n(c.total, '') + n(c.Confirmed, 'c-ok') + n(c.adults, '') + n(c.children, '') + n(c.babies, '') +
+        n(c.Tentative, 'c-tent') + n(c.Pending, 'c-warn') + n(c.Declined, 'c-bad') +
+        '<td><div class="links">' +
+          '<a class="btn sm primary" href="/' + esc(ev.slug) + '/manage/htnoam23" target="_blank" rel="noopener">Guest list</a>' +
+          '<a class="btn sm" href="/' + esc(ev.slug) + '" target="_blank" rel="noopener">RSVP</a>' +
+          '<a class="btn sm" href="' + esc(ev.sheetUrl) + '" target="_blank" rel="noopener">Sheet</a>' +
+          (ev.folderUrl ? '<a class="btn sm" href="' + esc(ev.folderUrl) + '" target="_blank" rel="noopener">Folder</a>' : '') +
+        '</div></td>' +
+        '<td><div class="links">' +
+          '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug + '/manage') + '">Couple’s list</button>' +
+          '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug) + '">RSVP</button>' +
+        '</div></td></tr>';
+    }).join('');
+  }
+  $('rows').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-copy]'); if (!b) return;
+    var text = b.dataset.copy, done = function () { toast('Copied ' + text); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () { prompt('Copy this link:', text); });
+    else prompt('Copy this link:', text);
+  });
+
+  // ---------- new event ----------
+  function openNew() { ['n-couple', 'n-date', 'n-place'].forEach(function (id) { $(id).value = ''; }); $('n-link').textContent = 'weddings.kaiwedd.com/…'; $('n-err').hidden = true; $('dlg').hidden = false; $('n-couple').focus(); }
+  $('n-couple').addEventListener('input', function () { var s = slugify(this.value); $('n-link').textContent = 'weddings.kaiwedd.com/' + (s || '…'); });
+  $('form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var f = { couple: $('n-couple').value.trim(), date: $('n-date').value, place: $('n-place').value.trim() };
+    var err = !f.couple ? 'Write the couple’s names.' : /[֐-׿]/.test(f.couple) ? 'Write the names in English. They become the link.' : !slugify(f.couple) ? 'Write the names in English letters.' : '';
+    if (err) { $('n-err').textContent = err; $('n-err').hidden = false; return; }
+    $('n-save').disabled = true; $('n-save').textContent = 'Creating…'; $('n-err').hidden = true;
+    api('createEvent', { event: f }).then(function (res) {
+      $('dlg').hidden = true; toast('Created ' + res.event.couple + ' · weddings.kaiwedd.com/' + res.event.slug); load();
+    }).catch(function (x) { $('n-err').textContent = x.server ? x.message : 'Couldn’t create the event. Try again.'; $('n-err').hidden = false; })
+      .then(function () { $('n-save').disabled = false; $('n-save').textContent = 'Create Event'; });
+  });
+  $('n-cancel').addEventListener('click', function () { $('dlg').hidden = true; });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') $('dlg').hidden = true; });
+  $('new').addEventListener('click', openNew);
+  $('refresh').addEventListener('click', load);
+  load();
+})();
+</script>
+</body>
+</html>
