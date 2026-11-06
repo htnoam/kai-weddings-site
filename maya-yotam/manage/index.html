@@ -170,12 +170,84 @@ input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--ink); marg
 .toast.bad { background: var(--bad); }
 .toast button { border: none; background: transparent; color: #C9CEF5; font-weight: 700; padding: 4px 6px; }
 @media (prefers-reduced-motion: no-preference) { .menu, .toast { animation: pop .12s ease-out; } @keyframes pop { from { opacity: 0; transform: translateY(4px); } } .toast { animation: none; } }
+
+/* ===== Dense workspace layout (preview) ===== */
+.top-in, .wrap { max-width: none; }
+.top-in { padding: 6px 12px !important; gap: 10px 16px; }
+.couple { font-size: 21px; }
+.when { font-size: 13px; }
+.me { font-size: 13px; gap: 10px; }
+.me .btn { height: 28px; padding: 0 10px; font-size: 13px; }
+.top .stats { display: flex; gap: 4px; flex: 1 1 auto; justify-content: center; }
+.top .stat { flex-direction: row; align-items: baseline; gap: 6px; padding: 3px 10px; border-radius: 4px; background: var(--soft-surface); }
+.top .stat .v { font-size: 16px; order: 0; }
+.top .stat .k { font-size: 11px; letter-spacing: .03em; }
+.top .stat.total { background: var(--ink); }
+.wrap { padding: 8px 12px 12px !important; gap: 6px; }
+#app { gap: 6px !important; }
+.toolbar { gap: 6px; }
+.btn { height: 30px; padding: 0 10px; font-size: 13.5px; border-radius: 4px; }
+.search { flex: 0 1 260px; height: 30px; border-radius: 4px; padding: 0 10px; font-size: 13.5px; }
+.sel { height: 30px; border-radius: 4px; font-size: 13.5px; padding: 0 4px; }
+.subbar { min-height: 28px; font-size: 13px; }
+.bulk { padding: 2px 4px 2px 10px; font-size: 13px; }
+.bulk button { height: 24px; font-size: 13px; padding: 0 10px; }
+
+@media (min-width: 760px) {
+  html, body { height: 100%; }
+  body { display: flex; flex-direction: column; }
+  .wrap { flex: 1 1 auto; min-height: 0; width: 100%; }
+  #app:not([hidden]) { flex: 1 1 auto; min-height: 0; }
+  .layout { flex: 1 1 auto; min-height: 0; }
+  .tablewrap { max-height: 100%; overflow: auto; }
+}
+.tablewrap { border-radius: 4px; border-color: var(--line); }
+table { border-collapse: separate; border-spacing: 0; table-layout: fixed; min-width: 1000px; font-size: 13.5px; }
+th { position: sticky; top: 0; z-index: 2; background: #F1EFEA; color: var(--muted); font-size: 12.5px; border-bottom: 1px solid var(--line); border-right: 1px solid var(--hair); }
+th button { padding: 6px 8px; overflow: hidden; text-overflow: ellipsis; }
+th.chk, td.chk { width: 34px; padding: 0; text-align: center; }
+th[data-k="no"] { width: 76px; } th[data-k="first"] { width: 120px; } th[data-k="last"] { width: 140px; }
+th[data-k="group"] { width: 180px; } th[data-k="age"] { width: 80px; } th[data-k="status"] { width: 112px; }
+th[data-k="phone"] { width: 168px; } th.mo { width: 34px !important; border-right: none; }
+td { border-bottom: 1px solid var(--hair); border-right: 1px solid var(--hair); }
+td:last-child { border-right: none; }
+tr:last-child td { border-bottom: 1px solid var(--hair); }
+td .c { display: block; padding: 0 8px; min-height: 0; height: 29px; line-height: 29px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+td.num .c { text-align: right; padding-right: 10px; }
+td[data-k="first"] b { font-weight: 600; }
+tbody tr[data-no]:hover td { background: #F8F7F3; }
+td.ed:hover { background: #EFEEE8 !important; }
+tr.sel-row td { background: #EEF0FA; }
+tr.open-row td { background: var(--ink-soft); }
+tr.grp td { padding: 4px 8px; font-size: 12.5px; background: #F6F5F1; border-right: none; }
+td input.cell, td select.cell { height: 29px; border-radius: 0; padding: 0 6px; min-width: 0; display: block; }
+td:has(.cell) .c { padding: 0; }
+input[type=checkbox] { width: 15px; height: 15px; vertical-align: middle; }
+.pill { background: none !important; padding: 0; font-weight: 600; font-size: inherit; }
+.pill::before { content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: currentColor; margin-right: 6px; vertical-align: 1px; }
+td .wa { width: 22px; height: 22px; vertical-align: middle; margin-left: 4px; visibility: hidden; }
+tbody tr:hover td .wa, td .wa:focus-visible { visibility: visible; }
+.more { width: 26px; height: 26px; font-size: 15px; vertical-align: middle; }
+td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 0 6px; font-size: 12px; }
+.empty { padding: 20px; }
+
+@media (min-width: 760px) {
+  .panel { position: fixed; top: 0; right: 0; bottom: 0; width: 380px; max-height: none; border-radius: 0; border: none; border-left: 1px solid var(--line); z-index: 40; padding: 14px 16px; gap: 10px; box-shadow: -12px 0 32px -16px rgba(0,0,0,.3); }
+}
+.panel .name { font-size: 19px; }
+.panel .x { width: 30px; height: 30px; }
+.f { font-size: 12px; gap: 2px; }
+.f input, .f select { height: 32px; font-size: 14px; border-radius: 4px; }
+.f textarea { font-size: 14px; border-radius: 4px; }
+.hist { padding-top: 10px; gap: 6px; }
+.hist .it { font-size: 13px; }
 </style>
 </head>
 <body>
 <header class="top">
   <div class="top-in">
     <div class="brand"><span class="couple" id="couple">Guest List</span><span class="when" id="when"></span></div>
+    <section class="stats" id="stats" aria-label="Summary"></section>
     <div class="me">
       <span class="save ok" id="save" aria-live="polite" hidden></span>
       <span id="who"></span>
@@ -188,7 +260,6 @@ input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--ink); marg
   <div class="gate" id="gate">Loading your guest list…</div>
 
   <div id="app" hidden style="display:flex;flex-direction:column;gap:18px">
-    <section class="stats" id="stats" aria-label="Summary"></section>
 
     <section class="toolbar" aria-label="Actions">
       <button type="button" class="btn primary desk" id="add"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Add Guest</button>
@@ -464,8 +535,8 @@ input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--ink); marg
     var cols = visibleCols();
     $('thead').innerHTML = '<th class="chk"><span class="sr">Select</span></th>' + cols.map(function (c) {
       var arrow = S.sort.k === c.k ? (S.sort.dir > 0 ? ' ↑' : ' ↓') : '';
-      return '<th aria-sort="' + (S.sort.k === c.k ? (S.sort.dir > 0 ? 'ascending' : 'descending') : 'none') + '"><button type="button" data-sort="' + c.k + '">' + esc(c.label) + arrow + '</button></th>';
-    }).join('') + '<th style="width:48px"><span class="sr">More</span></th>';
+      return '<th data-k="' + c.k + '" aria-sort="' + (S.sort.k === c.k ? (S.sort.dir > 0 ? 'ascending' : 'descending') : 'none') + '"><button type="button" data-sort="' + c.k + '">' + esc(c.label) + arrow + '</button></th>';
+    }).join('') + '<th class="mo"><span class="sr">More</span></th>';
     var html = '', lastGroup = null;
     list.forEach(function (g) {
       if (S.groupBy && !S.trash && (g.group || '—') !== lastGroup) {
