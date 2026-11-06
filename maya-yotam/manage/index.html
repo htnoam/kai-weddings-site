@@ -208,7 +208,7 @@ th button { padding: 6px 8px; overflow: hidden; text-overflow: ellipsis; }
 th.chk, td.chk { width: 34px; padding: 0; text-align: center; }
 th[data-k="no"] { width: 76px; } th[data-k="first"] { width: 120px; } th[data-k="last"] { width: 140px; }
 th[data-k="group"] { width: 180px; } th[data-k="age"] { width: 80px; } th[data-k="status"] { width: 112px; }
-th[data-k="phone"] { width: 168px; } th.mo { width: 34px !important; border-right: none; }
+th.mo { width: 34px !important; border-right: none; }
 td { border-bottom: 1px solid var(--hair); border-right: 1px solid var(--hair); }
 td:last-child { border-right: none; }
 tr:last-child td { border-bottom: 1px solid var(--hair); }
@@ -375,8 +375,34 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
     { k: 'age', label: 'Age Group', type: 'select', opts: AGES },
     { k: 'status', label: 'RSVP Status', type: 'select', opts: STATUSES },
     { k: 'phone', label: 'Phone', type: 'phone', req: true },
-    { k: 'notes', label: 'Notes', type: 'text' }
+    { k: 'notes', label: 'Notes', type: 'text' },
+    { k: 'arrDate', label: 'Arrival Flight Date', type: 'date' },
+    { k: 'arrTime', label: 'Arrival Flight Time', type: 'time' },
+    { k: 'arrFlight', label: 'Arrival Flight Number', type: 'text' },
+    { k: 'arrBus', label: 'Arrival Bus', type: 'text' },
+    { k: 'depDate', label: 'Departure Flight Date', type: 'date' },
+    { k: 'depTime', label: 'Departure Flight Time', type: 'time' },
+    { k: 'depFlight', label: 'Departure Flight Number', type: 'text' },
+    { k: 'depBus', label: 'Departure Bus', type: 'text' },
+    { k: 'checkIn', label: 'Check In', type: 'date' },
+    { k: 'checkOut', label: 'Check Out', type: 'date' },
+    { k: 'room', label: 'Room #', type: 'text' }
   ];
+  var WIDTH = { no: 76, first: 120, last: 140, group: 180, age: 80, status: 112, phone: 168,
+    arrDate: 108, arrTime: 84, arrFlight: 116, arrBus: 120, depDate: 108, depTime: 84, depFlight: 116, depBus: 120, checkIn: 100, checkOut: 100, room: 80 };
+  var TYPE = {}; COLS.forEach(function (c) { TYPE[c.k] = c.type; });
+  // Dates are kept as DD/MM/YYYY text, times as HH:MM.
+  function normDate(v) {
+    v = String(v || '').trim(); if (!v) return '';
+    var m = /^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2}|\d{4})$/.exec(v); if (!m) return v;
+    var y = m[3].length === 2 ? '20' + m[3] : m[3];
+    return ('0' + m[1]).slice(-2) + '/' + ('0' + m[2]).slice(-2) + '/' + y;
+  }
+  function normTime(v) {
+    v = String(v || '').trim(); if (!v) return '';
+    var m = /^(\d{1,2})[:.]?(\d{2})$/.exec(v); if (!m) return v;
+    return ('0' + m[1]).slice(-2) + ':' + m[2];
+  }
   var HEB = /[֐-׿]/;
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
@@ -419,6 +445,10 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
   }
   function validate(f) {
     var errs = [];
+    Object.keys(f).forEach(function (k) {
+      if (TYPE[k] === 'date' && f[k] && !/^\d{2}\/\d{2}\/\d{4}$/.test(f[k])) errs.push('Write dates as DD/MM/YYYY.');
+      if (TYPE[k] === 'time' && f[k] && !/^([01]\d|2[0-3]):[0-5]\d$/.test(f[k])) errs.push('Write times as HH:MM, e.g. 14:30.');
+    });
     if ('first' in f && !String(f.first).trim()) errs.push('First Name is required.');
     if ('last' in f && !String(f.last).trim()) errs.push('Last Name is required.');
     if ('phone' in f && !String(f.phone).trim()) errs.push('Phone is required.');
@@ -554,9 +584,10 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
 
   function renderTable(list) {
     var cols = visibleCols();
+    $('tbody').parentNode.style.minWidth = (34 + 34 + 260 + cols.reduce(function (t, c) { return t + (WIDTH[c.k] || 0); }, 0)) + 'px';
     $('thead').innerHTML = '<th class="chk"><span class="sr">Select</span></th>' + cols.map(function (c) {
       var arrow = S.sort.k === c.k ? (S.sort.dir > 0 ? ' ↑' : ' ↓') : '';
-      return '<th data-k="' + c.k + '" aria-sort="' + (S.sort.k === c.k ? (S.sort.dir > 0 ? 'ascending' : 'descending') : 'none') + '"><button type="button" data-sort="' + c.k + '">' + esc(c.label) + arrow + '</button></th>';
+      return '<th data-k="' + c.k + '"' + (WIDTH[c.k] ? ' style="width:' + WIDTH[c.k] + 'px"' : '') + ' aria-sort="' + (S.sort.k === c.k ? (S.sort.dir > 0 ? 'ascending' : 'descending') : 'none') + '"><button type="button" data-sort="' + c.k + '">' + esc(c.label) + arrow + '</button></th>';
     }).join('') + '<th class="mo"><span class="sr">More</span></th>';
     var html = '', lastGroup = null;
     list.forEach(function (g) {
@@ -610,6 +641,9 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
       '<label class="f">RSVP Status<select data-pf="status">' + STATUSES.map(function (a) { return '<option' + (a === g.status ? ' selected' : '') + '>' + a + '</option>'; }).join('') + '</select></label></div>' +
       '<label class="f">Guest Group<input data-pf="group" list="groups" value="' + esc(g.group) + '"></label>' +
       '<label class="f">Notes<textarea data-pf="notes" rows="2">' + esc(g.notes) + '</textarea></label>' +
+      '<div class="two">' + COLS.filter(function (c) { return /^(arr|dep|check|room)/.test(c.k); }).map(function (c) {
+        return '<label class="f">' + esc(c.label) + '<input data-pf="' + c.k + '" value="' + esc(g[c.k]) + '"' + (c.type === 'date' ? ' placeholder="DD/MM/YYYY"' : c.type === 'time' ? ' placeholder="HH:MM"' : '') + '></label>';
+      }).join('') + '</div>' +
       (same.length ? '<div class="same">Same phone as:' + same.map(function (x) { return '<button type="button" data-open="' + x.no + '">' + esc(x.first + ' ' + x.last) + '</button>'; }).join('') + '</div>' : '') +
       '<div class="prow">' + (g.phone ? '<a class="btn" href="' + waLink(g.phone) + '" target="_blank" rel="noopener" style="text-decoration:none;color:var(--ok)">WhatsApp</a>' : '') +
       '<button type="button" class="btn" data-family="' + g.no + '">Add family member</button>' +
@@ -640,6 +674,7 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
   function update(no, fields) {
     var g = byNo(no); if (!g) return;
     if ('phone' in fields) fields.phone = normPhone(fields.phone);
+    Object.keys(fields).forEach(function (k) { if (TYPE[k] === 'date') fields[k] = normDate(fields[k]); if (TYPE[k] === 'time') fields[k] = normTime(fields[k]); });
     var changed = {}; Object.keys(fields).forEach(function (k) { if (String(g[k]) !== String(fields[k]).trim()) changed[k] = String(fields[k]).trim(); });
     if (!Object.keys(changed).length) { render(); return; }
     var errs = validate(changed);
@@ -686,6 +721,8 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
       el = document.createElement('input'); el.className = 'cell'; el.value = k === 'phone' ? prettyPhone(g[k]) : g[k];
       if (c.type === 'group') el.setAttribute('list', 'groups');
       if (k === 'phone') el.type = 'tel';
+      if (c.type === 'date') el.placeholder = 'DD/MM/YYYY';
+      if (c.type === 'time') el.placeholder = 'HH:MM';
     }
     el.setAttribute('aria-label', c.label);
     box.innerHTML = ''; box.appendChild(el); el.focus(); if (el.select) el.select();
