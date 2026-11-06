@@ -254,7 +254,17 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
 .top .stat.cur { box-shadow: inset 0 0 0 2px currentColor; }
 .top .stat.total.cur { box-shadow: none; }
 .stat-grp .stat.cur { box-shadow: inset 0 0 0 2px var(--ok); }
+.vtabs { display: flex; gap: 2px; align-items: flex-end; border-bottom: 1px solid var(--line); overflow-x: auto; margin-bottom: -6px; }
+.vt { height: 30px; padding: 0 14px; border: 1px solid transparent; border-bottom: none; border-radius: 4px 4px 0 0; background: transparent; font-size: 13.5px; font-weight: 600; color: var(--muted); white-space: nowrap; margin-bottom: -1px; }
+.vt:hover { background: var(--soft-surface); color: var(--text); }
+.vt.on { background: var(--surface); border-color: var(--line); color: var(--ink); }
+.vt.add { color: var(--soft); font-weight: 500; }
+.vcols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 12px; }
+.vc { display: flex; align-items: center; gap: 8px; font-size: 14px; padding: 3px 0; }
+th .rz { position: absolute; top: 0; right: -4px; width: 8px; height: 100%; cursor: col-resize; z-index: 4; }
+th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px, var(--ink) 3px, var(--ink) 5px, transparent 5px); }
 </style>
+<style id="freeze"></style>
 </head>
 <body>
 <header class="top">
@@ -304,9 +314,11 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
       </div>
     </div>
 
+    <nav class="vtabs" id="vtabs" aria-label="Views"></nav>
+
     <div class="layout">
       <div class="tablewrap">
-        <table>
+        <table id="grid">
           <thead><tr id="thead"></tr></thead>
           <tbody id="tbody"></tbody>
         </table>
@@ -408,7 +420,14 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
 
   var S = { guests: [], who: '', admin: false, q: '', status: '', age: '', group: '', groupBy: false, trash: false,
-    sort: { k: 'no', dir: 1 }, checked: {}, open: null, editing: null, cols: null, pending: 0 };
+    sort: { k: 'no', dir: 1 }, checked: {}, open: null, editing: null, cols: null, pending: 0,
+    views: [], view: '', widths: {}, resizing: false };
+  var PIN = ['no', 'first', 'last'];
+  try { S.widths = JSON.parse(localStorage.getItem('kai-guest-widths') || '{}') || {}; } catch (e) {}
+  try { S.view = localStorage.getItem('kai-guest-view') || ''; } catch (e) {}
+  function colOf(k) { return COLS.filter(function (c) { return c.k === k; })[0]; }
+  function curView() { return S.views.filter(function (v) { return v.name === S.view; })[0] || null; }
+  function widthOf(k) { return S.widths[k] || WIDTH[k] || 0; }
 
   // ---------- column prefs (per browser) ----------
   function loadCols() {
@@ -417,7 +436,13 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
     S.cols = def;
   }
   function saveCols() { try { localStorage.setItem('kai-guest-cols', JSON.stringify(S.cols)); } catch (e) {} }
-  function visibleCols() { return S.cols.order.map(function (k) { return COLS.filter(function (c) { return c.k === k; })[0]; }).filter(function (c) { return c.fixed || S.cols.hidden.indexOf(c.k) < 0; }); }
+  // Guest No., First and Last Name always come first and stay frozen; the rest follows the current view (or the Columns setting on "All").
+  function visibleCols() {
+    var v = curView();
+    var rest = v ? v.cols.map(colOf).filter(Boolean)
+      : S.cols.order.map(colOf).filter(function (c) { return c && (c.fixed || S.cols.hidden.indexOf(c.k) < 0); });
+    return PIN.map(colOf).concat(rest.filter(function (c) { return PIN.indexOf(c.k) < 0; }));
+  }
 
   // ---------- helpers ----------
   function normPhone(p) {
@@ -484,7 +509,9 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
   function load(silent) {
     if (!KEY) { $('gate').textContent = 'This link is missing its access code. Ask Noam for the full link.'; return Promise.resolve(); }
     return api('list').then(function (res) {
-      S.guests = res.guests; S.who = res.who; S.admin = res.admin;
+      S.guests = res.guests; S.who = res.who; S.admin = res.admin; S.views = res.views || [];
+      if (!curView()) S.view = '';
+      if (!silent && curView()) { S.status = curView().status; S.age = curView().age; $('f-status').value = S.status; $('f-age').value = S.age; }
       $('couple').textContent = res.wedding.couple || 'Guest List';
       $('when').textContent = [fmtDate(res.wedding.date), res.wedding.place].filter(Boolean).join(' · ');
       $('who').textContent = 'Signed in as ' + res.who;
@@ -570,6 +597,10 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
     $('bulk').hidden = S.trash || !nChecked; $('bulk-n').textContent = nChecked + ' selected';
 
     Array.prototype.forEach.call($('stats').querySelectorAll('[data-fs]'), function (b) { b.classList.toggle('cur', b.dataset.fs === S.status && b.dataset.fa === S.age); });
+    $('vtabs').innerHTML = [{ name: '' }].concat(S.views).map(function (v) {
+      return '<button type="button" class="vt' + (v.name === S.view ? ' on' : '') + '" data-view="' + esc(v.name) + '"' + (v.name ? ' title="Double-click to edit"' : '') + '>' + esc(v.name || 'All') + '</button>';
+    }).join('') + '<button type="button" class="vt add" data-newview="1">+ New View</button>';
+    $('columns').textContent = curView() ? 'Edit View' : 'Columns';
     renderTable(list); renderCards(list); renderPanel();
   }
 
@@ -582,12 +613,53 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
     return esc(v);
   }
 
+  function setTableWidth(cols) {
+    $('grid').style.minWidth = (34 + 34 + cols.reduce(function (t, c) { return t + (widthOf(c.k) || 260); }, 0)) + 'px';
+  }
+  // Freeze the checkbox, Guest No., First and Last Name columns on the left.
+  function freeze() {
+    var ths = $('thead').children, css = '', left = 0;
+    for (var i = 0; i < 4 && i < ths.length; i++) {
+      var n = i + 1;
+      css += '#grid thead th:nth-child(' + n + '){left:' + left + 'px;z-index:3}' +
+        'tbody tr[data-no] td:nth-child(' + n + '){position:sticky;left:' + left + 'px;z-index:1}' +
+        ':where(tbody tr[data-no] td:nth-child(' + n + ')){background:var(--surface)}';
+      left += ths[i].offsetWidth;
+    }
+    css += '#grid thead th:nth-child(4),tbody tr[data-no] td:nth-child(4){box-shadow:inset -2px 0 0 var(--line)}';
+    $('freeze').textContent = css;
+  }
+
+  // ---------- column resizing (remembered on this device) ----------
+  $('thead').addEventListener('mousedown', function (e) {
+    var rz = e.target.closest('[data-rz]'); if (!rz) return;
+    e.preventDefault(); e.stopPropagation();
+    var th = rz.parentNode, k = rz.dataset.rz, x0 = e.clientX, w0 = th.offsetWidth;
+    S.resizing = true; rz.classList.add('on');
+    function move(ev) {
+      var w = Math.max(48, Math.round(w0 + ev.clientX - x0));
+      th.style.width = w + 'px'; S.widths[k] = w; setTableWidth(visibleCols()); freeze();
+    }
+    function up() {
+      document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up);
+      rz.classList.remove('on'); S.resizing = false;
+      try { localStorage.setItem('kai-guest-widths', JSON.stringify(S.widths)); } catch (x) {}
+    }
+    document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
+  });
+  $('thead').addEventListener('dblclick', function (e) {
+    var rz = e.target.closest('[data-rz]'); if (!rz) return;
+    delete S.widths[rz.dataset.rz];
+    try { localStorage.setItem('kai-guest-widths', JSON.stringify(S.widths)); } catch (x) {}
+    render();
+  });
+
   function renderTable(list) {
     var cols = visibleCols();
-    $('tbody').parentNode.style.minWidth = (34 + 34 + 260 + cols.reduce(function (t, c) { return t + (WIDTH[c.k] || 0); }, 0)) + 'px';
+    setTableWidth(cols);
     $('thead').innerHTML = '<th class="chk"><span class="sr">Select</span></th>' + cols.map(function (c) {
       var arrow = S.sort.k === c.k ? (S.sort.dir > 0 ? ' ↑' : ' ↓') : '';
-      return '<th data-k="' + c.k + '"' + (WIDTH[c.k] ? ' style="width:' + WIDTH[c.k] + 'px"' : '') + ' aria-sort="' + (S.sort.k === c.k ? (S.sort.dir > 0 ? 'ascending' : 'descending') : 'none') + '"><button type="button" data-sort="' + c.k + '">' + esc(c.label) + arrow + '</button></th>';
+      return '<th data-k="' + c.k + '"' + (widthOf(c.k) ? ' style="width:' + widthOf(c.k) + 'px"' : '') + ' aria-sort="' + (S.sort.k === c.k ? (S.sort.dir > 0 ? 'ascending' : 'descending') : 'none') + '"><button type="button" data-sort="' + c.k + '" title="' + esc(c.label) + '">' + esc(c.label) + arrow + '</button><span class="rz" data-rz="' + c.k + '" title="Drag to resize · double-click to reset"></span></th>';
     }).join('') + '<th class="mo"><span class="sr">More</span></th>';
     var html = '', lastGroup = null;
     list.forEach(function (g) {
@@ -607,6 +679,7 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
           : '<button type="button" class="more" data-more="' + g.no + '" aria-label="More actions for ' + esc(g.first) + '">⋯</button>') + '</td></tr>';
     });
     $('tbody').innerHTML = html;
+    freeze();
     $('empty').hidden = list.length > 0;
     $('empty').textContent = S.trash ? 'No deleted guests.' : 'No guests match these filters.';
   }
@@ -840,7 +913,7 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
       '<label class="f">Guest Group<input id="pick-in" list="groups" value="' + esc(cur) + '" placeholder="e.g. Cohen Family"></label>',
       function () { var v = $('pick-in').value.trim(); if (nos.length > 1) bulk(nos, { group: v }); else update(nos[0], { group: v }); });
   }
-  $('pickform').addEventListener('submit', function (e) { e.preventDefault(); $('dlg2').hidden = true; if (pickApply) pickApply(); });
+  $('pickform').addEventListener('submit', function (e) { e.preventDefault(); if (pickApply && pickApply() === false) return; $('dlg2').hidden = true; });
   $('pick-cancel').addEventListener('click', function () { $('dlg2').hidden = true; });
 
   $('bulk').addEventListener('click', function (e) {
@@ -891,10 +964,11 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
 
   // ---------- columns ----------
   $('columns').addEventListener('click', function () {
+    if (curView()) { openView(curView()); return; }
     function body() {
       return S.cols.order.map(function (k, i) {
         var c = COLS.filter(function (x) { return x.k === k; })[0];
-        return '<div class="colrow"><label><input type="checkbox" data-col="' + k + '"' + (S.cols.hidden.indexOf(k) < 0 ? ' checked' : '') + (c.fixed ? ' disabled' : '') + '>' + esc(c.label) + '</label>' +
+        return '<div class="colrow"><label><input type="checkbox" data-col="' + k + '"' + (S.cols.hidden.indexOf(k) < 0 ? ' checked' : '') + (c.fixed || PIN.indexOf(k) > -1 ? ' disabled' : '') + '>' + esc(c.label) + '</label>' +
           '<button type="button" data-up="' + i + '" aria-label="Move ' + esc(c.label) + ' up"' + (i === 0 ? ' disabled' : '') + '>↑</button>' +
           '<button type="button" data-down="' + i + '" aria-label="Move ' + esc(c.label) + ' down"' + (i === S.cols.order.length - 1 ? ' disabled' : '') + '>↓</button></div>';
       }).join('') + '<p class="meta" style="margin:8px 0 0;font-size:13px;color:var(--soft)">Hiding a column only hides it on this device. No data is deleted.</p>';
@@ -918,6 +992,58 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
   $('dlg2').addEventListener('transitionend', function () {});
   var pickObserver = new MutationObserver(function () { if ($('dlg2').hidden) { $('pick-ok').textContent = 'Apply'; $('pick-body').onclick = null; $('pick-body').onchange = null; } });
   pickObserver.observe($('dlg2'), { attributes: true, attributeFilter: ['hidden'] });
+
+  // ---------- views (saved in the sheet, shared with everyone on this list) ----------
+  function useView(name) {
+    S.view = name; S.trash = false;
+    try { localStorage.setItem('kai-guest-view', name); } catch (e) {}
+    var v = curView(); S.status = v ? v.status : ''; S.age = v ? v.age : '';
+    $('f-status').value = S.status; $('f-age').value = S.age; render();
+  }
+  function openView(v) {
+    var cols = v ? v.cols : ['group', 'status', 'phone'];
+    var opt = function (list, cur) { return list.map(function (o) { return '<option' + (o === cur ? ' selected' : '') + '>' + o + '</option>'; }).join(''); };
+    pick(v ? 'Edit view' : 'New view',
+      '<label class="f">View name<input id="v-name" maxlength="40" value="' + esc(v ? v.name : '') + '" placeholder="e.g. Hotel" autocomplete="off"></label>' +
+      '<div class="two" style="margin-top:10px"><label class="f">Show RSVP status<select id="v-status"><option value="">All</option>' + opt(STATUSES, v && v.status) + '</select></label>' +
+      '<label class="f">Show age group<select id="v-age"><option value="">All</option>' + opt(AGES, v && v.age) + '</select></label></div>' +
+      '<div class="f" style="margin-top:12px">Columns</div><div class="vcols">' + COLS.map(function (c) {
+        var pinned = PIN.indexOf(c.k) > -1;
+        return '<label class="vc"><input type="checkbox" data-vc="' + c.k + '"' + (pinned || cols.indexOf(c.k) > -1 ? ' checked' : '') + (pinned ? ' disabled' : '') + '>' + esc(c.label) + '</label>';
+      }).join('') + '</div>' +
+      (v ? '<button type="button" class="btn danger" id="v-del" style="margin-top:12px">Delete view</button>' : ''),
+      function () {
+        var name = $('v-name').value.trim(), low = name.toLowerCase();
+        var err = !name ? 'Give the view a name.' : (low === 'all' || S.views.some(function (x) { return x.name.toLowerCase() === low && (!v || x.name !== v.name); })) ? 'A view with this name already exists.' : '';
+        if (err) { $('pick-err').textContent = err; $('pick-err').hidden = false; return false; }
+        saveView(v ? v.name : '', { name: name, status: $('v-status').value, age: $('v-age').value,
+          cols: COLS.filter(function (c) { var cb = $('pick-body').querySelector('[data-vc="' + c.k + '"]'); return PIN.indexOf(c.k) < 0 && cb && cb.checked; }).map(function (c) { return c.k; }) });
+      });
+    $('pick-ok').textContent = 'Save';
+    $('pick-body').onclick = function (e) { if (e.target.id === 'v-del') { $('dlg2').hidden = true; deleteView(v.name); } };
+  }
+  function saveView(old, nv) {
+    var before = S.views.slice(), i = -1;
+    S.views.forEach(function (x, j) { if (x.name === old) i = j; });
+    if (old && i > -1) S.views[i] = nv; else S.views.push(nv);
+    useView(nv.name); saving('busy');
+    api('saveView', { old: old, view: nv }).then(function (res) { S.views = res.views; saving('ok'); render(); })
+      .catch(function (e) { S.views = before; saving('err'); toast(e.server ? e.message : 'Couldn’t save the view. Try again.', null, null, true); if (!curView()) useView(''); else render(); });
+  }
+  function deleteView(name) {
+    var before = S.views.slice();
+    S.views = S.views.filter(function (x) { return x.name !== name; }); useView(''); saving('busy');
+    api('deleteView', { name: name }).then(function (res) { S.views = res.views; saving('ok'); toast('Deleted view ' + name); render(); })
+      .catch(function (e) { S.views = before; saving('err'); toast(e.server ? e.message : 'Couldn’t delete the view. Try again.', null, null, true); render(); });
+  }
+  $('vtabs').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-view],[data-newview]'); if (!b) return;
+    if (b.dataset.newview) openView(null); else useView(b.dataset.view);
+  });
+  $('vtabs').addEventListener('dblclick', function (e) {
+    var b = e.target.closest('[data-view]'); if (!b || !b.dataset.view) return;
+    var v = S.views.filter(function (x) { return x.name === b.dataset.view; })[0]; if (v) openView(v);
+  });
 
   // ---------- export ----------
   $('export').addEventListener('click', function () {
@@ -950,7 +1076,7 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
 
   // Quiet refresh so changes by the other side show up.
   setInterval(function () {
-    if (document.visibilityState !== 'visible' || S.editing || S.pending || !$('dlg').hidden || !$('dlg2').hidden || !$('menu').hidden) return;
+    if (document.visibilityState !== 'visible' || S.editing || S.pending || S.resizing || !$('dlg').hidden || !$('dlg2').hidden || !$('menu').hidden) return;
     var p = $('panel'); if (!p.hidden && p.contains(document.activeElement)) return;
     load(true);
   }, 30000);
