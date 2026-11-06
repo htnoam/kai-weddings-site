@@ -351,7 +351,7 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
 (function () {
   'use strict';
   var API = 'https://script.google.com/macros/s/AKfycbxHcJDurgxLpAw9-nB3ONtvRk9VFxqopYjNJeFffN34UtSCdC5irDhWFY2lJ9m2EIW3Rg/exec';
-  var KEY = location.hash.replace(/^#/, '');
+  var KEY = location.hash.replace(/^#/, '') || 'C-rLUyqb2K-fqj6e_rgLDN';
   var AGES = ['Adult', 'Child', 'Baby'];
   var STATUSES = ['Confirmed', 'Pending', 'Tentative', 'Declined'];
   var COLS = [
