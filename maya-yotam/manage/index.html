@@ -241,6 +241,19 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
 .f textarea { font-size: 14px; border-radius: 4px; }
 .hist { padding-top: 10px; gap: 6px; }
 .hist .it { font-size: 13px; }
+
+.top .stat { border: none; font: inherit; color: inherit; cursor: pointer; }
+.top .stat:hover { filter: brightness(.96); }
+.top .stat.total { color: #FFFFFF; }
+.top .stat.total:hover { filter: brightness(1.15); }
+.stat-grp { display: inline-flex; align-items: stretch; background: var(--ok-bg); border-radius: 4px; }
+.stat-grp .stat { background: transparent; }
+.stat-grp .stat.sub { padding-left: 8px; border-left: 1px solid rgba(47,107,47,.18); border-radius: 0; }
+.stat-grp .stat.sub .k { text-transform: none; letter-spacing: 0; font-size: 12px; color: var(--ok); font-weight: 600; }
+.stat-grp .stat.sub .v { color: var(--ok); }
+.top .stat.cur { box-shadow: inset 0 0 0 2px currentColor; }
+.top .stat.total.cur { box-shadow: none; }
+.stat-grp .stat.cur { box-shadow: inset 0 0 0 2px var(--ok); }
 </style>
 </head>
 <body>
@@ -267,7 +280,7 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
       <label class="sr" for="q">Search by name or phone</label>
       <input class="search" id="q" type="search" placeholder="Search by name or phone" autocomplete="off">
       <label class="sr" for="f-status">Filter by RSVP status</label>
-      <select class="sel" id="f-status"><option value="">RSVP: All</option><option>Confirmed</option><option>Pending</option><option>Tentative</option><option>Declined</option></select>
+      <select class="sel" id="f-status" hidden><option value="">RSVP: All</option><option>Confirmed</option><option>Pending</option><option>Tentative</option><option>Declined</option></select>
       <label class="sr" for="f-age">Filter by age group</label>
       <select class="sel" id="f-age"><option value="">Age: All</option><option>Adult</option><option>Child</option><option>Baby</option></select>
       <label class="sr" for="f-group">Filter by guest group</label>
@@ -494,11 +507,18 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
   function render() {
     var L = live();
     var c = function (st) { return L.filter(function (g) { return g.status === st; }).length; };
+    var AGEN = { Adult: 'Adults', Child: 'Children', Baby: 'Babies' };
+    var ages = function (st) { return AGES.map(function (a) { return { a: a, n: L.filter(function (g) { return g.status === st && g.age === a; }).length }; }); };
+    var tip = function (st) { return ages(st).map(function (x) { return x.n + ' ' + AGEN[x.a]; }).join(' · '); };
     $('stats').innerHTML =
-      '<div class="stat total"><span class="k">Total Guests</span><span class="v">' + L.length + '</span></div>' +
+      '<button type="button" class="stat total" data-fs="" data-fa=""><span class="k">Total</span><span class="v">' + L.length + '</span></button>' +
       STATUSES.map(function (st) {
         var col = { Confirmed: 'var(--ok)', Pending: 'var(--warn)', Tentative: 'var(--tent)', Declined: 'var(--bad)' }[st];
-        return '<div class="stat"><span class="k" style="color:' + col + '">' + st + '</span><span class="v">' + c(st) + '</span></div>';
+        var head = '<button type="button" class="stat" data-fs="' + st + '" data-fa="" title="' + tip(st) + '"><span class="k" style="color:' + col + '">' + st + '</span><span class="v">' + c(st) + '</span></button>';
+        if (st !== 'Confirmed') return head;
+        return '<span class="stat-grp">' + head + ages(st).map(function (x) {
+          return '<button type="button" class="stat sub" data-fs="' + st + '" data-fa="' + x.a + '"><span class="v">' + x.n + '</span><span class="k">' + AGEN[x.a] + '</span></button>';
+        }).join('') + '</span>';
       }).join('');
 
     var groups = []; L.forEach(function (g) { if (g.group && groups.indexOf(g.group) < 0) groups.push(g.group); }); groups.sort();
@@ -519,6 +539,7 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
     var nChecked = Object.keys(S.checked).filter(function (k) { return S.checked[k] && byNo(Number(k)) && !byNo(Number(k)).deleted; }).length;
     $('bulk').hidden = S.trash || !nChecked; $('bulk-n').textContent = nChecked + ' selected';
 
+    Array.prototype.forEach.call($('stats').querySelectorAll('[data-fs]'), function (b) { b.classList.toggle('cur', b.dataset.fs === S.status && b.dataset.fa === S.age); });
     renderTable(list); renderCards(list); renderPanel();
   }
 
@@ -877,6 +898,11 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
 
   // ---------- filters & toggles ----------
   $('q').addEventListener('input', function () { S.q = this.value; render(); });
+  $('stats').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-fs]'); if (!b) return;
+    S.status = b.dataset.fs; S.age = b.dataset.fa; S.trash = false;
+    $('f-status').value = S.status; $('f-age').value = S.age; render();
+  });
   $('f-status').addEventListener('change', function () { S.status = this.value; render(); });
   $('f-age').addEventListener('change', function () { S.age = this.value; render(); });
   $('f-group').addEventListener('change', function () { S.group = this.value; render(); });
