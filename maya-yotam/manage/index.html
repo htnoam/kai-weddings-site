@@ -398,10 +398,11 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
     { k: 'depBus', label: 'Departure Bus', type: 'text' },
     { k: 'checkIn', label: 'Check In', type: 'date' },
     { k: 'checkOut', label: 'Check Out', type: 'date' },
-    { k: 'room', label: 'Room #', type: 'text' }
+    { k: 'room', label: 'Room #', type: 'text' },
+    { k: 'table', label: 'Table #', type: 'text' }
   ];
   var WIDTH = { no: 76, first: 120, last: 140, group: 180, age: 80, status: 112, phone: 168,
-    arrDate: 108, arrTime: 84, arrFlight: 116, arrBus: 120, depDate: 108, depTime: 84, depFlight: 116, depBus: 120, checkIn: 100, checkOut: 100, room: 80 };
+    arrDate: 108, arrTime: 84, arrFlight: 116, arrBus: 120, depDate: 108, depTime: 84, depFlight: 116, depBus: 120, checkIn: 100, checkOut: 100, room: 80, table: 80 };
   var TYPE = {}; COLS.forEach(function (c) { TYPE[c.k] = c.type; });
   // Dates are kept as DD/MM/YYYY text, times as HH:MM.
   function normDate(v) {
@@ -714,7 +715,7 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
       '<label class="f">RSVP Status<select data-pf="status">' + STATUSES.map(function (a) { return '<option' + (a === g.status ? ' selected' : '') + '>' + a + '</option>'; }).join('') + '</select></label></div>' +
       '<label class="f">Guest Group<input data-pf="group" list="groups" value="' + esc(g.group) + '"></label>' +
       '<label class="f">Notes<textarea data-pf="notes" rows="2">' + esc(g.notes) + '</textarea></label>' +
-      '<div class="two">' + COLS.filter(function (c) { return /^(arr|dep|check|room)/.test(c.k); }).map(function (c) {
+      '<div class="two">' + COLS.filter(function (c) { return /^(arr|dep|check|room|table)/.test(c.k); }).map(function (c) {
         return '<label class="f">' + esc(c.label) + '<input data-pf="' + c.k + '" value="' + esc(g[c.k]) + '"' + (c.type === 'date' ? ' placeholder="DD/MM/YYYY"' : c.type === 'time' ? ' placeholder="HH:MM"' : '') + '></label>';
       }).join('') + '</div>' +
       (same.length ? '<div class="same">Same phone as:' + same.map(function (x) { return '<button type="button" data-open="' + x.no + '">' + esc(x.first + ' ' + x.last) + '</button>'; }).join('') + '</div>' : '') +
@@ -1036,13 +1037,14 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
     api('deleteView', { name: name }).then(function (res) { S.views = res.views; saving('ok'); toast('Deleted view ' + name); render(); })
       .catch(function (e) { S.views = before; saving('err'); toast(e.server ? e.message : 'Couldn’t delete the view. Try again.', null, null, true); render(); });
   }
+  var lastTab = { name: null, t: 0 };
   $('vtabs').addEventListener('click', function (e) {
     var b = e.target.closest('[data-view],[data-newview]'); if (!b) return;
-    if (b.dataset.newview) openView(null); else useView(b.dataset.view);
-  });
-  $('vtabs').addEventListener('dblclick', function (e) {
-    var b = e.target.closest('[data-view]'); if (!b || !b.dataset.view) return;
-    var v = S.views.filter(function (x) { return x.name === b.dataset.view; })[0]; if (v) openView(v);
+    if (b.dataset.newview) { openView(null); return; }
+    var name = b.dataset.view, now = Date.now();
+    if (name && lastTab.name === name && now - lastTab.t < 450) { lastTab.t = 0; if (curView()) openView(curView()); return; }
+    lastTab = { name: name, t: now };
+    if (name !== S.view) useView(name);
   });
 
   // ---------- export ----------
