@@ -271,6 +271,26 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
 .exmenu { position: fixed; z-index: 45; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 12px 28px -12px rgba(0,0,0,.3); padding: 4px; display: flex; flex-direction: column; min-width: 150px; }
 .exmenu button { height: 32px; border: none; background: transparent; text-align: left; padding: 0 12px; border-radius: 4px; font-size: 14px; }
 .exmenu button:hover { background: var(--soft-surface); }
+.dialog.imp { max-width: 900px; }
+.imp-p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.5; }
+.imp-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.imp-sec { font-size: 13px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: .05em; margin-top: 4px; }
+.imp-sec span { text-transform: none; letter-spacing: 0; font-weight: 500; color: var(--soft); }
+.imp-map { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px 12px; }
+.imp-map label { display: flex; flex-direction: column; gap: 3px; font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.imp-map select { height: 32px; border: 1px solid var(--line); border-radius: 4px; padding: 0 6px; font-size: 13.5px; background: #FFFFFF; }
+.imp-map select.on { border-color: var(--ink); }
+.imp-chk { display: flex; align-items: center; gap: 8px; font-size: 13.5px; }
+.imp-chk input { width: 16px; height: 16px; accent-color: var(--ink); }
+.imp-prev { max-height: 300px; overflow: auto; border: 1px solid var(--line); border-radius: 4px; }
+.imp-prev table { min-width: 100%; border-collapse: collapse; font-size: 12.5px; table-layout: auto; }
+.imp-prev th, .imp-prev td { position: static; padding: 4px 8px; border-bottom: 1px solid var(--hair); text-align: start; white-space: nowrap; }
+.imp-prev th { background: #F1EFEA; position: sticky; top: 0; }
+.imp-prev tr.bad td { background: #FBEDED; }
+.imp-prev td.why { color: var(--bad); white-space: normal; min-width: 180px; }
+.imp-prev td.okc { color: var(--ok); }
+#imp-done { font-size: 14px; line-height: 1.6; }
+#imp-done ul { margin: 6px 0 0; padding-inline-start: 18px; max-height: 200px; overflow: auto; color: var(--muted); }
 </style>
 <style id="freeze"></style>
 </head>
@@ -294,7 +314,7 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
 
     <section class="toolbar" aria-label="Actions">
       <button type="button" class="btn primary desk" id="add"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Add Guest</button>
-      <button type="button" class="btn desk" id="import" disabled title="Coming in the next step">Import Guests</button>
+      <button type="button" class="btn desk" id="import">Import Guests</button>
       <label class="sr" for="q">Search by name or phone</label>
       <input class="search" id="q" type="search" placeholder="Search by name or phone" autocomplete="off">
       <label class="sr" for="f-status">Filter by RSVP status</label>
@@ -376,6 +396,34 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
       <button type="submit" class="btn primary" id="pick-ok">Apply</button>
     </div>
   </form>
+</div>
+
+<div class="overlay" id="dlg-imp" hidden>
+  <div class="dialog imp" role="dialog" aria-modal="true" aria-labelledby="imp-title">
+    <h2 id="imp-title">Import Guests</h2>
+    <div id="imp-step1">
+      <p class="imp-p">Upload the couple’s list as Excel (.xlsx) or CSV. One row per guest, with a header row.<br>
+        Names must be in English. Phone is required (or taken from the row above, for family members).</p>
+      <div class="imp-row">
+        <label class="btn primary" style="cursor:pointer">Choose file<input type="file" id="imp-file" accept=".xlsx,.xls,.csv" hidden></label>
+        <button type="button" class="btn" id="imp-template">Download an empty template</button>
+      </div>
+    </div>
+    <div id="imp-step2" hidden>
+      <p class="imp-p" id="imp-file-name"></p>
+      <div class="imp-sec">Which column is which? <span>(guessed from the headers · check it)</span></div>
+      <div class="imp-map" id="imp-map"></div>
+      <label class="imp-chk"><input type="checkbox" id="imp-inherit" checked> Rows without a phone get the phone and group of the row above (family members)</label>
+      <div class="imp-sec">Preview <span id="imp-count"></span></div>
+      <div class="imp-prev"><table id="imp-prev"></table></div>
+    </div>
+    <div id="imp-done" hidden></div>
+    <p class="err" id="imp-err" hidden></p>
+    <div class="act">
+      <button type="button" class="btn" id="imp-cancel">Cancel</button>
+      <button type="button" class="btn primary" id="imp-go" hidden>Import</button>
+    </div>
+  </div>
 </div>
 
 <datalist id="groups"></datalist>
@@ -1058,6 +1106,110 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
     if (name !== S.view) useView(name);
   });
 
+  // ---------- import guests (Excel / CSV) ----------
+  var IMP = { rows: [], head: [], map: {} };
+  var IMP_FIELDS = [{ k: 'full', label: 'Full name (split into first + last)' }].concat(COLS.filter(function (c) { return c.k !== 'no'; }));
+  var IMP_GUESS = { full: ['full name', 'name', 'שם מלא', 'שם', 'guest'], first: ['first', 'given', 'שם פרטי'], last: ['last', 'surname', 'family name', 'שם משפחה'],
+    phone: ['phone', 'mobile', 'tel', 'cell', 'טלפון', 'נייד', 'פלאפון'], age: ['age', 'גיל'], status: ['rsvp', 'status', 'סטטוס', 'אישור', 'מגיע'],
+    group: ['group', 'family', 'קבוצה', 'משפחה'], notes: ['note', 'comment', 'הערה', 'הערות'] };
+  function loadXlsx() {
+    if (window.XLSX) return Promise.resolve();
+    return new Promise(function (ok, bad) { var sc = document.createElement('script'); sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'; sc.onload = ok; sc.onerror = bad; document.head.appendChild(sc); });
+  }
+  function impReset() {
+    IMP = { rows: [], head: [], map: {} };
+    $('imp-step1').hidden = false; $('imp-step2').hidden = true; $('imp-done').hidden = true; $('imp-go').hidden = true; $('imp-err').hidden = true;
+    $('imp-cancel').textContent = 'Cancel'; $('imp-file').value = '';
+  }
+  $('import').addEventListener('click', function () { impReset(); $('dlg-imp').hidden = false; loadXlsx().catch(function () {}); });
+  $('imp-cancel').addEventListener('click', function () { $('dlg-imp').hidden = true; });
+  $('imp-template').addEventListener('click', function () {
+    var csv = 'First Name,Last Name,Phone,Age Group,Guest Group,Notes\r\nDana,Cohen,050-1234567,Adult,Cohen Family,\r\nOmer,Cohen,,Adult,Cohen Family,\r\nNoa,Cohen,,Child,Cohen Family,\r\n';
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' }));
+    a.download = 'Guest list template.csv'; document.body.appendChild(a); a.click(); setTimeout(function () { a.remove(); }, 500);
+  });
+  $('imp-file').addEventListener('change', function () {
+    var file = this.files[0]; if (!file) return;
+    $('imp-err').hidden = true;
+    var isCsv = /\.csv$/i.test(file.name);
+    loadXlsx().then(function () { return isCsv ? file.text() : file.arrayBuffer(); }).then(function (data) {
+      var wb = isCsv ? XLSX.read(data, { type: 'string' }) : XLSX.read(data, { type: 'array' });
+      var rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, raw: false, defval: '' })
+        .map(function (r) { return r.map(function (v) { return String(v == null ? '' : v).trim(); }); })
+        .filter(function (r) { return r.some(Boolean); });
+      if (rows.length < 2) throw new Error('empty');
+      IMP.head = rows[0]; IMP.rows = rows.slice(1); IMP.map = {};
+      IMP_FIELDS.forEach(function (f) {
+        var words = IMP_GUESS[f.k] || [f.label.toLowerCase()];
+        var i = IMP.head.findIndex(function (h) { h = h.toLowerCase(); return words.some(function (w) { return h === w; }); });
+        if (i < 0) i = IMP.head.findIndex(function (h, j) { h = h.toLowerCase(); return !Object.keys(IMP.map).some(function (k) { return IMP.map[k] === j; }) && words.some(function (w) { return w.length > 2 && h.indexOf(w) > -1; }); });
+        if (i > -1 && !Object.keys(IMP.map).some(function (k) { return IMP.map[k] === i; })) IMP.map[f.k] = i;
+      });
+      if (IMP.map.first !== undefined && IMP.map.last !== undefined) delete IMP.map.full;
+      $('imp-file-name').textContent = file.name + ' · ' + IMP.rows.length + ' rows';
+      $('imp-step1').hidden = true; $('imp-step2').hidden = false; $('imp-go').hidden = false;
+      impRenderMap(); impPreview();
+    }).catch(function () { $('imp-err').textContent = 'Couldn’t read this file. Save it as .xlsx or .csv with a header row and try again.'; $('imp-err').hidden = false; });
+  });
+  function impRenderMap() {
+    $('imp-map').innerHTML = IMP_FIELDS.map(function (f) {
+      var cur = IMP.map[f.k];
+      return '<label>' + esc(f.label) + '<select data-imp="' + f.k + '"' + (cur !== undefined ? ' class="on"' : '') + '><option value="">— not in the file —</option>' +
+        IMP.head.map(function (h, i) { return '<option value="' + i + '"' + (cur === i ? ' selected' : '') + '>' + esc(h || 'Column ' + (i + 1)) + '</option>'; }).join('') + '</select></label>';
+    }).join('');
+  }
+  $('imp-map').addEventListener('change', function (e) {
+    var sel = e.target.closest('[data-imp]'); if (!sel) return;
+    if (sel.value === '') delete IMP.map[sel.dataset.imp]; else IMP.map[sel.dataset.imp] = Number(sel.value);
+    sel.classList.toggle('on', sel.value !== ''); impPreview();
+  });
+  $('imp-inherit').addEventListener('change', impPreview);
+  function impAge(v) { v = v.toLowerCase(); return /baby|infant|toddler|תינוק/.test(v) ? 'Baby' : /child|kid|ילד|נער/.test(v) ? 'Child' : 'Adult'; }
+  function impStatus(v) { v = v.toLowerCase(); return /^(confirmed|yes|coming|attending|מגיע|מגיעה|מגיעים|כן)/.test(v) ? 'Confirmed' : /^(declined|no|not|לא)/.test(v) ? 'Declined' : /^(maybe|tentative|אולי|לא בטוח)/.test(v) ? 'Tentative' : 'Pending'; }
+  function impBuild() {
+    var mp = IMP.map, prev = null;
+    return IMP.rows.map(function (r, i) {
+      var get = function (k) { return mp[k] === undefined ? '' : (r[mp[k]] || '').trim(); };
+      var g = { row: i + 2, first: get('first'), last: get('last'), phone: get('phone'), group: get('group'), notes: get('notes'),
+        age: impAge(get('age')), status: mp.status === undefined ? 'Pending' : impStatus(get('status')) };
+      if (mp.full !== undefined && !g.first && !g.last) { var parts = get('full').split(/\s+/).filter(Boolean); g.first = parts.shift() || ''; g.last = parts.join(' '); }
+      COLS.forEach(function (c) { if (['date', 'time'].indexOf(c.type) > -1 || /^(arr|dep|check|room|table)/.test(c.k)) { var v = get(c.k); if (v) g[c.k] = c.type === 'date' ? normDate(v) : c.type === 'time' ? normTime(v) : v; } });
+      g.inherited = false;
+      if (!g.phone && $('imp-inherit').checked && prev) { g.phone = prev.phone; g.group = g.group || prev.group; g.inherited = true; }
+      if (g.phone) g.phone = normPhone(g.phone);
+      if (!g.group && g.first) g.group = prev && g.inherited ? prev.group : (g.first + ' ' + g.last).trim();
+      var errs = [];
+      if (!g.first || !g.last) errs.push('Missing first or last name');
+      if (/[֐-׿]/.test(g.first + g.last)) errs.push('Name is in Hebrew');
+      if (!g.phone) errs.push('No phone');
+      else if (!/^\+\d{8,15}$/.test(g.phone)) errs.push('Phone looks incomplete');
+      if (S.guests.some(function (x) { return !x.deleted && x.phone === g.phone && x.first.toLowerCase() === g.first.toLowerCase() && x.last.toLowerCase() === g.last.toLowerCase(); })) errs.push('Already on the list');
+      g.errs = errs;
+      if (!errs.length || g.phone) prev = g;
+      return g;
+    });
+  }
+  function impPreview() {
+    var list = impBuild(), ok = list.filter(function (g) { return !g.errs.length; }).length;
+    $('imp-count').textContent = '· ' + ok + ' ready to import' + (list.length - ok ? ' · ' + (list.length - ok) + ' will be skipped (in red)' : '');
+    $('imp-go').textContent = 'Import ' + ok + ' guests'; $('imp-go').disabled = !ok;
+    $('imp-prev').innerHTML = '<thead><tr><th>Row</th><th>First</th><th>Last</th><th>Phone</th><th>Age</th><th>RSVP</th><th>Group</th><th></th></tr></thead><tbody>' +
+      list.map(function (g) {
+        return '<tr' + (g.errs.length ? ' class="bad"' : '') + '><td>' + g.row + '</td><td dir="auto">' + esc(g.first) + '</td><td dir="auto">' + esc(g.last) + '</td><td>' + esc(prettyPhone(g.phone)) + (g.inherited ? ' <span style="color:var(--soft)">↑</span>' : '') + '</td><td>' + g.age + '</td><td>' + g.status + '</td><td dir="auto">' + esc(g.group) + '</td>' +
+          (g.errs.length ? '<td class="why">' + esc(g.errs.join(' · ')) + '</td>' : '<td class="okc">✓</td>') + '</tr>';
+      }).join('') + '</tbody>';
+  }
+  $('imp-go').addEventListener('click', function () {
+    var list = impBuild().filter(function (g) { return !g.errs.length; });
+    var btn = this; btn.disabled = true; btn.textContent = 'Importing ' + list.length + ' guests…'; saving('busy');
+    api('import', { guests: list }).then(function (res) {
+      S.guests = res.guests; saving('ok'); render();
+      $('imp-step2').hidden = true; btn.hidden = true; $('imp-cancel').textContent = 'Close';
+      $('imp-done').innerHTML = '<b>Imported ' + res.added + ' guests.</b>' + (res.skipped.length ? '<br>' + res.skipped.length + ' rows were skipped:<ul>' + res.skipped.map(function (x) { return '<li>Row ' + x.row + ': ' + esc(x.reason) + '</li>'; }).join('') + '</ul>' : '');
+      $('imp-done').hidden = false; toast('Imported ' + res.added + ' guests');
+    }).catch(function (e) { saving('err'); $('imp-err').textContent = e.server ? e.message : 'The import didn’t go through. Check your connection and try again.'; $('imp-err').hidden = false; btn.disabled = false; btn.textContent = 'Import ' + list.length + ' guests'; });
+  });
+
   // ---------- export (menu: CSV or PDF report of what is on screen) ----------
   function exportName() {
     var v = curView();
@@ -1161,7 +1313,7 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
 
   // Quiet refresh so changes by the other side show up.
   setInterval(function () {
-    if (document.visibilityState !== 'visible' || S.editing || S.pending || S.resizing || !$('dlg').hidden || !$('dlg2').hidden || !$('menu').hidden) return;
+    if (document.visibilityState !== 'visible' || S.editing || S.pending || S.resizing || !$('dlg-imp').hidden || !$('dlg').hidden || !$('dlg2').hidden || !$('menu').hidden) return;
     var p = $('panel'); if (!p.hidden && p.contains(document.activeElement)) return;
     load(true);
   }, 30000);
