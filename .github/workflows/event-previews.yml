@@ -1,8 +1,8 @@
-# Every 15 minutes: refresh each event's link preview page (couple names + photo for WhatsApp).
+# Every hour: refresh each event's link preview page (couple names + photo for WhatsApp).
 name: Event link previews
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '17 * * * *'
   workflow_dispatch:
 permissions:
   contents: write
