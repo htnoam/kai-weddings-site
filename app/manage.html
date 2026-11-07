@@ -328,6 +328,9 @@ th[data-k] > button[data-sort] { padding-right: 26px; }
 .fp-none { padding: 8px 4px; color: var(--soft); font-size: 13px; }
 .fp-foot { display: flex; justify-content: flex-end; gap: 6px; }
 .fp-foot .btn { height: 30px; padding: 0 12px; }
+.vt-n { display: inline-block; min-width: 18px; padding: 0 5px; margin-left: 4px; border-radius: 999px; background: var(--warn); color: #FFFFFF; font-size: 11px; line-height: 17px; text-align: center; }
+td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
+.dup { margin-left: 4px; padding: 0 6px; border-radius: 3px; background: #FBEDED; color: var(--bad); font-size: 11px; font-weight: 600; white-space: nowrap; }
 #imp-done ul { margin: 6px 0 0; padding-inline-start: 18px; max-height: 200px; overflow: auto; color: var(--muted); }
 </style>
 <style id="freeze"></style>
@@ -524,7 +527,7 @@ th[data-k] > button[data-sort] { padding-right: 26px; }
 
   var S = { guests: [], who: '', admin: false, q: '', status: '', age: '', group: '', groupBy: false, trash: false,
     sort: { k: 'no', dir: 1 }, checked: {}, open: null, editing: null, cols: null, pending: 0,
-    views: [], view: '', widths: {}, resizing: false, filters: {} };
+    views: [], view: '', widths: {}, resizing: false, filters: {}, missing: false };
   var PIN = ['no', 'first', 'last'];
   try { S.widths = JSON.parse(localStorage.getItem('kai-guest-widths') || '{}') || {}; } catch (e) {}
   try { S.view = localStorage.getItem('kai-guest-view') || ''; } catch (e) {}
@@ -554,6 +557,10 @@ th[data-k] > button[data-sort] { padding-right: 26px; }
   function saveCols() { try { localStorage.setItem('kai-guest-cols', JSON.stringify(S.cols)); } catch (e) {} }
   // Guest No., First and Last Name always come first and stay frozen; the rest follows the current view (or the Columns setting on "All").
   function visibleCols() {
+    if (S.missing && !S.trash) {
+      var mk = ['phone']; missChecks().forEach(function (x) { x.keys.forEach(function (k) { if (mk.indexOf(k) < 0) mk.push(k); }); });
+      return PIN.map(colOf).concat(mk.map(colOf).filter(function (c) { return c && PIN.indexOf(c.k) < 0; }));
+    }
     var v = curView();
     var rest = v ? v.cols.map(colOf).filter(Boolean)
       : S.cols.order.map(colOf).filter(function (c) { return c && (c.fixed || S.cols.hidden.indexOf(c.k) < 0); });
@@ -656,11 +663,39 @@ th[data-k] > button[data-sort] { padding-right: 26px; }
   }
   function shownVal(k, v) { return !v ? '(empty)' : k === 'phone' ? prettyPhone(v) : v; }
 
+  // ---------- Missing info: confirmed guests with empty details, and possible duplicates ----------
+  // What to check is chosen per event on this device (the "What to check" button on that tab).
+  function missOptions() {
+    return [{ id: 'arr', label: 'Arrival flight', keys: ['arrDate', 'arrTime', 'arrFlight'] },
+      { id: 'dep', label: 'Departure flight', keys: ['depDate', 'depTime', 'depFlight'] },
+      { id: 'hotel', label: 'Check in / out', keys: ['checkIn', 'checkOut'] },
+      { id: 'room', label: 'Room #', keys: ['room'] },
+      { id: 'table', label: 'Table #', keys: ['table'] }]
+      .concat(COLS.filter(function (c) { return c.custom; }).map(function (c) { return { id: c.k, label: c.label, keys: [c.k] }; }));
+  }
+  function missOn() {
+    var on = null; try { on = JSON.parse(localStorage.getItem('kai-missing-' + EVENT) || 'null'); } catch (e) {}
+    return Array.isArray(on) ? on : ['arr', 'dep'];
+  }
+  function missChecks() { var on = missOn(); return missOptions().filter(function (x) { return on.indexOf(x.id) > -1; }); }
+  function dupKey(g) { return (g.first + ' ' + g.last).toLowerCase().replace(/\s+/g, ' ').trim(); }
+  function dupOf(g) {
+    var k = dupKey(g); if (!k) return null;
+    return live().filter(function (x) { return x.no !== g.no && dupKey(x) === k; })[0] || null;
+  }
+  function missingOf(g) {
+    if (g.deleted) return [];
+    var out = g.status === 'Confirmed' ? missChecks().filter(function (x) { return x.keys.some(function (k) { return !cellVal(g, k); }); }).map(function (x) { return x.label; }) : [];
+    if (dupOf(g)) out.push('Possible duplicate');
+    return out;
+  }
+
   // ---------- filtering ----------
   function filtered() {
     var q = S.q.trim().toLowerCase(), qd = q.replace(/\D/g, '');
     var list = S.guests.filter(function (g) {
       if (!!g.deleted !== S.trash) return false;
+      if (S.missing && !S.trash && !missingOf(g).length) return false;
       if (S.status && g.status !== S.status) return false;
       if (S.age && g.age !== S.age) return false;
       if (S.group && g.group !== S.group) return false;
@@ -731,10 +766,12 @@ th[data-k] > button[data-sort] { padding-right: 26px; }
       var c = colOf(k), v = S.filters[k], txt = !v.length ? '(none)' : v.slice(0, 2).map(function (x) { return shownVal(k, x); }).join(', ') + (v.length > 2 ? ' +' + (v.length - 2) : '');
       return '<span class="fchip"><button type="button" class="fc-edit" data-filter="' + k + '"><b>' + esc(c ? c.label : k) + ':</b> ' + esc(txt) + '</button><button type="button" class="fc-x" data-unfilter="' + k + '" aria-label="Remove this filter">✕</button></span>';
     }).join('') + (fk.length > 1 ? '<button type="button" class="linkbtn" data-unfilter="*">Clear all</button>' : '');
+    var nMiss = L.filter(function (g) { return missingOf(g).length; }).length;
     $('vtabs').innerHTML = [{ name: '' }].concat(S.views).map(function (v) {
-      return '<button type="button" class="vt' + (v.name === S.view ? ' on' : '') + '" data-view="' + esc(v.name) + '"' + (v.name ? ' title="Double-click to edit"' : '') + '>' + esc(v.name || 'All') + '</button>';
-    }).join('') + '<button type="button" class="vt add" data-newview="1">+ New View</button>';
-    $('columns').textContent = curView() ? 'Edit View' : 'Columns';
+      return '<button type="button" class="vt' + (!S.missing && v.name === S.view ? ' on' : '') + '" data-view="' + esc(v.name) + '"' + (v.name ? ' title="Double-click to edit"' : '') + '>' + esc(v.name || 'All') + '</button>';
+    }).join('') + '<button type="button" class="vt' + (S.missing ? ' on' : '') + '" data-missing="1" title="Confirmed guests with missing details, and possible duplicates">Missing info' + (nMiss ? ' <span class="vt-n">' + nMiss + '</span>' : '') + '</button>' +
+      '<button type="button" class="vt add" data-newview="1">+ New View</button>';
+    $('columns').textContent = S.missing ? 'What to check' : curView() ? 'Edit View' : 'Columns';
     renderTable(list); renderCards(list); renderPanel();
   }
 
@@ -742,7 +779,7 @@ th[data-k] > button[data-sort] { padding-right: 26px; }
     var v = g[c.k];
     if (c.k === 'status') return '<span class="pill ' + esc(v) + '">' + esc(v) + '</span>';
     if (c.k === 'phone') return '<span style="font-variant-numeric:tabular-nums">' + esc(prettyPhone(v)) + '</span>' + (v ? '<a class="wa" href="' + waLink(v) + '" target="_blank" rel="noopener" aria-label="WhatsApp ' + esc(g.first) + '" data-noedit="1"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.6-5.2A8.5 8.5 0 1 1 21 11.5z"></path></svg></a>' : '');
-    if (c.k === 'first') return '<b>' + esc(v) + '</b>';
+    if (c.k === 'first') { var dp = S.missing && dupOf(g); return '<b>' + esc(v) + '</b>' + (dp ? ' <span class="dup" title="Same name as guest #' + dp.no + '">same as #' + dp.no + '</span>' : ''); }
     if (!v && c.k === 'group') return '<span class="ph">—</span>';
     return esc(v);
   }
@@ -807,7 +844,8 @@ th[data-k] > button[data-sort] { padding-right: 26px; }
         '<td class="chk">' + (S.trash ? '' : '<input type="checkbox" data-check="' + g.no + '" aria-label="Select ' + esc(g.first + ' ' + g.last) + '"' + (S.checked[g.no] ? ' checked' : '') + '>') + '</td>' +
         cols.map(function (c) {
           var editable = !S.trash && !c.fixed;
-          return '<td class="' + (c.k === 'no' ? 'num' : '') + (editable ? ' ed' : '') + '" data-k="' + c.k + '"' + (editable ? ' title="Click to edit"' : '') + '><div class="c">' + cellHtml(g, c) + '</div></td>';
+          var miss = S.missing && g.status === 'Confirmed' && !cellVal(g, c.k) && missChecks().some(function (x) { return x.keys.indexOf(c.k) > -1; });
+          return '<td class="' + (c.k === 'no' ? 'num' : '') + (editable ? ' ed' : '') + (miss ? ' miss' : '') + '" data-k="' + c.k + '"' + (editable ? ' title="Click to edit"' : '') + '><div class="c">' + cellHtml(g, c) + '</div></td>';
         }).join('') +
         '<td>' + (S.trash ? '<button type="button" class="btn" data-restore="' + g.no + '" style="height:34px;margin-right:10px">Restore</button>'
           : '<button type="button" class="more" data-more="' + g.no + '" aria-label="More actions for ' + esc(g.first) + '">⋯</button>') + '</td></tr>';
@@ -1164,6 +1202,17 @@ th[data-k] > button[data-sort] { padding-right: 26px; }
 
   // ---------- columns ----------
   $('columns').addEventListener('click', function () {
+    if (S.missing) {
+      var on = missOn();
+      pick('What to check', '<p class="imp-p" style="margin-bottom:8px">Confirmed guests show up here when any of these are empty. Guests with the same name always show up.</p><div class="vcols">' +
+        missOptions().map(function (x) { return '<label class="vc"><input type="checkbox" data-mo="' + x.id + '"' + (on.indexOf(x.id) > -1 ? ' checked' : '') + '>' + esc(x.label) + '</label>'; }).join('') + '</div>',
+        function () {
+          var ids = Array.prototype.map.call($('pick-body').querySelectorAll('[data-mo]:checked'), function (cb) { return cb.dataset.mo; });
+          try { localStorage.setItem('kai-missing-' + EVENT, JSON.stringify(ids)); } catch (e) {}
+          render();
+        });
+      return;
+    }
     if (curView()) { openView(curView()); return; }
     function body() {
       return S.cols.order.map(function (k, i) {
@@ -1195,7 +1244,7 @@ th[data-k] > button[data-sort] { padding-right: 26px; }
 
   // ---------- views (saved in the sheet, shared with everyone on this list) ----------
   function useView(name) {
-    S.view = name; S.trash = false;
+    S.view = name; S.trash = false; S.missing = false;
     try { localStorage.setItem('kai-guest-view', name); } catch (e) {}
     applyViewState(curView()); render();
   }
@@ -1253,12 +1302,13 @@ th[data-k] > button[data-sort] { padding-right: 26px; }
   }
   var lastTab = { name: null, t: 0 };
   $('vtabs').addEventListener('click', function (e) {
-    var b = e.target.closest('[data-view],[data-newview]'); if (!b) return;
+    var b = e.target.closest('[data-view],[data-newview],[data-missing]'); if (!b) return;
     if (b.dataset.newview) { openView(null); return; }
+    if (b.dataset.missing) { if (!S.missing) { useView(''); S.missing = true; render(); } return; }
     var name = b.dataset.view, now = Date.now();
     if (name && lastTab.name === name && now - lastTab.t < 450) { lastTab.t = 0; if (curView()) openView(curView()); return; }
     lastTab = { name: name, t: now };
-    if (name !== S.view) useView(name);
+    if (name !== S.view || S.missing) useView(name);
   });
 
   // ---------- add column (admin; this event only) ----------
@@ -1400,7 +1450,7 @@ th[data-k] > button[data-sort] { padding-right: 26px; }
   // ---------- export (menu: CSV or PDF report of what is on screen) ----------
   function exportName() {
     var v = curView();
-    return 'Guest List - ' + ($('couple').textContent || 'Wedding') + ' - ' + (S.trash ? 'Deleted' : v ? v.name : 'All');
+    return 'Guest List - ' + ($('couple').textContent || 'Wedding') + ' - ' + (S.trash ? 'Deleted' : S.missing ? 'Missing info' : v ? v.name : 'All');
   }
   function exportCsv() {
     var cols = visibleCols(), list = filtered();
@@ -1462,7 +1512,7 @@ th[data-k] > button[data-sort] { padding-right: 26px; }
       '.grid{width:100%;border-collapse:collapse}.grid th{background:#F1EFEA;text-align:left;font-size:8.5pt;padding:4px 6px;border:1px solid #D6D4CE}.grid td{padding:3px 6px;border:1px solid #E4E1DA;vertical-align:top}' +
       '.grid thead{display:table-header-group}.grid tr{page-break-inside:avoid}</style></head><body>' +
       '<div class="head"><div><div class="couple">' + esc($('couple').textContent) + '</div><div class="meta">' + esc($('when').textContent) + '</div></div>' +
-      '<div class="right"><b>' + esc(S.trash ? 'Deleted guests' : v ? v.name : 'All guests') + '</b>' + (filters ? '<br>' + esc(filters) : '') + '<br>Created ' + stamp + '</div></div>' +
+      '<div class="right"><b>' + esc(S.trash ? 'Deleted guests' : S.missing ? 'Missing info' : v ? v.name : 'All guests') + '</b>' + (filters ? '<br>' + esc(filters) : '') + '<br>Created ' + stamp + '</div></div>' +
       summary + (extra ? '<div class="sums">' + extra + '</div>' : '') + table +
       '<script>document.fonts.ready.then(function(){setTimeout(function(){window.print();},200);});<\/script></body></html>';
     w.document.open(); w.document.write(html); w.document.close();
