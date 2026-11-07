@@ -59,6 +59,8 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .act { display: flex; gap: 8px; justify-content: flex-end; }
 .f select, .f textarea { border: 1px solid var(--line); border-radius: 4px; padding: 6px 10px; font-size: 14.5px; font-weight: 400; color: var(--text); background: #FFFFFF; }
 .f select { height: 36px; }
+.f.chk { flex-direction: row; align-items: center; gap: 8px; font-size: 14px; color: var(--text); }
+.f.chk input { width: 18px; height: 18px; accent-color: var(--ink); margin: 0; }
 .f textarea { resize: vertical; min-height: 60px; line-height: 1.45; }
 .dialog.wide { max-width: 860px; }
 .cols2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px; }
@@ -152,9 +154,19 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
       <label class="f">Small note · English<input data-k="Hosting Note EN"></label>
       <label class="f he">הערה קטנה · עברית<input data-k="Hosting Note HE"></label>
     </div>
+    <div class="sec">Guest portal · weddings.kaiwedd.com/<span id="e-slug"></span>/guest</div>
+    <div class="cols2">
+      <label class="f chk"><input type="checkbox" data-k="Portal RSVP" data-default="on"> RSVP per family member</label>
+      <label class="f chk"><input type="checkbox" data-k="Portal Flights"> Flight details (guests fill in)</label>
+      <label class="f chk"><input type="checkbox" data-k="Portal Stay"> Hotel room &amp; table (view only)</label>
+      <label class="f chk"><input type="checkbox" data-k="Portal Info"> Event info (the text below)</label>
+      <label class="f">Event info · English<textarea data-k="Info EN" rows="4" placeholder="One line per item. A schedule line: 14/09 | Welcome evening | 19:30 · Pool bar"></textarea></label>
+      <label class="f he">מידע על האירוע · עברית<textarea data-k="Info HE" rows="4" placeholder="שורה לכל פריט. שורת לוח זמנים: 14/09 | ערב קבלת פנים | 19:30 · בר הבריכה"></textarea></label>
+    </div>
     <p class="err" id="e-err" hidden></p>
     <div class="act">
       <a class="btn" id="e-view" target="_blank" rel="noopener">Open the form</a>
+      <a class="btn" id="e-portal" target="_blank" rel="noopener">Open the portal</a>
       <span style="flex:1"></span>
       <button type="button" class="btn" id="e-cancel">Cancel</button>
       <button type="submit" class="btn primary" id="e-save">Save</button>
@@ -211,6 +223,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
         '<td><div class="links">' +
           '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug + '/manage') + '">Couple’s list</button>' +
           '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug) + '">RSVP</button>' +
+          '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug + '/guest') + '">Portal</button>' +
         '</div></td></tr>';
     }).join('');
   }
@@ -247,13 +260,17 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
       (url ? '<button type="button" class="btn sm" data-rm="' + key + '">Remove</button>' : '');
   }
   function fillEdit() {
-    document.querySelectorAll('#form-e [data-k]').forEach(function (el) { el.value = EDIT.vals[el.dataset.k] || (el.tagName === 'SELECT' ? 'he' : ''); });
+    document.querySelectorAll('#form-e [data-k]').forEach(function (el) {
+      var v = EDIT.vals[el.dataset.k] || '';
+      if (el.type === 'checkbox') el.checked = (v || el.dataset.default || 'off') === 'on';
+      else el.value = v || (el.tagName === 'SELECT' ? 'he' : '');
+    });
     document.querySelectorAll('#form-e [data-img]').forEach(function (el) { el.innerHTML = imgRow(el.dataset.img); });
   }
   function openEdit(slug) {
     var ev = EVENTS.filter(function (x) { return x.slug === slug; })[0]; if (!ev) return;
     EDIT = { slug: slug, vals: {} };
-    $('e-title').textContent = 'Edit RSVP form · ' + ev.couple; $('e-view').href = '/' + slug; $('e-err').hidden = true;
+    $('e-title').textContent = 'Edit RSVP form · ' + ev.couple; $('e-view').href = '/' + slug; $('e-portal').href = '/' + slug + '/guest'; $('e-slug').textContent = slug; $('e-err').hidden = true;
     $('dlg-e').hidden = false; $('e-save').disabled = true;
     document.querySelectorAll('#form-e [data-k]').forEach(function (el) { el.value = ''; });
     api('rsvpInfo', { e: slug }).then(function (res) {
@@ -266,7 +283,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   $('form-e').addEventListener('submit', function (e) {
     e.preventDefault();
     var vals = {};
-    document.querySelectorAll('#form-e [data-k]').forEach(function (el) { vals[el.dataset.k] = el.value; });
+    document.querySelectorAll('#form-e [data-k]').forEach(function (el) { vals[el.dataset.k] = el.type === 'checkbox' ? (el.checked ? 'on' : 'off') : el.value; });
     ['Hero Image', 'Share Image'].forEach(function (k) { vals[k] = EDIT.vals[k] || ''; });
     if (!vals['Couple Names'].trim()) { $('e-err').textContent = 'Write the couple’s names.'; $('e-err').hidden = false; return; }
     $('e-save').disabled = true; $('e-save').textContent = 'Saving…';
