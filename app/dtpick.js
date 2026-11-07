@@ -4,7 +4,8 @@
 (function () {
   if (!window.matchMedia || !matchMedia('(pointer: coarse)').matches) return;
   var st = document.createElement('style');
-  st.textContent = '.dtw{position:relative;display:block}.dtw>.dtp{position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;font-size:16px;border:0;margin:0;padding:0;-webkit-appearance:none;appearance:none;z-index:2;background:transparent}';
+  // iPhone gives a filled-in date field its own minimum width; the clip keeps it from widening the page.
+  st.textContent = '.dtw{position:relative;display:block;overflow:hidden;max-width:100%}.dtw>.dtp{position:absolute;left:0;top:0;width:100%;height:100%;min-width:0;max-width:100%;box-sizing:border-box;opacity:0;font-size:16px;border:0;margin:0;padding:0;-webkit-appearance:none;appearance:none;z-index:2;background:transparent}';
   (document.head || document.documentElement).appendChild(st);
   function p2(n) { return ('0' + n).slice(-2); }
   function toIso(v, kind) {
