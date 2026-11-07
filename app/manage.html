@@ -271,6 +271,12 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
 .exmenu { position: fixed; z-index: 45; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 12px 28px -12px rgba(0,0,0,.3); padding: 4px; display: flex; flex-direction: column; min-width: 150px; }
 .exmenu button { height: 32px; border: none; background: transparent; text-align: left; padding: 0 12px; border-radius: 4px; font-size: 14px; }
 .exmenu button:hover { background: var(--soft-surface); }
+.online { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+.dot-on { display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px 2px 7px; border-radius: 999px; background: var(--ok-bg); color: var(--ok); font-size: 12px; font-weight: 600; white-space: nowrap; }
+.dot-on::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #3BA55C; box-shadow: 0 0 0 2px rgba(59,165,92,.25); }
+@keyframes rowflash { 0%, 40% { background: #FFF1C2; } 100% { background: transparent; } }
+tbody tr.flash td { animation: rowflash 2.6s ease-out; }
+.exmenu .mm-sep { height: 1px; background: var(--hair); margin: 4px 6px; }
 .dialog.imp { max-width: 900px; }
 .imp-p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.5; }
 .imp-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
@@ -301,6 +307,7 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
     <section class="stats" id="stats" aria-label="Summary"></section>
     <div class="me">
       <span class="save ok" id="save" aria-live="polite" hidden></span>
+      <span id="online" class="online" aria-live="polite"></span>
       <span id="who"></span>
       <button type="button" class="btn" id="refresh" hidden>Refresh</button>
     </div>
@@ -314,7 +321,7 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
 
     <section class="toolbar" aria-label="Actions">
       <button type="button" class="btn primary desk" id="add"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Add Guest</button>
-      <button type="button" class="btn desk" id="import">Import Guests</button>
+      <button type="button" class="btn desk" id="import" hidden>Import Guests</button>
       <label class="sr" for="q">Search by name or phone</label>
       <input class="search" id="q" type="search" placeholder="Search by name or phone" autocomplete="off">
       <label class="sr" for="f-status">Filter by RSVP status</label>
@@ -325,9 +332,10 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
       <select class="sel" id="f-group"><option value="">Group: All</option></select>
       <button type="button" class="btn desk" id="groupby" aria-pressed="false">Group by family</button>
       <button type="button" class="btn desk" id="columns">Columns</button>
-      <button type="button" class="btn" id="export">Export</button>
-      <button type="button" class="btn" id="trash" aria-pressed="false">Deleted (0)</button>
+      <button type="button" class="btn" id="export" hidden>Export</button>
+      <button type="button" class="btn on" id="trash" aria-pressed="false" hidden>← Back to guest list</button>
       <button type="button" class="btn dashed desk" id="addcol" hidden>+ Add Column</button>
+      <button type="button" class="btn" id="more" aria-haspopup="menu" aria-expanded="false" style="margin-inline-start:auto">⋯ More</button>
     </section>
 
     <div class="tabrow">
@@ -556,8 +564,9 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
   }
 
   // ---------- network ----------
+  var SID = Math.random().toString(36).slice(2, 10);  // this open screen, so others' changes can be told apart from ours
   function api(action, data) {
-    var body = Object.assign({ action: action, e: EVENT, k: KEY }, data || {});
+    var body = Object.assign({ action: action, e: EVENT, k: KEY, sid: SID }, data || {});
     return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) })
       .then(function (r) { return r.json(); })
       .then(function (res) { if (!res.ok) { var e = new Error(res.error || 'Something went wrong.'); e.server = true; throw e; } return res; });
@@ -589,7 +598,7 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
       $('couple').textContent = res.wedding.couple || 'Guest List';
       $('when').textContent = [fmtDate(res.wedding.date), res.wedding.place].filter(Boolean).join(' · ');
       $('who').textContent = 'Signed in as ' + res.who;
-      $('addcol').hidden = !res.admin;
+      $('addcol').hidden = true;
       $('refresh').hidden = false;
       document.title = 'Guest List – ' + (res.wedding.couple || 'Wedding');
       $('gate').hidden = true; $('app').hidden = false; $('fab').classList.add('show');
@@ -658,8 +667,7 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
     $('groups').innerHTML = groups.map(function (n) { return '<option value="' + esc(n) + '"></option>'; }).join('');
 
     var del = S.guests.filter(function (g) { return g.deleted; }).length;
-    $('trash').textContent = S.trash ? '← Back to guest list' : 'Deleted (' + del + ')';
-    $('trash').classList.toggle('on', S.trash);
+    S.delCount = del; $('trash').hidden = !S.trash; $('more').hidden = S.trash;
     $('groupby').classList.toggle('on', S.groupBy); $('groupby').setAttribute('aria-pressed', S.groupBy);
 
     var list = filtered();
@@ -1327,6 +1335,36 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
       '<script>document.fonts.ready.then(function(){setTimeout(function(){window.print();},200);});<\/script></body></html>';
     w.document.open(); w.document.write(html); w.document.close();
   }
+  // "More" menu: the actions used now and then (import, export, deleted guests, add column).
+  var moreMenu = document.createElement('div');
+  moreMenu.className = 'exmenu'; moreMenu.hidden = true; moreMenu.setAttribute('role', 'menu');
+  document.body.appendChild(moreMenu);
+  $('more').addEventListener('click', function (e) {
+    e.stopPropagation();
+    if (!moreMenu.hidden) { moreMenu.hidden = true; this.setAttribute('aria-expanded', 'false'); return; }
+    moreMenu.innerHTML =
+      '<button type="button" role="menuitem" data-mm="import">Import Guests</button>' +
+      '<button type="button" role="menuitem" data-mm="csv">Export to Excel (CSV)</button>' +
+      '<button type="button" role="menuitem" data-mm="pdf">Export PDF report</button>' +
+      '<button type="button" role="menuitem" data-mm="trash">Deleted guests (' + (S.delCount || 0) + ')</button>' +
+      (S.admin ? '<div class="mm-sep"></div><button type="button" role="menuitem" data-mm="addcol">+ Add Column</button>' : '');
+    var r = this.getBoundingClientRect();
+    moreMenu.hidden = false;
+    moreMenu.style.top = (r.bottom + 4) + 'px';
+    moreMenu.style.left = Math.max(8, Math.min(r.right - moreMenu.offsetWidth, innerWidth - moreMenu.offsetWidth - 8)) + 'px';
+    this.setAttribute('aria-expanded', 'true');
+  });
+  moreMenu.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-mm]'); if (!b) return;
+    moreMenu.hidden = true; $('more').setAttribute('aria-expanded', 'false');
+    var a = b.dataset.mm;
+    if (a === 'import') $('import').click();
+    else if (a === 'csv') exportCsv();
+    else if (a === 'pdf') exportPdf();
+    else if (a === 'trash') $('trash').click();
+    else if (a === 'addcol') openAddCol();
+  });
+  document.addEventListener('click', function () { if (!moreMenu.hidden) { moreMenu.hidden = true; $('more').setAttribute('aria-expanded', 'false'); } });
   var exMenu = document.createElement('div');
   exMenu.className = 'exmenu'; exMenu.hidden = true; exMenu.setAttribute('role', 'menu');
   exMenu.innerHTML = '<button type="button" role="menuitem" data-ex="csv">Excel (CSV)</button><button type="button" role="menuitem" data-ex="pdf">PDF report</button>';
@@ -1359,11 +1397,37 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
   $('refresh').addEventListener('click', function () { load(false); });
 
   // Quiet refresh so changes by the other side show up.
-  setInterval(function () {
-    if (document.visibilityState !== 'visible' || S.editing || S.pending || S.resizing || !$('dlg-imp').hidden || !$('dlg').hidden || !$('dlg2').hidden || !$('menu').hidden) return;
-    var p = $('panel'); if (!p.hidden && p.contains(document.activeElement)) return;
-    load(true);
-  }, 30000);
+  // ---------- live updates: a tiny check every 5 seconds; the list reloads only when something changed ----------
+  function busy() {
+    if (S.editing || S.pending || S.resizing || !$('dlg-imp').hidden || !$('dlg').hidden || !$('dlg2').hidden || !$('menu').hidden) return true;
+    var p = $('panel'); return !p.hidden && p.contains(document.activeElement);
+  }
+  function showOnline(list) {
+    $('online').innerHTML = list.map(function (n) { return '<span class="dot-on" title="' + esc(n) + ' is here now">' + esc(n) + '</span>'; }).join('');
+  }
+  function refreshFromOthers(by) {
+    var before = {}; S.guests.forEach(function (g) { before[g.no] = JSON.stringify(g); });
+    return load(true).then(function () {
+      var changed = S.guests.filter(function (g) { return before[g.no] !== JSON.stringify(g); }).map(function (g) { return g.no; });
+      if (!changed.length) return;
+      changed.forEach(function (no) { var tr = document.querySelector('tr[data-no="' + no + '"]'); if (tr) { tr.classList.remove('flash'); void tr.offsetWidth; tr.classList.add('flash'); } });
+      if (by) toast(by + ' updated ' + changed.length + (changed.length === 1 ? ' guest' : ' guests'));
+    });
+  }
+  var LIVE = { ver: null, wait: false };
+  function ping() {
+    if (document.visibilityState !== 'visible' || LIVE.wait || $('app').hidden) return;
+    LIVE.wait = true;
+    api('ping', { name: S.who }).then(function (res) {
+      showOnline(res.online || []);
+      if (LIVE.ver === null) { LIVE.ver = res.ver; return; }
+      if (res.ver === LIVE.ver || busy()) return;
+      var mine = res.by === SID; LIVE.ver = res.ver;
+      return mine ? load(true) : refreshFromOthers(res.name);
+    }).catch(function () {}).then(function () { LIVE.wait = false; });
+  }
+  setInterval(ping, 5000);
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') ping(); });
 
   loadCols();
   load(false);
