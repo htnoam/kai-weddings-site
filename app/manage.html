@@ -331,6 +331,67 @@ th[data-k] > button[data-sort] { padding-right: 26px; }
 .vt-n { display: inline-block; min-width: 18px; padding: 0 5px; margin-left: 4px; border-radius: 999px; background: var(--warn); color: #FFFFFF; font-size: 11px; line-height: 17px; text-align: center; }
 td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .dup { margin-left: 4px; padding: 0 6px; border-radius: 3px; background: #FBEDED; color: var(--bad); font-size: 11px; font-weight: 600; white-space: nowrap; }
+.mob, .mob-ic { display: none; }
+.fbadge { position: absolute; top: -6px; right: -6px; min-width: 17px; height: 17px; padding: 0 4px; border-radius: 999px; background: var(--ink); color: #FFFFFF; font-size: 10.5px; font-weight: 700; line-height: 17px; text-align: center; }
+#mfilter { position: relative; }
+.rm-list { display: flex; flex-direction: column; border: 1px solid var(--hair); border-radius: 6px; max-height: 50vh; overflow: auto; margin-top: 10px; }
+.rm-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-bottom: 1px solid var(--row-line); }
+.rm-row:last-child { border-bottom: none; }
+.rm-mn { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; font-size: 14px; }
+.rm-mn b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; unicode-bidi: plaintext; text-align: left; }
+.rm-mn span { font-size: 12.5px; color: var(--soft); }
+.rm-mn em { font-style: normal; color: var(--ok); font-weight: 600; }
+.rm-go { flex: none; text-decoration: none; color: inherit; }
+.rm-go.primary { color: #FFFFFF; }
+.rm-edit { margin-top: 12px; font-size: 14px; }
+.rm-edit summary { cursor: pointer; color: var(--ink); font-weight: 600; }
+.rm-edit textarea { width: 100%; margin-top: 8px; border: 1px solid var(--line); border-radius: 4px; padding: 8px; font-size: 14px; }
+
+/* ---------- phone layout (approved mockup) ---------- */
+@media (max-width: 759px) {
+  .top-in { padding: 8px 16px; gap: 6px 8px; flex-wrap: wrap; }
+  .brand { flex: 1 1 0; min-width: 0; gap: 8px; flex-wrap: nowrap; }
+  .couple { font-size: 22px; white-space: nowrap; }
+  .when { font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .me { gap: 8px; font-size: 12.5px; }
+  #who, #online { display: none; }
+  .me #refresh { width: 32px; height: 32px; padding: 0; justify-content: center; border-radius: 8px; }
+  .me #refresh .lbl { display: none; } .mob-ic { display: block; }
+  .top .stats { order: 3; flex: 1 0 100%; justify-content: flex-start; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px; }
+  .top .stats::-webkit-scrollbar, .tabrow .vtabs::-webkit-scrollbar { display: none; }
+  .top .stat, .stat-grp { flex: none; }
+  .top .stat .v { font-size: 15px; } .top .stat .k { font-size: 11px; }
+  .toolbar { gap: 8px; }
+  .toolbar .search { flex: 1 1 200px; height: 38px; font-size: 16px; border-radius: 8px; }
+  #more { width: 38px; padding: 0; justify-content: center; font-size: 18px; } #more .lbl { display: none; }
+  .toolbar .btn { height: 38px; border-radius: 8px; }
+  .mob { display: inline-flex; justify-content: center; width: 38px; padding: 0; }
+  #more { margin-inline-start: 0 !important; }
+  .toolbar .sel { display: none; }
+  .toolbar.fopen .sel { display: block; flex: 1 1 calc(50% - 4px); order: 5; height: 36px; font-size: 15px; }
+  .tabrow { flex-direction: column; align-items: stretch; flex-wrap: nowrap; border-bottom: none; margin-bottom: 0; gap: 6px; }
+  .tabrow .vtabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -12px; padding: 0 12px; }
+  .vt { height: 36px; font-size: 14.5px; padding: 0 12px; }
+  .tabrow .subbar { padding: 0 2px; font-size: 12.5px; color: var(--soft); }
+  .cards { gap: 0; background: var(--surface); border: 1px solid var(--hair); border-radius: 10px; overflow: hidden; }
+  .card { flex-direction: row; align-items: center; gap: 10px; padding: 9px 12px; border: none; border-bottom: 1px solid var(--row-line); border-radius: 0; min-height: 58px; }
+  .card:last-child { border-bottom: none; }
+  .card.sel-row { background: #EEF0FA; }
+  .card .mn { flex: 1 1 auto; min-width: 0; }
+  .card .l1 { display: flex; align-items: center; gap: 8px; }
+  .card .nm { font-size: 15.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; unicode-bidi: plaintext; min-width: 0; }
+  .card .no { flex: none; font-size: 11.5px; color: var(--soft); }
+  .card .sd { flex: none; width: 8px; height: 8px; border-radius: 50%; margin-left: auto; background: var(--soft); }
+  .card .sd.Confirmed { background: #3BA55C; } .card .sd.Pending { background: #D49A2A; } .card .sd.Tentative { background: var(--tent); } .card .sd.Declined { background: var(--bad); }
+  .card .l2 { margin-top: 2px; font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
+  .card .l2 .k { color: var(--soft); }
+  .card .tg { display: inline-block; padding: 0 6px; border-radius: 3px; background: var(--warn-bg); color: var(--warn); font-size: 12px; font-weight: 600; }
+  .card .wa { flex: none; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; background: var(--ok-bg); color: var(--ok); border: none; }
+  .cards .grph { padding: 6px 12px; font-size: 12.5px; font-weight: 700; color: var(--muted); background: var(--soft-surface); border-bottom: 1px solid var(--row-line); }
+  .cards > .empty { padding: 20px; }
+  .fab { width: 56px; height: 56px; padding: 0; justify-content: center; border-radius: 50%; }
+  .fab .lbl { display: none; } .fab svg { width: 24px; height: 24px; }
+}
 #imp-done ul { margin: 6px 0 0; padding-inline-start: 18px; max-height: 200px; overflow: auto; color: var(--muted); }
 </style>
 <style id="freeze"></style>
@@ -344,7 +405,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
       <span class="save ok" id="save" aria-live="polite" hidden></span>
       <span id="online" class="online" aria-live="polite"></span>
       <span id="who"></span>
-      <button type="button" class="btn" id="refresh" hidden>Refresh</button>
+      <button type="button" class="btn" id="refresh" hidden aria-label="Refresh"><svg class="mob-ic" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></svg><span class="lbl">Refresh</span></button>
     </div>
   </div>
 </header>
@@ -359,6 +420,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
       <button type="button" class="btn desk" id="import" hidden>Import Guests</button>
       <label class="sr" for="q">Search by name or phone</label>
       <input class="search" id="q" type="search" placeholder="Search by name or phone" autocomplete="off">
+      <button type="button" class="btn mob" id="mfilter" aria-label="Filters" aria-expanded="false"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 4h18l-7 8.5V19l-4 2v-8.5z"/></svg><span class="fbadge" id="mfbadge" hidden></span></button>
       <label class="sr" for="f-status">Filter by RSVP status</label>
       <select class="sel" id="f-status" hidden><option value="">RSVP: All</option><option>Confirmed</option><option>Pending</option><option>Tentative</option><option>Declined</option></select>
       <label class="sr" for="f-age">Filter by age group</label>
@@ -370,7 +432,8 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
       <button type="button" class="btn" id="export" hidden>Export</button>
       <button type="button" class="btn on" id="trash" aria-pressed="false" hidden>← Back to guest list</button>
       <button type="button" class="btn dashed desk" id="addcol" hidden>+ Add Column</button>
-      <button type="button" class="btn" id="more" aria-haspopup="menu" aria-expanded="false" style="margin-inline-start:auto">⋯ More</button>
+      <button type="button" class="btn desk" id="remind" hidden></button>
+      <button type="button" class="btn" id="more" aria-haspopup="menu" aria-expanded="false" style="margin-inline-start:auto">⋯<span class="lbl"> More</span></button>
     </section>
 
     <div class="fchips" id="fchips" hidden></div>
@@ -403,7 +466,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
   </div>
 </main>
 
-<button type="button" class="fab" id="fab"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Add Guest</button>
+<button type="button" class="fab" id="fab" aria-label="Add Guest"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg><span class="lbl">Add Guest</span></button>
 <div class="scrim" id="scrim" hidden></div>
 <div class="menu" id="menu" role="menu" hidden></div>
 <div class="fscrim" id="fscrim" hidden></div>
@@ -527,7 +590,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 
   var S = { guests: [], who: '', admin: false, q: '', status: '', age: '', group: '', groupBy: false, trash: false,
     sort: { k: 'no', dir: 1 }, checked: {}, open: null, editing: null, cols: null, pending: 0,
-    views: [], view: '', widths: {}, resizing: false, filters: {}, missing: false };
+    views: [], view: '', widths: {}, resizing: false, filters: {}, missing: false, reminders: {}, reminderText: '', lang: 'he' };
   var PIN = ['no', 'first', 'last'];
   try { S.widths = JSON.parse(localStorage.getItem('kai-guest-widths') || '{}') || {}; } catch (e) {}
   try { S.view = localStorage.getItem('kai-guest-view') || ''; } catch (e) {}
@@ -659,6 +722,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
   }
   function show(res, keepView) {
       S.guests = res.guests; S.who = res.who; S.admin = res.admin; S.views = res.views || [];
+      S.reminders = res.reminders || {}; S.reminderText = res.reminderText || ''; S.lang = res.lang || 'he';
       setCustom(res.custom || []);
       if (!curView()) S.view = '';
       if (!keepView && curView()) applyViewState(curView());
@@ -767,6 +831,9 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 
     var del = S.guests.filter(function (g) { return g.deleted; }).length;
     S.delCount = del; $('trash').hidden = !S.trash; $('more').hidden = S.trash;
+    var nf = (S.age ? 1 : 0) + (S.group ? 1 : 0) + Object.keys(S.filters).length;
+    $('mfbadge').hidden = !nf; $('mfbadge').textContent = nf;
+    var nr = remindList().length; $('remind').hidden = S.trash || !nr; $('remind').textContent = 'WhatsApp reminders (' + nr + ')';
     $('groupby').classList.toggle('on', S.groupBy); $('groupby').setAttribute('aria-pressed', S.groupBy);
 
     var list = filtered();
@@ -878,14 +945,32 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
     var html = '', lastGroup = null;
     list.forEach(function (g) {
       if (S.groupBy && !S.trash && (g.group || '—') !== lastGroup) { lastGroup = g.group || '—'; html += '<div class="grph">' + esc(lastGroup === '—' ? 'No group' : lastGroup) + '</div>'; }
+      // Phone row: name, #, status dot; the second line shows what matters in the current view.
       html += '<div class="card' + (S.checked[g.no] ? ' sel-row' : '') + '" data-card="' + g.no + '">' +
-        '<div class="r1"><button type="button" class="nm" data-open="' + g.no + '">' + esc(g.first + ' ' + g.last) + '</button><span class="pill ' + esc(g.status) + '">' + esc(g.status) + '</span></div>' +
-        '<div class="r2"><span>#' + g.no + ' · ' + esc(g.group || 'No group') + ' · ' + esc(g.age) + '</span>' +
-        (S.trash ? '<button type="button" class="btn" data-restore="' + g.no + '" style="height:36px">Restore</button>'
-          : (g.phone ? '<a class="wa" style="width:36px;height:36px;border:1px solid var(--hair)" href="' + waLink(g.phone) + '" target="_blank" rel="noopener" aria-label="WhatsApp ' + esc(g.first) + '"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.6-5.2A8.5 8.5 0 1 1 21 11.5z"></path></svg></a>' : '')) +
-        '</div>' + (g.notes ? '<div class="nt">' + esc(g.notes) + '</div>' : '') + '</div>';
+        '<div class="mn"><div class="l1"><button type="button" class="nm" data-open="' + g.no + '">' + esc(g.first + ' ' + g.last) + '</button><span class="no">#' + g.no + '</span><span class="sd ' + esc(g.status) + '" title="' + esc(g.status) + '"></span></div>' +
+        '<div class="l2">' + cardLine(g) + '</div></div>' +
+        (S.trash ? '<button type="button" class="btn" data-restore="' + g.no + '" style="height:34px">Restore</button>'
+          : (g.phone ? '<a class="wa" href="' + waLink(g.phone) + '" target="_blank" rel="noopener" aria-label="WhatsApp ' + esc(g.first) + '"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.6-5.2A8.5 8.5 0 1 1 21 11.5z"></path></svg></a>' : '')) +
+        '</div>';
     });
     $('cards').innerHTML = html || '<div class="empty">' + (S.trash ? 'No deleted guests.' : 'No guests match these filters.') + '</div>';
+  }
+
+  function cardTag(t) { return '<span class="tg">' + esc(t) + '</span>'; }
+  function cardLine(g) {
+    var basic = esc(g.group || 'No group') + ' <span class="k">· ' + esc(g.age) + '</span>';
+    if (S.trash) return basic;
+    if (S.missing) return missingOf(g).map(cardTag).join(' ');
+    var v = curView(), keys = v ? v.cols.filter(function (k) { return ['phone', 'group', 'age', 'status', 'notes'].indexOf(k) < 0; }) : [];
+    if (!keys.length) return basic;
+    var parts = keys.map(function (k) {
+      var x = cellVal(g, k); if (!x) return '';
+      if (TYPE[k] === 'date') x = x.slice(0, 5);
+      return esc(k === 'room' ? 'Room ' + x : k === 'table' ? 'Table ' + x : x);
+    }).filter(Boolean);
+    if (parts.length) { parts[0] = '<b>' + parts[0] + '</b>'; return parts.join(' · '); }
+    var c0 = colOf(keys[0]);
+    return cardTag(keys.indexOf('arrDate') > -1 ? 'No arrival flight' : keys.indexOf('depDate') > -1 ? 'No departure flight' : keys.indexOf('room') > -1 ? 'No room' : 'No ' + (c0 ? c0.label : 'details'));
   }
 
   // ---------- side panel ----------
@@ -1548,6 +1633,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
       '<button type="button" role="menuitem" data-mm="import">Import Guests</button>' +
       '<button type="button" role="menuitem" data-mm="csv">Export to Excel (CSV)</button>' +
       '<button type="button" role="menuitem" data-mm="pdf">Export PDF report</button>' +
+      '<button type="button" role="menuitem" data-mm="remind">WhatsApp reminders (' + remindList().length + ')</button>' +
       '<button type="button" role="menuitem" data-mm="trash">Deleted guests (' + (S.delCount || 0) + ')</button>' +
       (S.admin ? '<div class="mm-sep"></div><button type="button" role="menuitem" data-mm="addcol">+ Add Column</button>' : '');
     var r = this.getBoundingClientRect();
@@ -1565,7 +1651,71 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
     else if (a === 'pdf') exportPdf();
     else if (a === 'trash') $('trash').click();
     else if (a === 'addcol') openAddCol();
+    else if (a === 'remind') openRemind();
   });
+  $('mfilter').addEventListener('click', function () {
+    this.setAttribute('aria-expanded', this.closest('.toolbar').classList.toggle('fopen'));
+  });
+
+  // ---------- WhatsApp reminders: Pending guests, one message per phone number ----------
+  // The message opens in WhatsApp ready to send; the person presses Send. Opening it is recorded with the date.
+  var REMIND_DEFAULT = {
+    he: 'היי {name} 👋\nמזכירים לאשר הגעה לחתונה של {couple} 💛\nאפשר לאשר כאן: {link}\nתודה!',
+    en: 'Hi {name} 👋\nJust a reminder to RSVP for {couple}’s wedding 💛\nYou can reply here: {link}\nThank you!'
+  };
+  function remindTemplate() { return S.reminderText || REMIND_DEFAULT[S.lang] || REMIND_DEFAULT.he; }
+  function joinNames(list) {
+    if (list.length < 2) return list.join('');
+    return S.lang === 'en' ? list.slice(0, -1).join(', ') + ' & ' + list[list.length - 1] : list.slice(0, -1).join(', ') + ' ו' + list[list.length - 1];
+  }
+  function remindList() {
+    var by = {}, out = [];
+    live().forEach(function (g) {
+      if (g.status !== 'Pending' || !g.phone) return;
+      if (!by[g.phone]) { by[g.phone] = { phone: g.phone, guests: [] }; out.push(by[g.phone]); }
+      by[g.phone].guests.push(g);
+    });
+    out.forEach(function (r) { r.sent = S.reminders[r.phone] || 0; });
+    return out.sort(function (a, b) { return a.sent - b.sent || a.guests[0].no - b.guests[0].no; });
+  }
+  function remindText(r) {
+    return remindTemplate().replace(/\{name\}/g, joinNames(r.guests.map(function (g) { return g.first; })))
+      .replace(/\{couple\}/g, $('couple').textContent || '').replace(/\{link\}/g, 'https://weddings.kaiwedd.com/' + EVENT);
+  }
+  function remindRows() {
+    var list = remindList();
+    return list.length ? list.map(function (r) {
+      var d = r.sent ? new Date(r.sent) : null;
+      return '<div class="rm-row"><div class="rm-mn"><b>' + esc(r.guests.map(function (g) { return g.first + ' ' + g.last; }).join(', ')) + '</b>' +
+        '<span>' + esc(prettyPhone(r.phone)) + (d ? ' · <em>Reminded ' + ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + '</em>' : '') + '</span></div>' +
+        '<a class="btn rm-go' + (d ? '' : ' primary') + '" data-remind="' + esc(r.phone) + '" href="https://wa.me/' + r.phone.replace(/\D/g, '') + '?text=' + encodeURIComponent(remindText(r)) + '" target="_blank" rel="noopener"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.6-5.2A8.5 8.5 0 1 1 21 11.5z"></path></svg>' + (d ? 'Again' : 'Send') + '</a></div>';
+    }).join('') : '<p class="imp-p">Everyone has answered. No reminders needed.</p>';
+  }
+  function openRemind() {
+    pick('WhatsApp reminders',
+      '<p class="imp-p">Guests who haven’t answered yet, one message per phone number. Tap Send: WhatsApp opens with the message ready, and you press Send there.</p>' +
+      '<div class="rm-list" id="rm-list">' + remindRows() + '</div>' +
+      '<details class="rm-edit"><summary>Edit the message</summary><textarea id="rm-text" rows="5" dir="auto">' + esc(remindTemplate()) + '</textarea>' +
+      '<p class="imp-p" style="font-size:12.5px">{name} = first names · {couple} = couple · {link} = RSVP link. Saved for this event.</p></details>',
+      function () {});
+    $('pick-ok').textContent = 'Done';
+    var ta = $('rm-text'), saved = remindTemplate();
+    ta.addEventListener('input', function () { S.reminderText = ta.value.trim() || ''; $('rm-list').innerHTML = remindRows(); });
+    ta.addEventListener('change', function () {
+      if (ta.value.trim() === saved) return; saved = ta.value.trim();
+      saving('busy'); api('reminderText', { text: saved }).then(function () { saving('ok'); }).catch(function () { saving('err'); });
+    });
+    $('rm-list').addEventListener('click', function (e) {
+      var a = e.target.closest('[data-remind]'); if (!a) return;
+      var phone = a.dataset.remind, r = remindList().filter(function (x) { return x.phone === phone; })[0];
+      S.reminders[phone] = Date.now();
+      setTimeout(function () { $('rm-list').innerHTML = remindRows(); }, 300);
+      api('remind', { phone: phone, names: r ? r.guests.map(function (g) { return g.first + ' ' + g.last; }).join(', ') : '' })
+        .then(function (res) { S.reminders = res.reminders || S.reminders; })
+        .catch(function () { toast('Couldn’t record the reminder. The message still opened.', null, null, true); });
+    });
+  }
+  $('remind').addEventListener('click', openRemind);
   document.addEventListener('click', function () { if (!moreMenu.hidden) { moreMenu.hidden = true; $('more').setAttribute('aria-expanded', 'false'); } });
   var exMenu = document.createElement('div');
   exMenu.className = 'exmenu'; exMenu.hidden = true; exMenu.setAttribute('role', 'menu');
