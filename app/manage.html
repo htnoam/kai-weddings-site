@@ -263,6 +263,14 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
 .vc { display: flex; align-items: center; gap: 8px; font-size: 14px; padding: 3px 0; }
 th .rz { position: absolute; top: 0; right: -4px; width: 8px; height: 100%; cursor: col-resize; z-index: 4; }
 th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px, var(--ink) 3px, var(--ink) 5px, transparent 5px); }
+/* View tabs on the left, "Showing X of Y" (or the selection bar) on the right, in one row. */
+.tabrow { flex: none; display: flex; align-items: flex-end; gap: 12px; border-bottom: 1px solid var(--line); margin-bottom: -6px; }
+.tabrow .vtabs { flex: 1 1 auto; min-width: 0; border-bottom: none; margin-bottom: -1px; }
+.tabrow .subbar { flex: none; min-height: 30px; padding-bottom: 3px; flex-wrap: nowrap; }
+@media (max-width: 759px) { .tabrow { flex-wrap: wrap; } }
+.exmenu { position: fixed; z-index: 45; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 12px 28px -12px rgba(0,0,0,.3); padding: 4px; display: flex; flex-direction: column; min-width: 150px; }
+.exmenu button { height: 32px; border: none; background: transparent; text-align: left; padding: 0 12px; border-radius: 4px; font-size: 14px; }
+.exmenu button:hover { background: var(--soft-surface); }
 </style>
 <style id="freeze"></style>
 </head>
@@ -302,6 +310,8 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
       <button type="button" class="btn dashed desk" id="addcol" hidden disabled title="Coming in the next step">+ Add Column</button>
     </section>
 
+    <div class="tabrow">
+    <nav class="vtabs" id="vtabs" aria-label="Views"></nav>
     <div class="subbar">
       <span id="showing"></span>
       <div class="bulk" id="bulk" hidden>
@@ -313,8 +323,7 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
         <button type="button" class="x" data-bulk="clear" aria-label="Clear selection">×</button>
       </div>
     </div>
-
-    <nav class="vtabs" id="vtabs" aria-label="Views"></nav>
+    </div>
 
     <div class="layout">
       <div class="tablewrap">
@@ -597,7 +606,7 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
       : 'Showing <b>' + list.length + '</b> of ' + base + ' guests';
 
     var nChecked = Object.keys(S.checked).filter(function (k) { return S.checked[k] && byNo(Number(k)) && !byNo(Number(k)).deleted; }).length;
-    $('bulk').hidden = S.trash || !nChecked; $('bulk-n').textContent = nChecked + ' selected';
+    $('bulk').hidden = S.trash || !nChecked; $('showing').hidden = !$('bulk').hidden; $('bulk-n').textContent = nChecked + ' selected';
 
     Array.prototype.forEach.call($('stats').querySelectorAll('[data-fs]'), function (b) { b.classList.toggle('cur', b.dataset.fs === S.status && b.dataset.fa === S.age); });
     $('vtabs').innerHTML = [{ name: '' }].concat(S.views).map(function (v) {
@@ -1049,8 +1058,12 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
     if (name !== S.view) useView(name);
   });
 
-  // ---------- export ----------
-  $('export').addEventListener('click', function () {
+  // ---------- export (menu: CSV or PDF report of what is on screen) ----------
+  function exportName() {
+    var v = curView();
+    return 'Guest List - ' + ($('couple').textContent || 'Wedding') + ' - ' + (S.trash ? 'Deleted' : v ? v.name : 'All');
+  }
+  function exportCsv() {
     var cols = visibleCols(), list = filtered();
     var cell = function (v) { v = String(v == null ? '' : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
     var csv = [cols.map(function (c) { return c.label; }).join(',')].concat(list.map(function (g) {
@@ -1058,10 +1071,79 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
     })).join('\r\n');
     var blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
     var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-    a.download = 'Guest List - ' + ($('couple').textContent || 'Wedding') + (S.trash ? ' (deleted)' : '') + '.csv';
+    a.download = exportName() + '.csv';
     document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
     toast('Exported ' + list.length + ' guests');
+  }
+  function dateKey(d) { var m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(d || ''); return m ? m[3] + m[2] + m[1] : 'z' + d; }
+  function countBy(list, k) {
+    var m = {}; list.forEach(function (g) { var v = String(g[k] || '').trim(); if (v) m[v] = (m[v] || 0) + 1; });
+    return m;
+  }
+  function exportPdf() {
+    var cols = visibleCols(), list = filtered(), v = curView();
+    var w = window.open('', '_blank');
+    if (!w) { toast('Allow pop-ups for this site to create the PDF.', null, null, true); return; }
+    var n = function (st, age) { return list.filter(function (g) { return (!st || g.status === st) && (!age || g.age === age); }).length; };
+    var box = function (label, value, cls) { return '<div class="box ' + (cls || '') + '"><div class="v">' + value + '</div><div class="k">' + esc(label) + '</div></div>'; };
+    var summary = '<div class="boxes">' + box('Guests in this report', list.length, 'main') +
+      STATUSES.filter(function (st) { return n(st); }).map(function (st) { return box(st, n(st), 's-' + st.toLowerCase()); }).join('') + '</div>' +
+      (n('Confirmed') ? '<p class="line"><b>Confirmed by age:</b> ' + AGES.map(function (a) { return n('Confirmed', a) + ' ' + { Adult: 'Adults', Child: 'Children', Baby: 'Babies' }[a]; }).join(' · ') + '</p>' : '');
+    // Extra summaries, depending on the columns in this view.
+    var extra = '';
+    cols.forEach(function (c) {
+      if (c.type === 'date') {
+        var m = countBy(list, c.k), keys = Object.keys(m).sort(function (a, b) { return dateKey(a) < dateKey(b) ? -1 : 1; });
+        var none = list.length - keys.reduce(function (t, k) { return t + m[k]; }, 0);
+        extra += '<div class="sum"><h3>' + esc(c.label) + '</h3><table class="mini">' + keys.map(function (k) { return '<tr><td>' + esc(k) + '</td><td class="r">' + m[k] + ' guests</td></tr>'; }).join('') +
+          (none ? '<tr class="muted"><td>Not filled in</td><td class="r">' + none + '</td></tr>' : '') + '</table></div>';
+      }
+      if (c.k === 'room' || c.k === 'table') {
+        var mm = countBy(list, c.k), ks = Object.keys(mm).sort(function (a, b) { return a.localeCompare(b, undefined, { numeric: true }); });
+        var un = list.length - ks.reduce(function (t, k) { return t + mm[k]; }, 0);
+        var word = c.k === 'room' ? 'Room' : 'Table';
+        extra += '<div class="sum"><h3>' + (c.k === 'room' ? 'Rooms' : 'Tables') + ': ' + ks.length + (c.k === 'room' ? ' occupied' : '') + '</h3><table class="mini">' +
+          ks.map(function (k) { return '<tr><td>' + word + ' ' + esc(k) + '</td><td class="r">' + mm[k] + ' guests</td></tr>'; }).join('') +
+          (un ? '<tr class="muted"><td>Not assigned</td><td class="r">' + un + '</td></tr>' : '') + '</table></div>';
+      }
+    });
+    var filters = [S.status && 'RSVP: ' + S.status, S.age && 'Age: ' + S.age, S.group && 'Group: ' + S.group, S.q.trim() && 'Search: “' + S.q.trim() + '”'].filter(Boolean).join(' · ');
+    var now = new Date(), stamp = now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear() + ' ' + ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+    var table = '<table class="grid"><thead><tr>' + cols.map(function (c) { return '<th>' + esc(c.label) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      list.map(function (g) { return '<tr>' + cols.map(function (c) { return '<td dir="auto">' + esc(c.k === 'phone' ? prettyPhone(g.phone) : g[c.k]) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table>';
+    var html = '<!doctype html><html><head><meta charset="utf-8"><title>' + esc(exportName()) + '</title>' +
+      '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Cormorant+Garamond:wght@600&display=swap">' +
+      '<style>@page{size:A4 landscape;margin:12mm}*{box-sizing:border-box}body{margin:0;font:9.5pt/1.35 Assistant,Arial,sans-serif;color:#1F1F21;-webkit-print-color-adjust:exact;print-color-adjust:exact}' +
+      '.head{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #2E3A9E;padding-bottom:6px;margin-bottom:10px}' +
+      '.couple{font:600 22pt/1 "Cormorant Garamond",Georgia,serif;color:#2E3A9E}.meta{color:#4A4A50;font-size:9.5pt;margin-top:4px}.right{text-align:right;color:#4A4A50;font-size:9pt}.right b{color:#1F1F21;font-size:11pt}' +
+      '.boxes{display:flex;gap:6px;margin-bottom:6px}.box{border:1px solid #D6D4CE;border-radius:4px;padding:5px 10px;min-width:90px}.box .v{font-size:15pt;font-weight:700}.box .k{font-size:8pt;color:#4A4A50;text-transform:uppercase;letter-spacing:.04em}' +
+      '.box.main{background:#2E3A9E;border-color:#2E3A9E;color:#FFF}.box.main .k{color:#E6E8F7}.s-confirmed .v{color:#2F6B2F}.s-pending .v{color:#8A5A12}.s-tentative .v{color:#2E3A9E}.s-declined .v{color:#9B2C2C}' +
+      '.line{margin:4px 0 8px}.sums{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px}.sum h3{margin:0 0 3px;font-size:9.5pt}' +
+      '.mini{border-collapse:collapse}.mini td{padding:1px 10px 1px 0;border-bottom:1px solid #EFECE6}.mini .r{text-align:right;font-variant-numeric:tabular-nums}.muted td{color:#6E6E75}' +
+      '.grid{width:100%;border-collapse:collapse}.grid th{background:#F1EFEA;text-align:left;font-size:8.5pt;padding:4px 6px;border:1px solid #D6D4CE}.grid td{padding:3px 6px;border:1px solid #E4E1DA;vertical-align:top}' +
+      '.grid thead{display:table-header-group}.grid tr{page-break-inside:avoid}</style></head><body>' +
+      '<div class="head"><div><div class="couple">' + esc($('couple').textContent) + '</div><div class="meta">' + esc($('when').textContent) + '</div></div>' +
+      '<div class="right"><b>' + esc(S.trash ? 'Deleted guests' : v ? v.name : 'All guests') + '</b>' + (filters ? '<br>' + esc(filters) : '') + '<br>Created ' + stamp + '</div></div>' +
+      summary + (extra ? '<div class="sums">' + extra + '</div>' : '') + table +
+      '<script>document.fonts.ready.then(function(){setTimeout(function(){window.print();},200);});<\/script></body></html>';
+    w.document.open(); w.document.write(html); w.document.close();
+  }
+  var exMenu = document.createElement('div');
+  exMenu.className = 'exmenu'; exMenu.hidden = true; exMenu.setAttribute('role', 'menu');
+  exMenu.innerHTML = '<button type="button" role="menuitem" data-ex="csv">Excel (CSV)</button><button type="button" role="menuitem" data-ex="pdf">PDF report</button>';
+  document.body.appendChild(exMenu);
+  $('export').addEventListener('click', function (e) {
+    e.stopPropagation();
+    if (!exMenu.hidden) { exMenu.hidden = true; return; }
+    var r = this.getBoundingClientRect();
+    exMenu.style.left = r.left + 'px'; exMenu.style.top = (r.bottom + 4) + 'px'; exMenu.hidden = false;
   });
+  exMenu.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-ex]'); if (!b) return;
+    exMenu.hidden = true;
+    if (b.dataset.ex === 'csv') exportCsv(); else exportPdf();
+  });
+  document.addEventListener('click', function () { exMenu.hidden = true; });
 
   // ---------- filters & toggles ----------
   $('q').addEventListener('input', function () { S.q = this.value; render(); });
