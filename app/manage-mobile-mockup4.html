@@ -82,6 +82,12 @@ button { cursor: pointer; }
 .dir.big { display: grid; grid-template-columns: 1fr 1fr; }
 .dir.big button { width: auto; height: 42px; font-size: 13.5px; font-weight: 600; }
 .col.cur { color: var(--ink); font-weight: 700; }
+.sscrim { position: fixed; inset: 0; z-index: 20; }
+.spop { position: fixed; z-index: 21; right: 12px; width: 230px; background: var(--surface); border: 1px solid var(--hair); border-radius: 12px; box-shadow: 0 16px 36px -12px rgba(0,0,0,.35); padding: 4px; }
+.sp-h { display: flex; align-items: center; justify-content: space-between; padding: 6px 8px 6px 10px; font-size: 12px; font-weight: 700; color: var(--soft); text-transform: uppercase; letter-spacing: .05em; border-bottom: 1px solid var(--row-line); }
+.sp-h .dir button { width: 34px; height: 28px; font-size: 14px; }
+#sortcols .col { min-height: 36px; padding: 0 10px; font-size: 14.5px; border-bottom: none; border-radius: 8px; }
+#sortcols .col.cur { background: var(--soft-surface); }
 .note { margin: 14px 4px; font-size: 13px; color: var(--soft); line-height: 1.5; }
 </style>
 </head>
@@ -127,14 +133,11 @@ button { cursor: pointer; }
   </div>
 </div>
 
-<div class="sheet" id="ssheet" hidden>
-  <div class="grab"></div>
-  <div class="sh-h"><b>Sort by</b></div>
-  <div class="sh-b" style="gap:10px">
-    <div class="dir big"><button id="up" class="on">↑ A→Z · 1→9 · early first</button><button id="down">↓ Reverse</button></div>
-    <div class="cols" id="sortcols"></div>
-  </div>
+<div class="spop" id="ssheet" hidden>
+  <div class="sp-h"><span>Sort by</span><div class="dir"><button id="up" class="on" aria-label="Ascending">↑</button><button id="down" aria-label="Descending">↓</button></div></div>
+  <div id="sortcols"></div>
 </div>
+<div class="sscrim" id="sscrim" hidden></div>
 <script>
 var COLS = [['no', 'Guest No.'], ['first', 'First Name'], ['last', 'Last Name'], ['group', 'Guest Group'], ['status', 'RSVP Status'], ['arrDate', 'Arrival Flight Date'], ['arrFlight', 'Arrival Flight Number'], ['depDate', 'Departure Flight Date'], ['room', 'Room #']];
 var G = [
@@ -176,11 +179,12 @@ function openSheet() {
   $('cols').innerHTML = COLS.filter(function (c) { return c[0] !== 'no'; }).map(function (c) { return '<button class="col" data-col="' + c[0] + '"><span>' + c[1] + '</span>' + (filters[c[0]] ? '<em>● ' + filters[c[0]].length + ' selected</em>' : '') + '<i>›</i></button>'; }).join('');
   $('pg-main').hidden = false; $('pg-col').hidden = true; $('sheet').hidden = false; $('scrim').hidden = false;
 }
-function closeSheet() { $('sheet').hidden = true; $('ssheet').hidden = true; $('scrim').hidden = true; }
+function closeSheet() { $('sheet').hidden = true; $('ssheet').hidden = true; $('scrim').hidden = true; $('sscrim').hidden = true; }
 function openSort() {
   $('sortcols').innerHTML = COLS.map(function (c) { return '<button class="col' + (c[0] === sort.k ? ' cur' : '') + '" data-sort="' + c[0] + '"><span>' + c[1] + '</span>' + (c[0] === sort.k ? '<em>✓</em>' : '') + '</button>'; }).join('');
   $('up').classList.toggle('on', sort.dir > 0); $('down').classList.toggle('on', sort.dir < 0);
-  $('ssheet').hidden = false; $('scrim').hidden = false;
+  var r = $('sortbtn').getBoundingClientRect();
+  $('ssheet').style.top = (r.bottom + 4) + 'px'; $('ssheet').hidden = false; $('sscrim').hidden = false;
 }
 function openCol(k) {
   cur = k; var counts = {};
@@ -198,7 +202,7 @@ function drawVals() {
   }).join('');
 }
 $('funnel').onclick = openSheet; $('scrim').onclick = closeSheet; $('done').onclick = closeSheet;
-$('sortbtn').onclick = openSort;
+$('sortbtn').onclick = openSort; $('sscrim').onclick = closeSheet;
 $('sortcols').onclick = function (e) { var b = e.target.closest('[data-sort]'); if (!b) return; sort.k = b.dataset.sort; render(); closeSheet(); };
 $('up').onclick = function () { sort.dir = 1; render(); openSort(); };
 $('down').onclick = function () { sort.dir = -1; render(); openSort(); };
