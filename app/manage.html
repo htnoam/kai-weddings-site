@@ -608,6 +608,10 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
   // ---------- network ----------
   var SID = Math.random().toString(36).slice(2, 10);  // this open screen, so others' changes can be told apart from ours
   function api(action, data) {
+    if (S.stale && ['list', 'ping', 'history'].indexOf(action) < 0) {
+      var se = new Error('Still loading the latest list. Try again in a second.'); se.server = true;
+      toast(se.message, null, null, true); return Promise.reject(se);
+    }
     var body = Object.assign({ action: action, e: EVENT, k: KEY, sid: SID }, data || {});
     return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) })
       .then(function (r) { return r.json(); })
@@ -632,11 +636,32 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 
   function load(silent) {
     if (!EVENT) { $('gate').textContent = 'This link is incomplete. Ask Noam for the full link.'; return Promise.resolve(); }
+    // Opening: show the list saved on this device from last time right away, then swap in the fresh one.
+    // Until the fresh list arrives (S.stale) nothing can be changed, so no edit is made on old data.
+    var CK = 'kai-list-' + EVENT + (KEY ? '-a' : '');
+    if (!silent && !S.guests.length) {
+      var cached = null; try { cached = JSON.parse(localStorage.getItem(CK) || 'null'); } catch (e) {}
+      if (cached && cached.guests) { show(cached, false); S.stale = true; var sv = $('save'); sv.hidden = false; sv.className = 'save busy'; sv.textContent = 'Updating…'; }
+    }
+    var wasStale = S.stale;
     return api('list').then(function (res) {
+      try { localStorage.setItem(CK, JSON.stringify(res)); } catch (e) {}
+      S.stale = false;
+      show(res, silent || wasStale);
+      if (!silent) { var s = $('save'); s.hidden = false; saving('ok'); }
+    }).catch(function (e) {
+      if (silent) return;
+      if (S.stale) { S.stale = false; var sv = $('save'); sv.className = 'save err'; sv.textContent = 'Couldn’t update · showing the last saved list'; return; }
+      $('gate').hidden = false; $('app').hidden = true;
+      $('gate').textContent = e.server ? e.message : 'We couldn’t load the guest list. Check your connection and try Refresh.';
+      $('refresh').hidden = false;
+    });
+  }
+  function show(res, keepView) {
       S.guests = res.guests; S.who = res.who; S.admin = res.admin; S.views = res.views || [];
       setCustom(res.custom || []);
       if (!curView()) S.view = '';
-      if (!silent && curView()) applyViewState(curView());
+      if (!keepView && curView()) applyViewState(curView());
       $('couple').textContent = res.wedding.couple || 'Guest List';
       $('when').textContent = [fmtDate(res.wedding.date), res.wedding.place].filter(Boolean).join(' · ');
       $('who').textContent = 'Signed in as ' + res.who;
@@ -644,14 +669,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
       $('refresh').hidden = false;
       document.title = 'Guest List – ' + (res.wedding.couple || 'Wedding');
       $('gate').hidden = true; $('app').hidden = false; $('fab').classList.add('show');
-      if (!silent) { var s = $('save'); s.hidden = false; saving('ok'); }
       render();
-    }).catch(function (e) {
-      if (silent) return;
-      $('gate').hidden = false; $('app').hidden = true;
-      $('gate').textContent = e.server ? e.message : 'We couldn’t load the guest list. Check your connection and try Refresh.';
-      $('refresh').hidden = false;
-    });
   }
 
   // ---------- column filters (like Excel): S.filters = { columnKey: [values to show] } ----------
@@ -955,6 +973,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 
   // ---------- inline editing ----------
   function startEdit(td) {
+    if (S.stale) { toast('Still loading the latest list. Try again in a second.', null, null, true); return; }
     if (S.editing) return;
     var no = Number(td.parentNode.dataset.no), k = td.dataset.k, g = byNo(no);
     var c = COLS.filter(function (x) { return x.k === k; })[0];
@@ -1171,6 +1190,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 
   // ---------- add guest ----------
   function openAdd(from) {
+    if (S.stale) { toast('Still loading the latest list. Try again in a second.', null, null, true); return; }
     $('dlg-title').textContent = from ? 'Add family member' : 'Add Guest';
     ['a-first', 'a-last', 'a-notes'].forEach(function (id) { $(id).value = ''; });
     $('a-phone').value = from ? prettyPhone(from.phone) : '';
