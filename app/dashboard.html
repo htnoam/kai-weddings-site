@@ -81,6 +81,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   <div class="top-in">
     <span class="brand">KAI Events</span>
     <div style="display:flex;gap:8px">
+      <button type="button" class="btn" id="gh-change" hidden>GitHub key</button>
       <button type="button" class="btn" id="refresh">Refresh</button>
       <button type="button" class="btn primary" id="new">+ New Event</button>
     </div>
@@ -325,13 +326,14 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 
   // ---------- GitHub key (lets the hub write each event's WhatsApp link preview) ----------
   function renderGh(gh) {
-    $('ghbar').hidden = gh.set && !gh.error;
+    $('ghbar').hidden = gh.set && !gh.error; $('gh-change').hidden = !(gh.set && !gh.error);
     $('gh-msg').textContent = gh.error ? gh.error : 'WhatsApp link previews are off until you add a GitHub key.';
   }
+  $('gh-change').addEventListener('click', function () { $('gh-msg').textContent = 'Paste a new GitHub key to replace the current one.'; $('ghbar').hidden = false; $('gh-key').focus(); });
   $('gh-save').addEventListener('click', function () {
     var key = $('gh-key').value.trim(); if (!key) return;
     var b = this; b.disabled = true; b.textContent = 'Checking…';
-    api('githubKey', { key: key }).then(function () { $('gh-key').value = ''; $('ghbar').hidden = true; toast('GitHub key saved. Link previews are on.'); })
+    api('githubKey', { key: key }).then(function () { $('gh-key').value = ''; $('ghbar').hidden = true; $('gh-change').hidden = false; toast('GitHub key saved. Link previews are on.'); })
       .catch(function (e) { toast(e.server ? e.message : 'Couldn’t save the key.', true); })
       .then(function () { b.disabled = false; b.textContent = 'Save key'; });
   });
