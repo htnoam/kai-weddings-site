@@ -452,10 +452,12 @@ tr.has-chg td.chk { box-shadow: inset 4px 0 0 #C2410C; }
 .spop .dir button.on { background: var(--ink); color: #FFFFFF; }
 .msort { display: none; }
 .mscrim { position: fixed; inset: 0; z-index: 42; background: rgba(31,31,33,.45); }
-.msheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 43; background: #FFFFFF; border-radius: 16px 16px 0 0; max-height: 86vh; display: flex; flex-direction: column; box-shadow: 0 -12px 30px -12px rgba(0,0,0,.35); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.msheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 43; background: #FFFFFF; border-radius: 16px 16px 0 0; max-height: 70vh; max-height: 72dvh; display: flex; flex-direction: column; box-shadow: 0 -12px 30px -12px rgba(0,0,0,.35); padding-bottom: env(safe-area-inset-bottom, 0px); }
 .mscrim[hidden], .msheet[hidden] { display: none; }
 .msheet .grab { width: 38px; height: 5px; border-radius: 3px; background: var(--hair); margin: 8px auto 2px; }
-.msheet .sh-h { padding: 2px 16px 8px; border-bottom: 1px solid var(--row-line); font-size: 17px; }
+.msheet .sh-h { display: flex; align-items: center; padding: 2px 8px 6px 16px; border-bottom: 1px solid var(--row-line); font-size: 17px; }
+.msheet .sh-h b { flex: 1; }
+.msheet .sh-x { width: 40px; height: 40px; border: none; background: none; font-size: 20px; color: var(--muted); }
 .msheet .sh-b { overflow-y: auto; padding: 10px 16px; display: flex; flex-direction: column; gap: 12px; }
 .msheet .sec { font-size: 12px; font-weight: 700; color: var(--soft); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
 .msheet .ageseg { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
@@ -476,7 +478,7 @@ tr.has-chg td.chk { box-shadow: inset 4px 0 0 #C2410C; }
   .card .l2 .grp { unicode-bidi: plaintext; }
   .fscrim { background: rgba(31,31,33,.2); }
   .fpop { left: 0 !important; right: 0; top: auto !important; bottom: 0; width: auto; border-radius: 16px 16px 0 0; border: none; padding: 14px 16px max(14px, env(safe-area-inset-bottom, 0px)); }
-  .fpop .fp-list { max-height: 46vh; }
+  .fpop .fp-list { max-height: 40vh; max-height: 42dvh; }
   .fp-row { min-height: 40px; } .fp-only { visibility: visible; color: var(--ink); }
 }
 </style>
@@ -572,7 +574,7 @@ tr.has-chg td.chk { box-shadow: inset 4px 0 0 #C2410C; }
 <div class="mscrim" id="mscrim" hidden></div>
 <div class="msheet" id="msheet" role="dialog" aria-label="Filter" hidden>
   <div class="grab"></div>
-  <div class="sh-h"><b>Filter</b></div>
+  <div class="sh-h"><b>Filter</b><button type="button" class="sh-x" id="mx" aria-label="Close">✕</button></div>
   <div class="sh-b">
     <div><div class="sec">Age</div><div class="ageseg" id="ageseg"></div></div>
     <div><div class="sec">Filter a column</div><div class="mcols" id="mcols"></div></div>
@@ -1846,7 +1848,7 @@ tr.has-chg td.chk { box-shadow: inset 4px 0 0 #C2410C; }
   // ---------- phone: filter sheet (age + any column) and the small sort list ----------
   function drawSheet() {
     $('ageseg').innerHTML = [''].concat(AGES).map(function (a) { return '<button type="button" data-age="' + a + '" class="' + (S.age === a ? 'on' : '') + '">' + (a || 'All') + '</button>'; }).join('');
-    $('mcols').innerHTML = visibleCols().filter(function (c) { return ['no', 'first', 'last', 'group', 'room', 'phone', 'notes'].indexOf(c.k) < 0; }).map(function (c) {
+    $('mcols').innerHTML = visibleCols().filter(function (c) { return ['no', 'first', 'last', 'group', 'age', 'room', 'phone', 'notes'].indexOf(c.k) < 0; }).map(function (c) {
       return '<button type="button" class="mc" data-filter="' + c.k + '"><span>' + esc(c.label) + '</span>' + (S.filters[c.k] ? '<em>● ' + S.filters[c.k].length + ' selected</em>' : '') + '<i>›</i></button>';
     }).join('');
     $('mdone').textContent = 'Show ' + nGuests(filtered().length);
@@ -1854,6 +1856,7 @@ tr.has-chg td.chk { box-shadow: inset 4px 0 0 #C2410C; }
   function closeSheet() { $('msheet').hidden = true; $('mscrim').hidden = true; $('mfilter').setAttribute('aria-expanded', 'false'); }
   $('mfilter').addEventListener('click', function () { drawSheet(); $('msheet').hidden = false; $('mscrim').hidden = false; this.setAttribute('aria-expanded', 'true'); });
   $('mscrim').addEventListener('click', closeSheet);
+  $('mx').addEventListener('click', closeSheet);
   $('mdone').addEventListener('click', closeSheet);
   $('mclear').addEventListener('click', function () { S.age = ''; S.group = ''; S.filters = {}; $('f-age').value = ''; $('f-group').value = ''; render(); drawSheet(); });
   $('msheet').addEventListener('click', function (e) {
