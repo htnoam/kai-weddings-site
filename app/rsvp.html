@@ -124,6 +124,9 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visib
 .thanks { align-items: center; text-align: center; gap: 12px; padding: 40px 24px; }
 .thanks .big { font-family: var(--sans); font-weight: 500; font-size: 28px; line-height: 1.2; color: var(--text); }
 .thanks p { margin: 0; font-family: var(--sans); font-size: 17px; line-height: 1.6; }
+.to-portal { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-top: 6px; padding-top: 14px; border-top: 1px solid rgba(0,0,0,.08); }
+.to-portal p { font-size: 15px !important; }
+.to-portal .send { display: grid; place-items: center; text-decoration: none; }
 .link-btn { background: none; border: none; color: var(--ink); text-decoration: underline; font: 15px var(--sans); cursor: pointer; min-height: 44px; }
 
 /* ---------- footer ---------- */
@@ -234,6 +237,10 @@ html[dir=ltr] input[type=tel] { text-align: left; }
   <section id="thanks" class="panel thanks" hidden>
     <div class="big" data-t="thanksBig"></div>
     <p id="thanks-text"></p>
+    <div class="to-portal" id="to-portal" hidden>
+      <p data-t="portalTxt"></p>
+      <a class="send" id="portal-go" href="#" data-t="portalBtn"></a>
+    </div>
     <button type="button" class="link-btn" id="edit" data-t="edit"></button>
   </section>
 
@@ -261,6 +268,7 @@ html[dir=ltr] input[type=tel] { text-align: left; }
       phone: 'טלפון (וואטסאפ)', attendQ: 'האם תגיעו?', yes: 'נגיע', no: 'לצערנו לא', maybe: 'עוד לא יודעים',
       guests: 'מספר אורחים', incl: 'כולל אתכם', withYou: 'מי מגיע איתכם', guest: 'אורח', note: 'הערה לזוג', notePh: 'לא חובה',
       send: 'שליחת אישור הגעה', sending: 'שולחים…', thanksBig: 'תודה רבה!', edit: 'עריכת התשובה',
+      portalTxt: 'באזור האישי שלכם תוכלו להוסיף פרטי טיסה ולמצוא את כל המידע על החתונה.', portalBtn: 'לאזור האישי',
       errName: 'נא למלא שם פרטי ושם משפחה.', errHeb: 'נא לכתוב את השמות באנגלית.', errSend: 'משהו השתבש בשליחה. נסו שוב בעוד רגע.',
       types: [['adult', 'מבוגר', ''], ['child', 'ילד', 'עד גיל 10'], ['baby', 'תינוק', 'עד גיל 2']], ageOf: 'גיל אורח', more: 'אורח נוסף', less: 'פחות אורחים',
       questions: 'יש שאלות? נעם סלח, מתכנן האירוע,<br>ישמח לעזור.', waBtn: 'הודעה לנעם בוואטסאפ', insta: 'עקבו אחרינו באינסטגרם',
@@ -272,6 +280,7 @@ html[dir=ltr] input[type=tel] { text-align: left; }
       phone: 'Phone (WhatsApp)', attendQ: 'Will you come?', yes: 'We’ll be there', no: 'Sadly, no', maybe: 'Not sure yet',
       guests: 'Number of guests', incl: 'Including you', withYou: 'Who’s coming with you', guest: 'Guest', note: 'A note for the couple', notePh: 'Optional',
       send: 'Send RSVP', sending: 'Sending…', thanksBig: 'Thank you!', edit: 'Edit your reply',
+      portalTxt: 'In your guest area you can add your flight details and find everything about the wedding.', portalBtn: 'Go to your guest area',
       errName: 'Please fill in your first and last name.', errHeb: 'Please write the names in English letters.', errSend: 'Something went wrong. Please try again in a moment.',
       types: [['adult', 'Adult', ''], ['child', 'Child', 'up to 10'], ['baby', 'Baby', 'up to 2']], ageOf: 'Age of guest', more: 'Add a guest', less: 'Remove a guest',
       questions: 'Any questions? Our event planner,<br>Noam Salach, is happy to help.', waBtn: 'Message Noam on WhatsApp', insta: 'Follow us on Instagram',
@@ -391,6 +400,13 @@ html[dir=ltr] input[type=tel] { text-align: left; }
       .then(function (r) { return r.json(); })
       .then(function (res) {
         if (!res.ok) throw new Error(res.error);
+        // Next step: the guest area (only if it has more than the RSVP), already signed in with this phone.
+        var more = CFG && ['Portal Flights', 'Portal Stay', 'Portal Info'].some(function (k) { return CFG[k] === 'on'; });
+        $('to-portal').hidden = !more || attend === 'no';
+        if (more) {
+          $('portal-go').href = '/' + EVENT + '/guest' + (L === 'en' ? '?lang=en' : '');
+          if (payload.phone) try { localStorage.setItem('kai-portal-' + EVENT, payload.phone); } catch (x) {}
+        }
         $('rsvp').hidden = true; $('thanks').hidden = false;
         $('thanks').scrollIntoView({ behavior: 'smooth', block: 'center' });
       })
