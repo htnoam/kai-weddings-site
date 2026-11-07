@@ -148,7 +148,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   <form class="dialog" id="form" role="dialog" aria-modal="true" aria-labelledby="dlg-title" novalidate>
     <h2 id="dlg-title">New Event</h2>
     <label class="f">Couple names (in English) *<input id="n-couple" placeholder="e.g. Dana & Omer" autocomplete="off"></label>
-    <div class="hint">Links will be: <b id="n-link">weddings.kaiwedd.com/…</b></div>
+    <div class="hint">Links will be: <b id="n-link">events.kaiwedd.com/…/rsvp</b></div>
     <label class="f">Wedding date<input id="n-date" type="date"></label>
     <label class="f">Location<input id="n-place" placeholder="e.g. Limassol, Cyprus" autocomplete="off"></label>
     <label class="f">RSVP form opens in<select id="n-lang"><option value="he">Hebrew</option><option value="en">English</option></select></label>
@@ -197,7 +197,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
       <label class="f">Small note · English<input data-k="Hosting Note EN"></label>
       <label class="f he">הערה קטנה · עברית<input data-k="Hosting Note HE"></label>
     </div>
-    <div class="sec">Guest portal · weddings.kaiwedd.com/<span id="e-slug"></span>/guest</div>
+    <div class="sec">Guest area · events.kaiwedd.com/<span id="e-slug"></span>/guests</div>
     <div class="cols2">
       <label class="f chk"><input type="checkbox" data-k="Portal RSVP" data-default="on"> RSVP per family member</label>
       <label class="f chk"><input type="checkbox" data-k="Portal Flights"> Flight details (guests fill in)</label>
@@ -224,7 +224,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   'use strict';
   var API = 'https://script.google.com/macros/s/AKfycbwu6hLPWCdnjcX8NVWjCHjQHNrP5Tjj-lx76JgHN7OEfZYDx30dP0FAJVVAbL3s06WQ/exec';
   var KEY = 'htnoam23';
-  var SITE = 'https://weddings.kaiwedd.com/';
+  var SITE = 'https://events.kaiwedd.com/';
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
   var EVENTS = [];
@@ -257,16 +257,16 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
         n(c.total, '') + n(c.Confirmed, 'c-ok') + n(c.adults, '') + n(c.children, '') + n(c.babies, '') +
         n(c.Maybe, 'c-warn') + n(c.Declined, 'c-bad') +
         '<td><div class="links">' +
-          '<a class="btn sm primary" href="/' + esc(ev.slug) + '/manage/htnoam23" target="_blank" rel="noopener">Guest list</a>' +
-          '<a class="btn sm" href="/' + esc(ev.slug) + '" target="_blank" rel="noopener">RSVP</a>' +
+          '<a class="btn sm primary" href="/' + esc(ev.slug) + '/portal/htnoam23" target="_blank" rel="noopener">Guest list</a>' +
+          '<a class="btn sm" href="/' + esc(ev.slug) + '/rsvp" target="_blank" rel="noopener">RSVP</a>' +
           '<button type="button" class="btn sm" data-edit="' + esc(ev.slug) + '">Edit RSVP</button>' +
           '<a class="btn sm" href="' + esc(ev.sheetUrl) + '" target="_blank" rel="noopener">Sheet</a>' +
           (ev.folderUrl ? '<a class="btn sm" href="' + esc(ev.folderUrl) + '" target="_blank" rel="noopener">Folder</a>' : '') +
         '</div></td>' +
         '<td><div class="links">' +
-          '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug + '/manage') + '">Couple’s list</button>' +
-          '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug) + '">RSVP</button>' +
-          '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug + '/guest') + '">Portal</button>' +
+          '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug + '/portal') + '">Couple’s list</button>' +
+          '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug + '/rsvp') + '">RSVP</button>' +
+          '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug + '/guests') + '">Portal</button>' +
         '</div></td></tr>';
     }).join('');
     // Phones: one card per event instead of the wide table.
@@ -276,11 +276,11 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
         '<div class="ec-h"><div class="couple">' + esc(ev.couple) + '</div><div class="sub">' + esc([fmtDate(ev.date), ev.place].filter(Boolean).join(' · ')) + '</div>' + (ev.error ? '<div class="err">' + esc(ev.error) + '</div>' : '') + '</div>' +
         '<div class="ec-n"><span><b>' + v(c.total) + '</b> guests</span><span class="c-ok"><b>' + v(c.Confirmed) + '</b> ✓</span><span class="c-warn"><b>' + v(c.Maybe) + '</b> maybe</span><span class="c-bad"><b>' + v(c.Declined) + '</b> ✗</span></div>' +
         '<div class="sub">' + v(c.adults) + ' adults · ' + v(c.children) + ' children · ' + v(c.babies) + ' babies</div>' +
-        '<div class="ec-a"><a class="btn primary" href="/' + esc(ev.slug) + '/manage/htnoam23" target="_blank" rel="noopener">Guest list</a>' +
+        '<div class="ec-a"><a class="btn primary" href="/' + esc(ev.slug) + '/portal/htnoam23" target="_blank" rel="noopener">Guest list</a>' +
           '<button type="button" class="btn" data-edit="' + esc(ev.slug) + '">Edit RSVP</button>' +
-          '<a class="btn" href="/' + esc(ev.slug) + '" target="_blank" rel="noopener">RSVP</a></div>' +
+          '<a class="btn" href="/' + esc(ev.slug) + '/rsvp" target="_blank" rel="noopener">RSVP</a></div>' +
         '<div class="ec-b"><a href="' + esc(ev.sheetUrl) + '" target="_blank" rel="noopener">Sheet</a>' + (ev.folderUrl ? '<a href="' + esc(ev.folderUrl) + '" target="_blank" rel="noopener">Folder</a>' : '') +
-          '<span class="ec-copy">Copy link:</span><button type="button" data-copy="' + esc(SITE + ev.slug + '/manage') + '">Couple</button><button type="button" data-copy="' + esc(SITE + ev.slug) + '">RSVP</button><button type="button" data-copy="' + esc(SITE + ev.slug + '/guest') + '">Portal</button></div>' +
+          '<span class="ec-copy">Copy link:</span><button type="button" data-copy="' + esc(SITE + ev.slug + '/portal') + '">Couple</button><button type="button" data-copy="' + esc(SITE + ev.slug + '/rsvp') + '">RSVP</button><button type="button" data-copy="' + esc(SITE + ev.slug + '/guests') + '">Portal</button></div>' +
       '</div>';
     }).join('');
   }
@@ -292,8 +292,8 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   }); });
 
   // ---------- new event ----------
-  function openNew() { ['n-couple', 'n-date', 'n-place'].forEach(function (id) { $(id).value = ''; }); $('n-lang').value = 'he'; $('n-link').textContent = 'weddings.kaiwedd.com/…'; $('n-err').hidden = true; $('dlg').hidden = false; $('n-couple').focus(); }
-  $('n-couple').addEventListener('input', function () { var s = slugify(this.value); $('n-link').textContent = 'weddings.kaiwedd.com/' + (s || '…'); });
+  function openNew() { ['n-couple', 'n-date', 'n-place'].forEach(function (id) { $(id).value = ''; }); $('n-lang').value = 'he'; $('n-link').textContent = 'events.kaiwedd.com/…/rsvp'; $('n-err').hidden = true; $('dlg').hidden = false; $('n-couple').focus(); }
+  $('n-couple').addEventListener('input', function () { var s = slugify(this.value); $('n-link').textContent = 'events.kaiwedd.com/' + (s || '…') + '/rsvp'; });
   $('form').addEventListener('submit', function (e) {
     e.preventDefault();
     var f = { couple: $('n-couple').value.trim(), date: $('n-date').value, place: $('n-place').value.trim(), lang: $('n-lang').value };
@@ -301,7 +301,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
     if (err) { $('n-err').textContent = err; $('n-err').hidden = false; return; }
     $('n-save').disabled = true; $('n-save').textContent = 'Creating…'; $('n-err').hidden = true;
     api('createEvent', { event: f }).then(function (res) {
-      $('dlg').hidden = true; toast('Created ' + res.event.couple + ' · weddings.kaiwedd.com/' + res.event.slug); load();
+      $('dlg').hidden = true; toast('Created ' + res.event.couple + ' · events.kaiwedd.com/' + res.event.slug + '/rsvp'); load();
     }).catch(function (x) { $('n-err').textContent = x.server ? x.message : 'Couldn’t create the event. Try again.'; $('n-err').hidden = false; })
       .then(function () { $('n-save').disabled = false; $('n-save').textContent = 'Create Event'; });
   });
@@ -327,7 +327,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   function openEdit(slug) {
     var ev = EVENTS.filter(function (x) { return x.slug === slug; })[0]; if (!ev) return;
     EDIT = { slug: slug, vals: {} };
-    $('e-title').textContent = 'Edit RSVP form · ' + ev.couple; $('e-view').href = '/' + slug; $('e-portal').href = '/' + slug + '/guest'; $('e-slug').textContent = slug; $('e-err').hidden = true;
+    $('e-title').textContent = 'Edit RSVP form · ' + ev.couple; $('e-view').href = '/' + slug + '/rsvp'; $('e-portal').href = '/' + slug + '/guests'; $('e-slug').textContent = slug; $('e-err').hidden = true;
     $('dlg-e').hidden = false; $('e-save').disabled = true;
     document.querySelectorAll('#form-e [data-k]').forEach(function (el) { el.value = ''; });
     api('rsvpInfo', { e: slug }).then(function (res) {

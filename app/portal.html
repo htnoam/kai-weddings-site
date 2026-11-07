@@ -359,7 +359,7 @@ button.btn:disabled { opacity: .6; }
   function setApp() {
     var name = INFO && INFO.couple || 'KAI';
     $('apptitle').setAttribute('content', name); $('touchicon').href = photo(180); $('home-img').src = photo(180);
-    var m = { name: name, short_name: name, start_url: location.origin + '/' + EVENT + '/guest', scope: location.origin + '/', display: 'standalone',
+    var m = { name: name, short_name: name, start_url: location.origin + '/' + EVENT + '/guests', scope: location.origin + '/', display: 'standalone',
       background_color: '#E9E3D8', theme_color: '#E9E3D8',
       icons: [{ src: photo(192), sizes: '192x192' }, { src: photo(512), sizes: '512x512' }] };
     var l = document.getElementById('manifest');

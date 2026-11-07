@@ -11,11 +11,13 @@
 </head>
 <body style="margin:0;background:#F4F2EE;font:15px system-ui,sans-serif;color:#4A4A50">
 <!-- Routes event addresses that have no folder of their own:
-     /<event> → shared RSVP form. /<event>/guest → guest portal. /<event>/manage and /<event>/manage/htnoam23 → shared guest screen. Anything else → not found. -->
+     /<event> and /<event>/rsvp → shared RSVP form. /<event>/guests → guest area. /<event>/portal and /<event>/portal/htnoam23 → shared guest screen.
+     Old /guest and /manage links are sent to the new ones by _redirects (and still work here too). Anything else → not found. -->
 <script>
 (function () {
   var parts = location.pathname.split('/').filter(Boolean);
-  var page = parts.length >= 2 && parts[1] === 'manage' ? '/app/manage.html' : parts.length === 2 && parts[1] === 'guest' ? '/app/portal.html' : parts.length === 1 ? '/app/rsvp.html' : null;
+  var p1 = parts[1];
+  var page = parts.length >= 2 && (p1 === 'portal' || p1 === 'manage') ? '/app/manage.html' : parts.length === 2 && (p1 === 'guests' || p1 === 'guest') ? '/app/portal.html' : parts.length === 1 || (parts.length === 2 && p1 === 'rsvp') ? '/app/rsvp.html' : null;
   if (!page) { document.body.innerHTML = '<p style="text-align:center;padding:80px 20px">This page was not found.</p>'; return; }
   fetch(page, { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (html) { document.open(); document.write(html); document.close(); });
 })();

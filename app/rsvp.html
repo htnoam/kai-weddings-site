@@ -404,7 +404,7 @@ html[dir=ltr] input[type=tel] { text-align: left; }
         var more = CFG && ['Portal Flights', 'Portal Stay', 'Portal Info'].some(function (k) { return CFG[k] === 'on'; });
         $('to-portal').hidden = !more || attend === 'no';
         if (more) {
-          $('portal-go').href = '/' + EVENT + '/guest' + (L === 'en' ? '?lang=en' : '');
+          $('portal-go').href = '/' + EVENT + '/guests' + (L === 'en' ? '?lang=en' : '');
           if (payload.phone) try { localStorage.setItem('kai-portal-' + EVENT, payload.phone); } catch (x) {}
         }
         $('rsvp').hidden = true; $('thanks').hidden = false;

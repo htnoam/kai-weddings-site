@@ -2017,7 +2017,7 @@ tr.has-chg td.chk { box-shadow: inset 4px 0 0 #C2410C; }
   }
   function remindText(r) {
     return remindTemplate().replace(/\{name\}/g, joinNames(r.guests.map(function (g) { return g.first; })))
-      .replace(/\{couple\}/g, $('couple').textContent || '').replace(/\{link\}/g, 'https://weddings.kaiwedd.com/' + EVENT);
+      .replace(/\{couple\}/g, $('couple').textContent || '').replace(/\{link\}/g, 'https://events.kaiwedd.com/' + EVENT + '/rsvp');
   }
   function remindRows() {
     var list = remindList();

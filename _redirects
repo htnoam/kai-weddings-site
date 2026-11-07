@@ -1,0 +1,11 @@
+# Event links: /<event>/rsvp · /<event>/guests (guest area) · /<event>/portal (couple's guest list)
+# Old links keep working and move to the new ones.
+/:slug/guest          /:slug/guests          301!
+/:slug/guest/         /:slug/guests          301!
+/:slug/manage         /:slug/portal          301!
+/:slug/manage/        /:slug/portal          301!
+/:slug/manage/:code   /:slug/portal/:code    301!
+/:slug/manage/:code/  /:slug/portal/:code    301!
+# /<event>/rsvp shows the event's own page (with its WhatsApp link preview) when it has one; otherwise 404.html shows the shared form.
+/:slug/rsvp           /:slug/                200
+/:slug/rsvp/          /:slug/                200
