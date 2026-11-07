@@ -88,11 +88,20 @@ button { cursor: pointer; }
 .sp-h .dir button { width: 34px; height: 28px; font-size: 14px; }
 #sortcols .col { min-height: 36px; padding: 0 10px; font-size: 14.5px; border-bottom: none; border-radius: 8px; }
 #sortcols .col.cur { background: var(--soft-surface); }
+.ageseg { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.ageseg button { height: 36px; border: none; border-right: 1px solid var(--line); background: var(--surface); font-size: 14px; }
+.ageseg button:last-child { border-right: none; }
+.ageseg button.on { background: var(--ink); color: #FFF; font-weight: 600; }
+#sheet .sh-b { gap: 12px; padding: 10px 16px; }
+#sheet .sh-h { padding: 2px 16px 8px; }
+#cols .col { min-height: 40px; font-size: 14.5px; }
+#sheet .sh-f { padding: 8px 16px 12px; }
+#sheet .sh-f button { height: 42px; }
 .note { margin: 14px 4px; font-size: 13px; color: var(--soft); line-height: 1.5; }
 </style>
 </head>
 <body>
-<div class="mock">MOCKUP 2 · sort next to “Showing”, filters in the funnel · sample names</div>
+<div class="mock">MOCKUP 3 · smaller filter panel · sample names</div>
 <div class="head"><div class="couple">Maya &amp; Yotam</div><div class="sum"><b>12</b> guests · <b style="color:var(--ok)">8</b> ✓ · <b style="color:var(--warn)">3</b> maybe · <b style="color:var(--bad)">1</b> ✗ ⌄</div></div>
 <div class="wrap">
   <div class="find">
@@ -115,7 +124,7 @@ button { cursor: pointer; }
     <div class="sh-h"><b>Filter</b></div>
     <div class="sh-b">
       <div><div class="sec">Age</div>
-        <select class="agesel"><option>All ages</option><option>Adult</option><option>Child</option><option>Baby</option></select>
+        <div class="ageseg" id="ageseg"><button class="on">All</button><button>Adult</button><button>Child</button><button>Baby</button></div>
       </div>
       <div><div class="sec">Filter a column</div><div class="cols" id="cols"></div></div>
     </div>
@@ -176,7 +185,7 @@ function render() {
   $('n2').textContent = L.length;
 }
 function openSheet() {
-  $('cols').innerHTML = COLS.filter(function (c) { return c[0] !== 'no'; }).map(function (c) { return '<button class="col" data-col="' + c[0] + '"><span>' + c[1] + '</span>' + (filters[c[0]] ? '<em>● ' + filters[c[0]].length + ' selected</em>' : '') + '<i>›</i></button>'; }).join('');
+  $('cols').innerHTML = COLS.filter(function (c) { return ['no', 'first', 'last'].indexOf(c[0]) < 0; }).map(function (c) { return '<button class="col" data-col="' + c[0] + '"><span>' + c[1] + '</span>' + (filters[c[0]] ? '<em>● ' + filters[c[0]].length + ' selected</em>' : '') + '<i>›</i></button>'; }).join('');
   $('pg-main').hidden = false; $('pg-col').hidden = true; $('sheet').hidden = false; $('scrim').hidden = false;
 }
 function closeSheet() { $('sheet').hidden = true; $('ssheet').hidden = true; $('scrim').hidden = true; $('sscrim').hidden = true; }
@@ -201,7 +210,8 @@ function drawVals() {
     return '<label class="val"><input type="checkbox" data-v="' + esc(v) + '"' + (sel[v] ? ' checked' : '') + '><span>' + esc(v || '(empty)') + '</span><small>' + openCol.counts[v] + '</small><button class="only" data-only="' + esc(v) + '">only</button></label>';
   }).join('');
 }
-$('funnel').onclick = openSheet; $('scrim').onclick = closeSheet; $('done').onclick = closeSheet;
+$('funnel').onclick = openSheet;
+$('ageseg').onclick = function (e) { var b = e.target.closest('button'); if (!b) return; this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); }); }; $('scrim').onclick = closeSheet; $('done').onclick = closeSheet;
 $('sortbtn').onclick = openSort; $('sscrim').onclick = closeSheet;
 $('sortcols').onclick = function (e) { var b = e.target.closest('[data-sort]'); if (!b) return; sort.k = b.dataset.sort; render(); closeSheet(); };
 $('up').onclick = function () { sort.dir = 1; render(); openSort(); };
