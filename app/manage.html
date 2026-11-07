@@ -296,6 +296,38 @@ tbody tr.flash td { animation: rowflash 2.6s ease-out; }
 .imp-prev td.why { color: var(--bad); white-space: normal; min-width: 180px; }
 .imp-prev td.okc { color: var(--ok); }
 #imp-done { font-size: 14px; line-height: 1.6; }
+th .fbtn { position: absolute; top: 50%; right: 6px; transform: translateY(-50%); width: 20px; height: 20px; padding: 0; display: grid; place-items: center; border: none; border-radius: 3px; background: transparent; color: var(--soft); opacity: 0; }
+th:hover .fbtn, th .fbtn:focus-visible { opacity: .8; }
+th .fbtn:hover { background: var(--hair); opacity: 1; }
+th .fbtn.on { opacity: 1; color: #FFFFFF; background: var(--ink); }
+th[data-k] > button[data-sort] { padding-right: 26px; }
+.fchips { flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 8px; }
+.fchips[hidden] { display: none; }
+.fchip { display: inline-flex; align-items: center; height: 26px; border-radius: 999px; background: #E8E4DC; font-size: 12.5px; overflow: hidden; }
+.fchip button { border: none; background: transparent; height: 100%; color: var(--text); font-size: 12.5px; }
+.fchip .fc-edit { padding: 0 4px 0 10px; max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fchip .fc-x { padding: 0 9px 0 5px; color: var(--muted); }
+.fchip .fc-x:hover { color: var(--bad); }
+.linkbtn { border: none; background: none; padding: 0 4px; font-size: 12.5px; color: var(--muted); text-decoration: underline; }
+.linkbtn:hover { color: var(--ink); }
+.fscrim { position: fixed; inset: 0; z-index: 44; }
+.fpop { position: fixed; z-index: 46; width: 260px; background: #FFFFFF; border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 16px 40px -12px rgba(0,0,0,.35); padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+.fpop[hidden], .fscrim[hidden] { display: none; }
+.fp-h { font-size: 12.5px; font-weight: 700; color: var(--muted); }
+.fpop input[type=search] { height: 30px; border: 1px solid var(--line); border-radius: 4px; padding: 0 8px; font-size: 13.5px; }
+.fp-tools { display: flex; gap: 8px; }
+.fp-list { max-height: 260px; overflow: auto; border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); padding: 4px 0; }
+.fp-row { display: flex; align-items: center; gap: 8px; padding: 3px 4px; border-radius: 3px; font-size: 13.5px; cursor: pointer; }
+.fp-row:hover { background: var(--soft-surface); }
+.fp-row input { accent-color: var(--ink); }
+.fp-v { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fp-v.empty { color: var(--soft); font-style: italic; }
+.fp-n { color: var(--soft); font-size: 12px; }
+.fp-only { border: none; background: none; font-size: 12px; color: var(--muted); text-decoration: underline; padding: 0 2px; visibility: hidden; }
+.fp-row:hover .fp-only { visibility: visible; }
+.fp-none { padding: 8px 4px; color: var(--soft); font-size: 13px; }
+.fp-foot { display: flex; justify-content: flex-end; gap: 6px; }
+.fp-foot .btn { height: 30px; padding: 0 12px; }
 #imp-done ul { margin: 6px 0 0; padding-inline-start: 18px; max-height: 200px; overflow: auto; color: var(--muted); }
 </style>
 <style id="freeze"></style>
@@ -338,6 +370,7 @@ tbody tr.flash td { animation: rowflash 2.6s ease-out; }
       <button type="button" class="btn" id="more" aria-haspopup="menu" aria-expanded="false" style="margin-inline-start:auto">⋯ More</button>
     </section>
 
+    <div class="fchips" id="fchips" hidden></div>
     <div class="tabrow">
     <nav class="vtabs" id="vtabs" aria-label="Views"></nav>
     <div class="subbar">
@@ -370,6 +403,8 @@ tbody tr.flash td { animation: rowflash 2.6s ease-out; }
 <button type="button" class="fab" id="fab"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Add Guest</button>
 <div class="scrim" id="scrim" hidden></div>
 <div class="menu" id="menu" role="menu" hidden></div>
+<div class="fscrim" id="fscrim" hidden></div>
+<div class="fpop" id="fpop" role="dialog" aria-label="Filter" hidden></div>
 
 <div class="overlay" id="dlg" hidden>
   <form class="dialog" id="addform" role="dialog" aria-modal="true" aria-labelledby="dlg-title" novalidate>
@@ -489,7 +524,7 @@ tbody tr.flash td { animation: rowflash 2.6s ease-out; }
 
   var S = { guests: [], who: '', admin: false, q: '', status: '', age: '', group: '', groupBy: false, trash: false,
     sort: { k: 'no', dir: 1 }, checked: {}, open: null, editing: null, cols: null, pending: 0,
-    views: [], view: '', widths: {}, resizing: false };
+    views: [], view: '', widths: {}, resizing: false, filters: {} };
   var PIN = ['no', 'first', 'last'];
   try { S.widths = JSON.parse(localStorage.getItem('kai-guest-widths') || '{}') || {}; } catch (e) {}
   try { S.view = localStorage.getItem('kai-guest-view') || ''; } catch (e) {}
@@ -594,7 +629,7 @@ tbody tr.flash td { animation: rowflash 2.6s ease-out; }
       S.guests = res.guests; S.who = res.who; S.admin = res.admin; S.views = res.views || [];
       setCustom(res.custom || []);
       if (!curView()) S.view = '';
-      if (!silent && curView()) { S.status = curView().status; S.age = curView().age; $('f-status').value = S.status; $('f-age').value = S.age; }
+      if (!silent && curView()) applyViewState(curView());
       $('couple').textContent = res.wedding.couple || 'Guest List';
       $('when').textContent = [fmtDate(res.wedding.date), res.wedding.place].filter(Boolean).join(' · ');
       $('who').textContent = 'Signed in as ' + res.who;
@@ -612,6 +647,15 @@ tbody tr.flash td { animation: rowflash 2.6s ease-out; }
     });
   }
 
+  // ---------- column filters (like Excel): S.filters = { columnKey: [values to show] } ----------
+  function cellVal(g, k) { return String(g[k] == null ? '' : g[k]).trim(); }
+  function sortVal(g, k) { var v = cellVal(g, k); return !v ? '' : TYPE[k] === 'date' ? dateKey(v) : v.toLowerCase(); }
+  function passesFilters(g, skip) {
+    for (var fk in S.filters) { if (fk !== skip && S.filters[fk] && S.filters[fk].indexOf(cellVal(g, fk)) < 0) return false; }
+    return true;
+  }
+  function shownVal(k, v) { return !v ? '(empty)' : k === 'phone' ? prettyPhone(v) : v; }
+
   // ---------- filtering ----------
   function filtered() {
     var q = S.q.trim().toLowerCase(), qd = q.replace(/\D/g, '');
@@ -620,15 +664,17 @@ tbody tr.flash td { animation: rowflash 2.6s ease-out; }
       if (S.status && g.status !== S.status) return false;
       if (S.age && g.age !== S.age) return false;
       if (S.group && g.group !== S.group) return false;
+      if (!passesFilters(g, null)) return false;
       if (!q) return true;
       if ((g.first + ' ' + g.last).toLowerCase().indexOf(q) > -1) return true;
       return qd.length > 2 && g.phone.replace(/\D/g, '').indexOf(qd.replace(/^0/, '')) > -1;
     });
-    var k = S.sort.k, d = S.sort.dir;
+    // Dates sort by the calendar; a flight date sorts by its time next (landing / take-off).
+    var k = S.sort.k, d = S.sort.dir, pair = { arrDate: 'arrTime', depDate: 'depTime' }[k];
     list.sort(function (a, b) {
-      var x = a[k], y = b[k];
-      if (k === 'no') return (x - y) * d;
-      x = String(x || '').toLowerCase(); y = String(y || '').toLowerCase();
+      if (k === 'no') return (a.no - b.no) * d;
+      var x = sortVal(a, k), y = sortVal(b, k);
+      if (x === y && pair) { x = sortVal(a, pair); y = sortVal(b, pair); }
       if (x === y) return a.no - b.no;
       if (!x) return 1; if (!y) return -1;
       return (x < y ? -1 : 1) * d;
@@ -679,6 +725,12 @@ tbody tr.flash td { animation: rowflash 2.6s ease-out; }
     $('bulk').hidden = S.trash || !nChecked; $('showing').hidden = !$('bulk').hidden; $('bulk-n').textContent = nChecked + ' selected';
 
     Array.prototype.forEach.call($('stats').querySelectorAll('[data-fs]'), function (b) { b.classList.toggle('cur', b.dataset.fs === S.status && b.dataset.fa === S.age); });
+    var fk = Object.keys(S.filters);
+    $('fchips').hidden = !fk.length || S.trash;
+    $('fchips').innerHTML = fk.map(function (k) {
+      var c = colOf(k), v = S.filters[k], txt = !v.length ? '(none)' : v.slice(0, 2).map(function (x) { return shownVal(k, x); }).join(', ') + (v.length > 2 ? ' +' + (v.length - 2) : '');
+      return '<span class="fchip"><button type="button" class="fc-edit" data-filter="' + k + '"><b>' + esc(c ? c.label : k) + ':</b> ' + esc(txt) + '</button><button type="button" class="fc-x" data-unfilter="' + k + '" aria-label="Remove this filter">✕</button></span>';
+    }).join('') + (fk.length > 1 ? '<button type="button" class="linkbtn" data-unfilter="*">Clear all</button>' : '');
     $('vtabs').innerHTML = [{ name: '' }].concat(S.views).map(function (v) {
       return '<button type="button" class="vt' + (v.name === S.view ? ' on' : '') + '" data-view="' + esc(v.name) + '"' + (v.name ? ' title="Double-click to edit"' : '') + '>' + esc(v.name || 'All') + '</button>';
     }).join('') + '<button type="button" class="vt add" data-newview="1">+ New View</button>';
@@ -741,7 +793,7 @@ tbody tr.flash td { animation: rowflash 2.6s ease-out; }
     setTableWidth(cols);
     $('thead').innerHTML = '<th class="chk"><span class="sr">Select</span></th>' + cols.map(function (c) {
       var arrow = S.sort.k === c.k ? (S.sort.dir > 0 ? ' ↑' : ' ↓') : '';
-      return '<th data-k="' + c.k + '"' + (widthOf(c.k) ? ' style="width:' + widthOf(c.k) + 'px"' : '') + ' aria-sort="' + (S.sort.k === c.k ? (S.sort.dir > 0 ? 'ascending' : 'descending') : 'none') + '"><button type="button" data-sort="' + c.k + '" title="' + esc(c.label) + '">' + esc(c.label) + arrow + '</button><span class="rz" data-rz="' + c.k + '" title="Drag to resize · double-click to reset"></span></th>';
+      return '<th data-k="' + c.k + '"' + (widthOf(c.k) ? ' style="width:' + widthOf(c.k) + 'px"' : '') + ' aria-sort="' + (S.sort.k === c.k ? (S.sort.dir > 0 ? 'ascending' : 'descending') : 'none') + '"><button type="button" data-sort="' + c.k + '" title="' + esc(c.label) + '">' + esc(c.label) + arrow + '</button><button type="button" class="fbtn' + (S.filters[c.k] ? ' on' : '') + '" data-filter="' + c.k + '" aria-label="Filter ' + esc(c.label) + '" title="Filter"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 4h18l-7 8.5V19l-4 2v-8.5z"/></svg></button><span class="rz" data-rz="' + c.k + '" title="Drag to resize · double-click to reset"></span></th>';
     }).join('') + '<th class="mo"><span class="sr">More</span></th>';
     var html = '', lastGroup = null;
     list.forEach(function (g) {
@@ -908,7 +960,72 @@ tbody tr.flash td { animation: rowflash 2.6s ease-out; }
     var tr = e.target.closest('tr[data-no]'); if (!tr || S.trash || e.target.closest('.cell')) return;
     e.preventDefault(); openMenu(Number(tr.dataset.no), e.clientX, e.clientY);
   });
+  // ---------- filter popover ----------
+  var FP = null;
+  function openFilter(k, anchor) {
+    var c = colOf(k); if (!c) return;
+    var counts = {};
+    S.guests.forEach(function (g) {
+      if (!!g.deleted !== S.trash || (S.status && g.status !== S.status) || (S.age && g.age !== S.age) || !passesFilters(g, k)) return;
+      var v = cellVal(g, k); counts[v] = (counts[v] || 0) + 1;
+    });
+    var vals = Object.keys(counts).sort(function (a, b) {
+      if (!a) return 1; if (!b) return -1;
+      var x = TYPE[k] === 'date' ? dateKey(a) : a.toLowerCase(), y = TYPE[k] === 'date' ? dateKey(b) : b.toLowerCase();
+      return x < y ? -1 : x > y ? 1 : 0;
+    });
+    var cur = S.filters[k], sel = {};
+    vals.forEach(function (v) { sel[v] = !cur || cur.indexOf(v) > -1; });
+    FP = { k: k, vals: vals, sel: sel, counts: counts };
+    var p = $('fpop');
+    p.innerHTML = '<div class="fp-h">' + esc(c.label) + '</div>' +
+      '<input type="search" id="fp-q" placeholder="Search…" autocomplete="off">' +
+      '<div class="fp-tools"><button type="button" class="linkbtn" data-fp="all">Select all</button><button type="button" class="linkbtn" data-fp="none">Clear</button></div>' +
+      '<div class="fp-list" id="fp-list"></div>' +
+      '<div class="fp-foot"><button type="button" class="btn" data-fp="cancel">Cancel</button><button type="button" class="btn primary" data-fp="ok">Apply</button></div>';
+    p.hidden = false; $('fscrim').hidden = false;
+    fpList();
+    var r = anchor.getBoundingClientRect(), w = p.offsetWidth;
+    p.style.left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8)) + 'px';
+    p.style.top = Math.min(r.bottom + 4, window.innerHeight - p.offsetHeight - 8) + 'px';
+    $('fp-q').focus();
+  }
+  function fpList() {
+    var q = ($('fp-q') ? $('fp-q').value : '').trim().toLowerCase();
+    $('fp-list').innerHTML = FP.vals.filter(function (v) { return !q || shownVal(FP.k, v).toLowerCase().indexOf(q) > -1; }).map(function (v) {
+      return '<label class="fp-row"><input type="checkbox" data-fv="' + esc(v) + '"' + (FP.sel[v] ? ' checked' : '') + '><span class="fp-v' + (v ? '' : ' empty') + '">' + esc(shownVal(FP.k, v)) + '</span><span class="fp-n">' + FP.counts[v] + '</span><button type="button" class="fp-only" data-fonly="' + esc(v) + '">only</button></label>';
+    }).join('') || '<div class="fp-none">No matches</div>';
+  }
+  function closeFilter() { $('fpop').hidden = true; $('fscrim').hidden = true; FP = null; }
+  $('fscrim').addEventListener('click', closeFilter);
+  $('fpop').addEventListener('input', function (e) { if (e.target.id === 'fp-q') fpList(); });
+  $('fpop').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && e.target.id === 'fp-q') { e.preventDefault(); $('fpop').querySelector('[data-fp="ok"]').click(); }
+    if (e.key === 'Escape') { e.stopPropagation(); closeFilter(); }
+  });
+  $('fpop').addEventListener('change', function (e) { var cb = e.target.closest('[data-fv]'); if (cb && FP) FP.sel[cb.dataset.fv] = cb.checked; });
+  $('fpop').addEventListener('click', function (e) {
+    if (!FP) return;
+    var only = e.target.closest('[data-fonly]');
+    if (only) { e.preventDefault(); S.filters[FP.k] = [only.dataset.fonly]; closeFilter(); render(); return; }
+    var b = e.target.closest('[data-fp]'); if (!b) return;
+    var a = b.dataset.fp, q = $('fp-q').value.trim().toLowerCase();
+    var shown = FP.vals.filter(function (v) { return !q || shownVal(FP.k, v).toLowerCase().indexOf(q) > -1; });
+    if (a === 'all' || a === 'none') { shown.forEach(function (v) { FP.sel[v] = a === 'all'; }); fpList(); return; }
+    if (a === 'cancel') { closeFilter(); return; }
+    // Apply. With a search typed, only the matching values that are ticked stay (like Excel).
+    var keep = (q ? shown : FP.vals).filter(function (v) { return FP.sel[v]; });
+    if (!q && keep.length === FP.vals.length) delete S.filters[FP.k]; else S.filters[FP.k] = keep;
+    closeFilter(); render();
+  });
+  $('fchips').addEventListener('click', function (e) {
+    var x = e.target.closest('[data-unfilter]');
+    if (x) { if (x.dataset.unfilter === '*') S.filters = {}; else delete S.filters[x.dataset.unfilter]; render(); return; }
+    var f = e.target.closest('[data-filter]'); if (f) openFilter(f.dataset.filter, f);
+  });
+
   $('thead').addEventListener('click', function (e) {
+    var fb = e.target.closest('[data-filter]'); if (fb) { e.stopPropagation(); openFilter(fb.dataset.filter, fb); return; }
     var b = e.target.closest('[data-sort]'); if (!b) return;
     var k = b.dataset.sort; S.sort = { k: k, dir: S.sort.k === k ? -S.sort.dir : 1 }; render();
   });
@@ -1080,8 +1197,19 @@ tbody tr.flash td { animation: rowflash 2.6s ease-out; }
   function useView(name) {
     S.view = name; S.trash = false;
     try { localStorage.setItem('kai-guest-view', name); } catch (e) {}
-    var v = curView(); S.status = v ? v.status : ''; S.age = v ? v.age : '';
-    $('f-status').value = S.status; $('f-age').value = S.age; render();
+    applyViewState(curView()); render();
+  }
+  function applyViewState(v) {
+    S.status = v ? v.status : ''; S.age = v ? v.age : '';
+    S.sort = v && v.sort ? { k: v.sort.k, dir: v.sort.dir } : { k: 'no', dir: 1 };
+    S.filters = {}; if (v && v.filters) Object.keys(v.filters).forEach(function (k) { S.filters[k] = v.filters[k].slice(); });
+    $('f-status').value = S.status; $('f-age').value = S.age;
+  }
+  function stateSummary() {
+    var c = colOf(S.sort.k), parts = [];
+    if (S.sort.k !== 'no' || S.sort.dir !== 1) parts.push('sorted by ' + (c ? c.label : S.sort.k) + (S.sort.dir < 0 ? ' ↓' : ' ↑'));
+    var n = Object.keys(S.filters).length; if (n) parts.push(n + ' column filter' + (n > 1 ? 's' : ''));
+    return parts.join(' · ');
   }
   function openView(v) {
     var cols = v ? v.cols : ['group', 'status', 'phone'];
@@ -1094,13 +1222,17 @@ tbody tr.flash td { animation: rowflash 2.6s ease-out; }
         var pinned = PIN.indexOf(c.k) > -1;
         return '<label class="vc"><input type="checkbox" data-vc="' + c.k + '"' + (pinned || cols.indexOf(c.k) > -1 ? ' checked' : '') + (pinned ? ' disabled' : '') + '>' + esc(c.label) + '</label>';
       }).join('') + '</div>' +
+      (stateSummary() ? '<label class="vc" style="margin-top:12px"><input type="checkbox" id="v-state"' + (!v || curView() === v ? ' checked' : '') + '>Save what’s on screen now: ' + esc(stateSummary()) + '</label>' : '') +
       (v ? '<button type="button" class="btn danger" id="v-del" style="margin-top:12px">Delete view</button>' : ''),
       function () {
         var name = $('v-name').value.trim(), low = name.toLowerCase();
         var err = !name ? 'Give the view a name.' : (low === 'all' || S.views.some(function (x) { return x.name.toLowerCase() === low && (!v || x.name !== v.name); })) ? 'A view with this name already exists.' : '';
         if (err) { $('pick-err').textContent = err; $('pick-err').hidden = false; return false; }
+        var keep = $('v-state') && $('v-state').checked;
         saveView(v ? v.name : '', { name: name, status: $('v-status').value, age: $('v-age').value,
-          cols: COLS.filter(function (c) { var cb = $('pick-body').querySelector('[data-vc="' + c.k + '"]'); return PIN.indexOf(c.k) < 0 && cb && cb.checked; }).map(function (c) { return c.k; }) });
+          cols: COLS.filter(function (c) { var cb = $('pick-body').querySelector('[data-vc="' + c.k + '"]'); return PIN.indexOf(c.k) < 0 && cb && cb.checked; }).map(function (c) { return c.k; }),
+          sort: keep ? { k: S.sort.k, dir: S.sort.dir } : v ? v.sort : null,
+          filters: keep ? JSON.parse(JSON.stringify(S.filters)) : v ? v.filters : {} });
       });
     $('pick-ok').textContent = 'Save';
     $('pick-body').onclick = function (e) { if (e.target.id === 'v-del') { $('dlg2').hidden = true; deleteView(v.name); } };
