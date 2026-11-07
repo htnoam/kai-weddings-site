@@ -79,7 +79,9 @@ h2 .ic { width: 28px; height: 28px; border-radius: 999px; background: #F1EFEA; d
 .ig { display: flex; align-items: center; justify-content: center; gap: 8px; height: 40px; color: var(--muted); font-size: 14px; text-decoration: none; }
 .member .two { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
 .member .two input { height: 42px; border: 1px solid var(--line); border-radius: 4px; padding: 0 10px; font-size: 16px; direction: ltr; width: 100%; min-width: 0; }
-.fixname { align-self: flex-start; font-size: 12.5px; color: var(--soft); }
+.fixname { border: none; background: none; padding: 0; display: inline-flex; align-items: center; gap: 6px; text-align: start; }
+.fixname .pen { font-size: 13px; font-weight: 400; color: var(--soft); }
+.mtop .two { flex: 1 1 auto; min-width: 0; }
 .kai { text-align: center; font: 500 11px var(--serif); letter-spacing: .3em; color: var(--muted); padding-top: 4px; direction: ltr; }
 
 [hidden] { display: none !important; }
@@ -284,10 +286,12 @@ button.btn:disabled { opacity: .6; }
     $('members').innerHTML = fam.map(function (g) {
       var st = state[g.no] || g.status;
       var b = function (v, label, cls) { return '<button type="button" class="' + (cls || '') + '" data-no="' + g.no + '" data-st="' + v + '" aria-pressed="' + (st === v) + '">' + esc(label) + '</button>'; };
+      // The name itself (with a small pencil) opens the name for correction, in place.
       var nm = names[g.no];
-      return '<div class="member"><div class="mtop"><span class="mname">' + esc(g.first + ' ' + g.last) + '</span><span class="age">' + esc(t.ages[g.age] || g.age) + '</span></div>' +
+      return '<div class="member"><div class="mtop">' +
         (nm ? '<div class="two"><input data-nf="' + g.no + '" value="' + esc(nm.first) + '" placeholder="' + esc(t.first) + '" autocomplete="off"><input data-nl="' + g.no + '" value="' + esc(nm.last) + '" placeholder="' + esc(t.last) + '" autocomplete="off"></div>'
-          : '<button type="button" class="linkbtn fixname" data-fix="' + g.no + '">✎ ' + esc(t.editName) + '</button>') +
+          : '<button type="button" class="mname fixname" data-fix="' + g.no + '" aria-label="' + esc(t.editName) + ': ' + esc(g.first + ' ' + g.last) + '">' + esc(g.first + ' ' + g.last) + '<span class="pen" aria-hidden="true">✎</span></button>') +
+        '<span class="age">' + esc(t.ages[g.age] || g.age) + '</span></div>' +
         '<div class="seg">' + b('Confirmed', t.yes) + b('Declined', t.no, 'no') + b('Maybe', t.maybe) + '</div></div>';
     }).join('');
     if (P.show.flights) renderFlights();
