@@ -72,6 +72,25 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 @media (max-width: 700px) { .cols2 { grid-template-columns: 1fr; } }
 .ghbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: #FFF6E5; border: 1px solid #E8D3A6; border-radius: 6px; padding: 8px 12px; margin-bottom: 10px; font-size: 13.5px; color: #6B4A0E; }
 .ghbar input { flex: 1 1 260px; height: 30px; border: 1px solid var(--line); border-radius: 4px; padding: 0 8px; font-size: 13.5px; }
+.ecards { display: none; }
+@media (max-width: 759px) {
+  .tablewrap { display: none; }
+  .ecards { display: flex; flex-direction: column; gap: 10px; }
+  .ecard { background: var(--surface); border: 1px solid var(--hair); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .ecard .couple { font: 600 22px/1.1 var(--serif); color: var(--ink); }
+  .ecard .sub { font-size: 13px; }
+  .ec-n { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 14.5px; color: var(--muted); }
+  .ec-n b { font-size: 17px; }
+  .ec-a { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 6px; margin-top: 2px; }
+  .ec-a .btn { height: 40px; justify-content: center; font-size: 14.5px; border-radius: 8px; }
+  .ec-b { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; font-size: 13.5px; padding-top: 8px; border-top: 1px solid var(--hair); }
+  .ec-b a, .ec-b button { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; border: none; background: none; padding: 4px 0; font-size: 13.5px; }
+  .ec-copy { color: var(--soft); margin-left: auto; }
+  .top-in { gap: 8px; }
+  .wrap { padding: 10px 12px 32px; }
+  .f input, .f select, .f textarea, .ghbar input { font-size: 16px; }
+  .overlay { padding: max(16px, env(safe-area-inset-top, 0px)) 12px 24px; }
+}
 .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 24px; z-index: 70; background: var(--text); color: #FFFFFF; border-radius: 6px; padding: 10px 16px; font-size: 14px; max-width: calc(100% - 32px); }
 .toast.bad { background: var(--bad); }
 </style>
@@ -107,6 +126,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
     </table>
     <div class="empty" id="empty" hidden>No events yet. Click “+ New Event” to open the first one.</div>
   </div>
+  <div class="ecards" id="ecards"></div>
 </main>
 
 <div class="overlay" id="dlg" hidden>
@@ -234,13 +254,27 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
           '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug + '/guest') + '">Portal</button>' +
         '</div></td></tr>';
     }).join('');
+    // Phones: one card per event instead of the wide table.
+    $('ecards').innerHTML = EVENTS.map(function (ev) {
+      var c = ev.counts || {}, v = function (x) { return x == null ? '—' : x; };
+      return '<div class="ecard">' +
+        '<div class="ec-h"><div class="couple">' + esc(ev.couple) + '</div><div class="sub">' + esc([fmtDate(ev.date), ev.place].filter(Boolean).join(' · ')) + '</div>' + (ev.error ? '<div class="err">' + esc(ev.error) + '</div>' : '') + '</div>' +
+        '<div class="ec-n"><span><b>' + v(c.total) + '</b> guests</span><span class="c-ok"><b>' + v(c.Confirmed) + '</b> ✓</span><span class="c-warn"><b>' + v(c.Maybe) + '</b> maybe</span><span class="c-bad"><b>' + v(c.Declined) + '</b> ✗</span></div>' +
+        '<div class="sub">' + v(c.adults) + ' adults · ' + v(c.children) + ' children · ' + v(c.babies) + ' babies</div>' +
+        '<div class="ec-a"><a class="btn primary" href="/' + esc(ev.slug) + '/manage/htnoam23" target="_blank" rel="noopener">Guest list</a>' +
+          '<button type="button" class="btn" data-edit="' + esc(ev.slug) + '">Edit RSVP</button>' +
+          '<a class="btn" href="/' + esc(ev.slug) + '" target="_blank" rel="noopener">RSVP</a></div>' +
+        '<div class="ec-b"><a href="' + esc(ev.sheetUrl) + '" target="_blank" rel="noopener">Sheet</a>' + (ev.folderUrl ? '<a href="' + esc(ev.folderUrl) + '" target="_blank" rel="noopener">Folder</a>' : '') +
+          '<span class="ec-copy">Copy link:</span><button type="button" data-copy="' + esc(SITE + ev.slug + '/manage') + '">Couple</button><button type="button" data-copy="' + esc(SITE + ev.slug) + '">RSVP</button><button type="button" data-copy="' + esc(SITE + ev.slug + '/guest') + '">Portal</button></div>' +
+      '</div>';
+    }).join('');
   }
-  $('rows').addEventListener('click', function (e) {
+  ['rows', 'ecards'].forEach(function (id) { $(id).addEventListener('click', function (e) {
     var b = e.target.closest('[data-copy]'); if (!b) return;
     var text = b.dataset.copy, done = function () { toast('Copied ' + text); };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () { prompt('Copy this link:', text); });
     else prompt('Copy this link:', text);
-  });
+  }); });
 
   // ---------- new event ----------
   function openNew() { ['n-couple', 'n-date', 'n-place'].forEach(function (id) { $(id).value = ''; }); $('n-lang').value = 'he'; $('n-link').textContent = 'weddings.kaiwedd.com/…'; $('n-err').hidden = true; $('dlg').hidden = false; $('n-couple').focus(); }
@@ -286,7 +320,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
       fillEdit(); $('e-save').disabled = false;
     }).catch(function (e) { $('e-err').textContent = e.server ? e.message : 'Couldn’t load the form texts.'; $('e-err').hidden = false; });
   }
-  $('rows').addEventListener('click', function (e) { var b = e.target.closest('[data-edit]'); if (b) openEdit(b.dataset.edit); });
+  ['rows', 'ecards'].forEach(function (id) { $(id).addEventListener('click', function (e) { var b = e.target.closest('[data-edit]'); if (b) openEdit(b.dataset.edit); }); });
   $('e-cancel').addEventListener('click', function () { $('dlg-e').hidden = true; });
   $('form-e').addEventListener('submit', function (e) {
     e.preventDefault();
