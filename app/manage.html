@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" id="apptitle" content="Guest List">
+<meta name="apple-mobile-web-app-title" id="apptitle" content="KAI">
 <meta name="theme-color" content="#FFFFFF">
 <title>Guest List</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -760,7 +760,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
       $('addcol').hidden = true;
       $('refresh').hidden = false;
       document.title = 'Guest List – ' + (res.wedding.couple || 'Wedding');
-      setAppManifest(res.wedding.couple || 'Guest List');
+      setAppManifest(res.wedding.couple || 'Guest List'); showInstallBar();
       $('gate').hidden = true; $('app').hidden = false; $('fab').classList.add('show');
       render();
   }
@@ -1745,7 +1745,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
   window.addEventListener('appinstalled', function () { installEvt = null; $('installbar').hidden = true; });
   $('inst-go').addEventListener('click', openInstall);
   $('inst-x').addEventListener('click', function () { try { localStorage.setItem('kai-install-x', '1'); } catch (e) {} $('installbar').hidden = true; });
-  setAppManifest('Guest List'); showInstallBar();
+  // The app name is set (and the bar shown) only once the couple's name is known, so it's always saved under their name.
 
   // ---------- WhatsApp reminders: Maybe guests, one message per phone number ----------
   // The message opens in WhatsApp ready to send; the person presses Send. Opening it is recorded with the date.
