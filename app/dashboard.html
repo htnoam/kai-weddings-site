@@ -70,6 +70,8 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .img-row img { width: 72px; height: 72px; object-fit: cover; border-radius: 4px; border: 1px solid var(--hair); background: var(--soft-surface); }
 .img-row .none { width: 72px; height: 72px; border-radius: 4px; border: 1px dashed var(--line); display: grid; place-items: center; font-size: 11px; color: var(--soft); }
 @media (max-width: 700px) { .cols2 { grid-template-columns: 1fr; } }
+.ghbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: #FFF6E5; border: 1px solid #E8D3A6; border-radius: 6px; padding: 8px 12px; margin-bottom: 10px; font-size: 13.5px; color: #6B4A0E; }
+.ghbar input { flex: 1 1 260px; height: 30px; border: 1px solid var(--line); border-radius: 4px; padding: 0 8px; font-size: 13.5px; }
 .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 24px; z-index: 70; background: var(--text); color: #FFFFFF; border-radius: 6px; padding: 10px 16px; font-size: 14px; max-width: calc(100% - 32px); }
 .toast.bad { background: var(--bad); }
 </style>
@@ -86,6 +88,11 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 </header>
 
 <main class="wrap">
+  <div class="ghbar" id="ghbar" hidden>
+    <span id="gh-msg"></span>
+    <input id="gh-key" type="password" placeholder="Paste the GitHub key (github_pat_…)" autocomplete="off">
+    <button type="button" class="btn sm primary" id="gh-save">Save key</button>
+  </div>
   <div class="gate" id="gate">Loading events…</div>
   <div class="tablewrap" id="list" hidden>
     <table>
@@ -200,7 +207,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 
   function load() {
     $('gate').hidden = false; $('gate').textContent = 'Loading events…';
-    return api('events').then(function (res) { EVENTS = res.events; render(); })
+    return api('events').then(function (res) { EVENTS = res.events; render(); renderGh(res.github || {}); })
       .catch(function (e) { $('gate').textContent = e.server ? e.message : 'Couldn’t load the events. Check your connection and click Refresh.'; });
   }
   function render() {
@@ -315,6 +322,19 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
     img.src = url;
   });
   $('new').addEventListener('click', openNew);
+
+  // ---------- GitHub key (lets the hub write each event's WhatsApp link preview) ----------
+  function renderGh(gh) {
+    $('ghbar').hidden = gh.set && !gh.error;
+    $('gh-msg').textContent = gh.error ? gh.error : 'WhatsApp link previews are off until you add a GitHub key.';
+  }
+  $('gh-save').addEventListener('click', function () {
+    var key = $('gh-key').value.trim(); if (!key) return;
+    var b = this; b.disabled = true; b.textContent = 'Checking…';
+    api('githubKey', { key: key }).then(function () { $('gh-key').value = ''; $('ghbar').hidden = true; toast('GitHub key saved. Link previews are on.'); })
+      .catch(function (e) { toast(e.server ? e.message : 'Couldn’t save the key.', true); })
+      .then(function () { b.disabled = false; b.textContent = 'Save key'; });
+  });
   $('refresh').addEventListener('click', load);
   load();
 })();
