@@ -329,7 +329,7 @@ th[data-k] > button[data-sort] { padding-right: 26px; }
 .vt-n { display: inline-block; min-width: 18px; padding: 0 5px; margin-left: 4px; border-radius: 999px; background: var(--warn); color: #FFFFFF; font-size: 11px; line-height: 17px; text-align: center; }
 td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .dup { margin-left: 4px; padding: 0 6px; border-radius: 3px; background: #FBEDED; color: var(--bad); font-size: 11px; font-weight: 600; white-space: nowrap; }
-.mob, .mob-ic { display: none; }
+.mob, .mob-ic, .sumline { display: none; }
 .fbadge { position: absolute; top: -6px; right: -6px; min-width: 17px; height: 17px; padding: 0 4px; border-radius: 999px; background: var(--ink); color: #FFFFFF; font-size: 10.5px; font-weight: 700; line-height: 17px; text-align: center; }
 #mfilter { position: relative; }
 .rm-list { display: flex; flex-direction: column; border: 1px solid var(--hair); border-radius: 6px; max-height: 50vh; overflow: auto; margin-top: 10px; }
@@ -355,6 +355,11 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
   #who, #online { display: none; }
   .me #refresh { width: 32px; height: 32px; padding: 0; justify-content: center; border-radius: 8px; }
   .me #refresh .lbl { display: none; } .mob-ic { display: block; }
+  .sumline { order: 2; flex: 1 0 100%; display: flex; align-items: center; gap: 6px; width: auto; height: auto; padding: 0 0 2px; border: none; background: none; font-size: 13px; color: var(--muted); text-align: left; justify-content: flex-start; }
+  .sumline b { color: var(--text); } .sumline b.ok { color: var(--ok); } .sumline b.warn { color: var(--warn); } .sumline b.bad { color: var(--bad); }
+  .sumline .chev { flex: none; color: var(--soft); transition: transform .15s; }
+  .sumline[aria-expanded="true"] .chev { transform: rotate(180deg); }
+  .top .stats.mclosed { display: none; }
   .top .stats { order: 3; flex: 1 0 100%; justify-content: flex-start; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px; }
   .top .stats::-webkit-scrollbar, .tabrow .vtabs::-webkit-scrollbar { display: none; }
   .top .stat, .stat-grp { flex: none; }
@@ -403,6 +408,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 <header class="top">
   <div class="top-in">
     <div class="brand"><span class="couple" id="couple">Guest List</span><span class="when" id="when"></span></div>
+    <button type="button" class="sumline" id="sumline" aria-expanded="false" aria-controls="stats"></button>
     <section class="stats" id="stats" aria-label="Summary"></section>
     <div class="me">
       <span class="save ok" id="save" aria-live="polite" hidden></span>
@@ -826,6 +832,14 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
           return '<button type="button" class="stat sub" data-fs="' + st + '" data-fa="' + x.a + '"><span class="v">' + x.n + '</span><span class="k">' + AGEN[x.a] + '</span></button>';
         }).join('') + '</span>';
       }).join('');
+
+    // Phones: one line of counts; tapping it opens the full buttons. It stays open while a count is used as a filter.
+    var cv = curView(), statFilter = S.status !== (cv ? cv.status : '') || S.age !== (cv ? cv.age : '');
+    var sumOpen = S.sumOpen || statFilter;
+    $('sumline').innerHTML = '<span><b>' + L.length + '</b> guests · <b class="ok">' + c('Confirmed') + '</b> ✓ · <b class="warn">' + c('Maybe') + '</b> maybe · <b class="bad">' + c('Declined') + '</b> ✗</span>' +
+      '<svg class="chev" aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
+    $('sumline').setAttribute('aria-expanded', sumOpen);
+    $('stats').classList.toggle('mclosed', !sumOpen);
 
     var groups = []; L.forEach(function (g) { if (g.group && groups.indexOf(g.group) < 0) groups.push(g.group); }); groups.sort();
     var fg = $('f-group'), cur = S.group;
@@ -1657,6 +1671,12 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
     else if (a === 'trash') $('trash').click();
     else if (a === 'addcol') openAddCol();
     else if (a === 'remind') openRemind();
+  });
+  $('sumline').addEventListener('click', function () {
+    var open = this.getAttribute('aria-expanded') !== 'true';
+    S.sumOpen = open;
+    if (!open) { var cv = curView(); S.status = cv ? cv.status : ''; S.age = cv ? cv.age : ''; $('f-status').value = S.status; $('f-age').value = S.age; }
+    render();
   });
   $('mfilter').addEventListener('click', function () {
     this.setAttribute('aria-expanded', this.closest('.toolbar').classList.toggle('fopen'));
