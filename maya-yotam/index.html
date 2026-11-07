@@ -228,7 +228,7 @@ footer p { margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1
 
 <script>
 (function () {
-  var RSVP_URL = 'https://script.google.com/macros/s/AKfycbxHcJDurgxLpAw9-nB3ONtvRk9VFxqopYjNJeFffN34UtSCdC5irDhWFY2lJ9m2EIW3Rg/exec';
+  var RSVP_URL = 'https://script.google.com/macros/s/AKfycbwu6hLPWCdnjcX8NVWjCHjQHNrP5Tjj-lx76JgHN7OEfZYDx30dP0FAJVVAbL3s06WQ/exec';
   var guests = 2, attend = 'yes', compData = {}, partyId = '';
   var TYPES = [['adult', 'מבוגר', ''], ['child', 'ילד', 'עד גיל 10'], ['baby', 'תינוק', 'עד גיל 2']];
   var $ = function (id) { return document.getElementById(id); };
@@ -290,7 +290,7 @@ footer p { margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1
       var c = compData[n] || {};
       companions.push({ first: c.first || '', last: c.last || '', type: c.type || 'adult' });
     }
-    var payload = { partyId: partyId, first: $('first').value, last: $('last').value, phone: $('phone').value,
+    var payload = { e: 'maya-yotam', partyId: partyId, first: $('first').value, last: $('last').value, phone: $('phone').value,
       attend: attend, note: $('note').value, companions: companions };
     var btn = this.querySelector('.send'), label = btn.textContent;
     btn.disabled = true; btn.textContent = 'שולחים…';
