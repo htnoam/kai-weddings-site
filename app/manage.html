@@ -327,7 +327,7 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
       <button type="button" class="btn desk" id="columns">Columns</button>
       <button type="button" class="btn" id="export">Export</button>
       <button type="button" class="btn" id="trash" aria-pressed="false">Deleted (0)</button>
-      <button type="button" class="btn dashed desk" id="addcol" hidden disabled title="Coming in the next step">+ Add Column</button>
+      <button type="button" class="btn dashed desk" id="addcol" hidden>+ Add Column</button>
     </section>
 
     <div class="tabrow">
@@ -490,6 +490,19 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
   function widthOf(k) { return S.widths[k] || WIDTH[k] || 0; }
 
   // ---------- column prefs (per browser) ----------
+  // Columns added for this event only (Add Column). They come from the server with the guest list.
+  var CUSTOM = [];
+  function setCustom(list) {
+    CUSTOM = list;
+    for (var i = COLS.length - 1; i >= 0; i--) if (COLS[i].custom) COLS.splice(i, 1);
+    list.forEach(function (c) {
+      var choice = c.type === 'list' || c.type === 'yesno';
+      COLS.push({ k: c.k, label: c.label, type: choice ? 'select' : c.type === 'date' ? 'date' : 'text', opts: choice ? [''].concat(c.options) : null, custom: true, ctype: c.type });
+      TYPE[c.k] = c.type === 'date' ? 'date' : 'text';
+      if (!WIDTH[c.k]) WIDTH[c.k] = 130;
+    });
+    if (S.cols) { COLS.forEach(function (c) { if (S.cols.order.indexOf(c.k) < 0) S.cols.order.push(c.k); }); }
+  }
   function loadCols() {
     var def = { order: COLS.map(function (c) { return c.k; }), hidden: [] };
     try { var p = JSON.parse(localStorage.getItem('kai-guest-cols') || 'null'); if (p && p.order) { COLS.forEach(function (c) { if (p.order.indexOf(c.k) < 0) p.order.push(c.k); }); p.order = p.order.filter(function (k) { return COLS.some(function (c) { return c.k === k; }); }); S.cols = p; return; } } catch (e) {}
@@ -570,6 +583,7 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
     if (!EVENT) { $('gate').textContent = 'This link is incomplete. Ask Noam for the full link.'; return Promise.resolve(); }
     return api('list').then(function (res) {
       S.guests = res.guests; S.who = res.who; S.admin = res.admin; S.views = res.views || [];
+      setCustom(res.custom || []);
       if (!curView()) S.view = '';
       if (!silent && curView()) { S.status = curView().status; S.age = curView().age; $('f-status').value = S.status; $('f-age').value = S.age; }
       $('couple').textContent = res.wedding.couple || 'Guest List';
@@ -774,7 +788,8 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
       '<label class="f">RSVP Status<select data-pf="status">' + STATUSES.map(function (a) { return '<option' + (a === g.status ? ' selected' : '') + '>' + a + '</option>'; }).join('') + '</select></label></div>' +
       '<label class="f">Guest Group<input data-pf="group" list="groups" value="' + esc(g.group) + '"></label>' +
       '<label class="f">Notes<textarea data-pf="notes" rows="2">' + esc(g.notes) + '</textarea></label>' +
-      '<div class="two">' + COLS.filter(function (c) { return /^(arr|dep|check|room|table)/.test(c.k); }).map(function (c) {
+      '<div class="two">' + COLS.filter(function (c) { return c.custom || /^(arr|dep|check|room|table)/.test(c.k); }).map(function (c) {
+        if (c.type === 'select') return '<label class="f">' + esc(c.label) + '<select data-pf="' + c.k + '">' + c.opts.map(function (o) { return '<option value="' + esc(o) + '"' + (o === (g[c.k] || '') ? ' selected' : '') + '>' + esc(o || '—') + '</option>'; }).join('') + '</select></label>';
         return '<label class="f">' + esc(c.label) + '<input data-pf="' + c.k + '" value="' + esc(g[c.k]) + '"' + (c.type === 'date' ? ' placeholder="DD/MM/YYYY"' : c.type === 'time' ? ' placeholder="HH:MM"' : '') + '></label>';
       }).join('') + '</div>' +
       (same.length ? '<div class="same">Same phone as:' + same.map(function (x) { return '<button type="button" data-open="' + x.no + '">' + esc(x.first + ' ' + x.last) + '</button>'; }).join('') + '</div>' : '') +
@@ -849,7 +864,7 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
     var box = td.querySelector('.c'), el;
     if (c.type === 'select') {
       el = document.createElement('select'); el.className = 'cell';
-      c.opts.forEach(function (o) { var op = document.createElement('option'); op.textContent = o; if (o === g[k]) op.selected = true; el.appendChild(op); });
+      c.opts.forEach(function (o) { var op = document.createElement('option'); op.value = o; op.textContent = o || '—'; if (o === (g[k] || '')) op.selected = true; el.appendChild(op); });
     } else {
       el = document.createElement('input'); el.className = 'cell'; el.value = k === 'phone' ? prettyPhone(g[k]) : g[k];
       if (c.type === 'group') el.setAttribute('list', 'groups');
@@ -1106,9 +1121,41 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
     if (name !== S.view) useView(name);
   });
 
+  // ---------- add column (admin; this event only) ----------
+  function openAddCol() {
+    var types = [['text', 'Text'], ['list', 'Choice from a list'], ['date', 'Date'], ['yesno', 'Yes / No']];
+    pick('Add a column to this event',
+      '<label class="f">Column name<input id="ac-name" maxlength="40" placeholder="e.g. Meal choice" autocomplete="off"></label>' +
+      '<label class="f" style="margin-top:10px">Type<select id="ac-type">' + types.map(function (t) { return '<option value="' + t[0] + '">' + t[1] + '</option>'; }).join('') + '</select></label>' +
+      '<label class="f" id="ac-opts-wrap" style="margin-top:10px" hidden>Options, separated by commas<input id="ac-opts" placeholder="Meat, Fish, Vegan" autocomplete="off"></label>' +
+      '<p style="margin:10px 0 0;font-size:13px;color:var(--soft)">Only this event gets the column. The couple can see and fill it in.</p>' +
+      (CUSTOM.length ? '<div style="margin-top:14px;font-size:13px;font-weight:700;color:var(--muted)">Columns added to this event</div>' + CUSTOM.map(function (c) {
+        return '<div class="colrow"><label>' + esc(c.label) + ' <span style="color:var(--soft);font-weight:400">· ' + esc({ text: 'Text', list: 'List: ' + c.options.join(', '), date: 'Date', yesno: 'Yes / No' }[c.type]) + '</span></label><button type="button" data-rmcol="' + c.k + '" aria-label="Remove ' + esc(c.label) + '">Remove</button></div>';
+      }).join('') : ''),
+      function () {
+        var name = $('ac-name').value.trim(), type = $('ac-type').value, opts = $('ac-opts').value;
+        if (!name) { $('pick-err').textContent = 'Give the column a name.'; $('pick-err').hidden = false; return false; }
+        if (type === 'list' && opts.split(',').filter(function (x) { return x.trim(); }).length < 2) { $('pick-err').textContent = 'Write at least two options, separated by commas.'; $('pick-err').hidden = false; return false; }
+        saving('busy');
+        api('addColumn', { label: name, type: type, options: opts }).then(function () { saving('ok'); toast('Added the column ' + name); return load(true); })
+          .catch(function (e) { saving('err'); toast(e.server ? e.message : 'Couldn’t add the column.', null, null, true); });
+      });
+    $('pick-ok').textContent = 'Add Column';
+    $('pick-body').onchange = function (e) { if (e.target.id === 'ac-type') $('ac-opts-wrap').hidden = e.target.value !== 'list'; };
+    $('pick-body').onclick = function (e) {
+      var b = e.target.closest('[data-rmcol]'); if (!b) return;
+      var c = CUSTOM.filter(function (x) { return x.k === b.dataset.rmcol; })[0]; if (!c) return;
+      $('dlg2').hidden = true; saving('busy');
+      api('removeColumn', { key: c.k }).then(function () { saving('ok'); toast('Removed ' + c.label + '. Its data stays in the sheet.'); return load(true); })
+        .catch(function (e) { saving('err'); toast(e.server ? e.message : 'Couldn’t remove the column.', null, null, true); });
+    };
+  }
+  $('addcol').addEventListener('click', openAddCol);
+
   // ---------- import guests (Excel / CSV) ----------
   var IMP = { rows: [], head: [], map: {} };
-  var IMP_FIELDS = [{ k: 'full', label: 'Full name (split into first + last)' }].concat(COLS.filter(function (c) { return c.k !== 'no'; }));
+  var IMP_FIELDS = [];
+  function impFields() { IMP_FIELDS = [{ k: 'full', label: 'Full name (split into first + last)' }].concat(COLS.filter(function (c) { return c.k !== 'no'; })); }
   var IMP_GUESS = { full: ['full name', 'name', 'שם מלא', 'שם', 'guest'], first: ['first', 'given', 'שם פרטי'], last: ['last', 'surname', 'family name', 'שם משפחה'],
     phone: ['phone', 'mobile', 'tel', 'cell', 'טלפון', 'נייד', 'פלאפון'], age: ['age', 'גיל'], status: ['rsvp', 'status', 'סטטוס', 'אישור', 'מגיע'],
     group: ['group', 'family', 'קבוצה', 'משפחה'], notes: ['note', 'comment', 'הערה', 'הערות'] };
@@ -1121,7 +1168,7 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
     $('imp-step1').hidden = false; $('imp-step2').hidden = true; $('imp-done').hidden = true; $('imp-go').hidden = true; $('imp-err').hidden = true;
     $('imp-cancel').textContent = 'Cancel'; $('imp-file').value = '';
   }
-  $('import').addEventListener('click', function () { impReset(); $('dlg-imp').hidden = false; loadXlsx().catch(function () {}); });
+  $('import').addEventListener('click', function () { impFields(); impReset(); $('dlg-imp').hidden = false; loadXlsx().catch(function () {}); });
   $('imp-cancel').addEventListener('click', function () { $('dlg-imp').hidden = true; });
   $('imp-template').addEventListener('click', function () {
     var csv = 'First Name,Last Name,Phone,Age Group,Guest Group,Notes\r\nDana,Cohen,050-1234567,Adult,Cohen Family,\r\nOmer,Cohen,,Adult,Cohen Family,\r\nNoa,Cohen,,Child,Cohen Family,\r\n';
@@ -1173,7 +1220,7 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
       var g = { row: i + 2, first: get('first'), last: get('last'), phone: get('phone'), group: get('group'), notes: get('notes'),
         age: impAge(get('age')), status: mp.status === undefined ? 'Pending' : impStatus(get('status')) };
       if (mp.full !== undefined && !g.first && !g.last) { var parts = get('full').split(/\s+/).filter(Boolean); g.first = parts.shift() || ''; g.last = parts.join(' '); }
-      COLS.forEach(function (c) { if (['date', 'time'].indexOf(c.type) > -1 || /^(arr|dep|check|room|table)/.test(c.k)) { var v = get(c.k); if (v) g[c.k] = c.type === 'date' ? normDate(v) : c.type === 'time' ? normTime(v) : v; } });
+      COLS.forEach(function (c) { if (['date', 'time'].indexOf(c.type) > -1 || c.custom || /^(arr|dep|check|room|table)/.test(c.k)) { var v = get(c.k); if (v) g[c.k] = c.type === 'date' ? normDate(v) : c.type === 'time' ? normTime(v) : v; } });
       g.inherited = false;
       if (!g.phone && $('imp-inherit').checked && prev) { g.phone = prev.phone; g.group = g.group || prev.group; g.inherited = true; }
       if (g.phone) g.phone = normPhone(g.phone);
