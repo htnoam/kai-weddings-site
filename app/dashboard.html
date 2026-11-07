@@ -5,6 +5,21 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
+<link rel="apple-touch-icon" href="/app/icons/kai-180.png">
+<link rel="icon" type="image/png" href="/app/icons/kai-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="KAI Events">
+<meta name="theme-color" content="#FFFFFF">
+<script>
+  // Saved to the home screen: KAI logo, named "KAI Events", opens this same link.
+  (function () {
+    var m = { name: 'KAI Events', short_name: 'KAI Events', start_url: location.href, scope: location.origin + '/', display: 'standalone', background_color: '#F4F2EE', theme_color: '#FFFFFF',
+      icons: [{ src: location.origin + '/app/icons/kai-192.png', sizes: '192x192', type: 'image/png' }, { src: location.origin + '/app/icons/kai-512.png', sizes: '512x512', type: 'image/png' },
+        { src: location.origin + '/app/icons/kai-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }] };
+    var l = document.createElement('link'); l.rel = 'manifest'; l.href = 'data:application/manifest+json,' + encodeURIComponent(JSON.stringify(m)); document.head.appendChild(l);
+  })();
+</script>
 <title>KAI Events</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Cormorant+Garamond:wght@600&display=swap">
