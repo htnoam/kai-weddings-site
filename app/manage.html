@@ -102,8 +102,7 @@ td input.cell, td select.cell { width: 100%; height: 36px; border: 2px solid var
 input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--ink); margin: 0; }
 .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 13px; font-weight: 600; white-space: nowrap; }
 .pill.Confirmed { background: var(--ok-bg); color: var(--ok); }
-.pill.Pending { background: var(--warn-bg); color: var(--warn); }
-.pill.Tentative { background: var(--tent-bg); color: var(--tent); }
+.pill.Maybe { background: var(--warn-bg); color: var(--warn); }
 .pill.Declined { background: var(--bad-bg); color: var(--bad); }
 .wa { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; color: var(--ok); flex: none; }
 .wa:hover { background: var(--ok-bg); }
@@ -381,7 +380,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
   .card .nm { font-size: 15.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; unicode-bidi: plaintext; min-width: 0; }
   .card .no { flex: none; font-size: 11.5px; color: var(--soft); }
   .card .sd { flex: none; width: 8px; height: 8px; border-radius: 50%; margin-left: auto; background: var(--soft); }
-  .card .sd.Confirmed { background: #3BA55C; } .card .sd.Pending { background: #D49A2A; } .card .sd.Tentative { background: var(--tent); } .card .sd.Declined { background: var(--bad); }
+  .card .sd.Confirmed { background: #3BA55C; } .card .sd.Maybe { background: #D49A2A; } .card .sd.Declined { background: var(--bad); }
   .card .l2 { margin-top: 2px; font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
   .card .l2 .k { color: var(--soft); }
   .card .tg { display: inline-block; padding: 0 6px; border-radius: 3px; background: var(--warn-bg); color: var(--warn); font-size: 12px; font-weight: 600; }
@@ -426,7 +425,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
       <input class="search" id="q" type="search" placeholder="Search by name or phone" autocomplete="off">
       <button type="button" class="btn mob" id="mfilter" aria-label="Filters" aria-expanded="false"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 4h18l-7 8.5V19l-4 2v-8.5z"/></svg><span class="fbadge" id="mfbadge" hidden></span></button>
       <label class="sr" for="f-status">Filter by RSVP status</label>
-      <select class="sel" id="f-status" hidden><option value="">RSVP: All</option><option>Confirmed</option><option>Pending</option><option>Tentative</option><option>Declined</option></select>
+      <select class="sel" id="f-status" hidden><option value="">RSVP: All</option><option>Confirmed</option><option>Maybe</option><option>Declined</option></select>
       <label class="sr" for="f-age">Filter by age group</label>
       <select class="sel" id="f-age"><option value="">Age: All</option><option>Adult</option><option>Child</option><option>Baby</option></select>
       <label class="sr" for="f-group">Filter by guest group</label>
@@ -486,7 +485,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
     <label class="f">Phone *<input id="a-phone" type="tel" placeholder="+972 52 000 0000" autocomplete="off"></label>
     <div class="two">
       <label class="f">Age Group *<select id="a-age"><option value="Adult">Adult</option><option value="Child">Child (3–10)</option><option value="Baby">Baby (0–2)</option></select></label>
-      <label class="f">RSVP Status *<select id="a-status"><option>Pending</option><option>Confirmed</option><option>Tentative</option><option>Declined</option></select></label>
+      <label class="f">RSVP Status *<select id="a-status"><option>Maybe</option><option>Confirmed</option><option>Declined</option></select></label>
     </div>
     <label class="f">Guest Group<input id="a-group" list="groups" placeholder="Choose existing or type a new one" autocomplete="off"></label>
     <label class="f">Notes<textarea id="a-notes" rows="2"></textarea></label>
@@ -550,7 +549,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
   var EVENT = (location.pathname.split('/').filter(Boolean)[0] || '').toLowerCase();
   var KEY = /\/htnoam23\/?$/.test(location.pathname) || location.hash === '#htnoam23' ? 'htnoam23' : '';
   var AGES = ['Adult', 'Child', 'Baby'];
-  var STATUSES = ['Confirmed', 'Pending', 'Tentative', 'Declined'];
+  var STATUSES = ['Confirmed', 'Maybe', 'Declined'];   // Maybe = not answered yet, or answered maybe
   var COLS = [
     { k: 'no', label: 'Guest No.', fixed: true },
     { k: 'first', label: 'First Name', type: 'text', req: true },
@@ -820,7 +819,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
     $('stats').innerHTML =
       '<button type="button" class="stat total" data-fs="" data-fa=""><span class="k">Total</span><span class="v">' + L.length + '</span></button>' +
       STATUSES.map(function (st) {
-        var col = { Confirmed: 'var(--ok)', Pending: 'var(--warn)', Tentative: 'var(--tent)', Declined: 'var(--bad)' }[st];
+        var col = { Confirmed: 'var(--ok)', Maybe: 'var(--warn)', Declined: 'var(--bad)' }[st];
         var head = '<button type="button" class="stat" data-fs="' + st + '" data-fa="" title="' + tip(st) + '"><span class="k" style="color:' + col + '">' + st + '</span><span class="v">' + c(st) + '</span></button>';
         if (st !== 'Confirmed') return head;
         return '<span class="stat-grp">' + head + ages(st).map(function (x) {
@@ -1284,7 +1283,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
     ['a-first', 'a-last', 'a-notes'].forEach(function (id) { $(id).value = ''; });
     $('a-phone').value = from ? prettyPhone(from.phone) : '';
     $('a-group').value = from ? from.group : '';
-    $('a-age').value = 'Adult'; $('a-status').value = from ? from.status : 'Pending';
+    $('a-age').value = 'Adult'; $('a-status').value = from ? from.status : 'Maybe';
     $('a-err').hidden = true; $('dlg').hidden = false; $('a-first').focus();
   }
   function submitAdd(another) {
@@ -1511,13 +1510,13 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
   });
   $('imp-inherit').addEventListener('change', impPreview);
   function impAge(v) { v = v.toLowerCase(); return /baby|infant|toddler|תינוק/.test(v) ? 'Baby' : /child|kid|ילד|נער/.test(v) ? 'Child' : 'Adult'; }
-  function impStatus(v) { v = v.toLowerCase(); return /^(confirmed|yes|coming|attending|מגיע|מגיעה|מגיעים|כן)/.test(v) ? 'Confirmed' : /^(declined|no|not|לא)/.test(v) ? 'Declined' : /^(maybe|tentative|אולי|לא בטוח)/.test(v) ? 'Tentative' : 'Pending'; }
+  function impStatus(v) { v = v.toLowerCase(); return /^(confirmed|yes|coming|attending|מגיע|מגיעה|מגיעים|כן)/.test(v) ? 'Confirmed' : /^(declined|no|not|לא)/.test(v) ? 'Declined' : 'Maybe'; }
   function impBuild() {
     var mp = IMP.map, prev = null;
     return IMP.rows.map(function (r, i) {
       var get = function (k) { return mp[k] === undefined ? '' : (r[mp[k]] || '').trim(); };
       var g = { row: i + 2, first: get('first'), last: get('last'), phone: get('phone'), group: get('group'), notes: get('notes'),
-        age: impAge(get('age')), status: mp.status === undefined ? 'Pending' : impStatus(get('status')) };
+        age: impAge(get('age')), status: mp.status === undefined ? 'Maybe' : impStatus(get('status')) };
       if (mp.full !== undefined && !g.first && !g.last) { var parts = get('full').split(/\s+/).filter(Boolean); g.first = parts.shift() || ''; g.last = parts.join(' '); }
       COLS.forEach(function (c) { if (['date', 'time'].indexOf(c.type) > -1 || c.custom || /^(arr|dep|check|room|table)/.test(c.k)) { var v = get(c.k); if (v) g[c.k] = c.type === 'date' ? normDate(v) : c.type === 'time' ? normTime(v) : v; } });
       g.inherited = false;
@@ -1663,7 +1662,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
     this.setAttribute('aria-expanded', this.closest('.toolbar').classList.toggle('fopen'));
   });
 
-  // ---------- WhatsApp reminders: Pending guests, one message per phone number ----------
+  // ---------- WhatsApp reminders: Maybe guests, one message per phone number ----------
   // The message opens in WhatsApp ready to send; the person presses Send. Opening it is recorded with the date.
   var REMIND_DEFAULT = {
     he: 'היי {name} 👋\nמזכירים לאשר הגעה לחתונה של {couple} 💛\nאפשר לאשר כאן: {link}\nתודה!',
@@ -1677,7 +1676,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
   function remindList() {
     var by = {}, out = [];
     live().forEach(function (g) {
-      if (g.status !== 'Pending' || !g.phone) return;
+      if (g.status !== 'Maybe' || !g.phone) return;
       if (!by[g.phone]) { by[g.phone] = { phone: g.phone, guests: [] }; out.push(by[g.phone]); }
       by[g.phone].guests.push(g);
     });

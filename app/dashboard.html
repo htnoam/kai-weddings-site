@@ -100,7 +100,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
       <thead><tr>
         <th>Event</th><th>Date</th><th>Location</th>
         <th class="num">Guests</th><th class="num">Confirmed</th><th class="num">Adults</th><th class="num">Children</th><th class="num">Babies</th>
-        <th class="num">Tentative</th><th class="num">Pending</th><th class="num">Declined</th>
+        <th class="num">Maybe</th><th class="num">Declined</th>
         <th>Open</th><th>Copy link</th>
       </tr></thead>
       <tbody id="rows"></tbody>
@@ -220,7 +220,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
         '<td><div class="couple">' + esc(ev.couple) + '</div><div class="sub">/' + esc(ev.slug) + (ev.error ? ' · ' + esc(ev.error) : '') + '</div></td>' +
         '<td>' + esc(fmtDate(ev.date)) + '</td><td>' + esc(ev.place) + '</td>' +
         n(c.total, '') + n(c.Confirmed, 'c-ok') + n(c.adults, '') + n(c.children, '') + n(c.babies, '') +
-        n(c.Tentative, 'c-tent') + n(c.Pending, 'c-warn') + n(c.Declined, 'c-bad') +
+        n(c.Maybe, 'c-warn') + n(c.Declined, 'c-bad') +
         '<td><div class="links">' +
           '<a class="btn sm primary" href="/' + esc(ev.slug) + '/manage/htnoam23" target="_blank" rel="noopener">Guest list</a>' +
           '<a class="btn sm" href="/' + esc(ev.slug) + '" target="_blank" rel="noopener">RSVP</a>' +

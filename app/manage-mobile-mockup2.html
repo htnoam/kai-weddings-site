@@ -62,7 +62,7 @@ button { cursor: pointer; }
 .nm { font-weight: 700; font-size: 15.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; unicode-bidi: plaintext; }
 .no { font-size: 11.5px; color: var(--soft); flex: none; }
 .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; margin-left: auto; }
-.dot.Confirmed { background: #3BA55C; } .dot.Pending { background: #D49A2A; } .dot.Tentative { background: var(--tent); } .dot.Declined { background: var(--bad); }
+.dot.Confirmed { background: #3BA55C; } .dot.Maybe { background: #D49A2A; } .dot.Tentative { background: var(--tent); } .dot.Declined { background: var(--bad); }
 .l2 { margin-top: 2px; font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; unicode-bidi: plaintext; text-align: left; }
 .l2 .miss { color: var(--warn); background: var(--warn-bg); border-radius: 3px; padding: 0 5px; font-size: 12px; font-weight: 600; }
 .l2 .k { color: var(--soft); }
@@ -85,12 +85,11 @@ button { cursor: pointer; }
     <span class="saved">✓ Saved</span>
     <button class="ic" aria-label="Refresh"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></svg></button>
   </div>
-  <button class="sumline" id="sumline" aria-expanded="false"><span><b>84</b> guests · <b class="ok">79</b> ✓ · <b class="warn">3</b> pending · <b class="tent">1</b> maybe · <b class="bad">1</b> ✗</span><svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+  <button class="sumline" id="sumline" aria-expanded="false"><span><b>84</b> guests · <b class="ok">79</b> ✓ · <b class="warn">4</b> maybe · <b class="bad">1</b> ✗</span><svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
   <div class="stats" id="stats" hidden>
     <button class="st cur"><b>84</b>Total</button>
     <button class="st ok"><b>79</b>Confirmed <small>79 adults · 0 kids · 0 babies</small></button>
-    <button class="st warn"><b>3</b>Pending</button>
-    <button class="st tent"><b>1</b>Tentative</button>
+    <button class="st warn"><b>4</b>Maybe</button>
     <button class="st bad"><b>1</b>Declined</button>
   </div>
   <div class="find">
@@ -111,14 +110,14 @@ var G = [
   [2, 'עדן נמנוב', 'Confirmed', 'Adult', 'כרמל חסיד', '14/09/2027', '13:40', 'LY 501', '18/09/2027', '10:15', 'LY 502', '204'],
   [3, 'טל יהב', 'Confirmed', 'Adult', 'טל יהב', '14/09/2027', '16:05', 'A3 931', '', '', '', '112'],
   [4, 'דביר אלוביץ', 'Confirmed', 'Adult', 'טל יהב', '15/09/2027', '09:20', 'LY 503', '19/09/2027', '22:40', 'LY 506', ''],
-  [5, 'עדן זהר', 'Pending', 'Adult', 'משפחת זהר', '', '', '', '', '', '', ''],
+  [5, 'עדן זהר', 'Maybe', 'Adult', 'משפחת זהר', '', '', '', '', '', '', ''],
   [6, 'נועה בר', 'Confirmed', 'Adult', 'משפחת בר', '', '', '', '', '', '', ''],
-  [7, 'Daniel Brown', 'Tentative', 'Adult', 'Brown Family', '15/09/2027', '11:00', 'BA 664', '18/09/2027', '15:30', 'BA 665', '301'],
+  [7, 'Daniel Brown', 'Maybe', 'Adult', 'Brown Family', '15/09/2027', '11:00', 'BA 664', '18/09/2027', '15:30', 'BA 665', '301'],
   [8, 'יואב שמש', 'Confirmed', 'Adult', 'משפחת שמש', '14/09/2027', '13:40', 'LY 501', '18/09/2027', '10:15', 'LY 502', ''],
   [9, 'שירה לוי', 'Declined', 'Adult', 'משפחת לוי', '', '', '', '', '', '', ''],
   [10, 'אורי כהן', 'Confirmed', 'Adult', 'חברים מהצבא', '15/09/2027', '09:20', 'LY 503', '', '', '', '115'],
   [11, 'מיכל אברהם', 'Confirmed', 'Adult', 'חברים מהצבא', '', '', '', '', '', '', ''],
-  [12, 'גיל רוזן', 'Pending', 'Adult', 'עבודה', '', '', '', '', '', '', '']
+  [12, 'גיל רוזן', 'Maybe', 'Adult', 'עבודה', '', '', '', '', '', '', '']
 ].map(function (r) { return { no: r[0], name: r[1], status: r[2], age: r[3], group: r[4], arrDate: r[5], arrTime: r[6], arrFlight: r[7], depDate: r[8], depTime: r[9], depFlight: r[10], room: r[11] }; });
 var TABS = ['All', 'Hotel', 'Arrivals', 'Departures', 'Missing info'], cur = 'All';
 function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }

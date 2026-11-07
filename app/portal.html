@@ -245,7 +245,7 @@ button.btn:disabled { opacity: .6; }
       var st = state[g.no] || g.status;
       var b = function (v, label, cls) { return '<button type="button" class="' + (cls || '') + '" data-no="' + g.no + '" data-st="' + v + '" aria-pressed="' + (st === v) + '">' + esc(label) + '</button>'; };
       return '<div class="member"><div class="mtop"><span class="mname">' + esc(g.first + ' ' + g.last) + '</span><span class="age">' + esc(t.ages[g.age] || g.age) + '</span></div>' +
-        '<div class="seg">' + b('Confirmed', t.yes) + b('Declined', t.no, 'no') + b('Tentative', t.maybe) + '</div></div>';
+        '<div class="seg">' + b('Confirmed', t.yes) + b('Declined', t.no, 'no') + b('Maybe', t.maybe) + '</div></div>';
     }).join('');
     if (P.show.flights) renderFlights();
     if (P.show.stay) renderStay();
