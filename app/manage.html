@@ -460,10 +460,6 @@ tr.has-chg td.chk { box-shadow: inset 4px 0 0 #C2410C; }
 .msheet .sh-x { width: 40px; height: 40px; border: none; background: none; font-size: 20px; color: var(--muted); }
 .msheet .sh-b { overflow-y: auto; padding: 10px 16px; display: flex; flex-direction: column; gap: 12px; }
 .msheet .sec { font-size: 12px; font-weight: 700; color: var(--soft); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
-.msheet .ageseg { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
-.msheet .ageseg button { height: 36px; border: none; border-right: 1px solid var(--line); background: #FFFFFF; font-size: 14px; }
-.msheet .ageseg button:last-child { border-right: none; }
-.msheet .ageseg button.on { background: var(--ink); color: #FFFFFF; font-weight: 600; }
 .msheet .mcols { border: 1px solid var(--hair); border-radius: 10px; overflow: hidden; }
 .msheet .mc { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 40px; padding: 0 12px; border: none; border-bottom: 1px solid var(--row-line); background: #FFFFFF; text-align: left; font-size: 14.5px; color: var(--text); }
 .msheet .mc:last-child { border-bottom: none; }
@@ -576,7 +572,6 @@ tr.has-chg td.chk { box-shadow: inset 4px 0 0 #C2410C; }
   <div class="grab"></div>
   <div class="sh-h"><b>Filter</b><button type="button" class="sh-x" id="mx" aria-label="Close">✕</button></div>
   <div class="sh-b">
-    <div><div class="sec">Age</div><div class="ageseg" id="ageseg"></div></div>
     <div><div class="sec">Filter a column</div><div class="mcols" id="mcols"></div></div>
   </div>
   <div class="sh-f"><button type="button" id="mclear">Clear all</button><button type="button" class="pri" id="mdone"></button></div>
@@ -1847,8 +1842,8 @@ tr.has-chg td.chk { box-shadow: inset 4px 0 0 #C2410C; }
   });
   // ---------- phone: filter sheet (age + any column) and the small sort list ----------
   function drawSheet() {
-    $('ageseg').innerHTML = [''].concat(AGES).map(function (a) { return '<button type="button" data-age="' + a + '" class="' + (S.age === a ? 'on' : '') + '">' + (a || 'All') + '</button>'; }).join('');
-    $('mcols').innerHTML = visibleCols().filter(function (c) { return ['no', 'first', 'last', 'group', 'age', 'room', 'phone', 'notes'].indexOf(c.k) < 0; }).map(function (c) {
+    // Only the filters that matter on a phone: status, arrival/departure day, flight and bus, and the event's own choice columns.
+    $('mcols').innerHTML = COLS.filter(function (c) { return ['status', 'arrDate', 'arrFlight', 'arrBus', 'depDate', 'depFlight', 'depBus'].indexOf(c.k) > -1 || (c.custom && c.type === 'select'); }).map(function (c) {
       return '<button type="button" class="mc" data-filter="' + c.k + '"><span>' + esc(c.label) + '</span>' + (S.filters[c.k] ? '<em>● ' + S.filters[c.k].length + ' selected</em>' : '') + '<i>›</i></button>';
     }).join('');
     $('mdone').textContent = 'Show ' + nGuests(filtered().length);
@@ -1860,7 +1855,6 @@ tr.has-chg td.chk { box-shadow: inset 4px 0 0 #C2410C; }
   $('mdone').addEventListener('click', closeSheet);
   $('mclear').addEventListener('click', function () { S.age = ''; S.group = ''; S.filters = {}; $('f-age').value = ''; $('f-group').value = ''; render(); drawSheet(); });
   $('msheet').addEventListener('click', function (e) {
-    var a = e.target.closest('[data-age]'); if (a) { S.age = a.dataset.age; $('f-age').value = S.age; render(); drawSheet(); return; }
     var f = e.target.closest('[data-filter]'); if (f) openFilter(f.dataset.filter, f);
   });
 
@@ -1870,7 +1864,8 @@ tr.has-chg td.chk { box-shadow: inset 4px 0 0 #C2410C; }
   $('xscrim').addEventListener('contextmenu', function (e) { e.preventDefault(); closeX(); });
   function openSort() {
     var m = openX('<div class="sp-h"><span>Sort by</span><div class="dir"><button type="button" data-dir="1" aria-label="Ascending" class="' + (S.sort.dir > 0 ? 'on' : '') + '">↑</button><button type="button" data-dir="-1" aria-label="Descending" class="' + (S.sort.dir < 0 ? 'on' : '') + '">↓</button></div></div>' +
-      visibleCols().filter(function (c) { return ['phone', 'notes'].indexOf(c.k) < 0; }).map(function (c) {
+      // A short list: sorting by a flight date already orders each day by flight time.
+      COLS.filter(function (c) { return ['no', 'first', 'last', 'group', 'status', 'arrDate', 'depDate', 'room'].indexOf(c.k) > -1; }).map(function (c) {
         return '<button type="button" class="mi' + (c.k === S.sort.k ? ' cur' : '') + '" data-sk="' + c.k + '">' + esc(c.label) + (c.k === S.sort.k ? '<em>✓</em>' : '') + '</button>';
       }).join(''), 'spop');
     var r = $('msort').getBoundingClientRect();
