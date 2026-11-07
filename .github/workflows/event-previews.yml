@@ -1,0 +1,24 @@
+# Every 15 minutes: refresh each event's link preview page (couple names + photo for WhatsApp).
+name: Event link previews
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: event-previews
+jobs:
+  previews:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node .github/scripts/previews.mjs
+      - name: Commit changes
+        run: |
+          git config user.name "KAI previews"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then echo "No changes"; else git commit -m "Update event link previews" && git push; fi
