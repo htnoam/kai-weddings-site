@@ -475,6 +475,21 @@ tr.has-chg td.chk { box-shadow: inset 4px 0 0 #C2410C; }
   .fscrim { background: rgba(31,31,33,.2); }
   .fpop { left: 0 !important; right: 0; top: auto !important; bottom: 0; width: auto; border-radius: 16px 16px 0 0; border: none; padding: 14px 16px max(14px, env(safe-area-inset-bottom, 0px)); }
   .fpop .fp-list { max-height: 40vh; max-height: 42dvh; }
+  /* cleaner phone screen: plain header, underline tabs, rows all the same height */
+  .when, .save.ok { display: none !important; }
+  .tabrow { gap: 2px; }
+  .tabrow .vtabs { gap: 2px; border-bottom: 1px solid var(--hair); padding-right: 28px; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
+  .tabrow .vt, .tabrow .vt:hover { height: 38px; padding: 0 10px; margin: 0; border: none; border-bottom: 2.5px solid transparent; border-radius: 0; background: none; color: var(--muted); }
+  .tabrow .vt.on { color: var(--ink); border-bottom-color: var(--ink); font-weight: 700; background: none; }
+  .tabrow .vt.add { color: var(--soft); }
+  .tabrow .subbar { min-height: 30px; }
+  .cards { margin-top: 2px; }
+  .card { height: 58px; min-height: 0; padding: 0 4px 0 12px; gap: 8px; }
+  .card .l2:empty { display: none; }
+  .card .sd { margin-left: 0; }
+  .card .wa { background: none; width: 42px; height: 42px; color: #25A244; }
+  .card .wa svg { width: 21px; height: 21px; }
+  .card .agt { display: inline-block; padding: 0 6px; border-radius: 3px; background: #EEF0FA; color: var(--ink); font-size: 12px; font-weight: 600; line-height: 18px; }
   .fp-row { min-height: 40px; } .fp-only { visibility: visible; color: var(--ink); }
 }
 </style>
@@ -643,6 +658,7 @@ tr.has-chg td.chk { box-shadow: inset 4px 0 0 #C2410C; }
 <datalist id="groups"></datalist>
 <div class="toast" id="toast" role="status" hidden></div>
 
+<script src="/app/dtpick.js"></script>
 <script>
 (function () {
   'use strict';
@@ -1117,8 +1133,8 @@ tr.has-chg td.chk { box-shadow: inset 4px 0 0 #C2410C; }
       if (D && cellVal(g, D.k) !== lastD) { lastD = cellVal(g, D.k); html += '<div class="grph dhp' + (lastD ? '' : ' none') + '"><b>' + esc(dhLabel(D.k, lastD)) + '</b><span class="cnt">' + nGuests(D.n[lastD]) + '</span></div>'; }
       // Phone row: name, #, status dot; the second line shows what matters in the current view.
       html += '<div class="card' + (S.checked[g.no] ? ' sel-row' : '') + '" data-card="' + g.no + '">' +
-        '<div class="mn"><div class="l1"><button type="button" class="nm" data-open="' + g.no + '">' + esc(g.first + ' ' + g.last) + '</button><span class="no">#' + g.no + '</span><span class="sd ' + esc(g.status) + '" title="' + esc(g.status) + '"></span></div>' +
-        '<div class="l2">' + cardLine(g) + '</div></div>' +
+        '<div class="mn"><div class="l1"><button type="button" class="nm" data-open="' + g.no + '">' + esc(g.first + ' ' + g.last) + '</button><span class="no">#' + g.no + '</span></div>' +
+        '<div class="l2">' + cardLine(g) + '</div></div><span class="sd ' + esc(g.status) + '" title="' + esc(g.status) + '"></span>' +
         (S.trash ? '<button type="button" class="btn" data-restore="' + g.no + '" style="height:34px">Restore</button>'
           : (g.phone ? '<a class="wa" href="' + waLink(g.phone) + '" target="_blank" rel="noopener" aria-label="WhatsApp ' + esc(g.first) + '"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.6-5.2A8.5 8.5 0 1 1 21 11.5z"></path></svg></a>' : '')) +
         '</div>';
@@ -1131,7 +1147,7 @@ tr.has-chg td.chk { box-shadow: inset 4px 0 0 #C2410C; }
     // Group (only when it isn't the guest's own name) · age · arrival date · room.
     var bits = [], gr = cellVal(g, 'group'), ad = cellVal(g, 'arrDate'), rm = cellVal(g, 'room');
     if (gr && gr.toLowerCase() !== (g.first + ' ' + g.last).trim().toLowerCase()) bits.push('<span class="grp">' + esc(gr) + '</span>');
-    bits.push('<span class="k">' + esc(g.age) + '</span>');
+    if (g.age && g.age !== 'Adult') bits.push('<span class="agt">' + esc(g.age) + '</span>');
     if (ad && DHK !== 'arrDate') bits.push('✈ ' + esc(ad.slice(0, 5)));
     if (rm) bits.push('Room ' + esc(rm));
     var basic = bits.join(' <span class="k">·</span> ');
