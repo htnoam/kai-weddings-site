@@ -123,6 +123,8 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visib
 .thanks { align-items: center; text-align: center; gap: 12px; padding: 40px 24px; }
 .thanks .big { font-family: var(--sans); font-weight: 500; font-size: 28px; line-height: 1.2; color: var(--text); }
 .thanks p { margin: 0; font-family: var(--sans); font-size: 17px; line-height: 1.6; }
+.to-portal { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-top: 6px; padding-top: 14px; border-top: 1px solid rgba(0,0,0,.08); }
+.to-portal .send { display: grid; place-items: center; text-decoration: none; }
 .link-btn { background: none; border: none; color: var(--ink); text-decoration: underline; font: 15px var(--sans); cursor: pointer; min-height: 44px; }
 
 /* ---------- footer ---------- */
@@ -214,6 +216,10 @@ footer p { margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1
   <section id="thanks" class="panel thanks" hidden>
     <div class="big">תודה רבה!</div>
     <p>התשובה שלכם נשמרה. מחכים לחגוג איתכם בפורטו חלי.</p>
+    <div class="to-portal" id="to-portal" hidden>
+      <p>באזור האישי שלכם תוכלו להוסיף פרטי טיסה ולמצוא את כל המידע על החתונה.</p>
+      <a class="send" href="/maya-yotam/guest">לאזור האישי</a>
+    </div>
     <button type="button" class="link-btn" id="edit">עריכת התשובה</button>
   </section>
   <footer dir="ltr" lang="en">
@@ -299,6 +305,9 @@ footer p { margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1
       .then(function (res) {
         if (!res.ok) throw new Error(res.error);
         partyId = res.partyId;
+        // Next step: the guest area, signed in with this phone. Shown only once flights, stay or info are turned on.
+        $('to-portal').hidden = !PORTAL_MORE || attend === 'no';
+        if (PORTAL_MORE && payload.phone) try { localStorage.setItem('kai-portal-maya-yotam', payload.phone); } catch (x) {}
         $('rsvp').hidden = true; $('thanks').hidden = false;
         $('thanks').scrollIntoView({ behavior: 'smooth', block: 'center' });
       })
@@ -308,6 +317,11 @@ footer p { margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1
       .then(function () { btn.disabled = false; btn.textContent = label; });
   });
   $('edit').addEventListener('click', function () { $('thanks').hidden = true; $('rsvp').hidden = false; });
+  var PORTAL_MORE = false;
+  fetch(RSVP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'rsvpInfo', e: 'maya-yotam' }) })
+    .then(function (r) { return r.json(); })
+    .then(function (res) { var ev = res && res.event || {}; PORTAL_MORE = ['Portal Flights', 'Portal Stay', 'Portal Info'].some(function (k) { return ev[k] === 'on'; }); })
+    .catch(function () {});
   renderComp();
 })();
 </script>
