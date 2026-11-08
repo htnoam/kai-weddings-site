@@ -273,9 +273,9 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
           (ev.folderUrl ? '<a class="btn sm" href="' + esc(ev.folderUrl) + '" target="_blank" rel="noopener">Folder</a>' : '') +
         '</div></td>' +
         '<td><div class="links">' +
-          '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug + '/portal') + '">Couple’s list</button>' +
+          '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug + '/portal') + '" title="The couple’s guest list (/portal)">Portal · couple</button>' +
           '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug + '/rsvp') + '">RSVP</button>' +
-          '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug + '/guests') + '">Portal</button>' +
+          '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug + '/guests') + '" title="The guests’ area (/guests)">Guests</button>' +
         '</div></td></tr>';
     }).join('');
     // Phones: one card per event instead of the wide table.
@@ -289,7 +289,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
           '<button type="button" class="btn" data-edit="' + esc(ev.slug) + '">Edit RSVP</button>' +
           '<a class="btn" href="/' + esc(ev.slug) + '/rsvp" target="_blank" rel="noopener">RSVP</a></div>' +
         '<div class="ec-b"><a href="' + esc(ev.sheetUrl) + '" target="_blank" rel="noopener">Sheet</a>' + (ev.folderUrl ? '<a href="' + esc(ev.folderUrl) + '" target="_blank" rel="noopener">Folder</a>' : '') +
-          '<span class="ec-copy">Copy link:</span><button type="button" data-copy="' + esc(SITE + ev.slug + '/portal') + '">Couple</button><button type="button" data-copy="' + esc(SITE + ev.slug + '/rsvp') + '">RSVP</button><button type="button" data-copy="' + esc(SITE + ev.slug + '/guests') + '">Portal</button></div>' +
+          '<span class="ec-copy">Copy link:</span><button type="button" data-copy="' + esc(SITE + ev.slug + '/portal') + '">Portal · couple</button><button type="button" data-copy="' + esc(SITE + ev.slug + '/rsvp') + '">RSVP</button><button type="button" data-copy="' + esc(SITE + ev.slug + '/guests') + '">Guests</button></div>' +
       '</div>';
     }).join('');
   }
