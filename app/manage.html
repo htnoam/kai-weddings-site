@@ -493,65 +493,134 @@ tr.has-chg td.chk { box-shadow: inset 4px 0 0 #C2410C; }
   .fp-row { min-height: 40px; } .fp-only { visibility: visible; color: var(--ink); }
 }
 
-/* ===== Wedding schedule (second section next to Guests; only for events with Settings › Schedule = On) ===== */
+/* ===== Wedding plan (second section next to Guests; only for events with Settings › Wedding Plan = On) ===== */
 .sect { display: flex; gap: 2px; background: var(--soft-surface); border: 1px solid var(--hair); border-radius: 6px; padding: 2px; }
 .sect button { border: none; background: none; height: 28px; padding: 0 14px; border-radius: 4px; font-weight: 700; font-size: 13.5px; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
 .sect button:hover { color: var(--text); }
 .sect button.on { background: var(--ink); color: #FFFFFF; }
 .sect svg { width: 15px; height: 15px; }
-body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched #fab, body.in-sched #installbar { display: none !important; }
-.sc { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 1100px; margin: 4px auto 0; }
-.sc.wide { max-width: none; }
-.sc-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.sc-bar .grow { flex: 1; }
-.sc-chip { height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-size: 13.5px; font-weight: 600; color: var(--muted); }
-.sc-chip.on { border-color: var(--ink); background: var(--ink-soft); color: var(--ink); }
-.sc-chip i { font-style: normal; color: var(--soft); font-weight: 500; margin-left: 4px; }
-.sc-day { background: var(--surface); border: 1px solid var(--hair); border-radius: 6px; overflow: hidden; }
-.sc-dh { display: flex; align-items: baseline; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--hair); background: var(--soft-surface); }
-.sc-dh b { font: 600 20px/1.1 var(--serif); color: var(--ink); }
-.sc-dh span { font-size: 13px; color: var(--soft); }
-.sc-dh .n { margin-left: auto; }
-.sc-row { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 4px 16px; padding: 10px 16px; border-bottom: 1px solid var(--row-line); }
-.sc-row:last-child { border-bottom: none; }
-.sc-t { font-weight: 700; font-variant-numeric: tabular-nums; padding-top: 1px; }
-.sc-t small { display: block; font-weight: 500; color: var(--soft); font-size: 12.5px; }
-.sc-w { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-.sc-tl { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.sc-ttl { font-weight: 600; font-size: 15.5px; unicode-bidi: plaintext; text-align: start; }
-.sc-row.hl { background: #FBF8EF; box-shadow: inset 3px 0 0 #C9A44C; }
-.sc-row.hl .sc-ttl { color: var(--ink); font-weight: 700; }
-.sc-row.prod { background: repeating-linear-gradient(135deg, transparent 0 10px, rgba(107,63,142,.03) 10px 20px); }
-.sc-meta { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13.5px; color: var(--muted); }
-.sc-meta span { unicode-bidi: plaintext; }
-.sc-meta svg { width: 13px; height: 13px; vertical-align: -2px; margin-right: 4px; color: var(--soft); }
-.sc-note { font-size: 13.5px; color: var(--soft); unicode-bidi: plaintext; text-align: start; }
-.sc-tag { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11.5px; font-weight: 700; letter-spacing: .02em; background: #F1EAF6; color: #6B3F8E; }
-.sc-empty { background: var(--surface); border: 1px dashed var(--line); border-radius: 6px; padding: 28px 16px; text-align: center; color: var(--soft); }
-.sc-hint { font-size: 13px; color: var(--soft); }
-.sc-edw { background: var(--surface); border: 1px solid var(--hair); border-radius: 6px; overflow-x: auto; }
-table.sc-ed { border-collapse: collapse; width: 100%; min-width: 1060px; font-size: 13.5px; }
-.sc-ed th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--soft); font-weight: 700; padding: 8px 6px; border-bottom: 1px solid var(--hair); background: var(--soft-surface); white-space: nowrap; }
-.sc-ed td { padding: 4px; border-bottom: 1px solid var(--row-line); vertical-align: middle; }
-.sc-ed input, .sc-ed select { width: 100%; height: 30px; border: 1px solid transparent; border-radius: 4px; padding: 0 5px; background: transparent; font-size: 13.5px; font-variant-numeric: tabular-nums; }
-.sc-ed input:hover, .sc-ed select:hover { border-color: var(--hair); }
-.sc-ed input:focus, .sc-ed select:focus { border-color: var(--ink); background: #FFFFFF; outline: none; }
-.sc-ed tr.dayrow td { background: var(--soft-surface); font-weight: 700; color: var(--ink); padding: 6px 10px; font-size: 13px; }
-.sc-ed tr.prod td:not(:first-child) { background: rgba(107,63,142,.035); }
-.sc-ed tr.err input { border-color: var(--bad); background: #FBF3F3; }
-.sc-ed .c { width: 1%; text-align: center; }
-.sc-ed input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--ink); }
-.sc-ed .x { border: none; background: none; color: var(--soft); width: 28px; height: 28px; border-radius: 4px; }
-.sc-ed .x:hover { color: var(--bad); background: #F7EDED; }
-.sc-foot { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.sc-foot .msg { color: var(--bad); font-weight: 600; font-size: 13.5px; }
+body.in-plan #app, body.in-plan #stats, body.in-plan #sumline, body.in-plan #fab, body.in-plan #installbar { display: none !important; }
+.pl { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 1100px; margin: 4px auto 0; }
+.pl.wide { max-width: 1400px; }
+.pl-sub { display: flex; gap: 2px; border-bottom: 1px solid var(--line); overflow-x: auto; }
+.pl-sub button { border: none; background: none; padding: 8px 14px 9px; font-size: 14.5px; font-weight: 700; color: var(--soft); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+.pl-sub button.on { color: var(--ink); border-bottom-color: var(--ink); }
+.pl-badge { min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: #F7EBD3; color: #8A5A12; font-size: 11.5px; display: inline-flex; align-items: center; justify-content: center; }
+.pl-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.pl-bar .grow { flex: 1; }
+.pl-hint { font-size: 13px; color: var(--soft); }
+.pl-chip { height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-size: 13.5px; font-weight: 600; color: var(--muted); }
+.pl-chip.on { border-color: var(--ink); background: var(--ink-soft); color: var(--ink); }
+.pl-chip i { font-style: normal; color: var(--soft); font-weight: 500; margin-left: 4px; }
+.pl-tog { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--surface); }
+.pl-tog button { border: none; background: none; height: 30px; padding: 0 12px; font-size: 13.5px; font-weight: 600; color: var(--muted); }
+.pl-tog button + button { border-left: 1px solid var(--line); }
+.pl-tog button.on { background: var(--ink-soft); color: var(--ink); }
+.pl-empty { background: var(--surface); border: 1px dashed var(--line); border-radius: 6px; padding: 28px 16px; text-align: center; color: var(--soft); display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.pl-day { background: var(--surface); border: 1px solid var(--hair); border-radius: 6px; overflow: hidden; flex-shrink: 0; }
+.pl-dh { display: flex; align-items: baseline; gap: 4px 12px; padding: 10px 16px; border-bottom: 1px solid var(--hair); background: var(--soft-surface); flex-wrap: wrap; }
+.pl-dh b { font: 600 21px/1.1 var(--serif); color: var(--ink); }
+.pl-dh .d { font-size: 13px; color: var(--soft); }
+.pl-dh .sub { font-size: 14px; color: var(--muted); font-weight: 600; unicode-bidi: plaintext; }
+.pl-dh .sun { margin-left: auto; font-size: 13px; color: #8A5A12; display: inline-flex; align-items: center; gap: 5px; font-weight: 600; }
+.pl-dh .sun svg { width: 15px; height: 15px; }
+.pl-row { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 4px 16px; padding: 10px 16px; border-bottom: 1px solid var(--row-line); }
+.pl-row:last-child { border-bottom: none; }
+.pl-t { font-weight: 700; font-variant-numeric: tabular-nums; padding-top: 1px; }
+.pl-t small { display: block; font-weight: 500; color: var(--soft); font-size: 12.5px; }
+.pl-w { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.pl-tl { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.pl-ttl { font-weight: 600; font-size: 15.5px; unicode-bidi: plaintext; text-align: start; }
+.pl-row.hl { background: #FBF8EF; box-shadow: inset 3px 0 0 #C9A44C; }
+.pl-row.hl .pl-ttl { color: var(--ink); font-weight: 700; }
+.pl-row.prod { background: repeating-linear-gradient(135deg, transparent 0 10px, rgba(107,63,142,.03) 10px 20px); }
+.pl-row.mine { background: repeating-linear-gradient(135deg, transparent 0 10px, rgba(138,90,18,.04) 10px 20px); }
+.pl-meta { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13.5px; color: var(--muted); align-items: center; }
+.pl-meta span { unicode-bidi: plaintext; }
+.pl-meta svg { width: 13px; height: 13px; vertical-align: -2px; margin-right: 4px; color: var(--soft); }
+.pl-notes { margin: 2px 0 0; padding: 0 0 0 18px; display: flex; flex-direction: column; gap: 2px; font-size: 14px; color: var(--muted); }
+.pl-notes li { unicode-bidi: plaintext; text-align: start; }
+.pl-more, .pl-lnk { align-self: flex-start; border: none; background: none; padding: 0; font-size: 13px; font-weight: 600; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.pl-tag { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11.5px; font-weight: 700; letter-spacing: .02em; white-space: nowrap; }
+.pl-tag.prod { background: #F1EAF6; color: #6B3F8E; }
+.pl-tag.mine { background: #F7EBD3; color: #8A5A12; }
+.pl-ref { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; height: 24px; padding: 0 10px; font-size: 12.5px; font-weight: 600; color: var(--ink); }
+.pl-ref:hover { border-color: var(--ink); }
+/* free writing */
+.pl-ed { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+.pl-pane { background: var(--surface); border: 1px solid var(--hair); border-radius: 6px; display: flex; flex-direction: column; min-width: 0; }
+.pl-ph { padding: 8px 12px; border-bottom: 1px solid var(--hair); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--soft); font-weight: 700; display: flex; gap: 8px; align-items: center; }
+.pl-ph .ok, .pl-ph .warn { margin-left: auto; text-transform: none; letter-spacing: 0; font-weight: 600; font-size: 12.5px; }
+.pl-ph .ok { color: #2F6B2F; } .pl-ph .warn { color: var(--bad); }
+textarea.pl-free { border: none; resize: vertical; min-height: 560px; padding: 12px 14px; font: 14px/1.6 ui-monospace, 'SF Mono', Menlo, Consolas, monospace; background: var(--surface); outline: none; white-space: pre-wrap; }
+.pl-legend { padding: 10px 14px; border-top: 1px solid var(--hair); background: var(--soft-surface); display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; font-size: 13px; color: var(--muted); }
+.pl-legend code, .pl-hint code { font: 600 12.5px ui-monospace, Menlo, Consolas, monospace; background: var(--surface); border: 1px solid var(--hair); border-radius: 3px; padding: 0 5px; color: var(--text); white-space: nowrap; }
+.pl-prev { padding: 10px; display: flex; flex-direction: column; gap: 10px; max-height: 700px; overflow: auto; background: var(--bg); }
+.pl-prev .pl-dh { padding: 8px 12px; } .pl-prev .pl-row { grid-template-columns: 88px minmax(0, 1fr); padding: 8px 12px; } .pl-prev .pl-dh b { font-size: 18px; }
+.pl-foot { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.pl-foot .msg { color: var(--bad); font-weight: 600; font-size: 13.5px; }
+/* boxes */
+.pl-box { background: var(--surface); border: 1px solid var(--hair); border-radius: 6px; }
+.pl-bh { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--hair); background: var(--soft-surface); flex-wrap: wrap; }
+.pl-bh b { font: 600 20px/1.1 var(--serif); color: var(--ink); }
+.pl-bh .grow { flex: 1; }
+.pl-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+/* to-dos */
+.pl-todo { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--row-line); }
+.pl-todo:last-child { border-bottom: none; }
+.pl-todo input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--ink); }
+.pl-todo .tt { unicode-bidi: plaintext; text-align: start; font-weight: 600; }
+.pl-todo .tt small { display: block; font-weight: 500; font-size: 12.5px; color: var(--soft); }
+.pl-todo.done .tt { color: var(--soft); font-weight: 500; }
+.pl-todo.done .tt span { text-decoration: line-through; }
+.pl-todo .due { font-size: 13px; color: var(--soft); font-variant-numeric: tabular-nums; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
+.pl-todo .due.late { color: var(--bad); font-weight: 700; }
+.pl-x { border: none; background: none; color: var(--soft); width: 26px; height: 26px; border-radius: 4px; }
+.pl-x:hover { color: var(--bad); }
+.pl-add { display: flex; gap: 6px; padding: 10px 16px; border-top: 1px solid var(--hair); flex-wrap: wrap; background: var(--soft-surface); }
+.pl-add input { height: 32px; border: 1px solid var(--line); border-radius: 4px; padding: 0 8px; background: var(--surface); font-size: 14px; }
+.pl-add input.big { flex: 1 1 220px; min-width: 0; }
+/* info cards */
+.pl-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; align-items: start; }
+.pl-card { background: var(--surface); border: 1px solid var(--hair); border-radius: 6px; display: flex; flex-direction: column; scroll-margin-top: 16px; }
+.pl-card.flash { box-shadow: 0 0 0 3px #C9A44C; }
+.pl-ch { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--hair); }
+.pl-ch b { font: 600 19px/1.1 var(--serif); color: var(--ink); unicode-bidi: plaintext; }
+.pl-ch .grow { flex: 1; }
+.pl-ch input { flex: 1; min-width: 0; height: 32px; border: 1px solid var(--line); border-radius: 4px; padding: 0 8px; font-size: 15px; font-weight: 700; }
+.pl-cb { padding: 10px 14px 12px; font-size: 14px; color: var(--muted); display: flex; flex-direction: column; gap: 3px; }
+.pl-cb p { margin: 0; unicode-bidi: plaintext; text-align: start; }
+.pl-cb .h { font-weight: 700; color: var(--text); margin-top: 6px; }
+.pl-cb .h:first-child { margin-top: 0; }
+.pl-cb .li { padding-left: 14px; position: relative; }
+.pl-cb .li::before { content: ""; position: absolute; left: 3px; top: .62em; width: 4px; height: 4px; border-radius: 50%; background: var(--soft); }
+.pl-ctw { overflow-x: auto; margin: 2px 0 4px; }
+.pl-ct { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+.pl-ct th { text-align: left; font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--soft); padding: 4px 8px 4px 0; border-bottom: 1px solid var(--hair); white-space: nowrap; }
+.pl-ct td { padding: 5px 8px 5px 0; border-bottom: 1px solid var(--row-line); color: var(--text); font-variant-numeric: tabular-nums; }
+.pl-card textarea, .pl-box textarea { border: none; border-top: 1px solid var(--hair); min-height: 240px; padding: 10px 14px; font: 13.5px/1.55 ui-monospace, Menlo, Consolas, monospace; resize: vertical; outline: none; }
+.pl-cf { display: flex; gap: 8px; align-items: center; padding: 8px 14px; border-top: 1px solid var(--hair); flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+.pl-cf .grow { flex: 1; }
+/* vendors */
+.pl-vt { width: 100%; border-collapse: collapse; font-size: 14px; }
+.pl-vt th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--soft); padding: 8px 16px; border-bottom: 1px solid var(--hair); }
+.pl-vt td { padding: 10px 16px; border-bottom: 1px solid var(--row-line); }
+.pl-vt tr:last-child td { border-bottom: none; }
+.pl-vt tr.on td { background: var(--ink-soft); }
+.pl-vt .ph { font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
+.pl-sheet { white-space: pre-wrap; font: 13.5px/1.6 ui-monospace, Menlo, Consolas, monospace; padding: 12px 16px; color: var(--text); margin: 0; }
+.pl-scroll { overflow-x: auto; }
+@media (max-width: 900px) { .pl-ed { grid-template-columns: 1fr; } textarea.pl-free { min-height: 380px; } .pl-prev { max-height: none; } }
 @media (max-width: 759px) {
   .sect { order: 5; width: 100%; }
   .sect button { flex: 1; justify-content: center; height: 32px; }
-  .sc-row { grid-template-columns: 1fr; gap: 2px; padding: 10px 14px; }
-  .sc-t { display: flex; gap: 6px; align-items: baseline; }
-  .sc-t small { display: inline; }
-  .sc-dh { padding: 10px 14px; }
+  .pl-row { grid-template-columns: 1fr; gap: 2px; padding: 10px 14px; }
+  .pl-t { display: flex; gap: 6px; align-items: baseline; }
+  .pl-t small { display: inline; }
+  .pl-dh { padding: 10px 14px; }
+  .pl-dh .sun { margin-left: 0; width: 100%; }
+  .pl-cols, .pl-cards { grid-template-columns: 1fr; }
+  .pl-vt .hide-s { display: none; }
 }
 </style>
 <style id="freeze"></style>
@@ -562,7 +631,7 @@ table.sc-ed { border-collapse: collapse; width: 100%; min-width: 1060px; font-si
     <div class="brand"><span class="couple" id="couple">Guest List</span><span class="when" id="when"></span></div>
     <nav class="sect" id="sect" aria-label="Sections" hidden>
       <button type="button" id="s-guests" class="on"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.3-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 4.8a3.3 3.3 0 0 1 0 6.4M18 14.8c2 .6 3.2 2.3 3.5 5.2"/></svg>Guests</button>
-      <button type="button" id="s-sched"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4M7.5 14h3M7.5 17h6"/></svg>Schedule</button>
+      <button type="button" id="s-plan"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4M7.5 14h3M7.5 17h6"/></svg>Wedding plan</button>
     </nav>
     <button type="button" class="sumline" id="sumline" aria-expanded="false" aria-controls="stats"></button>
     <section class="stats" id="stats" aria-label="Summary"></section>
@@ -631,7 +700,7 @@ table.sc-ed { border-collapse: collapse; width: 100%; min-width: 1060px; font-si
       <aside class="panel" id="panel" hidden aria-label="Guest details"></aside>
     </div>
   </div>
-  <div class="sc" id="sched" hidden></div>
+  <div class="pl" id="plan" hidden></div>
 </main>
 
 <button type="button" class="fab" id="fab" aria-label="Add Guest"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg><span class="lbl">Add Guest</span></button>
@@ -934,7 +1003,7 @@ table.sc-ed { border-collapse: collapse; width: 100%; min-width: 1060px; font-si
       S.guests = res.guests; S.who = res.who; S.admin = res.admin; S.views = res.views || [];
       S.reminders = res.reminders || {}; S.reminderText = res.reminderText || ''; S.lang = res.lang || 'he';
       S.changes = res.changes || [];
-      schedLoad(res.schedule);
+      planLoad(res.plan, res.wedding);
       setCustom(res.custom || []);
       if (!curView()) S.view = '';
       if (!keepView && curView()) applyViewState(curView());
@@ -2155,7 +2224,7 @@ table.sc-ed { border-collapse: collapse; width: 100%; min-width: 1060px; font-si
   // Quiet refresh so changes by the other side show up.
   // ---------- live updates: a tiny check every 5 seconds; the list reloads only when something changed ----------
   function busy() {
-    if (S.editing || SC.editing || S.pending || S.resizing || !$('dlg-imp').hidden || !$('dlg').hidden || !$('dlg2').hidden || !$('menu').hidden) return true;
+    if (S.editing || PL.editing !== null || S.pending || S.resizing || !$('dlg-imp').hidden || !$('dlg').hidden || !$('dlg2').hidden || !$('menu').hidden) return true;
     var p = $('panel'); return !p.hidden && p.contains(document.activeElement);
   }
   function showOnline(list) {
@@ -2185,103 +2254,392 @@ table.sc-ed { border-collapse: collapse; width: 100%; min-width: 1060px; font-si
   setInterval(ping, 5000);
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') ping(); });
 
-  // ---------- wedding schedule (second section; shown only when the hub sends one) ----------
-  // Rows: { date DD/MM/YYYY, time, until, title, place, notes, who (vendor), couple (production row, couple only), hl }
-  var SC = { on: false, items: [], filter: 'all', editing: false, draft: null };
-  var SC_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  var scIso = function (d) { var m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(d || ''); return m ? m[3] + '-' + m[2] + '-' + m[1] : ''; };
-  var scDay = function (d) { var t = new Date(scIso(d) + 'T12:00:00'); return isNaN(t) ? '' : SC_DAYS[t.getDay()]; };
-  var scSort = function (l) { return l.slice().sort(function (a, b) { var x = (scIso(a.date) || '9999') + a.time, y = (scIso(b.date) || '9999') + b.time; return x < y ? -1 : x > y ? 1 : 0; }); };
-  var SC_PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>';
-  var SC_WHO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.7-3.6 3.5-5.4 7-5.4s6.3 1.8 7 5.4"/></svg>';
-  function schedLoad(list) {
-    SC.on = Array.isArray(list); $('sect').hidden = !SC.on;
-    if (!SC.on) { schedShow(false); return; }
-    SC.items = scSort(list);
-    if (location.hash === '#schedule' && !document.body.classList.contains('in-sched')) schedShow(true);
-    else if (document.body.classList.contains('in-sched') && !SC.editing) schedRender();
-  }
-  function schedShow(on) {
-    document.body.classList.toggle('in-sched', on); $('sched').hidden = !on;
-    $('s-guests').classList.toggle('on', !on); $('s-sched').classList.toggle('on', on);
-    try { history.replaceState(null, '', on ? '#schedule' : location.pathname + location.search); } catch (e) {}
-    if (on) schedRender();
-  }
-  $('s-guests').addEventListener('click', function () { if (SC.editing && !confirmLeave()) return; SC.editing = false; schedShow(false); });
-  $('s-sched').addEventListener('click', function () { schedShow(true); });
-  function confirmLeave() { toast('Save or cancel your schedule changes first.'); return false; }
-  function schedRender() {
-    var box = $('sched'); box.classList.toggle('wide', SC.editing);
-    if (SC.editing) { schedEdit(); return; }
-    var all = SC.items, nG = all.filter(function (r) { return !r.couple; }).length;
-    var list = all.filter(function (r) { return SC.filter === 'all' || (SC.filter === 'couple') === r.couple; });
-    var chip = function (f, l, n) { return '<button type="button" class="sc-chip' + (SC.filter === f ? ' on' : '') + '" data-scf="' + f + '">' + l + '<i>' + n + '</i></button>'; };
-    var h = '<div class="sc-bar">' + (all.length ? chip('all', 'Everything', all.length) + chip('guests', 'Guest schedule', nG) + chip('couple', 'Couple & production', all.length - nG) : '') +
-      '<span class="grow"></span>' + (S.admin ? '<button type="button" class="btn primary" id="sc-edit">Edit schedule</button>' : '') + '</div>';
-    if (!list.length) h += '<div class="sc-empty">' + (all.length ? 'Nothing in this view.' : S.admin ? 'No schedule yet. Click Edit schedule to add the first item.' : 'The schedule isn’t ready yet. Noam will add it here.') + '</div>';
-    var days = {}, order = [];
-    list.forEach(function (r) { if (!days[r.date]) { days[r.date] = []; order.push(r.date); } days[r.date].push(r); });
-    order.forEach(function (d, i) {
-      h += '<section class="sc-day"><div class="sc-dh"><b>' + esc(scDay(d)) + '</b><span>' + esc(d) + '</span><span class="n">Day ' + (i + 1) + ' · ' + days[d].length + (days[d].length === 1 ? ' item' : ' items') + '</span></div>' +
-        days[d].map(function (r) {
-          return '<div class="sc-row' + (r.hl ? ' hl' : '') + (r.couple ? ' prod' : '') + '"><div class="sc-t">' + esc(r.time || '—') + (r.until ? '<small>until ' + esc(r.until) + '</small>' : '') + '</div>' +
-            '<div class="sc-w"><div class="sc-tl"><span class="sc-ttl" dir="auto">' + esc(r.title) + '</span>' + (r.couple ? '<span class="sc-tag">Couple only</span>' : '') + '</div>' +
-            (r.place || (r.couple && r.who) ? '<div class="sc-meta">' + (r.place ? '<span dir="auto">' + SC_PIN + esc(r.place) + '</span>' : '') + (r.couple && r.who ? '<span dir="auto">' + SC_WHO + esc(r.who) + '</span>' : '') + '</div>' : '') +
-            (r.notes ? '<div class="sc-note" dir="auto">' + esc(r.notes) + '</div>' : '') + '</div></div>';
-        }).join('') + '</section>';
+  // ---------- wedding plan (second section: timeline, to-dos, info, vendors) ----------
+  // Shown only when the hub sends a plan (event Settings › Wedding Plan = On). Only Noam edits; the couple ticks their own to-dos.
+  // The couple's copy never contains Noam's "!" lines, his to-dos, his cards or the vendors (the hub leaves them out).
+  var PL = { on: false, data: null, wedding: {}, sub: 'timeline', filter: 'all', short: false, open: {}, editing: null, draft: '', parsed: null, vend: 0, tplArm: 0 };
+  var PL_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  var PL_HE = { 'ראשון': 0, 'שני': 1, 'שלישי': 2, 'רביעי': 3, 'חמישי': 4, 'שישי': 5, 'שבת': 6 };
+  var PL_PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>';
+  var PL_WHO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.7-3.6 3.5-5.4 7-5.4s6.3 1.8 7 5.4"/></svg>';
+  var PL_SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 18h18M6.5 18a5.5 5.5 0 0 1 11 0M12 6v3M4.6 10.6l2 2M19.4 10.6l-2 2"/></svg>';
+  var plPad = function (n) { return ('0' + n).slice(-2); };
+  var plIso = function (d) { var m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(d || ''); return m ? m[3] + '-' + m[2] + '-' + m[1] : ''; };
+  var plDay = function (d) { var t = new Date(plIso(d) + 'T12:00:00'); return isNaN(t) ? '' : PL_DAYS[t.getDay()]; };
+  var plKey = function (d) { var m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(d || ''); return m ? m[3] + plPad(m[2]) + plPad(m[1]) : '99999999'; };
+  var plYear = function () { var m = /^(\d{4})-/.exec(PL.wedding.date || ''); return m ? m[1] : String(new Date().getFullYear()); };
+  var plToday = function () { var t = new Date(); return plPad(t.getDate()) + '/' + plPad(t.getMonth() + 1) + '/' + t.getFullYear(); };
+
+  // Reading the timeline text. Day: "Friday 9/5" (Hebrew day names too), optional "(19:30 is sunset)"; lines under it before any time = the day's title.
+  // Item: "19:00 – Ceremony", "08:00 – 10:30 Breakfast". Marks in front: * highlight, @ couple & production, ! only Noam. "[Nikos]" at the end = who.
+  // Bullets (●, •, -, or indented lines) = details of the item above. "● Location – …" = its place. "● → Card name" = link to an info card.
+  var PL_DAYRE = /^(?:יום\s+)?(sun|mon|tue|wed|thu|fri|sat|ראשון|שני|שלישי|רביעי|חמישי|שישי|שבת)[a-zא-ת]*\.?,?\s+(\d{1,2})[\/.](\d{1,2})(?:[\/.](\d{2,4}))?\s*(.*)$/i;
+  var PL_ITEMRE = /^([*@!\s]*)(\d{1,2})[:.](\d{2})(?:\s*[–\-—]\s*(\d{1,2})[:.](\d{2})(?!\d))?\s*[–\-—:]?\s*(.*)$/;
+  var PL_BULLRE = /^\s*([*@!\s]*)\s*[●•▪◦·\-–]\s+(.*)$/;
+  function plParse(text) {
+    var days = [], day = null, item = null, warn = [];
+    String(text || '').split(/\r?\n/).forEach(function (raw, ln) {
+      var line = raw.replace(/\s+$/, ''); if (!line.trim()) return;
+      var m = PL_DAYRE.exec(line.trim());
+      if (m) {
+        var y = m[4] ? (m[4].length === 2 ? '20' + m[4] : m[4]) : plYear(), rest = m[5] || '', sun = '';
+        var sm = /(\d{1,2}[:.]\d{2})\s*(?:is\s*)?(?:sunset|שקיעה)|(?:sunset|שקיעה)\s*[:\-–]?\s*(\d{1,2}[:.]\d{2})/i.exec(rest);
+        if (sm) { sun = (sm[1] || sm[2]).replace('.', ':'); rest = rest.replace(/\(?[^()]*(?:sunset|שקיעה)[^()]*\)?/i, '').trim(); }
+        day = { date: plPad(m[2]) + '/' + plPad(m[3]) + '/' + y, sub: rest.replace(/^[–\-—·:]\s*/, ''), sunset: sun, items: [] };
+        if (!plDay(day.date)) warn.push('Line ' + (ln + 1) + ': ' + m[2] + '/' + m[3] + ' isn’t a real date.');
+        days.push(day); item = null; return;
+      }
+      var b = PL_BULLRE.exec(line), it = !b && PL_ITEMRE.exec(line.trim());
+      if (it && (Number(it[2]) > 23 || Number(it[3]) > 59)) it = null;
+      if (it) {
+        if (!day) { warn.push('Line ' + (ln + 1) + ': write the day first, e.g. Friday 9/5.'); return; }
+        var marks = it[1] || '', title = it[6] || '', who = '';
+        var wm = /\s*\[([^\]]+)\]\s*$/.exec(title); if (wm) { who = wm[1].trim(); title = title.slice(0, wm.index); }
+        item = { time: plPad(it[2]) + ':' + it[3], until: it[4] ? plPad(it[4]) + ':' + it[5] : '', title: title.trim() || '—', who: who, place: '', refs: [],
+          vis: marks.indexOf('!') > -1 ? 'noam' : marks.indexOf('@') > -1 ? 'couple' : 'guests', hl: marks.indexOf('*') > -1, notes: [] };
+        day.items.push(item); return;
+      }
+      var txt = b ? b[2] : line.trim(), mine = b ? b[1].indexOf('!') > -1 : /^!/.test(line.trim());
+      if (!b && mine) txt = txt.replace(/^!\s*/, '');
+      if (item && (b || /^\s/.test(raw))) {
+        var rm = /^(?:→|->)\s*(.+)$/.exec(txt); if (rm) { item.refs.push(rm[1].trim()); return; }
+        var lm = /^(?:location|place|מיקום)\s*[–\-—:]\s*(.+)$/i.exec(txt);
+        if (lm && !mine) item.place = lm[1]; else item.notes.push({ text: txt, mine: mine });
+        return;
+      }
+      if (day && !day.items.length) { day.sub = day.sub ? day.sub + ' · ' + txt : txt; return; }
+      if (item) { item.notes.push({ text: txt, mine: mine }); return; }
+      warn.push('Line ' + (ln + 1) + ' wasn’t understood: “' + line.trim().slice(0, 40) + '”');
     });
-    $('sched').innerHTML = h;
-    $('sched').querySelectorAll('[data-scf]').forEach(function (b) { b.onclick = function () { SC.filter = b.dataset.scf; schedRender(); }; });
-    if ($('sc-edit')) $('sc-edit').onclick = function () { SC.editing = true; SC.draft = SC.items.map(function (r) { return Object.assign({}, r); }); schedRender(); };
+    // Times after midnight (00:00–04:59) belong to the end of that day.
+    var tk = function (t) { return t < '05:00' ? '24' + t : t; };
+    days.forEach(function (d) { d.items.sort(function (a, b) { return tk(a.time) < tk(b.time) ? -1 : tk(a.time) > tk(b.time) ? 1 : 0; }); });
+    days.sort(function (a, b) { return plKey(a.date) < plKey(b.date) ? -1 : plKey(a.date) > plKey(b.date) ? 1 : 0; });
+    return { days: days, warn: warn };
   }
-  var SC_F = [['date', 'DD/MM/YYYY', 122], ['time', 'HH:MM', 76], ['until', 'HH:MM', 76], ['title', 'What happens', 190], ['place', 'Where', 150], ['notes', 'Notes', 160], ['who', 'Who / vendor', 150]];
-  function schedEdit() {
-    var rows = '', last = null;
-    SC.draft.forEach(function (r, i) {
-      if (r.date !== last && scIso(r.date)) { rows += '<tr class="dayrow"><td colspan="10">' + esc(scDay(r.date) + ' · ' + r.date) + '</td></tr>'; last = r.date; }
-      rows += '<tr' + (r.couple ? ' class="prod"' : '') + ' data-i="' + i + '">' + SC_F.map(function (f) {
-        var ph = f[0] === 'who' && !r.couple ? '—' : f[1];
-        return '<td style="' + (f[2] < 120 || f[0] === 'date' ? 'width:' : 'min-width:') + f[2] + 'px"><input dir="auto" data-i="' + i + '" data-k="' + f[0] + '" value="' + esc(r[f[0]] || '') + '" placeholder="' + esc(ph) + '"></td>';
-      }).join('') +
-        '<td style="width:132px"><select data-i="' + i + '" data-k="couple" aria-label="Visible to"><option value=""' + (r.couple ? '' : ' selected') + '>Guests</option><option value="1"' + (r.couple ? ' selected' : '') + '>Couple only</option></select></td>' +
-        '<td class="c"><input type="checkbox" data-i="' + i + '" data-k="hl"' + (r.hl ? ' checked' : '') + ' aria-label="Highlight"></td>' +
-        '<td class="c"><button type="button" class="x" data-scrm="' + i + '" aria-label="Remove">✕</button></td></tr>';
-    });
-    $('sched').innerHTML = '<div class="sc-bar"><b style="font-size:15px">Editing the schedule</b><span class="sc-hint">Write in Hebrew or English. Rows sort by day and time when you save. The couple sees every row.</span></div>' +
-      '<div class="sc-edw"><table class="sc-ed"><thead><tr><th>Day</th><th>Time</th><th>Until</th><th>What</th><th>Where</th><th>Notes</th><th>Who / vendor</th><th>Visible to</th><th>Highlight</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
-      '<div class="sc-foot"><button type="button" class="btn" id="sc-add">+ Add item</button><span style="flex:1"></span><span class="msg" id="sc-msg"></span>' +
-      '<button type="button" class="btn" id="sc-cancel">Cancel</button><button type="button" class="btn primary" id="sc-save">Save</button></div>';
-    $('sched').querySelectorAll('.sc-ed [data-k]').forEach(function (el) {
-      el.addEventListener(el.tagName === 'SELECT' || el.type === 'checkbox' ? 'change' : 'input', function () {
-        var r = SC.draft[el.dataset.i], k = el.dataset.k;
-        r[k] = el.type === 'checkbox' ? el.checked : k === 'couple' ? !!el.value : el.value;
-        if (k === 'couple') schedEdit();
-      });
-    });
-    $('sched').querySelectorAll('[data-scrm]').forEach(function (b) { b.onclick = function () { SC.draft.splice(Number(b.dataset.scrm), 1); schedEdit(); }; });
-    $('sc-add').onclick = function () {
-      var lastDay = SC.draft.length ? SC.draft[SC.draft.length - 1].date : '';
-      SC.draft.push({ date: lastDay, time: '', until: '', title: '', place: '', notes: '', who: '', couple: false, hl: false }); schedEdit();
-      var ins = $('sched').querySelectorAll('.sc-ed tbody tr:last-child input'); if (ins[lastDay ? 1 : 0]) ins[lastDay ? 1 : 0].focus();
+  function plVisible(model, filter) {
+    return model.days.map(function (d) {
+      var items = d.items.filter(function (r) { return filter === 'all' || r.vis === filter; });
+      return { date: d.date, sub: d.sub, sunset: d.sunset, items: items };
+    }).filter(function (d) { return d.items.length; });
+  }
+  function plDayHtml(d, i, short, key) {
+    var sun = d.sunset || (plIso(d.date) === PL.wedding.date ? PL.wedding.sunset : '');
+    return '<section class="pl-day"><div class="pl-dh"><b>' + esc(plDay(d.date)) + '</b><span class="d">' + esc(d.date) + '</span>' +
+      (d.sub ? '<span class="sub" dir="auto">' + esc(d.sub) + '</span>' : '') + (sun ? '<span class="sun">' + PL_SUN + 'Sunset ' + esc(sun) + '</span>' : '') + '</div>' +
+      d.items.map(function (r, j) {
+        var id = key + i + '-' + j, open = !short || PL.open[id], cls = r.vis === 'couple' ? ' prod' : r.vis === 'noam' ? ' mine' : '';
+        return '<div class="pl-row' + (r.hl ? ' hl' : '') + cls + '"><div class="pl-t">' + esc(r.time) + (r.until ? '<small>until ' + esc(r.until) + '</small>' : '') + '</div>' +
+          '<div class="pl-w"><div class="pl-tl"><span class="pl-ttl" dir="auto">' + esc(r.title) + '</span>' +
+          (r.vis === 'couple' ? '<span class="pl-tag prod">Couple only</span>' : r.vis === 'noam' ? '<span class="pl-tag mine">Only you</span>' : '') + '</div>' +
+          ((r.place || r.who) ? '<div class="pl-meta">' + (r.place ? '<span dir="auto">' + PL_PIN + esc(r.place) + '</span>' : '') + (r.who ? '<span dir="auto">' + PL_WHO + esc(r.who) + '</span>' : '') + '</div>' : '') +
+          (r.refs.length ? '<div class="pl-meta">' + r.refs.map(function (x) { return '<button type="button" class="pl-ref" data-plref="' + esc(x) + '">→ ' + esc(x) + '</button>'; }).join('') + '</div>' : '') +
+          (r.notes.length ? (open ? '<ul class="pl-notes">' + r.notes.map(function (n) { return '<li dir="auto">' + esc(n.text) + (n.mine ? ' <span class="pl-tag mine">Only you</span>' : '') + '</li>'; }).join('') + '</ul>' +
+            (short ? '<button type="button" class="pl-more" data-plopen="' + id + '">Hide details</button>' : '') :
+            '<button type="button" class="pl-more" data-plopen="' + id + '">' + r.notes.length + (r.notes.length === 1 ? ' detail' : ' details') + '</button>') : '') +
+          '</div></div>';
+      }).join('') + '</section>';
+  }
+
+  function planLoad(plan, wedding) {
+    PL.on = !!plan; PL.wedding = wedding || {}; $('sect').hidden = !PL.on;
+    if (!PL.on) { planShow(false); return; }
+    PL.data = plan; PL.model = plParse(plan.timeline);
+    if (location.hash === '#plan' && !document.body.classList.contains('in-plan')) planShow(true);
+    else if (document.body.classList.contains('in-plan') && PL.editing === null) planRender();
+  }
+  function planShow(on) {
+    document.body.classList.toggle('in-plan', on); $('plan').hidden = !on;
+    $('s-guests').classList.toggle('on', !on); $('s-plan').classList.toggle('on', on);
+    try { history.replaceState(null, '', on ? '#plan' : location.pathname + location.search); } catch (e) {}
+    if (on) planRender();
+  }
+  $('s-guests').addEventListener('click', function () { if (PL.editing !== null) { toast('Save or cancel your changes first.'); return; } planShow(false); });
+  $('s-plan').addEventListener('click', function () { planShow(true); });
+
+  function planRender() {
+    var box = $('plan'), admin = S.admin, D = PL.data;
+    box.classList.toggle('wide', PL.editing === 'timeline');
+    if (PL.editing === 'timeline') { planEditTimeline(); return; }
+    if (!admin && PL.sub === 'vendors') PL.sub = 'timeline';
+    var open = D.todos.filter(function (x) { return !x.done && (admin || x.who === 'couple'); }).length;
+    var sub = '<nav class="pl-sub" aria-label="Wedding plan">' + [['timeline', 'Timeline'], ['todos', admin ? 'To-dos' : 'Your to-dos'], ['info', 'Info'], ['vendors', 'Vendors']]
+      .filter(function (x) { return admin || x[0] !== 'vendors'; })
+      .map(function (x) { return '<button type="button" data-plsub="' + x[0] + '" class="' + (PL.sub === x[0] ? 'on' : '') + '">' + x[1] + (x[0] === 'todos' && open ? '<span class="pl-badge">' + open + '</span>' : '') + '</button>'; }).join('') + '</nav>';
+    box.innerHTML = sub + (PL.sub === 'todos' ? plTodosHtml() : PL.sub === 'info' ? plInfoHtml() : PL.sub === 'vendors' ? plVendorsHtml() : plTimelineHtml());
+    box.querySelectorAll('[data-plsub]').forEach(function (b) { b.onclick = function () { if (PL.editing !== null) { toast('Save or cancel your changes first.'); return; } PL.sub = b.dataset.plsub; planRender(); }; });
+    if (PL.sub === 'todos') plTodosBind(); else if (PL.sub === 'info') plInfoBind(); else if (PL.sub === 'vendors') plVendorsBind(); else plTimelineBind();
+  }
+
+  // ----- timeline -----
+  function plTimelineHtml() {
+    var admin = S.admin, model = PL.model;
+    if (!admin && PL.filter === 'noam') PL.filter = 'all';
+    var count = function (f) { return plVisible(model, f).reduce(function (n, d) { return n + d.items.length; }, 0); };
+    var total = count('all');
+    if (!total) return '<div class="pl-empty">' + (admin ? '<b>No timeline yet.</b><span>Write it the way you write it in Word, or start from your template.</span><div class="pl-bar"><button type="button" class="btn primary" id="pl-edit">Write the timeline</button><button type="button" class="btn" id="pl-tpl">Start from template</button></div>'
+      : 'The timeline isn’t ready yet. Noam will add it here.') + '</div>';
+    var chip = function (f, l) { return '<button type="button" class="pl-chip' + (PL.filter === f ? ' on' : '') + '" data-plf="' + f + '">' + l + '<i>' + count(f) + '</i></button>'; };
+    var days = plVisible(model, PL.filter);
+    return '<div class="pl-bar">' + chip('all', 'Everything') + chip('guests', 'Guest schedule') + chip('couple', 'Couple & production') + (admin ? chip('noam', 'Only you') : '') +
+      '<span class="grow"></span><div class="pl-tog" role="group" aria-label="Detail"><button type="button" data-plshort="0" class="' + (PL.short ? '' : 'on') + '">Full</button><button type="button" data-plshort="1" class="' + (PL.short ? 'on' : '') + '">Short</button></div>' +
+      (admin ? '<button type="button" class="btn" id="pl-save-tpl" title="Save this event’s timeline, to-dos, cards and vendors as the template for new events">Save as template</button><button type="button" class="btn primary" id="pl-edit">Edit timeline</button>' : '') + '</div>' +
+      (days.length ? days.map(function (d, i) { return plDayHtml(d, i, PL.short, 'v'); }).join('') : '<div class="pl-empty">Nothing in this view.</div>');
+  }
+  function plTimelineBind() {
+    var box = $('plan');
+    box.querySelectorAll('[data-plf]').forEach(function (b) { b.onclick = function () { PL.filter = b.dataset.plf; planRender(); }; });
+    box.querySelectorAll('[data-plshort]').forEach(function (b) { b.onclick = function () { PL.short = b.dataset.plshort === '1'; PL.open = {}; planRender(); }; });
+    box.querySelectorAll('[data-plopen]').forEach(function (b) { b.onclick = function () { PL.open[b.dataset.plopen] = !PL.open[b.dataset.plopen]; planRender(); }; });
+    box.querySelectorAll('[data-plref]').forEach(function (b) { b.onclick = function () { plGoCard(b.dataset.plref); }; });
+    if ($('pl-edit')) $('pl-edit').onclick = function () { PL.editing = 'timeline'; PL.draft = PL.data.timeline; planRender(); };
+    if ($('pl-tpl')) $('pl-tpl').onclick = plFromTemplate;
+    if ($('pl-save-tpl')) $('pl-save-tpl').onclick = plSaveTemplate;
+  }
+  function planEditTimeline() {
+    var box = $('plan');
+    box.innerHTML = '<div class="pl-bar"><b style="font-size:15px">Editing the timeline</b><span class="pl-hint">Write it like in Word, or paste it from Word. The preview shows it as you’ll see it.</span></div>' +
+      '<div class="pl-ed"><div class="pl-pane"><div class="pl-ph">Write</div><textarea class="pl-free" id="pl-free" dir="auto" spellcheck="false" aria-label="Timeline text" placeholder="Friday 9/5 (19:30 is sunset)&#10;Wedding day&#10;*19:00 – Ceremony&#10;● Location – the beach">' + esc(PL.draft) + '</textarea>' +
+        '<div class="pl-legend"><code>Friday 9/5</code><span>a new day · add <code>(19:30 is sunset)</code> if you like · the line under it is the day’s title</span>' +
+        '<code>19:00 – Ceremony</code><span>an item · <code>08:00 – 10:30 Breakfast</code> for a time range</span>' +
+        '<code>● …</code><span>details of the item above · <code>● Location – the beach</code> becomes its place</span>' +
+        '<code>● → Bar</code><span>a link to the info card “Bar”</span>' +
+        '<code>*</code><span>at the start: highlight</span>' +
+        '<code>@</code><span>at the start: couple &amp; production</span>' +
+        '<code>!</code><span>at the start: only you · the couple never sees it (works on a detail line too)</span>' +
+        '<code>[Nikos]</code><span>at the end: who / vendor</span></div></div>' +
+      '<div class="pl-pane"><div class="pl-ph">Preview<span id="pl-stat"></span></div><div class="pl-prev" id="pl-prev"></div></div></div>' +
+      '<div class="pl-foot"><span style="flex:1"></span><span class="msg" id="pl-msg"></span><button type="button" class="btn" id="pl-cancel">Cancel</button><button type="button" class="btn primary" id="pl-save">Save</button></div>';
+    var upd = function () {
+      var p = plParse($('pl-free').value), n = p.days.reduce(function (a, d) { return a + d.items.length; }, 0);
+      $('pl-prev').innerHTML = p.days.length ? p.days.map(function (d, i) { return plDayHtml(d, i, false, 'p'); }).join('') : '<div class="pl-empty">Start with a day, e.g. Friday 9/5</div>';
+      $('pl-stat').className = p.warn.length ? 'warn' : 'ok';
+      $('pl-stat').textContent = p.warn.length ? p.warn[0] : p.days.length + (p.days.length === 1 ? ' day · ' : ' days · ') + n + (n === 1 ? ' item' : ' items');
+      PL.draft = $('pl-free').value; PL.parsed = p;
     };
-    $('sc-cancel').onclick = function () { SC.editing = false; schedRender(); };
-    $('sc-save').onclick = function () {
-      var bad = -1, why = '', tm = /^([01]\d|2[0-3]):[0-5]\d$/;
-      SC.draft.forEach(function (r, i) {
-        if (bad > -1 || (!String(r.title).trim() && !String(r.time).trim() && !String(r.place).trim())) return;
-        var iso = scIso(String(r.date).trim()), t = iso && new Date(iso + 'T12:00:00');
-        if (!String(r.title).trim()) { bad = i; why = 'Every item needs a “What”.'; }
-        else if (!iso || isNaN(t) || t.getDate() !== Number(iso.slice(8))) { bad = i; why = 'Write the day as DD/MM/YYYY, e.g. 15/09/2027.'; }
-        else if ((r.time && !tm.test(r.time)) || (r.until && !tm.test(r.until))) { bad = i; why = 'Write times as HH:MM, e.g. 18:45.'; }
-      });
-      $('sched').querySelectorAll('.sc-ed tr.err').forEach(function (tr) { tr.classList.remove('err'); });
-      if (bad > -1) { $('sc-msg').textContent = why; var tr = $('sched').querySelector('.sc-ed tr[data-i="' + bad + '"]'); if (tr) tr.classList.add('err'); return; }
-      var items = SC.draft.filter(function (r) { return String(r.title).trim(); });
-      $('sc-save').disabled = true; $('sc-msg').textContent = ''; saving('busy');
-      api('saveSchedule', { items: items }).then(function (res) {
-        saving('ok'); SC.items = scSort(res.schedule || []); SC.editing = false; schedRender(); toast('Schedule saved. The couple sees it now.');
-      }).catch(function (e) { saving('err'); $('sc-save').disabled = false; $('sc-msg').textContent = e.server ? e.message : 'Couldn’t save. Check your connection and try again.'; });
+    $('pl-free').addEventListener('input', upd); upd();
+    $('pl-cancel').onclick = function () { PL.editing = null; planRender(); };
+    $('pl-save').onclick = function () {
+      if (PL.parsed.warn.length) { $('pl-msg').textContent = PL.parsed.warn[0]; return; }
+      $('pl-save').disabled = true; $('pl-msg').textContent = '';
+      plSave('timeline', PL.draft).then(function () { PL.editing = null; planRender(); toast('Timeline saved. The couple sees it now.'); })
+        .catch(function (e) { $('pl-save').disabled = false; $('pl-msg').textContent = e.server ? e.message : 'Couldn’t save. Check your connection and try again.'; });
     };
+  }
+  function plSave(part, data) {
+    saving('busy');
+    return api('savePlan', { part: part, data: data }).then(function (res) {
+      saving('ok'); PL.data = res.plan; PL.model = plParse(PL.data.timeline); return res;
+    }, function (e) { saving('err'); throw e; });
+  }
+
+  // ----- to-dos -----
+  function plTodosHtml() {
+    var admin = S.admin, today = plKey(plToday());
+    var list = function (who) {
+      var items = PL.data.todos.map(function (x, i) { return [x, i]; }).filter(function (p) { return p[0].who === who; })
+        .sort(function (a, b) { return (a[0].done - b[0].done) || (plKey(a[0].due) < plKey(b[0].due) ? -1 : plKey(a[0].due) > plKey(b[0].due) ? 1 : 0); });
+      var open = items.filter(function (p) { return !p[0].done; }).length;
+      return '<section class="pl-box"><div class="pl-bh"><b>' + (who === 'couple' && admin ? 'The couple’s to-dos' : 'Your to-dos') + '</b><span class="pl-hint">' + open + ' open · ' + (items.length - open) + ' done</span>' +
+        (who === 'noam' ? '<span class="pl-tag mine">Only you</span>' : admin ? '<span class="pl-tag prod">The couple sees these and can tick them</span>' : '') + '</div>' +
+        (items.length ? '' : '<div class="pl-todo"><span></span><span class="pl-hint">' + (admin ? 'No to-dos yet.' : 'Nothing for you to do right now.') + '</span><span></span></div>') +
+        items.map(function (p) {
+          var x = p[0], late = !x.done && x.due && plKey(x.due) < today;
+          return '<div class="pl-todo' + (x.done ? ' done' : '') + '"><input type="checkbox" data-pltd="' + p[1] + '"' + (x.done ? ' checked' : '') + ' aria-label="Done">' +
+            '<span class="tt" dir="auto"><span>' + esc(x.task) + '</span>' + (x.done && x.doneBy ? '<small>Done by ' + esc(x.doneBy) + (x.doneAt ? ' · ' + esc(x.doneAt) : '') + '</small>' : '') + '</span>' +
+            '<span class="due' + (late ? ' late' : '') + '">' + (late ? 'Late · ' : '') + esc(x.due || '') + (admin ? '<button type="button" class="pl-x" data-pltdx="' + p[1] + '" aria-label="Remove">✕</button>' : '') + '</span></div>';
+        }).join('') +
+        (admin ? '<div class="pl-add"><input class="big" id="pl-nt-' + who + '" dir="auto" placeholder="Add a to-do…"><input id="pl-nd-' + who + '" placeholder="DD/MM/YYYY" style="width:118px" inputmode="numeric"><button type="button" class="btn" data-pltadd="' + who + '">Add</button></div>' : '') +
+      '</section>';
+    };
+    return admin ? '<div class="pl-cols">' + list('couple') + list('noam') + '</div>' : list('couple');
+  }
+  function plTodosBind() {
+    var box = $('plan');
+    box.querySelectorAll('[data-pltd]').forEach(function (c) { c.onchange = function () {
+      var x = PL.data.todos[c.dataset.pltd]; c.disabled = true; saving('busy');
+      api('todoDone', { id: x.id, done: c.checked }).then(function (res) {
+        saving('ok'); PL.data = res.plan; planRender(); if (!S.admin && c.checked) toast('Marked as done. Noam sees it now.');
+      }).catch(function (e) { saving('err'); c.checked = !c.checked; c.disabled = false; toast(e.server ? e.message : 'Couldn’t save. Try again.'); });
+    }; });
+    box.querySelectorAll('[data-pltdx]').forEach(function (b) { b.onclick = function () {
+      var list = PL.data.todos.slice(); list.splice(Number(b.dataset.pltdx), 1);
+      plSave('todos', list).then(planRender).catch(function (e) { toast(e.server ? e.message : 'Couldn’t save. Try again.'); });
+    }; });
+    box.querySelectorAll('[data-pltadd]').forEach(function (b) { b.onclick = function () {
+      var who = b.dataset.pltadd, t = $('pl-nt-' + who).value.trim(), d = $('pl-nd-' + who).value.trim();
+      if (!t) { $('pl-nt-' + who).focus(); return; }
+      var dm = /^(\d{1,2})[\/.](\d{1,2})[\/.](\d{2,4})$/.exec(d);
+      if (d && !dm) { toast('Write the date as DD/MM/YYYY, e.g. 25/04/2027.'); $('pl-nd-' + who).focus(); return; }
+      if (dm) d = plPad(dm[1]) + '/' + plPad(dm[2]) + '/' + (dm[3].length === 2 ? '20' + dm[3] : dm[3]);
+      b.disabled = true;
+      plSave('todos', PL.data.todos.concat([{ task: t, who: who, due: d, done: false }])).then(function () { planRender(); var i = $('pl-nt-' + who); if (i) i.focus(); })
+        .catch(function (e) { b.disabled = false; toast(e.server ? e.message : 'Couldn’t save. Try again.'); });
+    }; });
+    box.querySelectorAll('.pl-add input').forEach(function (i) { i.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); i.parentNode.querySelector('[data-pltadd]').click(); } }); });
+  }
+
+  // ----- info cards (free text; lines with | make a table) -----
+  function plCardBody(text) {
+    var out = '', rows = [];
+    var flush = function () {
+      if (!rows.length) return;
+      out += '<div class="pl-ctw"><table class="pl-ct"><thead><tr>' + rows[0].map(function (c) { return '<th dir="auto">' + esc(c) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+        rows.slice(1).map(function (r) { return '<tr>' + r.map(function (c) { return '<td dir="auto">' + esc(c) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>';
+      rows = [];
+    };
+    String(text || '').split('\n').filter(function (l) { return l.trim(); }).forEach(function (l) {
+      if (l.indexOf('|') > -1) { rows.push(l.split('|').map(function (c) { return c.trim(); })); return; }
+      flush();
+      var b = /^\s*[●•▪◦\-–]\s+(.*)$/.exec(l);
+      out += b ? '<p class="li" dir="auto">' + esc(b[1]) + '</p>' : '<p class="h" dir="auto">' + esc(l) + '</p>';
+    });
+    flush(); return out;
+  }
+  function plInfoHtml() {
+    var admin = S.admin, cards = PL.data.info, used = {};
+    PL.model.days.forEach(function (d) { d.items.forEach(function (r) { r.refs.forEach(function (x) { used[x] = (used[x] || []).concat(r.time + ' ' + r.title); }); }); });
+    var html = '<div class="pl-bar"><span class="pl-hint">' + (admin ? 'Menus, ceremony details, photo lists, rooms. Lines with <code>|</code> make a table. Link from the timeline with <code>● → Card name</code>.' : 'Menus, ceremony details and everything else for the wedding.') + '</span><span class="grow"></span>' +
+      (admin && PL.editing === null ? '<button type="button" class="btn" id="pl-addcard">+ New card</button>' : '') + '</div>';
+    if (!cards.length && PL.editing !== 'new') return html + '<div class="pl-empty">' + (admin ? 'No info cards yet. Click + New card.' : 'Nothing here yet.') + '</div>';
+    var list = cards.map(function (c, i) { return [c, i]; });
+    if (PL.editing === 'new') list.push([{ title: '', mine: false, text: '' }, 'new']);
+    return html + '<div class="pl-cards">' + list.map(function (p) {
+      var c = p[0], i = p[1], ed = PL.editing === i;
+      if (ed) return '<section class="pl-card" data-plcard="' + esc(c.title) + '"><div class="pl-ch"><input id="pl-ctitle" dir="auto" value="' + esc(c.title) + '" placeholder="Card name, e.g. Bar"></div>' +
+        '<textarea id="pl-ctext" dir="auto" placeholder="Open bar 18:00–00:00&#10;● Pornstar martini&#10;Time | Who | Service&#10;12:00 | Bride | Hair + makeup">' + esc(c.text) + '</textarea>' +
+        '<div class="pl-cf"><label><input type="checkbox" id="pl-cmine"' + (c.mine ? ' checked' : '') + '> Only you (the couple won’t see this card)</label><span class="grow"></span>' +
+        (i !== 'new' ? '<button type="button" class="pl-lnk" id="pl-cdel" style="color:var(--bad)">Delete card</button>' : '') +
+        '<button type="button" class="btn" id="pl-ccancel">Cancel</button><button type="button" class="btn primary" id="pl-csave">Save</button></div></section>';
+      return '<section class="pl-card" data-plcard="' + esc(c.title) + '"><div class="pl-ch"><b dir="auto">' + esc(c.title) + '</b>' + (c.mine ? '<span class="pl-tag mine">Only you</span>' : '') + '<span class="grow"></span>' +
+        (admin && PL.editing === null ? '<button type="button" class="pl-lnk" data-plcedit="' + i + '">Edit</button>' : '') + '</div>' +
+        '<div class="pl-cb">' + plCardBody(c.text) + (used[c.title] ? '<p class="pl-hint" style="margin-top:8px">In the timeline: ' + esc(used[c.title].join(' · ')) + '</p>' : '') + '</div></section>';
+    }).join('') + '</div>';
+  }
+  function plInfoBind() {
+    var box = $('plan');
+    box.querySelectorAll('[data-plcedit]').forEach(function (b) { b.onclick = function () { PL.editing = Number(b.dataset.plcedit); planRender(); $('pl-ctext').focus(); }; });
+    if ($('pl-addcard')) $('pl-addcard').onclick = function () { PL.editing = 'new'; planRender(); $('pl-ctitle').focus(); };
+    if (!$('pl-csave')) return;
+    var idx = PL.editing;
+    $('pl-ccancel').onclick = function () { PL.editing = null; planRender(); };
+    if ($('pl-cdel')) $('pl-cdel').onclick = function () {
+      if ($('pl-cdel').dataset.arm !== '1') { $('pl-cdel').dataset.arm = '1'; $('pl-cdel').textContent = 'Click again to delete'; return; }
+      var list = PL.data.info.slice(); list.splice(idx, 1);
+      plSave('info', list).then(function () { PL.editing = null; planRender(); toast('Card deleted.'); }).catch(function (e) { toast(e.server ? e.message : 'Couldn’t save. Try again.'); });
+    };
+    $('pl-csave').onclick = function () {
+      var title = $('pl-ctitle').value.trim(); if (!title) { $('pl-ctitle').focus(); toast('Give the card a name.'); return; }
+      var card = { title: title, mine: $('pl-cmine').checked, text: $('pl-ctext').value }, list = PL.data.info.slice();
+      if (list.some(function (c, j) { return j !== idx && c.title.toLowerCase() === title.toLowerCase(); })) { toast('There’s already a card called “' + title + '”.'); return; }
+      if (idx === 'new') list.push(card); else list[idx] = card;
+      $('pl-csave').disabled = true;
+      plSave('info', list).then(function () { PL.editing = null; planRender(); toast('Card saved.'); }).catch(function (e) { $('pl-csave').disabled = false; toast(e.server ? e.message : 'Couldn’t save. Try again.'); });
+    };
+  }
+  function plGoCard(id) {
+    PL.sub = 'info'; planRender();
+    var c = [].filter.call($('plan').querySelectorAll('.pl-card'), function (x) { return x.dataset.plcard.toLowerCase() === id.toLowerCase(); })[0];
+    if (c) { c.scrollIntoView({ block: 'start', behavior: 'smooth' }); c.classList.add('flash'); setTimeout(function () { c.classList.remove('flash'); }, 1600); }
+    else toast(S.admin ? 'There’s no info card called “' + id + '” yet.' : 'This card isn’t ready yet.');
+  }
+
+  // ----- vendors (only Noam): each vendor's sheet is built from the timeline and from linked tables -----
+  function plVendorItems(v) {
+    var keys = [v.name, v.role].map(function (k) { return String(k || '').toLowerCase().trim(); }).filter(function (k) { return k.length > 1; }), out = [];
+    PL.model.days.forEach(function (d) { d.items.forEach(function (r) {
+      var who = r.who.toLowerCase(); if (keys.some(function (k) { return who.indexOf(k) > -1 || (k === keys[0] && r.title.toLowerCase().indexOf(k) > -1); })) out.push({ d: d, r: r });
+    }); });
+    return out;
+  }
+  function plSheet(v) {
+    var items = plVendorItems(v), last = '', refs = {};
+    var lines = [(PL.wedding.couple || '') + (PL.wedding.place ? ' · ' + PL.wedding.place : ''), (v.role ? v.role + ' – ' : '') + v.name, ''];
+    items.forEach(function (x) {
+      if (x.d.date !== last) { var sun = x.d.sunset || (plIso(x.d.date) === PL.wedding.date ? PL.wedding.sunset : ''); lines.push(plDay(x.d.date) + ' ' + x.d.date + (sun ? ' (sunset ' + sun + ')' : '')); last = x.d.date; }
+      lines.push(x.r.time + (x.r.until ? '–' + x.r.until : '') + '  ' + x.r.title + (x.r.place ? ' · ' + x.r.place : ''));
+      x.r.notes.filter(function (n) { return !n.mine; }).forEach(function (n) { lines.push('    • ' + n.text); });
+      x.r.refs.forEach(function (r) { refs[r.toLowerCase()] = 1; });
+    });
+    if (!items.length) lines.push('No timeline items for this vendor yet. Add [' + v.name + '] at the end of their lines in the timeline.');
+    PL.data.info.forEach(function (c) {
+      if (!refs[c.title.toLowerCase()]) return;
+      var rows = String(c.text).split('\n').filter(function (l) { return l.indexOf('|') > -1; });
+      var mine = rows.slice(1).filter(function (l) { return l.toLowerCase().indexOf(String(v.name).toLowerCase()) > -1; });
+      if (mine.length) { lines.push('', c.title + ':'); mine.forEach(function (l) { lines.push('    ' + l.split('|').map(function (x) { return x.trim(); }).join('  ·  ')); }); }
+    });
+    lines.push('', 'Questions: Noam, the event planner');
+    return lines.join('\n');
+  }
+  function plVendorsHtml() {
+    var V = PL.data.vendors;
+    if (PL.editing === 'vendors') return '<section class="pl-box"><div class="pl-bh"><b>Vendors</b><span class="pl-hint">One vendor per line: <code>Role | Name | Phone</code></span></div>' +
+      '<textarea id="pl-vtext" dir="auto" style="width:100%;min-height:260px" placeholder="DJ | Nir | +972 50 000 0000&#10;Photographer | Kirios | +357 99 000000">' + esc(V.map(function (v) { return [v.role, v.name, v.phone].join(' | '); }).join('\n')) + '</textarea>' +
+      '<div class="pl-cf"><span class="grow"></span><button type="button" class="btn" id="pl-vcancel">Cancel</button><button type="button" class="btn primary" id="pl-vsave">Save</button></div></section>';
+    if (!V.length) return '<div class="pl-empty"><b>No vendors yet.</b><span>Add them once, and each vendor gets a sheet with their part of the timeline.</span><button type="button" class="btn primary" id="pl-vedit">Add vendors</button></div>';
+    if (PL.vend >= V.length) PL.vend = 0;
+    var v = V[PL.vend];
+    return '<div class="pl-cols"><section class="pl-box"><div class="pl-bh"><b>Vendors</b><span class="pl-hint">Only you see this</span><span class="grow"></span><button type="button" class="pl-lnk" id="pl-vedit">Edit</button></div><div class="pl-scroll"><table class="pl-vt"><thead><tr><th>Role</th><th>Name</th><th class="hide-s">Phone</th><th>Items</th></tr></thead><tbody>' +
+      V.map(function (x, i) { return '<tr class="' + (i === PL.vend ? 'on' : '') + '"><td dir="auto">' + esc(x.role) + '</td><td><button type="button" class="pl-lnk" data-plv="' + i + '" dir="auto">' + esc(x.name || '—') + '</button></td><td class="ph hide-s">' + esc(x.phone) + '</td><td>' + plVendorItems(x).length + '</td></tr>'; }).join('') +
+      '</tbody></table></div></section>' +
+      '<section class="pl-box"><div class="pl-bh"><b dir="auto">' + esc(v.name) + '’s sheet</b><span class="pl-hint" dir="auto">' + esc(v.role) + '</span><span class="grow"></span><button type="button" class="btn primary" id="pl-vcopy">Copy for WhatsApp</button></div><pre class="pl-sheet" id="pl-vsheet" dir="auto">' + esc(plSheet(v)) + '</pre></section></div>';
+  }
+  function plVendorsBind() {
+    var box = $('plan');
+    box.querySelectorAll('[data-plv]').forEach(function (b) { b.onclick = function () { PL.vend = Number(b.dataset.plv); planRender(); }; });
+    if ($('pl-vedit')) $('pl-vedit').onclick = function () { PL.editing = 'vendors'; planRender(); $('pl-vtext').focus(); };
+    if ($('pl-vcancel')) $('pl-vcancel').onclick = function () { PL.editing = null; planRender(); };
+    if ($('pl-vsave')) $('pl-vsave').onclick = function () {
+      var list = $('pl-vtext').value.split('\n').filter(function (l) { return l.trim(); }).map(function (l) { var p = l.split('|').map(function (x) { return x.trim(); }); return p.length > 1 ? { role: p[0], name: p[1], phone: p.slice(2).join(' ') } : { role: '', name: p[0], phone: '' }; });
+      $('pl-vsave').disabled = true;
+      plSave('vendors', list).then(function () { PL.editing = null; planRender(); toast('Vendors saved.'); }).catch(function (e) { $('pl-vsave').disabled = false; toast(e.server ? e.message : 'Couldn’t save. Try again.'); });
+    };
+    if ($('pl-vcopy')) $('pl-vcopy').onclick = function () {
+      var t = $('pl-vsheet').textContent;
+      (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { toast('Copied. Paste it in WhatsApp.'); }, function () {
+        var r = document.createRange(); r.selectNodeContents($('pl-vsheet')); var sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); toast('Selected. Copy it with Ctrl+C.');
+      });
+    };
+  }
+
+  // ----- template: days and due dates are kept relative to the wedding day ("Day -1", "Day 0", 21 days before) -----
+  function plDaysFrom(dmy) { var a = new Date(plIso(dmy) + 'T12:00:00'), w = new Date((PL.wedding.date || '') + 'T12:00:00'); return isNaN(a) || isNaN(w) ? null : Math.round((a - w) / 864e5); }
+  function plDateAt(n) { var w = new Date((PL.wedding.date || '') + 'T12:00:00'); if (isNaN(w)) return null; w.setDate(w.getDate() + n); return plPad(w.getDate()) + '/' + plPad(w.getMonth() + 1) + '/' + w.getFullYear(); }
+  function plSaveTemplate() {
+    var b = $('pl-save-tpl');
+    if (!PL.wedding.date) { toast('Set the wedding date in the dashboard first.'); return; }
+    if (b.dataset.arm !== '1') { b.dataset.arm = '1'; b.textContent = 'Replace the template? Click again'; setTimeout(function () { if (b.isConnected) { b.dataset.arm = ''; b.textContent = 'Save as template'; } }, 4000); return; }
+    var text = PL.data.timeline.split('\n').map(function (l) {
+      var m = PL_DAYRE.exec(l.trim()); if (!m) return l;
+      var n = plDaysFrom(plPad(m[2]) + '/' + plPad(m[3]) + '/' + (m[4] ? (m[4].length === 2 ? '20' + m[4] : m[4]) : plYear()));
+      var rest = (m[5] || '').replace(/\(?[^()]*(?:sunset|שקיעה)[^()]*\)?/i, '').trim();
+      return n === null ? l : 'Day ' + (n > 0 ? '+' : '') + n + (rest ? ' ' + rest : '');
+    }).join('\n');
+    var tpl = { v: 1, timeline: text, info: PL.data.info, vendors: PL.data.vendors,
+      todos: PL.data.todos.map(function (x) { return { task: x.task, who: x.who, days: x.due ? plDaysFrom(x.due) : null }; }) };
+    b.disabled = true; saving('busy');
+    api('saveTemplate', { template: JSON.stringify(tpl) }).then(function () { saving('ok'); toast('Saved as the template. New events can start from it.'); planRender(); })
+      .catch(function (e) { saving('err'); b.disabled = false; toast(e.server ? e.message : 'Couldn’t save the template. Try again.'); });
+  }
+  function plFromTemplate() {
+    var b = $('pl-tpl');
+    if (!PL.wedding.date) { toast('Set the wedding date in the dashboard first.'); return; }
+    b.disabled = true; b.textContent = 'Loading…'; saving('busy');
+    api('planTemplate', {}).then(function (res) {
+      if (!res.template) { saving('ok'); b.disabled = false; b.textContent = 'Start from template'; toast('There’s no template yet. Build one event’s plan and click Save as template.'); return; }
+      var t = JSON.parse(res.template), wd = PL.wedding.date;
+      var text = String(t.timeline || '').split('\n').map(function (l) {
+        var m = /^\s*Day\s*([+\-]?\d+)\b\s*(.*)$/i.exec(l); if (!m) return l;
+        var n = Number(m[1]), d = plDateAt(n), dd = d.split('/');
+        return PL_DAYS[new Date(plIso(d) + 'T12:00:00').getDay()] + ' ' + Number(dd[0]) + '/' + Number(dd[1]) + (n === 0 && PL.wedding.sunset ? ' (' + PL.wedding.sunset + ' is sunset)' : '') + (m[2] ? ' ' + m[2] : '');
+      }).join('\n');
+      var todos = (t.todos || []).map(function (x) { return { task: x.task, who: x.who, due: x.days === null || x.days === undefined ? '' : plDateAt(x.days), done: false }; });
+      return api('savePlan', { part: 'timeline', data: text })
+        .then(function () { return api('savePlan', { part: 'todos', data: todos }); })
+        .then(function () { return api('savePlan', { part: 'info', data: t.info || [] }); })
+        .then(function () { return api('savePlan', { part: 'vendors', data: t.vendors || [] }); })
+        .then(function (r) { saving('ok'); PL.data = r.plan; PL.model = plParse(PL.data.timeline); planRender(); toast('Started from the template. Check the timeline and change what’s different for this wedding.'); });
+    }).catch(function (e) { saving('err'); if (b.isConnected) { b.disabled = false; b.textContent = 'Start from template'; } toast(e.server ? e.message : 'Couldn’t load the template. Try again.'); });
   }
 
   loadCols();
