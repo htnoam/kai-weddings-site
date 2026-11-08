@@ -120,6 +120,21 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
 .endtoggle { border: none; background: none; color: var(--muted); font-weight: 600; font-size: 13px; padding: 4px 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 .btn.danger { background: var(--bad); border-color: var(--bad); color: #FFFFFF; font-weight: 600; }
 .btn.danger:disabled { opacity: .45; }
+.gx details { border: 1px solid var(--hair); border-radius: 6px; margin-bottom: 8px; background: #FFFFFF; }
+.gx summary { cursor: pointer; padding: 10px 12px; font-weight: 700; font-size: 14px; color: var(--ink); }
+.gx summary .warn { color: var(--warn); font-weight: 600; font-size: 12px; margin-left: 8px; }
+.gx .body { padding: 2px 12px 12px; display: flex; flex-direction: column; gap: 8px; }
+.gx .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px 12px; }
+.gx .item { border: 1px dashed var(--line); border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; gap: 8px; background: var(--soft-surface); }
+.gx .item-h { display: flex; align-items: center; justify-content: space-between; font-size: 12.5px; font-weight: 700; color: var(--muted); }
+.gx .sub-h { font-size: 12.5px; font-weight: 700; color: var(--muted); margin-top: 4px; }
+.gx .rowx { display: flex; gap: 6px; align-items: center; }
+.gx .rowx input { flex: 1 1 0; min-width: 0; height: 32px; border: 1px solid var(--line); border-radius: 4px; padding: 0 8px; font-size: 14px; }
+.gx .x { border: none; background: none; color: var(--soft); font-size: 13px; cursor: pointer; padding: 2px 6px; }
+.gx .x:hover { color: var(--bad); }
+.gx .f input, .gx .f select { height: 32px; font-size: 14px; }
+.gx .f textarea { font-size: 14px; min-height: 52px; }
+.gx-note { background: #FFF6E5; border: 1px solid #E8D3A6; border-radius: 6px; padding: 8px 12px; font-size: 13px; color: #6B4A0E; }
 .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 24px; z-index: 70; background: var(--text); color: #FFFFFF; border-radius: 6px; padding: 10px 16px; font-size: 14px; max-width: calc(100% - 32px); }
 .toast.bad { background: var(--bad); }
 </style>
@@ -240,6 +255,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     <div class="act">
       <a class="btn" id="e-view" target="_blank" rel="noopener">Open the form</a>
       <a class="btn" id="e-portal" target="_blank" rel="noopener">Open the portal</a>
+      <button type="button" class="btn" id="e-grand" hidden>Grand site texts…</button>
       <span style="flex:1"></span>
       <button type="button" class="btn" id="e-cancel">Cancel</button>
       <button type="submit" class="btn primary" id="e-save">Save</button>
@@ -259,7 +275,23 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
   </form>
 </div>
 <div class="menu" id="menu" hidden></div>
+<div class="overlay" id="dlg-g" hidden>
+  <form class="dialog wide" id="form-g" role="dialog" aria-modal="true" aria-labelledby="g-title" novalidate>
+    <h2 id="g-title">Grand site texts</h2>
+    <p class="hint" style="margin:0">Everything guests see on the Grand site. Empty fields are hidden on the site. Changes show on the site as soon as you save.</p>
+    <div class="gx-note" id="g-note" hidden></div>
+    <div class="gx" id="g-body">Loading…</div>
+    <p class="err" id="g-err" hidden></p>
+    <div class="act">
+      <a class="btn" id="g-view" target="_blank" rel="noopener">Open the site</a>
+      <span style="flex:1"></span>
+      <button type="button" class="btn" id="g-cancel">Cancel</button>
+      <button type="submit" class="btn primary" id="g-save">Save</button>
+    </div>
+  </form>
+</div>
 <input type="file" id="e-file" accept="image/*" hidden>
+<input type="file" id="g-file" accept="image/*" hidden>
 <div class="toast" id="toast" role="status" hidden></div>
 
 <script>
@@ -437,7 +469,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
       .then(function () { $('n-save').disabled = false; $('n-save').textContent = 'Create Event'; });
   });
   $('n-cancel').addEventListener('click', function () { $('dlg').hidden = true; });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { $('dlg').hidden = true; $('dlg-e').hidden = true; $('dlg-d').hidden = true; closeMenu(); } });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { if (!$('dlg-g').hidden) { $('dlg-g').hidden = true; return; } $('dlg').hidden = true; $('dlg-e').hidden = true; $('dlg-d').hidden = true; closeMenu(); } });
 
   // ---------- edit RSVP form (texts and photos are saved in the event's Settings) ----------
   var EDIT = { slug: '', vals: {} };
@@ -468,7 +500,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
       EDIT.vals['Client Email'] = ev.email || ''; EDIT.vals['Sunset Time'] = ev.sunset || ''; EDIT.vals['Start Date'] = fmtDate(ev.start); EDIT.vals['End Date'] = fmtDate(ev.end);
       EDIT.vals['Venue'] = ev.venue || (ev.country ? '' : cut > 0 ? ev.place.slice(0, cut).trim() : ev.place || '');
       EDIT.vals['Country'] = ev.country || (ev.venue ? '' : cut > 0 ? ev.place.slice(cut + 1).trim() : '');
-      fillEdit(); $('e-save').disabled = false;
+      fillEdit(); $('e-save').disabled = false; EDIT.ev = ev; showGrandBtn();
     }).catch(function (e) { $('e-err').textContent = e.server ? e.message : 'Couldn’t load the form texts.'; $('e-err').hidden = false; });
   }
   ['rows', 'ecards'].forEach(function (id) { $(id).addEventListener('click', function (e) { var b = e.target.closest('[data-edit]'); if (b) openEdit(b.dataset.edit); }); });
@@ -514,6 +546,150 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     img.src = url;
   });
   $('new').addEventListener('click', openNew);
+
+  // ---------- Grand site texts (saved as JSON in the event's Settings › Grand Config) ----------
+  // The form is built from the Grand template's own config.js, so every text, time and list on the site is here.
+  function showGrandBtn() { $('e-grand').hidden = document.querySelector('#form-e [data-k="Template"]').value !== 'Grand'; }
+  document.querySelector('#form-e [data-k="Template"]').addEventListener('change', showGrandBtn);
+  var G = { cfg: null, base: null, shapes: {} };
+  var G_SECTIONS = { couple: 'Couple', parents: 'Parents', dates: 'Dates & calendar', gate: 'Opening screen (envelope & boarding pass)', hero: 'Top of the page',
+    invitation: 'Invitation', countdown: 'Countdown', schedule: 'Schedule', details: 'What’s included', flights: 'Flights', packing: 'Packing list',
+    location: 'Location', rsvp: 'RSVP form', nav: 'Top menu' };
+  var G_HINT = { timezone: 'e.g. +03:00', countdownTo: 'YYYY-MM-DDTHH:MM', start: 'YYYY-MM-DDTHH:MM', end: 'YYYY-MM-DDTHH:MM', date: 'YYYY-MM-DD', time: 'HH:MM', until: 'HH:MM (optional)' };
+  var G_ICONS = ['', 'plane', 'bus', 'key', 'bed', 'coffee', 'pool', 'drop', 'sparkles', 'camera', 'glass', 'rings', 'dinner', 'music', 'moon', 'suitcase', 'heart', 'taverna', 'sun'];
+  var G_OLD = /עמית|Atlantis|Larnaca|לרנקה|Mazotos|AO 2705|שרלי|סולומון/;   // left over from Amit & Or's site
+  var human = function (k) { return String(k).replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^./, function (c) { return c.toUpperCase(); }); };
+  var clone = function (o) { return JSON.parse(JSON.stringify(o)); };
+  function gMerge(a, b) { Object.keys(b).forEach(function (k) { if (b[k] && typeof b[k] === 'object' && !Array.isArray(b[k]) && a[k] && typeof a[k] === 'object') gMerge(a[k], b[k]); else a[k] = b[k]; }); return a; }
+  // The shape of each list item = every key any item of that list has in the template (so optional ones like "until" show too).
+  function gShapes(o, path) {
+    if (Array.isArray(o)) {
+      var key = path + '[]', sh = G.shapes[key] = G.shapes[key] || {};
+      o.forEach(function (it) {
+        if (it && typeof it === 'object' && !Array.isArray(it)) Object.keys(it).forEach(function (k) { if (!(k in sh)) sh[k] = Array.isArray(it[k]) ? [] : typeof it[k] === 'boolean' ? false : ''; });
+        else if (Array.isArray(it)) sh.__cols = Math.max(sh.__cols || 0, it.length);
+        gShapes(it, key);
+      });
+    } else if (o && typeof o === 'object') Object.keys(o).forEach(function (k) { gShapes(o[k], path + '.' + k); });
+  }
+  function gAt(path) { return path.reduce(function (o, k) { return o[k]; }, G.cfg); }
+  function gField(k, v, path, spath) {
+    var P = esc(JSON.stringify(path)), lab = '<label class="f">' + esc(human(k));
+    if (typeof v === 'boolean') return '<label class="f chk"><input type="checkbox" data-gp="' + P + '"' + (v ? ' checked' : '') + '> ' + esc(k === 'highlight' ? 'Highlight' : human(k)) + '</label>';
+    if (k === 'photo') return lab + ' · link or upload<div class="rowx"><input data-gp="' + P + '" value="' + esc(v) + '" placeholder="No photo"><button type="button" class="btn sm" data-gup="' + P + '">Upload</button></div></label>';
+    if (k === 'icon') return lab + '<select data-gp="' + P + '">' + G_ICONS.map(function (n) { return '<option' + (n === v ? ' selected' : '') + '>' + n + '</option>'; }).join('') + '</select></label>';
+    if (typeof v === 'number') return lab + '<input type="number" min="1" max="30" data-gp="' + P + '" value="' + esc(v) + '"></label>';
+    if (Array.isArray(v)) return gList(k, v, path, spath);
+    if (v && typeof v === 'object') return '<div class="sub-h">' + esc(human(k)) + '</div><div class="grid">' + Object.keys(v).map(function (k2) { return gField(k2, v[k2], path.concat(k2), spath + '.' + k2); }).join('') + '</div>';
+    var long = String(v).length > 70 || k === 'text' || k === 'details';
+    return lab + (long ? '<textarea dir="auto" rows="2" data-gp="' + P + '">' + esc(v) + '</textarea>' : '<input dir="auto" data-gp="' + P + '" value="' + esc(v) + '" placeholder="' + esc(G_HINT[k] || '') + '">') + '</label>';
+  }
+  function gList(k, arr, path, spath) {
+    var key = spath + '[]', sh = G.shapes[key] || {}, P = esc(JSON.stringify(path));
+    var objs = arr.some(function (x) { return x && typeof x === 'object' && !Array.isArray(x); }) || Object.keys(sh).filter(function (x) { return x !== '__cols'; }).length;
+    var rows = sh.__cols || arr.some(Array.isArray);
+    if (!objs && !rows) return '<label class="f">' + esc(human(k)) + ' · one per line<textarea dir="auto" rows="' + Math.min(8, Math.max(2, arr.length)) + '" data-gl="' + P + '">' + esc(arr.join('\n')) + '</textarea></label>';
+    var out = '<div class="sub-h">' + esc(human(k)) + '</div>';
+    if (rows) {
+      var n = sh.__cols || 2;
+      out += arr.map(function (r, i) { return '<div class="rowx">' + Array.apply(null, Array(n)).map(function (_, j) { return '<input dir="auto" data-gp="' + esc(JSON.stringify(path.concat(i, j))) + '" value="' + esc(r[j] == null ? '' : r[j]) + '">'; }).join('') + '<button type="button" class="x" data-grm="' + esc(JSON.stringify(path.concat(i))) + '" title="Remove">✕</button></div>'; }).join('');
+    } else {
+      out += arr.map(function (it, i) {
+        var full = gMerge(clone(sh), it);
+        Object.keys(full).forEach(function (kk) { if (!(kk in it)) it[kk] = full[kk]; });   // optional keys get a field too
+        return '<div class="item"><div class="item-h"><span>' + esc(human(k).replace(/sses$/, 'ss').replace(/([^s])s$/, '$1')) + ' ' + (i + 1) + '</span><button type="button" class="x" data-grm="' + esc(JSON.stringify(path.concat(i))) + '">Remove</button></div>' +
+          '<div class="grid">' + Object.keys(it).filter(function (kk) { return !Array.isArray(it[kk]) || !(it[kk].length && typeof it[kk][0] === 'object'); }).map(function (kk) { return gField(kk, it[kk], path.concat(i, kk), key + '.' + kk); }).join('') + '</div>' +
+          Object.keys(it).filter(function (kk) { return Array.isArray(it[kk]) && it[kk].length && typeof it[kk][0] === 'object'; }).map(function (kk) { return gField(kk, it[kk], path.concat(i, kk), key + '.' + kk); }).join('') +
+        '</div>';
+      }).join('');
+    }
+    return out + '<div><button type="button" class="btn sm" data-gadd="' + P + '" data-gshape="' + esc(key) + '">+ Add</button></div>';
+  }
+  function gRender() {
+    var open = {}; document.querySelectorAll('#g-body details').forEach(function (d) { open[d.dataset.s] = d.open; });
+    var c = G.cfg, left = [];
+    $('g-body').innerHTML = Object.keys(G_SECTIONS).filter(function (s) { return s in c; }).map(function (s) {
+      var old = G_OLD.test(JSON.stringify(c[s])); if (old) left.push(G_SECTIONS[s]);
+      return '<details data-s="' + s + '"' + (open[s] ? ' open' : '') + '><summary>' + esc(G_SECTIONS[s]) + (old ? '<span class="warn">still has Amit &amp; Or’s details</span>' : '') + '</summary><div class="body">' +
+        (Array.isArray(c[s]) ? gList(s, c[s], [s], '.' + s) : '<div class="grid">' + Object.keys(c[s]).filter(function (k) { var v = c[s][k]; return !(Array.isArray(v) && v.length && typeof v[0] === 'object') && !(v && typeof v === 'object' && !Array.isArray(v)); }).map(function (k) { return gField(k, c[s][k], [s, k], '.' + s + '.' + k); }).join('') + '</div>' +
+          Object.keys(c[s]).filter(function (k) { var v = c[s][k]; return (Array.isArray(v) && v.length && typeof v[0] === 'object') || (v && typeof v === 'object' && !Array.isArray(v)); }).map(function (k) { return gField(k, c[s][k], [s, k], '.' + s + '.' + k); }).join('')) +
+      '</div></details>';
+    }).join('');
+    $('g-note').hidden = !left.length;
+    $('g-note').textContent = left.length ? 'These sections still have texts from Amit & Or’s site: ' + left.join(', ') + '. Open them and change what applies.' : '';
+  }
+  // A new Grand event starts from the template, with this event's own names, dates and place filled in.
+  function gPrefill(c, ev) {
+    var names = String(ev.couple || '').split(/\s*&\s*/);
+    if (names.length === 2) { c.couple.name1 = names[0]; c.couple.name2 = names[1]; c.couple.monogram = [names[0].charAt(0).toUpperCase(), names[1].charAt(0).toUpperCase()]; if (c.gate) c.gate.passenger = [c.gate.passenger[0], names[0] + ' & ' + names[1]]; }
+    var a = ev.start || ev.date, b = ev.end || ev.date;
+    if (a) {
+      c.dates.display = a === b ? fmtDate(a).replace(/\//g, '.') : (a.slice(0, 7) === b.slice(0, 7) ? a.slice(8) + '–' + fmtDate(b).replace(/\//g, '.') : fmtDate(a).slice(0, 5).replace('/', '.') + '–' + fmtDate(b).replace(/\//g, '.'));
+      c.dates.countdownTo = a + 'T10:00'; c.dates.calendar.start = a + 'T10:00'; c.dates.calendar.end = b + 'T13:00';
+    }
+    if (ev.country) c.hero.country = ev.country.toUpperCase();
+    if (ev.venue) { c.hero.place = ev.venue; c.location.name = ev.venue; c.location.mapQuery = [ev.venue, ev.country].filter(Boolean).join(' '); c.location.area = [ev.venue, ev.country].filter(Boolean).join(' · '); }
+    return c;
+  }
+  function gClean(o) {   // drop empty optional fields inside list items, so the site hides them
+    if (Array.isArray(o)) return o.map(gClean).filter(function (x) { return !((Array.isArray(x) && x.every(function (y) { return !String(y).trim(); })) || (x && typeof x === 'object' && !Array.isArray(x) && !Object.keys(x).length)); });
+    if (o && typeof o === 'object') { var r = {}; Object.keys(o).forEach(function (k) { var v = gClean(o[k]); if (v === '' || v === false || (Array.isArray(v) && !v.length)) return; r[k] = v; }); return r; }
+    return o;
+  }
+  function gCleanTop(c) { var r = {}; Object.keys(c).forEach(function (s) { var v = c[s]; if (Array.isArray(v)) r[s] = gClean(v); else if (v && typeof v === 'object') { r[s] = {}; Object.keys(v).forEach(function (k) { r[s][k] = Array.isArray(v[k]) ? gClean(v[k]) : v[k]; }); } else r[s] = v; }); return r; }
+  $('e-grand').addEventListener('click', function () {
+    var ev = EDIT.ev; $('g-title').textContent = 'Grand site texts · ' + ev.couple; $('g-view').href = '/' + ev.slug + '/rsvp';
+    $('g-body').textContent = 'Loading…'; $('g-err').hidden = true; $('g-note').hidden = true; $('g-save').disabled = true; $('dlg-g').hidden = false;
+    fetch('/app/grand/config.js', { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (txt) {
+      var w = {}; new Function('window', txt)(w); G.base = w.SITE; G.shapes = {}; gShapes(G.base, '');
+      var saved = null; try { saved = JSON.parse(EDIT.vals['Grand Config'] || 'null'); } catch (x) {}
+      G.cfg = saved ? gMerge(clone(G.base), saved) : gPrefill(clone(G.base), ev);
+      gRender(); $('g-save').disabled = false;
+    }).catch(function () { $('g-body').textContent = 'Couldn’t load the Grand template. Check your connection and try again.'; });
+  });
+  $('g-body').addEventListener('input', function (e) {
+    var el = e.target, p = el.dataset.gp, l = el.dataset.gl;
+    if (p) { p = JSON.parse(p); var o = gAt(p.slice(0, -1)); o[p[p.length - 1]] = el.type === 'checkbox' ? el.checked : el.type === 'number' ? Number(el.value) || 1 : el.value; }
+    if (l) { l = JSON.parse(l); gAt(l.slice(0, -1))[l[l.length - 1]] = el.value.split('\n').map(function (x) { return x.trim(); }).filter(Boolean); }
+  });
+  $('g-body').addEventListener('click', function (e) {
+    var rm = e.target.closest('[data-grm]'), add = e.target.closest('[data-gadd]');
+    if (rm) { var p = JSON.parse(rm.dataset.grm); gAt(p.slice(0, -1)).splice(p[p.length - 1], 1); gRender(); }
+    if (add) {
+      var arr = gAt(JSON.parse(add.dataset.gadd)), sh = G.shapes[add.dataset.gshape] || {};
+      arr.push(sh.__cols ? Array.apply(null, Array(sh.__cols)).map(function () { return ''; }) : clone(sh));
+      gRender();
+    }
+  });
+  // Photos: resized in the browser like the RSVP photos and stored in the event's Drive folder › Images.
+  var gUp = null;
+  $('g-body').addEventListener('click', function (e) { var b = e.target.closest('[data-gup]'); if (!b) return; gUp = JSON.parse(b.dataset.gup); $('g-file').value = ''; $('g-file').click(); });
+  $('g-file').addEventListener('change', function () {
+    var file = this.files[0], p = gUp; if (!file || !p) return;
+    toast('Uploading the photo…');
+    var img = new Image(), url = URL.createObjectURL(file);
+    img.onload = function () {
+      var max = 1600, k = Math.min(1, max / Math.max(img.width, img.height)), c = document.createElement('canvas');
+      c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+      api('uploadImage', { e: EDIT.ev.slug, name: 'grand-' + p[0] + '.jpg', mime: 'image/jpeg', data: c.toDataURL('image/jpeg', 0.86).split(',')[1] })
+        .then(function (res) { gAt(p.slice(0, -1))[p[p.length - 1]] = res.url; gRender(); toast('Photo uploaded. Click Save to keep it.'); })
+        .catch(function (x) { toast(x.server ? x.message : 'Couldn’t upload the photo.', true); });
+    };
+    img.onerror = function () { toast('That file is not an image.', true); };
+    img.src = url;
+  });
+  $('g-cancel').addEventListener('click', function () { $('dlg-g').hidden = true; });
+  $('form-g').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var json = JSON.stringify(gCleanTop(G.cfg));
+    if (json.length > 45000) { $('g-err').textContent = 'The texts are too long to save. Shorten some of them.'; $('g-err').hidden = false; return; }
+    $('g-save').disabled = true; $('g-save').textContent = 'Saving…';
+    api('saveSettings', { e: EDIT.ev.slug, settings: { 'Grand Config': json } }).then(function () {
+      EDIT.vals['Grand Config'] = json; $('dlg-g').hidden = true; toast('Saved. The Grand site shows the new texts now.');
+    }).catch(function (x) { $('g-err').textContent = x.server ? x.message : 'Couldn’t save. Try again.'; $('g-err').hidden = false; })
+      .then(function () { $('g-save').disabled = false; $('g-save').textContent = 'Save'; });
+  });
 
   // ---------- GitHub key (lets the hub write each event's WhatsApp link preview) ----------
   function renderGh(gh) {

@@ -1015,6 +1015,7 @@ body.revealed .hero-lines path{animation:draw 3.2s var(--sc-ease-out) .6s forwar
 (function(){ // tab title and icon follow this event's couple
   var S = window.SITE, c = S.couple || {}, m = c.monogram || [];
   if (c.name1) document.title = c.name1 + ' & ' + c.name2 + (S.dates && S.dates.display ? ' · ' + S.dates.display : '');
+  if (c.name1) ['heroPhoto', 'invPhoto', 'savePhoto', 'locPhoto'].forEach(function(id){ var im = document.getElementById(id); if (im) im.alt = c.name1 + ' & ' + c.name2; });
   var ic = document.querySelector('link[rel=icon]');
   if (ic && m.length) ic.href = "data:image/svg+xml," + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='16' fill='#2f5955'/><text x='16' y='21' font-size='12' text-anchor='middle' fill='#f6f2eb' font-family='serif'>" + m.join('·') + "</text></svg>");
 })();
