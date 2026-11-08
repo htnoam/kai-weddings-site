@@ -244,9 +244,15 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
     return Number(m[3]) + ' ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][Number(m[2]) - 1] + ' ' + m[1];
   }
 
+  // Show the last list straight away (saved on this device), then refresh it from the hub.
   function load() {
-    $('gate').hidden = false; $('gate').textContent = 'Loading events…';
-    return api('events').then(function (res) { EVENTS = res.events; render(); renderGh(res.github || {}); })
+    var saved = null; try { saved = JSON.parse(localStorage.getItem('kai-events') || 'null'); } catch (x) {}
+    if (saved && saved.events && !EVENTS.length) { EVENTS = saved.events; render(); }
+    else if (!EVENTS.length) { $('gate').hidden = false; $('gate').textContent = 'Loading events…'; }
+    return api('events').then(function (res) {
+      EVENTS = res.events; render(); renderGh(res.github || {});
+      try { localStorage.setItem('kai-events', JSON.stringify({ events: res.events })); } catch (x) {}
+    })
       .catch(function (e) { $('gate').textContent = e.server ? e.message : 'Couldn’t load the events. Check your connection and click Refresh.'; });
   }
   function render() {
