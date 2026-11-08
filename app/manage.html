@@ -493,134 +493,94 @@ tr.has-chg td.chk { box-shadow: inset 4px 0 0 #C2410C; }
   .fp-row { min-height: 40px; } .fp-only { visibility: visible; color: var(--ink); }
 }
 
-/* ===== Wedding plan (second section next to Guests; only for events with Settings › Wedding Plan = On) ===== */
+/* ===== Schedule (second section next to Guests; only for events with Settings › Wedding Plan = On) ===== */
 .sect { display: flex; gap: 2px; background: var(--soft-surface); border: 1px solid var(--hair); border-radius: 6px; padding: 2px; }
 .sect button { border: none; background: none; height: 28px; padding: 0 14px; border-radius: 4px; font-weight: 700; font-size: 13.5px; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
 .sect button:hover { color: var(--text); }
 .sect button.on { background: var(--ink); color: #FFFFFF; }
 .sect svg { width: 15px; height: 15px; }
-body.in-plan #app, body.in-plan #stats, body.in-plan #sumline, body.in-plan #fab, body.in-plan #installbar { display: none !important; }
-.pl { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 1100px; margin: 4px auto 0; }
-.pl.wide { max-width: 1400px; }
-.pl-sub { display: flex; gap: 2px; border-bottom: 1px solid var(--line); overflow-x: auto; }
-.pl-sub button { border: none; background: none; padding: 8px 14px 9px; font-size: 14.5px; font-weight: 700; color: var(--soft); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
-.pl-sub button.on { color: var(--ink); border-bottom-color: var(--ink); }
-.pl-badge { min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: #F7EBD3; color: #8A5A12; font-size: 11.5px; display: inline-flex; align-items: center; justify-content: center; }
-.pl-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.pl-bar .grow { flex: 1; }
-.pl-hint { font-size: 13px; color: var(--soft); }
-.pl-chip { height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-size: 13.5px; font-weight: 600; color: var(--muted); }
-.pl-chip.on { border-color: var(--ink); background: var(--ink-soft); color: var(--ink); }
-.pl-chip i { font-style: normal; color: var(--soft); font-weight: 500; margin-left: 4px; }
-.pl-tog { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--surface); }
-.pl-tog button { border: none; background: none; height: 30px; padding: 0 12px; font-size: 13.5px; font-weight: 600; color: var(--muted); }
-.pl-tog button + button { border-left: 1px solid var(--line); }
-.pl-tog button.on { background: var(--ink-soft); color: var(--ink); }
-.pl-empty { background: var(--surface); border: 1px dashed var(--line); border-radius: 6px; padding: 28px 16px; text-align: center; color: var(--soft); display: flex; flex-direction: column; gap: 10px; align-items: center; }
-.pl-day { background: var(--surface); border: 1px solid var(--hair); border-radius: 6px; overflow: hidden; flex-shrink: 0; }
-.pl-dh { display: flex; align-items: baseline; gap: 4px 12px; padding: 10px 16px; border-bottom: 1px solid var(--hair); background: var(--soft-surface); flex-wrap: wrap; }
-.pl-dh b { font: 600 21px/1.1 var(--serif); color: var(--ink); }
-.pl-dh .d { font-size: 13px; color: var(--soft); }
-.pl-dh .sub { font-size: 14px; color: var(--muted); font-weight: 600; unicode-bidi: plaintext; }
-.pl-dh .sun { margin-left: auto; font-size: 13px; color: #8A5A12; display: inline-flex; align-items: center; gap: 5px; font-weight: 600; }
-.pl-dh .sun svg { width: 15px; height: 15px; }
-.pl-row { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 4px 16px; padding: 10px 16px; border-bottom: 1px solid var(--row-line); }
-.pl-row:last-child { border-bottom: none; }
-.pl-t { font-weight: 700; font-variant-numeric: tabular-nums; padding-top: 1px; }
-.pl-t small { display: block; font-weight: 500; color: var(--soft); font-size: 12.5px; }
-.pl-w { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
-.pl-tl { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.pl-ttl { font-weight: 600; font-size: 15.5px; unicode-bidi: plaintext; text-align: start; }
-.pl-row.hl { background: #FBF8EF; box-shadow: inset 3px 0 0 #C9A44C; }
-.pl-row.hl .pl-ttl { color: var(--ink); font-weight: 700; }
-.pl-row.prod { background: repeating-linear-gradient(135deg, transparent 0 10px, rgba(107,63,142,.03) 10px 20px); }
-.pl-row.mine { background: repeating-linear-gradient(135deg, transparent 0 10px, rgba(138,90,18,.04) 10px 20px); }
-.pl-meta { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13.5px; color: var(--muted); align-items: center; }
-.pl-meta span { unicode-bidi: plaintext; }
-.pl-meta svg { width: 13px; height: 13px; vertical-align: -2px; margin-right: 4px; color: var(--soft); }
-.pl-notes { margin: 2px 0 0; padding: 0 0 0 18px; display: flex; flex-direction: column; gap: 2px; font-size: 14px; color: var(--muted); }
-.pl-notes li { unicode-bidi: plaintext; text-align: start; }
-.pl-more, .pl-lnk { align-self: flex-start; border: none; background: none; padding: 0; font-size: 13px; font-weight: 600; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
-.pl-tag { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11.5px; font-weight: 700; letter-spacing: .02em; white-space: nowrap; }
-.pl-tag.prod { background: #F1EAF6; color: #6B3F8E; }
-.pl-tag.mine { background: #F7EBD3; color: #8A5A12; }
-.pl-ref { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; height: 24px; padding: 0 10px; font-size: 12.5px; font-weight: 600; color: var(--ink); }
-.pl-ref:hover { border-color: var(--ink); }
-/* free writing */
-.pl-ed { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 12px; align-items: start; }
-.pl-pane { background: var(--surface); border: 1px solid var(--hair); border-radius: 6px; display: flex; flex-direction: column; min-width: 0; }
-.pl-ph { padding: 8px 12px; border-bottom: 1px solid var(--hair); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--soft); font-weight: 700; display: flex; gap: 8px; align-items: center; }
-.pl-ph .ok, .pl-ph .warn { margin-left: auto; text-transform: none; letter-spacing: 0; font-weight: 600; font-size: 12.5px; }
-.pl-ph .ok { color: #2F6B2F; } .pl-ph .warn { color: var(--bad); }
-textarea.pl-free { border: none; resize: vertical; min-height: 560px; padding: 12px 14px; font: 14px/1.6 ui-monospace, 'SF Mono', Menlo, Consolas, monospace; background: var(--surface); outline: none; white-space: pre-wrap; }
-.pl-legend { padding: 10px 14px; border-top: 1px solid var(--hair); background: var(--soft-surface); display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; font-size: 13px; color: var(--muted); }
-.pl-legend code, .pl-hint code { font: 600 12.5px ui-monospace, Menlo, Consolas, monospace; background: var(--surface); border: 1px solid var(--hair); border-radius: 3px; padding: 0 5px; color: var(--text); white-space: nowrap; }
-.pl-prev { padding: 10px; display: flex; flex-direction: column; gap: 10px; max-height: 700px; overflow: auto; background: var(--bg); }
-.pl-prev .pl-dh { padding: 8px 12px; } .pl-prev .pl-row { grid-template-columns: 88px minmax(0, 1fr); padding: 8px 12px; } .pl-prev .pl-dh b { font-size: 18px; }
-.pl-foot { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.pl-foot .msg { color: var(--bad); font-weight: 600; font-size: 13.5px; }
-/* boxes */
-.pl-box { background: var(--surface); border: 1px solid var(--hair); border-radius: 6px; }
-.pl-bh { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--hair); background: var(--soft-surface); flex-wrap: wrap; }
-.pl-bh b { font: 600 20px/1.1 var(--serif); color: var(--ink); }
-.pl-bh .grow { flex: 1; }
-.pl-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
-/* to-dos */
-.pl-todo { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--row-line); }
-.pl-todo:last-child { border-bottom: none; }
-.pl-todo input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--ink); }
-.pl-todo .tt { unicode-bidi: plaintext; text-align: start; font-weight: 600; }
-.pl-todo .tt small { display: block; font-weight: 500; font-size: 12.5px; color: var(--soft); }
-.pl-todo.done .tt { color: var(--soft); font-weight: 500; }
-.pl-todo.done .tt span { text-decoration: line-through; }
-.pl-todo .due { font-size: 13px; color: var(--soft); font-variant-numeric: tabular-nums; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
-.pl-todo .due.late { color: var(--bad); font-weight: 700; }
-.pl-x { border: none; background: none; color: var(--soft); width: 26px; height: 26px; border-radius: 4px; }
-.pl-x:hover { color: var(--bad); }
-.pl-add { display: flex; gap: 6px; padding: 10px 16px; border-top: 1px solid var(--hair); flex-wrap: wrap; background: var(--soft-surface); }
-.pl-add input { height: 32px; border: 1px solid var(--line); border-radius: 4px; padding: 0 8px; background: var(--surface); font-size: 14px; }
-.pl-add input.big { flex: 1 1 220px; min-width: 0; }
-/* info cards */
-.pl-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; align-items: start; }
-.pl-card { background: var(--surface); border: 1px solid var(--hair); border-radius: 6px; display: flex; flex-direction: column; scroll-margin-top: 16px; }
-.pl-card.flash { box-shadow: 0 0 0 3px #C9A44C; }
-.pl-ch { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--hair); }
-.pl-ch b { font: 600 19px/1.1 var(--serif); color: var(--ink); unicode-bidi: plaintext; }
-.pl-ch .grow { flex: 1; }
-.pl-ch input { flex: 1; min-width: 0; height: 32px; border: 1px solid var(--line); border-radius: 4px; padding: 0 8px; font-size: 15px; font-weight: 700; }
-.pl-cb { padding: 10px 14px 12px; font-size: 14px; color: var(--muted); display: flex; flex-direction: column; gap: 3px; }
-.pl-cb p { margin: 0; unicode-bidi: plaintext; text-align: start; }
-.pl-cb .h { font-weight: 700; color: var(--text); margin-top: 6px; }
-.pl-cb .h:first-child { margin-top: 0; }
-.pl-cb .li { padding-left: 14px; position: relative; }
-.pl-cb .li::before { content: ""; position: absolute; left: 3px; top: .62em; width: 4px; height: 4px; border-radius: 50%; background: var(--soft); }
-.pl-ctw { overflow-x: auto; margin: 2px 0 4px; }
-.pl-ct { border-collapse: collapse; width: 100%; font-size: 13.5px; }
-.pl-ct th { text-align: left; font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--soft); padding: 4px 8px 4px 0; border-bottom: 1px solid var(--hair); white-space: nowrap; }
-.pl-ct td { padding: 5px 8px 5px 0; border-bottom: 1px solid var(--row-line); color: var(--text); font-variant-numeric: tabular-nums; }
-.pl-card textarea, .pl-box textarea { border: none; border-top: 1px solid var(--hair); min-height: 240px; padding: 10px 14px; font: 13.5px/1.55 ui-monospace, Menlo, Consolas, monospace; resize: vertical; outline: none; }
-.pl-cf { display: flex; gap: 8px; align-items: center; padding: 8px 14px; border-top: 1px solid var(--hair); flex-wrap: wrap; font-size: 13px; color: var(--muted); }
-.pl-cf .grow { flex: 1; }
-/* vendors */
-.pl-vt { width: 100%; border-collapse: collapse; font-size: 14px; }
-.pl-vt th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--soft); padding: 8px 16px; border-bottom: 1px solid var(--hair); }
-.pl-vt td { padding: 10px 16px; border-bottom: 1px solid var(--row-line); }
-.pl-vt tr:last-child td { border-bottom: none; }
-.pl-vt tr.on td { background: var(--ink-soft); }
-.pl-vt .ph { font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
-.pl-sheet { white-space: pre-wrap; font: 13.5px/1.6 ui-monospace, Menlo, Consolas, monospace; padding: 12px 16px; color: var(--text); margin: 0; }
-.pl-scroll { overflow-x: auto; }
-@media (max-width: 900px) { .pl-ed { grid-template-columns: 1fr; } textarea.pl-free { min-height: 380px; } .pl-prev { max-height: none; } }
+body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched #fab, body.in-sched #installbar { display: none !important; }
+.sc { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 1000px; margin: 4px auto 0; }
+.sc-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.sc-bar .grow { flex: 1; }
+.sc-hint { font-size: 13px; color: var(--soft); }
+.sc-redcount { border: none; background: #F7E1E1; color: var(--bad); font-weight: 700; font-size: 13px; height: 28px; padding: 0 12px; border-radius: 999px; }
+.sc-day { background: var(--surface); border: 1px solid var(--hair); border-radius: 6px; overflow: hidden; }
+.sc-dh { display: flex; align-items: baseline; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--hair); background: var(--soft-surface); }
+.sc-dh b { font: 600 21px/1.1 var(--serif); color: var(--ink); }
+.sc-dh span { font-size: 13px; color: var(--soft); }
+.sc-dh .sun { margin-left: auto; color: #8A5A12; font-weight: 600; }
+.sc-row { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 2px 16px; padding: 10px 16px; border-bottom: 1px solid var(--row-line); }
+.sc-row:last-child { border-bottom: none; }
+.sc-t { font-weight: 700; font-variant-numeric: tabular-nums; }
+.sc-t small { display: block; font-weight: 500; color: var(--soft); font-size: 12.5px; }
+.sc-w { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.sc-what { font-weight: 600; font-size: 15.5px; unicode-bidi: plaintext; text-align: start; display: flex; gap: 8px; align-items: center; }
+.sc-sub { font-size: 13.5px; color: var(--muted); unicode-bidi: plaintext; text-align: start; }
+.sc-notes { margin: 2px 0 0; padding: 0 0 0 18px; font-size: 13.5px; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
+.sc-notes li { unicode-bidi: plaintext; text-align: start; }
+.sc-notes li.red, .sc-row.red .sc-what, .sc-row.red .sc-t { color: var(--bad); }
+.sc-notes li.red { font-weight: 600; }
+.sc-row.red { box-shadow: inset 3px 0 0 var(--bad); background: #FDF3F3; }
+.sc-row.off { background: var(--soft-surface); }
+.sc-row.off .sc-what .ie, .sc-row.off .sc-t .ie { color: var(--soft); }
+.sc-row.red.off .sc-what .ie, .sc-row.red.off .sc-t .ie:not(.until) { color: var(--bad); }
+.sc-tag { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11.5px; font-weight: 700; background: #F7EBD3; color: #8A5A12; white-space: nowrap; }
+.sc-empty { background: var(--surface); border: 1px dashed var(--line); border-radius: 6px; padding: 28px 16px; text-align: center; color: var(--soft); display: flex; flex-direction: column; gap: 10px; align-items: center; }
+/* editing right on the schedule (Noam only) */
+.sc .ie { border: 1px solid transparent; background: transparent; border-radius: 4px; padding: 1px 6px; margin: -2px -7px; width: calc(100% + 14px); font: inherit; color: inherit; min-width: 0; }
+.sc textarea.ie { resize: none; overflow: hidden; display: block; line-height: 1.35; padding-top: 2px; padding-bottom: 2px; }
+.sc .ie:hover { border-color: var(--hair); background: #FFFFFF; }
+.sc .ie:focus { border-color: var(--ink); background: #FFFFFF; outline: none; box-shadow: 0 0 0 3px var(--ink-soft); }
+.sc .ie::placeholder { color: #BDBAB2; font-weight: 500; }
+.sc-row.ed { grid-template-columns: 112px minmax(0, 1fr) auto; align-items: start; }
+.sc-row.ed .sc-t { display: flex; flex-direction: column; gap: 2px; }
+.sc-row.ed .sc-t .ie { width: 74px; font-variant-numeric: tabular-nums; }
+.sc-row.ed .sc-t .ie.until { font-size: 12.5px; font-weight: 500; color: var(--soft); }
+.sc-row.ed .sc-what { align-items: flex-start; }
+.sc-row.ed .sc-what .ie { flex: 1; width: auto; font-weight: 600; font-size: 15.5px; }
+.sc-row.ed .sc-pair { display: flex; gap: 10px; font-size: 13.5px; color: var(--muted); max-width: 560px; }
+.sc-row.ed .sc-pair > span { display: flex; min-width: 0; }
+.sc-row.ed .opt { display: none !important; }
+.sc-row.ed:focus-within .opt { display: flex !important; }
+.sc-nl { display: flex; align-items: flex-start; gap: 4px; font-size: 13.5px; color: var(--muted); min-height: 26px; }
+.sc-nl .bul { width: 10px; flex: 0 0 10px; color: var(--soft); text-align: center; padding-top: 2px; }
+.sc-nl .ie { flex: 1; width: auto; margin: -2px -4px; }
+.sc-nl.hid .ie { color: var(--soft); }
+.sc-nl.red .ie, .sc-nl.red .bul { color: var(--bad); font-weight: 600; }
+.sc-nl .sc-tag { height: 18px; font-size: 11px; }
+.sc-mini { display: flex; opacity: 0; }
+.sc-nl:hover .sc-mini, .sc-nl:focus-within .sc-mini { opacity: 1; }
+.sc-acts { display: flex; gap: 2px; opacity: 0; }
+.sc-row.ed:hover .sc-acts, .sc-row.ed:focus-within .sc-acts { opacity: 1; }
+.sc-ab { width: 30px; height: 30px; border: 1px solid transparent; border-radius: 4px; background: none; color: var(--soft); display: inline-flex; align-items: center; justify-content: center; padding: 0; }
+.sc-ab:hover { border-color: var(--hair); background: #FFFFFF; color: var(--text); }
+.sc-ab.del:hover { color: var(--bad); }
+.sc-ab.on { color: var(--bad); }
+.sc-ab svg { width: 17px; height: 17px; }
+.sc-mini .sc-ab { width: 26px; height: 26px; }
+.sc-mini .sc-ab svg { width: 14px; height: 14px; }
+.sc-addline { border: none; background: none; padding: 2px 0 0 14px; font-size: 13px; font-weight: 600; color: var(--ink); align-self: flex-start; }
+.sc-addrow { padding: 6px 16px 8px; border-top: 1px solid var(--row-line); }
+.sc-link { border: none; background: none; color: var(--ink); font-weight: 600; font-size: 13.5px; padding: 4px 0; }
+.sc-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.sc-newday { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.sc-newday input { height: 32px; border: 1px solid var(--line); border-radius: 4px; padding: 0 8px; width: 130px; background: var(--surface); }
+.sc-paste { background: var(--surface); border: 1px solid var(--hair); border-radius: 6px; display: flex; flex-direction: column; }
+.sc-paste-h { padding: 10px 14px; border-bottom: 1px solid var(--hair); display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.sc-paste textarea { border: none; min-height: 300px; padding: 12px 14px; font: 14px/1.55 var(--sans); resize: vertical; outline: none; }
+.sc-paste .foot { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; padding: 10px 14px; border-top: 1px solid var(--hair); background: var(--soft-surface); }
+@media (hover: none) { .sc-acts { opacity: 1; } .sc-mini { display: none; } .sc-nl:focus-within .sc-mini { display: flex; opacity: 1; } }
 @media (max-width: 759px) {
   .sect { order: 5; width: 100%; }
   .sect button { flex: 1; justify-content: center; height: 32px; }
-  .pl-row { grid-template-columns: 1fr; gap: 2px; padding: 10px 14px; }
-  .pl-t { display: flex; gap: 6px; align-items: baseline; }
-  .pl-t small { display: inline; }
-  .pl-dh { padding: 10px 14px; }
-  .pl-dh .sun { margin-left: 0; width: 100%; }
-  .pl-cols, .pl-cards { grid-template-columns: 1fr; }
-  .pl-vt .hide-s { display: none; }
+  .sc-row, .sc-row.ed { grid-template-columns: minmax(0, 1fr) auto; padding: 10px 14px; }
+  .sc-t, .sc-row.ed .sc-t { flex-direction: row; display: flex; gap: 8px; align-items: baseline; grid-column: 1 / -1; }
+  .sc-t small { display: inline; }
+  .sc-row .sc-w { grid-column: 1; }
+  .sc-row.ed .sc-acts { grid-column: 2; grid-row: 2; }
+  .sc-row.ed .sc-pair { flex-direction: column; gap: 4px; }
+  .sc-dh { padding: 10px 14px; }
 }
 </style>
 <style id="freeze"></style>
@@ -631,7 +591,7 @@ textarea.pl-free { border: none; resize: vertical; min-height: 560px; padding: 1
     <div class="brand"><span class="couple" id="couple">Guest List</span><span class="when" id="when"></span></div>
     <nav class="sect" id="sect" aria-label="Sections" hidden>
       <button type="button" id="s-guests" class="on"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.3-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 4.8a3.3 3.3 0 0 1 0 6.4M18 14.8c2 .6 3.2 2.3 3.5 5.2"/></svg>Guests</button>
-      <button type="button" id="s-plan"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4M7.5 14h3M7.5 17h6"/></svg>Wedding plan</button>
+      <button type="button" id="s-sched"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4M7.5 14h3M7.5 17h6"/></svg>Schedule</button>
     </nav>
     <button type="button" class="sumline" id="sumline" aria-expanded="false" aria-controls="stats"></button>
     <section class="stats" id="stats" aria-label="Summary"></section>
@@ -700,7 +660,7 @@ textarea.pl-free { border: none; resize: vertical; min-height: 560px; padding: 1
       <aside class="panel" id="panel" hidden aria-label="Guest details"></aside>
     </div>
   </div>
-  <div class="pl" id="plan" hidden></div>
+  <div class="sc" id="sched" hidden></div>
 </main>
 
 <button type="button" class="fab" id="fab" aria-label="Add Guest"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg><span class="lbl">Add Guest</span></button>
@@ -1003,7 +963,7 @@ textarea.pl-free { border: none; resize: vertical; min-height: 560px; padding: 1
       S.guests = res.guests; S.who = res.who; S.admin = res.admin; S.views = res.views || [];
       S.reminders = res.reminders || {}; S.reminderText = res.reminderText || ''; S.lang = res.lang || 'he';
       S.changes = res.changes || [];
-      planLoad(res.plan, res.wedding);
+      schedLoad(res.schedule, res.wedding);
       setCustom(res.custom || []);
       if (!curView()) S.view = '';
       if (!keepView && curView()) applyViewState(curView());
@@ -2224,7 +2184,7 @@ textarea.pl-free { border: none; resize: vertical; min-height: 560px; padding: 1
   // Quiet refresh so changes by the other side show up.
   // ---------- live updates: a tiny check every 5 seconds; the list reloads only when something changed ----------
   function busy() {
-    if (S.editing || PL.editing !== null || S.pending || S.resizing || !$('dlg-imp').hidden || !$('dlg').hidden || !$('dlg2').hidden || !$('menu').hidden) return true;
+    if (S.editing || SC.dirty || SC.saving || SC.mode !== 'view' || S.pending || S.resizing || !$('dlg-imp').hidden || !$('dlg').hidden || !$('dlg2').hidden || !$('menu').hidden) return true;
     var p = $('panel'); return !p.hidden && p.contains(document.activeElement);
   }
   function showOnline(list) {
@@ -2254,392 +2214,187 @@ textarea.pl-free { border: none; resize: vertical; min-height: 560px; padding: 1
   setInterval(ping, 5000);
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') ping(); });
 
-  // ---------- wedding plan (second section: timeline, to-dos, info, vendors) ----------
-  // Shown only when the hub sends a plan (event Settings › Wedding Plan = On). Only Noam edits; the couple ticks their own to-dos.
-  // The couple's copy never contains Noam's "!" lines, his to-dos, his cards or the vendors (the hub leaves them out).
-  var PL = { on: false, data: null, wedding: {}, sub: 'timeline', filter: 'all', short: false, open: {}, editing: null, draft: '', parsed: null, vend: 0, tplArm: 0 };
-  var PL_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  var PL_HE = { 'ראשון': 0, 'שני': 1, 'שלישי': 2, 'רביעי': 3, 'חמישי': 4, 'שישי': 5, 'שבת': 6 };
-  var PL_PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>';
-  var PL_WHO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.7-3.6 3.5-5.4 7-5.4s6.3 1.8 7 5.4"/></svg>';
-  var PL_SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 18h18M6.5 18a5.5 5.5 0 0 1 11 0M12 6v3M4.6 10.6l2 2M19.4 10.6l-2 2"/></svg>';
-  var plPad = function (n) { return ('0' + n).slice(-2); };
-  var plIso = function (d) { var m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(d || ''); return m ? m[3] + '-' + m[2] + '-' + m[1] : ''; };
-  var plDay = function (d) { var t = new Date(plIso(d) + 'T12:00:00'); return isNaN(t) ? '' : PL_DAYS[t.getDay()]; };
-  var plKey = function (d) { var m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(d || ''); return m ? m[3] + plPad(m[2]) + plPad(m[1]) : '99999999'; };
-  var plYear = function () { var m = /^(\d{4})-/.exec(PL.wedding.date || ''); return m ? m[1] : String(new Date().getFullYear()); };
-  var plToday = function () { var t = new Date(); return plPad(t.getDate()) + '/' + plPad(t.getMonth() + 1) + '/' + t.getFullYear(); };
+  // ---------- schedule (second section next to Guests) ----------
+  // Shown only when the hub sends a schedule (event Settings › Wedding Plan = On). Noam edits right on the schedule; the couple reads it.
+  // Row: { id, day DD/MM/YYYY, time, until, what, where, who, notes: [{ text, red, hidden }], couple (the couple sees it), red }
+  // The hub leaves hidden rows and hidden lines out of the couple's copy. Every change is saved on its own, a moment after typing stops.
+  var SC = { on: false, rows: [], wedding: {}, days: [], mode: 'view', dirty: false, timer: null, saving: false };
+  var SC_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  var scPad = function (n) { return ('0' + n).slice(-2); };
+  var scIso = function (d) { var m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(d || ''); return m ? m[3] + '-' + m[2] + '-' + m[1] : ''; };
+  var scName = function (d) { var t = new Date(scIso(d) + 'T12:00:00'); return isNaN(t) ? '' : SC_DAYS[t.getDay()]; };
+  var scKey = function (r) { return (scIso(r.day) || '9999') + (r.time && r.time < '05:00' ? '24' + r.time : (r.time || '99')); };
+  var scSort = function () { SC.rows.sort(function (a, b) { return scKey(a) < scKey(b) ? -1 : scKey(a) > scKey(b) ? 1 : 0; }); };
+  var SC_I = {
+    eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+    eyeOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 3l18 18M10.6 5.6A10.6 10.6 0 0 1 12 5.5c6.4 0 10 6.5 10 6.5a17 17 0 0 1-3.2 4M6.2 6.6C3.6 8.4 2 12 2 12s3.6 6.5 10 6.5c1.6 0 3-.4 4.2-1M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>',
+    flag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg>',
+    flagOn: '<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4" fill="none"/><path d="M5 4h11l-2 4 2 4H5z"/></svg>',
+    bin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v6M14 11v6"/></svg>'
+  };
 
-  // Reading the timeline text. Day: "Friday 9/5" (Hebrew day names too), optional "(19:30 is sunset)"; lines under it before any time = the day's title.
-  // Item: "19:00 – Ceremony", "08:00 – 10:30 Breakfast". Marks in front: * highlight, @ couple & production, ! only Noam. "[Nikos]" at the end = who.
-  // Bullets (●, •, -, or indented lines) = details of the item above. "● Location – …" = its place. "● → Card name" = link to an info card.
-  var PL_DAYRE = /^(?:יום\s+)?(sun|mon|tue|wed|thu|fri|sat|ראשון|שני|שלישי|רביעי|חמישי|שישי|שבת)[a-zא-ת]*\.?,?\s+(\d{1,2})[\/.](\d{1,2})(?:[\/.](\d{2,4}))?\s*(.*)$/i;
-  var PL_ITEMRE = /^([*@!\s]*)(\d{1,2})[:.](\d{2})(?:\s*[–\-—]\s*(\d{1,2})[:.](\d{2})(?!\d))?\s*[–\-—:]?\s*(.*)$/;
-  var PL_BULLRE = /^\s*([*@!\s]*)\s*[●•▪◦·\-–]\s+(.*)$/;
-  function plParse(text) {
-    var days = [], day = null, item = null, warn = [];
-    String(text || '').split(/\r?\n/).forEach(function (raw, ln) {
-      var line = raw.replace(/\s+$/, ''); if (!line.trim()) return;
-      var m = PL_DAYRE.exec(line.trim());
-      if (m) {
-        var y = m[4] ? (m[4].length === 2 ? '20' + m[4] : m[4]) : plYear(), rest = m[5] || '', sun = '';
-        var sm = /(\d{1,2}[:.]\d{2})\s*(?:is\s*)?(?:sunset|שקיעה)|(?:sunset|שקיעה)\s*[:\-–]?\s*(\d{1,2}[:.]\d{2})/i.exec(rest);
-        if (sm) { sun = (sm[1] || sm[2]).replace('.', ':'); rest = rest.replace(/\(?[^()]*(?:sunset|שקיעה)[^()]*\)?/i, '').trim(); }
-        day = { date: plPad(m[2]) + '/' + plPad(m[3]) + '/' + y, sub: rest.replace(/^[–\-—·:]\s*/, ''), sunset: sun, items: [] };
-        if (!plDay(day.date)) warn.push('Line ' + (ln + 1) + ': ' + m[2] + '/' + m[3] + ' isn’t a real date.');
-        days.push(day); item = null; return;
-      }
-      var b = PL_BULLRE.exec(line), it = !b && PL_ITEMRE.exec(line.trim());
-      if (it && (Number(it[2]) > 23 || Number(it[3]) > 59)) it = null;
-      if (it) {
-        if (!day) { warn.push('Line ' + (ln + 1) + ': write the day first, e.g. Friday 9/5.'); return; }
-        var marks = it[1] || '', title = it[6] || '', who = '';
-        var wm = /\s*\[([^\]]+)\]\s*$/.exec(title); if (wm) { who = wm[1].trim(); title = title.slice(0, wm.index); }
-        item = { time: plPad(it[2]) + ':' + it[3], until: it[4] ? plPad(it[4]) + ':' + it[5] : '', title: title.trim() || '—', who: who, place: '', refs: [],
-          vis: marks.indexOf('!') > -1 ? 'noam' : marks.indexOf('@') > -1 ? 'couple' : 'guests', hl: marks.indexOf('*') > -1, notes: [] };
-        day.items.push(item); return;
-      }
-      var txt = b ? b[2] : line.trim(), mine = b ? b[1].indexOf('!') > -1 : /^!/.test(line.trim());
-      if (!b && mine) txt = txt.replace(/^!\s*/, '');
-      if (item && (b || /^\s/.test(raw))) {
-        var rm = /^(?:→|->)\s*(.+)$/.exec(txt); if (rm) { item.refs.push(rm[1].trim()); return; }
-        var lm = /^(?:location|place|מיקום)\s*[–\-—:]\s*(.+)$/i.exec(txt);
-        if (lm && !mine) item.place = lm[1]; else item.notes.push({ text: txt, mine: mine });
-        return;
-      }
-      if (day && !day.items.length) { day.sub = day.sub ? day.sub + ' · ' + txt : txt; return; }
-      if (item) { item.notes.push({ text: txt, mine: mine }); return; }
-      warn.push('Line ' + (ln + 1) + ' wasn’t understood: “' + line.trim().slice(0, 40) + '”');
+  function schedLoad(list, wedding) {
+    SC.on = Array.isArray(list); SC.wedding = wedding || {}; $('sect').hidden = !SC.on;
+    if (!SC.on) { schedShow(false); return; }
+    if (SC.dirty || SC.saving || ($('sched').contains(document.activeElement) && document.activeElement.tagName !== 'BUTTON')) return;   // don't wipe what Noam is typing
+    SC.rows = list; scSort();
+    if (location.hash === '#schedule' && !document.body.classList.contains('in-sched')) schedShow(true);
+    else if (document.body.classList.contains('in-sched') && SC.mode === 'view') schedRender();
+  }
+  function schedShow(on) {
+    document.body.classList.toggle('in-sched', on); $('sched').hidden = !on;
+    $('s-guests').classList.toggle('on', !on); $('s-sched').classList.toggle('on', on);
+    try { history.replaceState(null, '', on ? '#schedule' : location.pathname + location.search); } catch (e) {}
+    if (on) schedRender();
+  }
+  $('s-guests').addEventListener('click', function () { schedFlush(); schedShow(false); });
+  $('s-sched').addEventListener('click', function () { schedShow(true); });
+
+  // ----- saving: the whole list, a moment after the last change -----
+  function schedChanged(now) { SC.dirty = true; clearTimeout(SC.timer); SC.timer = setTimeout(schedFlush, now ? 0 : 900); }
+  function schedFlush() {
+    clearTimeout(SC.timer); if (!SC.dirty || SC.saving) return;
+    SC.dirty = false; SC.saving = true; saving('busy');
+    api('saveSchedule', { rows: SC.rows }).then(function (res) {
+      SC.saving = false; saving('ok');
+      if (SC.dirty) { schedFlush(); return; }
+      (res.schedule || []).forEach(function (r, i) { if (SC.rows[i] && !SC.rows[i].id) SC.rows[i].id = r.id; });   // keep focus: only take the new ids
+    }).catch(function (e) {
+      SC.saving = false; SC.dirty = true; saving('err');
+      toast(e.server ? e.message : 'Couldn’t save the schedule. Check your connection; it will try again.');
+      clearTimeout(SC.timer); SC.timer = setTimeout(schedFlush, 5000);
     });
-    // Times after midnight (00:00–04:59) belong to the end of that day.
-    var tk = function (t) { return t < '05:00' ? '24' + t : t; };
-    days.forEach(function (d) { d.items.sort(function (a, b) { return tk(a.time) < tk(b.time) ? -1 : tk(a.time) > tk(b.time) ? 1 : 0; }); });
-    days.sort(function (a, b) { return plKey(a.date) < plKey(b.date) ? -1 : plKey(a.date) > plKey(b.date) ? 1 : 0; });
-    return { days: days, warn: warn };
   }
-  function plVisible(model, filter) {
-    return model.days.map(function (d) {
-      var items = d.items.filter(function (r) { return filter === 'all' || r.vis === filter; });
-      return { date: d.date, sub: d.sub, sunset: d.sunset, items: items };
-    }).filter(function (d) { return d.items.length; });
-  }
-  function plDayHtml(d, i, short, key) {
-    var sun = d.sunset || (plIso(d.date) === PL.wedding.date ? PL.wedding.sunset : '');
-    return '<section class="pl-day"><div class="pl-dh"><b>' + esc(plDay(d.date)) + '</b><span class="d">' + esc(d.date) + '</span>' +
-      (d.sub ? '<span class="sub" dir="auto">' + esc(d.sub) + '</span>' : '') + (sun ? '<span class="sun">' + PL_SUN + 'Sunset ' + esc(sun) + '</span>' : '') + '</div>' +
-      d.items.map(function (r, j) {
-        var id = key + i + '-' + j, open = !short || PL.open[id], cls = r.vis === 'couple' ? ' prod' : r.vis === 'noam' ? ' mine' : '';
-        return '<div class="pl-row' + (r.hl ? ' hl' : '') + cls + '"><div class="pl-t">' + esc(r.time) + (r.until ? '<small>until ' + esc(r.until) + '</small>' : '') + '</div>' +
-          '<div class="pl-w"><div class="pl-tl"><span class="pl-ttl" dir="auto">' + esc(r.title) + '</span>' +
-          (r.vis === 'couple' ? '<span class="pl-tag prod">Couple only</span>' : r.vis === 'noam' ? '<span class="pl-tag mine">Only you</span>' : '') + '</div>' +
-          ((r.place || r.who) ? '<div class="pl-meta">' + (r.place ? '<span dir="auto">' + PL_PIN + esc(r.place) + '</span>' : '') + (r.who ? '<span dir="auto">' + PL_WHO + esc(r.who) + '</span>' : '') + '</div>' : '') +
-          (r.refs.length ? '<div class="pl-meta">' + r.refs.map(function (x) { return '<button type="button" class="pl-ref" data-plref="' + esc(x) + '">→ ' + esc(x) + '</button>'; }).join('') + '</div>' : '') +
-          (r.notes.length ? (open ? '<ul class="pl-notes">' + r.notes.map(function (n) { return '<li dir="auto">' + esc(n.text) + (n.mine ? ' <span class="pl-tag mine">Only you</span>' : '') + '</li>'; }).join('') + '</ul>' +
-            (short ? '<button type="button" class="pl-more" data-plopen="' + id + '">Hide details</button>' : '') :
-            '<button type="button" class="pl-more" data-plopen="' + id + '">' + r.notes.length + (r.notes.length === 1 ? ' detail' : ' details') + '</button>') : '') +
-          '</div></div>';
-      }).join('') + '</section>';
-  }
+  window.addEventListener('beforeunload', function (e) { if (SC.dirty || SC.saving) { schedFlush(); e.preventDefault(); e.returnValue = ''; } });
 
-  function planLoad(plan, wedding) {
-    PL.on = !!plan; PL.wedding = wedding || {}; $('sect').hidden = !PL.on;
-    if (!PL.on) { planShow(false); return; }
-    PL.data = plan; PL.model = plParse(plan.timeline);
-    if (location.hash === '#plan' && !document.body.classList.contains('in-plan')) planShow(true);
-    else if (document.body.classList.contains('in-plan') && PL.editing === null) planRender();
+  function schedRender() {
+    var box = $('sched'), admin = S.admin;
+    if (SC.mode === 'paste') { schedPaste(); return; }
+    scSort();
+    var reds = SC.rows.reduce(function (a, r) { return a + (r.red ? 1 : 0) + r.notes.filter(function (n) { return n.red; }).length; }, 0);
+    var h = '<div class="sc-bar">' + (admin ? '<span class="sc-hint">Click any text to change it. On a row or a single line: the flag marks it in red, the eye hides it from the couple.</span>' : '') +
+      '<span class="grow"></span>' + (reds ? '<button type="button" class="sc-redcount" id="sc-reds">' + reds + (reds === 1 ? ' needs attention' : ' need attention') + '</button>' : '') +
+      (admin ? '<button type="button" class="btn" id="sc-paste">Paste from Word</button>' : '') + '</div>';
+    var days = {}, order = [];
+    SC.rows.forEach(function (r, i) { if (!days[r.day]) { days[r.day] = []; order.push(r.day); } days[r.day].push(i); });
+    if (admin) SC.days.forEach(function (d) { if (!days[d]) { days[d] = []; order.push(d); } });
+    order.sort(function (a, b) { return (scIso(a) || '9999') < (scIso(b) || '9999') ? -1 : 1; });
+    if (!order.length) h += '<div class="sc-empty">' + (admin ? '<b>No schedule yet.</b><span>Paste it from Word, or add the first day.</span>' : 'The schedule isn’t ready yet. Noam will add it here.') + '</div>';
+    var sunset = function (d) { return scIso(d) === SC.wedding.date && SC.wedding.sunset ? '<span class="sun">Sunset ' + esc(SC.wedding.sunset) + '</span>' : ''; };
+    h += order.map(function (d) {
+      return '<section class="sc-day"><div class="sc-dh"><b>' + esc(scName(d)) + '</b><span>' + esc(d) + '</span>' + sunset(d) + '</div>' +
+        days[d].map(function (i) { return admin ? scRowEdit(i) : scRowRead(SC.rows[i]); }).join('') +
+        (admin ? '<div class="sc-addrow"><button type="button" class="sc-link" data-scadd="' + esc(d) + '">+ Add a row</button></div>' : '') + '</section>';
+    }).join('');
+    if (admin) h += '<div class="sc-newday"><button type="button" class="btn" id="sc-addday">+ Add a day</button><input id="sc-dayin" placeholder="DD/MM/YYYY" inputmode="numeric" hidden aria-label="New day"></div>';
+    box.innerHTML = h;
+    if ($('sc-reds')) $('sc-reds').onclick = function () { var el = box.querySelector('.sc-row.red, .sc-nl.red, .sc-notes li.red'); if (el) { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); el.animate([{ background: '#F7E1E1' }, { background: 'transparent' }], 1400); } };
+    if (admin) schedBind();
   }
-  function planShow(on) {
-    document.body.classList.toggle('in-plan', on); $('plan').hidden = !on;
-    $('s-guests').classList.toggle('on', !on); $('s-plan').classList.toggle('on', on);
-    try { history.replaceState(null, '', on ? '#plan' : location.pathname + location.search); } catch (e) {}
-    if (on) planRender();
+  function scRowRead(r) {
+    return '<div class="sc-row' + (r.red ? ' red' : '') + '"><div class="sc-t">' + esc(r.time) + (r.until ? '<small>until ' + esc(r.until) + '</small>' : '') + '</div><div class="sc-w">' +
+      '<div class="sc-what" dir="auto">' + esc(r.what) + '</div>' +
+      ([r.where, r.who].filter(Boolean).length ? '<div class="sc-sub" dir="auto">' + esc([r.where, r.who].filter(Boolean).join(' · ')) + '</div>' : '') +
+      (r.notes.length ? '<ul class="sc-notes">' + r.notes.map(function (n) { return '<li dir="auto"' + (n.red ? ' class="red"' : '') + '>' + esc(n.text) + '</li>'; }).join('') + '</ul>' : '') + '</div></div>';
   }
-  $('s-guests').addEventListener('click', function () { if (PL.editing !== null) { toast('Save or cancel your changes first.'); return; } planShow(false); });
-  $('s-plan').addEventListener('click', function () { planShow(true); });
-
-  function planRender() {
-    var box = $('plan'), admin = S.admin, D = PL.data;
-    box.classList.toggle('wide', PL.editing === 'timeline');
-    if (PL.editing === 'timeline') { planEditTimeline(); return; }
-    if (!admin && PL.sub === 'vendors') PL.sub = 'timeline';
-    var open = D.todos.filter(function (x) { return !x.done && (admin || x.who === 'couple'); }).length;
-    var sub = '<nav class="pl-sub" aria-label="Wedding plan">' + [['timeline', 'Timeline'], ['todos', admin ? 'To-dos' : 'Your to-dos'], ['info', 'Info'], ['vendors', 'Vendors']]
-      .filter(function (x) { return admin || x[0] !== 'vendors'; })
-      .map(function (x) { return '<button type="button" data-plsub="' + x[0] + '" class="' + (PL.sub === x[0] ? 'on' : '') + '">' + x[1] + (x[0] === 'todos' && open ? '<span class="pl-badge">' + open + '</span>' : '') + '</button>'; }).join('') + '</nav>';
-    box.innerHTML = sub + (PL.sub === 'todos' ? plTodosHtml() : PL.sub === 'info' ? plInfoHtml() : PL.sub === 'vendors' ? plVendorsHtml() : plTimelineHtml());
-    box.querySelectorAll('[data-plsub]').forEach(function (b) { b.onclick = function () { if (PL.editing !== null) { toast('Save or cancel your changes first.'); return; } PL.sub = b.dataset.plsub; planRender(); }; });
-    if (PL.sub === 'todos') plTodosBind(); else if (PL.sub === 'info') plInfoBind(); else if (PL.sub === 'vendors') plVendorsBind(); else plTimelineBind();
+  function scRowEdit(i) {
+    var r = SC.rows[i];
+    var f = function (k, ph, cls) {
+      if (k === 'what') return '<textarea rows="1" class="ie grow" dir="auto" data-sci="' + i + '" data-sck="' + k + '" placeholder="' + ph + '" aria-label="' + ph + '">' + esc(r[k]) + '</textarea>';
+      return '<input class="ie' + (cls ? ' ' + cls : '') + '" dir="auto" data-sci="' + i + '" data-sck="' + k + '" value="' + esc(r[k]) + '" placeholder="' + ph + '" aria-label="' + ph + '"' + (k === 'time' || k === 'until' ? ' inputmode="numeric"' : '') + '>'; };
+    var btn = function (attr, on, icon, label) { return '<button type="button" class="sc-ab' + (on ? ' on' : '') + '" ' + attr + ' title="' + label + '" aria-label="' + label + '">' + icon + '</button>'; };
+    return '<div class="sc-row ed' + (r.couple ? '' : ' off') + (r.red ? ' red' : '') + '">' +
+      '<div class="sc-t">' + f('time', 'HH:MM') + '<span class="' + (r.until ? '' : 'opt') + '">' + f('until', 'until', 'until') + '</span></div>' +
+      '<div class="sc-w"><div class="sc-what">' + f('what', 'What happens') + (r.couple ? '' : '<span class="sc-tag">Only you</span>') + '</div>' +
+      '<div class="sc-pair' + (r.where || r.who ? '' : ' opt') + '"><span style="flex:3" class="' + (r.where ? '' : 'opt') + '">' + f('where', 'Where') + '</span><span style="flex:2" class="' + (r.who ? '' : 'opt') + '">' + f('who', 'Who') + '</span></div>' +
+      r.notes.map(function (n, j) {
+        return '<div class="sc-nl' + (n.red ? ' red' : '') + (n.hidden ? ' hid' : '') + '"><span class="bul">•</span><textarea rows="1" class="ie grow" dir="auto" data-sci="' + i + '" data-scn="' + j + '" placeholder="A detail" aria-label="Detail">' + esc(n.text) + '</textarea>' + (n.hidden ? '<span class="sc-tag">Only you</span>' : '') +
+          '<span class="sc-mini">' + btn('data-scnred="' + i + ':' + j + '"', n.red, n.red ? SC_I.flagOn : SC_I.flag, n.red ? 'Remove the red mark' : 'Mark in red') +
+          btn('data-scneye="' + i + ':' + j + '"', false, n.hidden ? SC_I.eyeOff : SC_I.eye, n.hidden ? 'Show to the couple' : 'Hide from the couple') +
+          '<button type="button" class="sc-ab del" data-scndel="' + i + ':' + j + '" title="Delete line" aria-label="Delete line">' + SC_I.bin + '</button></span></div>';
+      }).join('') +
+      '<button type="button" class="sc-addline opt" data-scnadd="' + i + '">+ Add a detail</button></div>' +
+      '<div class="sc-acts">' + btn('data-scred="' + i + '"', r.red, r.red ? SC_I.flagOn : SC_I.flag, r.red ? 'Remove the red mark' : 'Mark in red') +
+      btn('data-sceye="' + i + '"', false, r.couple ? SC_I.eye : SC_I.eyeOff, r.couple ? 'Hide from the couple' : 'Show to the couple') +
+      '<button type="button" class="sc-ab del" data-scdel="' + i + '" title="Delete" aria-label="Delete">' + SC_I.bin + '</button></div></div>';
   }
-
-  // ----- timeline -----
-  function plTimelineHtml() {
-    var admin = S.admin, model = PL.model;
-    if (!admin && PL.filter === 'noam') PL.filter = 'all';
-    var count = function (f) { return plVisible(model, f).reduce(function (n, d) { return n + d.items.length; }, 0); };
-    var total = count('all');
-    if (!total) return '<div class="pl-empty">' + (admin ? '<b>No timeline yet.</b><span>Write it the way you write it in Word, or start from your template.</span><div class="pl-bar"><button type="button" class="btn primary" id="pl-edit">Write the timeline</button><button type="button" class="btn" id="pl-tpl">Start from template</button></div>'
-      : 'The timeline isn’t ready yet. Noam will add it here.') + '</div>';
-    var chip = function (f, l) { return '<button type="button" class="pl-chip' + (PL.filter === f ? ' on' : '') + '" data-plf="' + f + '">' + l + '<i>' + count(f) + '</i></button>'; };
-    var days = plVisible(model, PL.filter);
-    return '<div class="pl-bar">' + chip('all', 'Everything') + chip('guests', 'Guest schedule') + chip('couple', 'Couple & production') + (admin ? chip('noam', 'Only you') : '') +
-      '<span class="grow"></span><div class="pl-tog" role="group" aria-label="Detail"><button type="button" data-plshort="0" class="' + (PL.short ? '' : 'on') + '">Full</button><button type="button" data-plshort="1" class="' + (PL.short ? 'on' : '') + '">Short</button></div>' +
-      (admin ? '<button type="button" class="btn" id="pl-save-tpl" title="Save this event’s timeline, to-dos, cards and vendors as the template for new events">Save as template</button><button type="button" class="btn primary" id="pl-edit">Edit timeline</button>' : '') + '</div>' +
-      (days.length ? days.map(function (d, i) { return plDayHtml(d, i, PL.short, 'v'); }).join('') : '<div class="pl-empty">Nothing in this view.</div>');
-  }
-  function plTimelineBind() {
-    var box = $('plan');
-    box.querySelectorAll('[data-plf]').forEach(function (b) { b.onclick = function () { PL.filter = b.dataset.plf; planRender(); }; });
-    box.querySelectorAll('[data-plshort]').forEach(function (b) { b.onclick = function () { PL.short = b.dataset.plshort === '1'; PL.open = {}; planRender(); }; });
-    box.querySelectorAll('[data-plopen]').forEach(function (b) { b.onclick = function () { PL.open[b.dataset.plopen] = !PL.open[b.dataset.plopen]; planRender(); }; });
-    box.querySelectorAll('[data-plref]').forEach(function (b) { b.onclick = function () { plGoCard(b.dataset.plref); }; });
-    if ($('pl-edit')) $('pl-edit').onclick = function () { PL.editing = 'timeline'; PL.draft = PL.data.timeline; planRender(); };
-    if ($('pl-tpl')) $('pl-tpl').onclick = plFromTemplate;
-    if ($('pl-save-tpl')) $('pl-save-tpl').onclick = plSaveTemplate;
-  }
-  function planEditTimeline() {
-    var box = $('plan');
-    box.innerHTML = '<div class="pl-bar"><b style="font-size:15px">Editing the timeline</b><span class="pl-hint">Write it like in Word, or paste it from Word. The preview shows it as you’ll see it.</span></div>' +
-      '<div class="pl-ed"><div class="pl-pane"><div class="pl-ph">Write</div><textarea class="pl-free" id="pl-free" dir="auto" spellcheck="false" aria-label="Timeline text" placeholder="Friday 9/5 (19:30 is sunset)&#10;Wedding day&#10;*19:00 – Ceremony&#10;● Location – the beach">' + esc(PL.draft) + '</textarea>' +
-        '<div class="pl-legend"><code>Friday 9/5</code><span>a new day · add <code>(19:30 is sunset)</code> if you like · the line under it is the day’s title</span>' +
-        '<code>19:00 – Ceremony</code><span>an item · <code>08:00 – 10:30 Breakfast</code> for a time range</span>' +
-        '<code>● …</code><span>details of the item above · <code>● Location – the beach</code> becomes its place</span>' +
-        '<code>● → Bar</code><span>a link to the info card “Bar”</span>' +
-        '<code>*</code><span>at the start: highlight</span>' +
-        '<code>@</code><span>at the start: couple &amp; production</span>' +
-        '<code>!</code><span>at the start: only you · the couple never sees it (works on a detail line too)</span>' +
-        '<code>[Nikos]</code><span>at the end: who / vendor</span></div></div>' +
-      '<div class="pl-pane"><div class="pl-ph">Preview<span id="pl-stat"></span></div><div class="pl-prev" id="pl-prev"></div></div></div>' +
-      '<div class="pl-foot"><span style="flex:1"></span><span class="msg" id="pl-msg"></span><button type="button" class="btn" id="pl-cancel">Cancel</button><button type="button" class="btn primary" id="pl-save">Save</button></div>';
-    var upd = function () {
-      var p = plParse($('pl-free').value), n = p.days.reduce(function (a, d) { return a + d.items.length; }, 0);
-      $('pl-prev').innerHTML = p.days.length ? p.days.map(function (d, i) { return plDayHtml(d, i, false, 'p'); }).join('') : '<div class="pl-empty">Start with a day, e.g. Friday 9/5</div>';
-      $('pl-stat').className = p.warn.length ? 'warn' : 'ok';
-      $('pl-stat').textContent = p.warn.length ? p.warn[0] : p.days.length + (p.days.length === 1 ? ' day · ' : ' days · ') + n + (n === 1 ? ' item' : ' items');
-      PL.draft = $('pl-free').value; PL.parsed = p;
-    };
-    $('pl-free').addEventListener('input', upd); upd();
-    $('pl-cancel').onclick = function () { PL.editing = null; planRender(); };
-    $('pl-save').onclick = function () {
-      if (PL.parsed.warn.length) { $('pl-msg').textContent = PL.parsed.warn[0]; return; }
-      $('pl-save').disabled = true; $('pl-msg').textContent = '';
-      plSave('timeline', PL.draft).then(function () { PL.editing = null; planRender(); toast('Timeline saved. The couple sees it now.'); })
-        .catch(function (e) { $('pl-save').disabled = false; $('pl-msg').textContent = e.server ? e.message : 'Couldn’t save. Check your connection and try again.'; });
-    };
-  }
-  function plSave(part, data) {
-    saving('busy');
-    return api('savePlan', { part: part, data: data }).then(function (res) {
-      saving('ok'); PL.data = res.plan; PL.model = plParse(PL.data.timeline); return res;
-    }, function (e) { saving('err'); throw e; });
-  }
-
-  // ----- to-dos -----
-  function plTodosHtml() {
-    var admin = S.admin, today = plKey(plToday());
-    var list = function (who) {
-      var items = PL.data.todos.map(function (x, i) { return [x, i]; }).filter(function (p) { return p[0].who === who; })
-        .sort(function (a, b) { return (a[0].done - b[0].done) || (plKey(a[0].due) < plKey(b[0].due) ? -1 : plKey(a[0].due) > plKey(b[0].due) ? 1 : 0); });
-      var open = items.filter(function (p) { return !p[0].done; }).length;
-      return '<section class="pl-box"><div class="pl-bh"><b>' + (who === 'couple' && admin ? 'The couple’s to-dos' : 'Your to-dos') + '</b><span class="pl-hint">' + open + ' open · ' + (items.length - open) + ' done</span>' +
-        (who === 'noam' ? '<span class="pl-tag mine">Only you</span>' : admin ? '<span class="pl-tag prod">The couple sees these and can tick them</span>' : '') + '</div>' +
-        (items.length ? '' : '<div class="pl-todo"><span></span><span class="pl-hint">' + (admin ? 'No to-dos yet.' : 'Nothing for you to do right now.') + '</span><span></span></div>') +
-        items.map(function (p) {
-          var x = p[0], late = !x.done && x.due && plKey(x.due) < today;
-          return '<div class="pl-todo' + (x.done ? ' done' : '') + '"><input type="checkbox" data-pltd="' + p[1] + '"' + (x.done ? ' checked' : '') + ' aria-label="Done">' +
-            '<span class="tt" dir="auto"><span>' + esc(x.task) + '</span>' + (x.done && x.doneBy ? '<small>Done by ' + esc(x.doneBy) + (x.doneAt ? ' · ' + esc(x.doneAt) : '') + '</small>' : '') + '</span>' +
-            '<span class="due' + (late ? ' late' : '') + '">' + (late ? 'Late · ' : '') + esc(x.due || '') + (admin ? '<button type="button" class="pl-x" data-pltdx="' + p[1] + '" aria-label="Remove">✕</button>' : '') + '</span></div>';
-        }).join('') +
-        (admin ? '<div class="pl-add"><input class="big" id="pl-nt-' + who + '" dir="auto" placeholder="Add a to-do…"><input id="pl-nd-' + who + '" placeholder="DD/MM/YYYY" style="width:118px" inputmode="numeric"><button type="button" class="btn" data-pltadd="' + who + '">Add</button></div>' : '') +
-      '</section>';
-    };
-    return admin ? '<div class="pl-cols">' + list('couple') + list('noam') + '</div>' : list('couple');
-  }
-  function plTodosBind() {
-    var box = $('plan');
-    box.querySelectorAll('[data-pltd]').forEach(function (c) { c.onchange = function () {
-      var x = PL.data.todos[c.dataset.pltd]; c.disabled = true; saving('busy');
-      api('todoDone', { id: x.id, done: c.checked }).then(function (res) {
-        saving('ok'); PL.data = res.plan; planRender(); if (!S.admin && c.checked) toast('Marked as done. Noam sees it now.');
-      }).catch(function (e) { saving('err'); c.checked = !c.checked; c.disabled = false; toast(e.server ? e.message : 'Couldn’t save. Try again.'); });
-    }; });
-    box.querySelectorAll('[data-pltdx]').forEach(function (b) { b.onclick = function () {
-      var list = PL.data.todos.slice(); list.splice(Number(b.dataset.pltdx), 1);
-      plSave('todos', list).then(planRender).catch(function (e) { toast(e.server ? e.message : 'Couldn’t save. Try again.'); });
-    }; });
-    box.querySelectorAll('[data-pltadd]').forEach(function (b) { b.onclick = function () {
-      var who = b.dataset.pltadd, t = $('pl-nt-' + who).value.trim(), d = $('pl-nd-' + who).value.trim();
-      if (!t) { $('pl-nt-' + who).focus(); return; }
-      var dm = /^(\d{1,2})[\/.](\d{1,2})[\/.](\d{2,4})$/.exec(d);
-      if (d && !dm) { toast('Write the date as DD/MM/YYYY, e.g. 25/04/2027.'); $('pl-nd-' + who).focus(); return; }
-      if (dm) d = plPad(dm[1]) + '/' + plPad(dm[2]) + '/' + (dm[3].length === 2 ? '20' + dm[3] : dm[3]);
-      b.disabled = true;
-      plSave('todos', PL.data.todos.concat([{ task: t, who: who, due: d, done: false }])).then(function () { planRender(); var i = $('pl-nt-' + who); if (i) i.focus(); })
-        .catch(function (e) { b.disabled = false; toast(e.server ? e.message : 'Couldn’t save. Try again.'); });
-    }; });
-    box.querySelectorAll('.pl-add input').forEach(function (i) { i.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); i.parentNode.querySelector('[data-pltadd]').click(); } }); });
-  }
-
-  // ----- info cards (free text; lines with | make a table) -----
-  function plCardBody(text) {
-    var out = '', rows = [];
-    var flush = function () {
-      if (!rows.length) return;
-      out += '<div class="pl-ctw"><table class="pl-ct"><thead><tr>' + rows[0].map(function (c) { return '<th dir="auto">' + esc(c) + '</th>'; }).join('') + '</tr></thead><tbody>' +
-        rows.slice(1).map(function (r) { return '<tr>' + r.map(function (c) { return '<td dir="auto">' + esc(c) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>';
-      rows = [];
-    };
-    String(text || '').split('\n').filter(function (l) { return l.trim(); }).forEach(function (l) {
-      if (l.indexOf('|') > -1) { rows.push(l.split('|').map(function (c) { return c.trim(); })); return; }
-      flush();
-      var b = /^\s*[●•▪◦\-–]\s+(.*)$/.exec(l);
-      out += b ? '<p class="li" dir="auto">' + esc(b[1]) + '</p>' : '<p class="h" dir="auto">' + esc(l) + '</p>';
+  function scFocus(row, sel) { var el = $('sched').querySelector('.ie[data-sci="' + SC.rows.indexOf(row) + '"]' + sel); if (el) { el.focus(); try { el.setSelectionRange(el.value.length, el.value.length); } catch (e) {} } return el; }
+  function scUndo(msg, undo) { toast(msg, 'Undo', function () { undo(); schedRender(); schedChanged(true); }); }
+  function schedBind() {
+    var box = $('sched'), fit = function (el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; };
+    box.querySelectorAll('textarea.grow').forEach(function (el) { fit(el); el.addEventListener('input', function () { el.value = el.value.replace(/\n/g, ' '); fit(el); }); });
+    var at = function (v) { var p = v.split(':'); return [SC.rows[p[0]], Number(p[1])]; };
+    box.querySelectorAll('.ie[data-sck]').forEach(function (el) {
+      var r = SC.rows[el.dataset.sci], k = el.dataset.sck;
+      el.addEventListener('input', function () { if (k !== 'time' && k !== 'until') { r[k] = el.value; schedChanged(); } });
+      el.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); el.blur(); } if (e.key === 'Escape') { el.value = r[k]; el.blur(); } });
+      el.addEventListener('change', function () {
+        if (k !== 'time' && k !== 'until') return;
+        var v = el.value.trim(), m = /^(\d{1,2})[:.](\d{2})$/.exec(v);
+        if (v && (!m || Number(m[1]) > 23 || Number(m[2]) > 59)) { toast('Write the time as HH:MM, e.g. 18:45.'); el.value = r[k]; return; }
+        r[k] = v ? scPad(m[1]) + ':' + m[2] : ''; schedChanged(true);
+        if (k === 'time') { schedRender(); var w = scFocus(r, '[data-sck="what"]'); if (w) { w.blur(); w.closest('.sc-row').animate([{ background: '#FBF3D9' }, { background: 'transparent' }], 900); } }
+        else el.value = r[k];
+      });
     });
-    flush(); return out;
-  }
-  function plInfoHtml() {
-    var admin = S.admin, cards = PL.data.info, used = {};
-    PL.model.days.forEach(function (d) { d.items.forEach(function (r) { r.refs.forEach(function (x) { used[x] = (used[x] || []).concat(r.time + ' ' + r.title); }); }); });
-    var html = '<div class="pl-bar"><span class="pl-hint">' + (admin ? 'Menus, ceremony details, photo lists, rooms. Lines with <code>|</code> make a table. Link from the timeline with <code>● → Card name</code>.' : 'Menus, ceremony details and everything else for the wedding.') + '</span><span class="grow"></span>' +
-      (admin && PL.editing === null ? '<button type="button" class="btn" id="pl-addcard">+ New card</button>' : '') + '</div>';
-    if (!cards.length && PL.editing !== 'new') return html + '<div class="pl-empty">' + (admin ? 'No info cards yet. Click + New card.' : 'Nothing here yet.') + '</div>';
-    var list = cards.map(function (c, i) { return [c, i]; });
-    if (PL.editing === 'new') list.push([{ title: '', mine: false, text: '' }, 'new']);
-    return html + '<div class="pl-cards">' + list.map(function (p) {
-      var c = p[0], i = p[1], ed = PL.editing === i;
-      if (ed) return '<section class="pl-card" data-plcard="' + esc(c.title) + '"><div class="pl-ch"><input id="pl-ctitle" dir="auto" value="' + esc(c.title) + '" placeholder="Card name, e.g. Bar"></div>' +
-        '<textarea id="pl-ctext" dir="auto" placeholder="Open bar 18:00–00:00&#10;● Pornstar martini&#10;Time | Who | Service&#10;12:00 | Bride | Hair + makeup">' + esc(c.text) + '</textarea>' +
-        '<div class="pl-cf"><label><input type="checkbox" id="pl-cmine"' + (c.mine ? ' checked' : '') + '> Only you (the couple won’t see this card)</label><span class="grow"></span>' +
-        (i !== 'new' ? '<button type="button" class="pl-lnk" id="pl-cdel" style="color:var(--bad)">Delete card</button>' : '') +
-        '<button type="button" class="btn" id="pl-ccancel">Cancel</button><button type="button" class="btn primary" id="pl-csave">Save</button></div></section>';
-      return '<section class="pl-card" data-plcard="' + esc(c.title) + '"><div class="pl-ch"><b dir="auto">' + esc(c.title) + '</b>' + (c.mine ? '<span class="pl-tag mine">Only you</span>' : '') + '<span class="grow"></span>' +
-        (admin && PL.editing === null ? '<button type="button" class="pl-lnk" data-plcedit="' + i + '">Edit</button>' : '') + '</div>' +
-        '<div class="pl-cb">' + plCardBody(c.text) + (used[c.title] ? '<p class="pl-hint" style="margin-top:8px">In the timeline: ' + esc(used[c.title].join(' · ')) + '</p>' : '') + '</div></section>';
-    }).join('') + '</div>';
-  }
-  function plInfoBind() {
-    var box = $('plan');
-    box.querySelectorAll('[data-plcedit]').forEach(function (b) { b.onclick = function () { PL.editing = Number(b.dataset.plcedit); planRender(); $('pl-ctext').focus(); }; });
-    if ($('pl-addcard')) $('pl-addcard').onclick = function () { PL.editing = 'new'; planRender(); $('pl-ctitle').focus(); };
-    if (!$('pl-csave')) return;
-    var idx = PL.editing;
-    $('pl-ccancel').onclick = function () { PL.editing = null; planRender(); };
-    if ($('pl-cdel')) $('pl-cdel').onclick = function () {
-      if ($('pl-cdel').dataset.arm !== '1') { $('pl-cdel').dataset.arm = '1'; $('pl-cdel').textContent = 'Click again to delete'; return; }
-      var list = PL.data.info.slice(); list.splice(idx, 1);
-      plSave('info', list).then(function () { PL.editing = null; planRender(); toast('Card deleted.'); }).catch(function (e) { toast(e.server ? e.message : 'Couldn’t save. Try again.'); });
-    };
-    $('pl-csave').onclick = function () {
-      var title = $('pl-ctitle').value.trim(); if (!title) { $('pl-ctitle').focus(); toast('Give the card a name.'); return; }
-      var card = { title: title, mine: $('pl-cmine').checked, text: $('pl-ctext').value }, list = PL.data.info.slice();
-      if (list.some(function (c, j) { return j !== idx && c.title.toLowerCase() === title.toLowerCase(); })) { toast('There’s already a card called “' + title + '”.'); return; }
-      if (idx === 'new') list.push(card); else list[idx] = card;
-      $('pl-csave').disabled = true;
-      plSave('info', list).then(function () { PL.editing = null; planRender(); toast('Card saved.'); }).catch(function (e) { $('pl-csave').disabled = false; toast(e.server ? e.message : 'Couldn’t save. Try again.'); });
-    };
-  }
-  function plGoCard(id) {
-    PL.sub = 'info'; planRender();
-    var c = [].filter.call($('plan').querySelectorAll('.pl-card'), function (x) { return x.dataset.plcard.toLowerCase() === id.toLowerCase(); })[0];
-    if (c) { c.scrollIntoView({ block: 'start', behavior: 'smooth' }); c.classList.add('flash'); setTimeout(function () { c.classList.remove('flash'); }, 1600); }
-    else toast(S.admin ? 'There’s no info card called “' + id + '” yet.' : 'This card isn’t ready yet.');
+    box.querySelectorAll('.ie[data-scn]').forEach(function (el) {
+      var r = SC.rows[el.dataset.sci], j = Number(el.dataset.scn);
+      el.addEventListener('input', function () { r.notes[j].text = el.value; schedChanged(); });
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); r.notes.splice(j + 1, 0, { text: '', red: false, hidden: r.notes[j].hidden }); schedRender(); scFocus(r, '[data-scn="' + (j + 1) + '"]'); }
+        if (e.key === 'Backspace' && !el.value) { e.preventDefault(); r.notes.splice(j, 1); schedChanged(); schedRender(); if (j > 0) scFocus(r, '[data-scn="' + (j - 1) + '"]'); else scFocus(r, '[data-sck="what"]'); }
+      });
+    });
+    box.querySelectorAll('[data-scnred]').forEach(function (b) { b.onclick = function () { var p = at(b.dataset.scnred), n = p[0].notes[p[1]]; n.red = !n.red; schedRender(); schedChanged(true); }; });
+    box.querySelectorAll('[data-scneye]').forEach(function (b) { b.onclick = function () { var p = at(b.dataset.scneye), n = p[0].notes[p[1]]; n.hidden = !n.hidden; schedRender(); schedChanged(true); toast(n.hidden ? 'This line is hidden from the couple.' : 'The couple sees this line now.'); }; });
+    box.querySelectorAll('[data-scndel]').forEach(function (b) { b.onclick = function () { var p = at(b.dataset.scndel), n = p[0].notes.splice(p[1], 1)[0]; schedRender(); schedChanged(true); scUndo('Line deleted.', function () { p[0].notes.splice(p[1], 0, n); }); }; });
+    box.querySelectorAll('[data-scnadd]').forEach(function (b) { b.addEventListener('mousedown', function (e) { e.preventDefault(); }); b.onclick = function () { var r = SC.rows[b.dataset.scnadd]; r.notes.push({ text: '', red: false, hidden: false }); schedRender(); scFocus(r, '[data-scn="' + (r.notes.length - 1) + '"]'); }; });
+    box.querySelectorAll('[data-scred]').forEach(function (b) { b.onclick = function () { var r = SC.rows[b.dataset.scred]; r.red = !r.red; schedRender(); schedChanged(true); }; });
+    box.querySelectorAll('[data-sceye]').forEach(function (b) { b.onclick = function () { var r = SC.rows[b.dataset.sceye]; r.couple = !r.couple; schedRender(); schedChanged(true); toast(r.couple ? 'The couple sees this row now.' : 'Hidden from the couple.'); }; });
+    box.querySelectorAll('[data-scdel]').forEach(function (b) { b.onclick = function () { var i = Number(b.dataset.scdel), r = SC.rows.splice(i, 1)[0]; if (SC.days.indexOf(r.day) < 0) SC.days.push(r.day); schedRender(); schedChanged(true); scUndo('Row deleted.', function () { SC.rows.push(r); }); }; });
+    box.querySelectorAll('[data-scadd]').forEach(function (b) { b.onclick = function () {
+      var r = { id: '', day: b.dataset.scadd, time: '', until: '', what: '', where: '', who: '', notes: [], couple: true, red: false };
+      SC.rows.push(r); schedRender(); scFocus(r, '[data-sck="time"]');
+    }; });
+    $('sc-addday').onclick = function () { $('sc-dayin').hidden = false; $('sc-dayin').focus(); };
+    $('sc-dayin').addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter') return;
+      var m = /^(\d{1,2})[\/.](\d{1,2})[\/.](\d{2,4})$/.exec(this.value.trim()), d = m && scPad(m[1]) + '/' + scPad(m[2]) + '/' + (m[3].length === 2 ? '20' + m[3] : m[3]);
+      if (!d || !scName(d)) { toast('Write the day as DD/MM/YYYY, e.g. 09/05/2027.'); return; }
+      SC.days.push(d); schedRender();
+      var b = $('sched').querySelector('[data-scadd="' + d + '"]'); if (b) b.click();
+    });
+    $('sc-paste').onclick = function () { schedFlush(); SC.mode = 'paste'; schedRender(); };
   }
 
-  // ----- vendors (only Noam): each vendor's sheet is built from the timeline and from linked tables -----
-  function plVendorItems(v) {
-    var keys = [v.name, v.role].map(function (k) { return String(k || '').toLowerCase().trim(); }).filter(function (k) { return k.length > 1; }), out = [];
-    PL.model.days.forEach(function (d) { d.items.forEach(function (r) {
-      var who = r.who.toLowerCase(); if (keys.some(function (k) { return who.indexOf(k) > -1 || (k === keys[0] && r.title.toLowerCase().indexOf(k) > -1); })) out.push({ d: d, r: r });
-    }); });
+  // ----- paste from Word: a one-time helper. Day lines, "HH:MM – text" lines, and the lines under them as details -----
+  function scFromWord(text) {
+    var out = [], day = '', cur = null, year = (/^(\d{4})/.exec(SC.wedding.date || '') || [])[1] || String(new Date().getFullYear());
+    String(text).split(/\r?\n/).forEach(function (l) {
+      var t = l.trim(); if (!t) return;
+      var d = /^(?:יום\s+)?[A-Za-zא-ת]+\.?,?\s+(\d{1,2})[\/.](\d{1,2})(?:[\/.](\d{2,4}))?/.exec(t);
+      if (d) { day = scPad(d[1]) + '/' + scPad(d[2]) + '/' + (d[3] ? (d[3].length === 2 ? '20' + d[3] : d[3]) : year); cur = null; return; }
+      var m = /^(\d{1,2})[:.](\d{2})(?:\s*[–\-—]\s*(\d{1,2})[:.](\d{2})(?!\d))?\s*[–\-—:]?\s*(.*)$/.exec(t);
+      if (m && day && Number(m[1]) < 24) { cur = { id: '', day: day, time: scPad(m[1]) + ':' + m[2], until: m[3] ? scPad(m[3]) + ':' + m[4] : '', what: m[5] || '', where: '', who: '', notes: [], couple: true, red: false }; out.push(cur); return; }
+      if (cur) {
+        var b = t.replace(/^[●•▪◦·\-–]\s*/, ''), loc = /^(?:location|place|מיקום)\s*[–\-—:]\s*(.+)$/i.exec(b);
+        if (loc && !cur.where) cur.where = loc[1]; else cur.notes.push({ text: b, red: false, hidden: false });
+      }
+    });
     return out;
   }
-  function plSheet(v) {
-    var items = plVendorItems(v), last = '', refs = {};
-    var lines = [(PL.wedding.couple || '') + (PL.wedding.place ? ' · ' + PL.wedding.place : ''), (v.role ? v.role + ' – ' : '') + v.name, ''];
-    items.forEach(function (x) {
-      if (x.d.date !== last) { var sun = x.d.sunset || (plIso(x.d.date) === PL.wedding.date ? PL.wedding.sunset : ''); lines.push(plDay(x.d.date) + ' ' + x.d.date + (sun ? ' (sunset ' + sun + ')' : '')); last = x.d.date; }
-      lines.push(x.r.time + (x.r.until ? '–' + x.r.until : '') + '  ' + x.r.title + (x.r.place ? ' · ' + x.r.place : ''));
-      x.r.notes.filter(function (n) { return !n.mine; }).forEach(function (n) { lines.push('    • ' + n.text); });
-      x.r.refs.forEach(function (r) { refs[r.toLowerCase()] = 1; });
-    });
-    if (!items.length) lines.push('No timeline items for this vendor yet. Add [' + v.name + '] at the end of their lines in the timeline.');
-    PL.data.info.forEach(function (c) {
-      if (!refs[c.title.toLowerCase()]) return;
-      var rows = String(c.text).split('\n').filter(function (l) { return l.indexOf('|') > -1; });
-      var mine = rows.slice(1).filter(function (l) { return l.toLowerCase().indexOf(String(v.name).toLowerCase()) > -1; });
-      if (mine.length) { lines.push('', c.title + ':'); mine.forEach(function (l) { lines.push('    ' + l.split('|').map(function (x) { return x.trim(); }).join('  ·  ')); }); }
-    });
-    lines.push('', 'Questions: Noam, the event planner');
-    return lines.join('\n');
-  }
-  function plVendorsHtml() {
-    var V = PL.data.vendors;
-    if (PL.editing === 'vendors') return '<section class="pl-box"><div class="pl-bh"><b>Vendors</b><span class="pl-hint">One vendor per line: <code>Role | Name | Phone</code></span></div>' +
-      '<textarea id="pl-vtext" dir="auto" style="width:100%;min-height:260px" placeholder="DJ | Nir | +972 50 000 0000&#10;Photographer | Kirios | +357 99 000000">' + esc(V.map(function (v) { return [v.role, v.name, v.phone].join(' | '); }).join('\n')) + '</textarea>' +
-      '<div class="pl-cf"><span class="grow"></span><button type="button" class="btn" id="pl-vcancel">Cancel</button><button type="button" class="btn primary" id="pl-vsave">Save</button></div></section>';
-    if (!V.length) return '<div class="pl-empty"><b>No vendors yet.</b><span>Add them once, and each vendor gets a sheet with their part of the timeline.</span><button type="button" class="btn primary" id="pl-vedit">Add vendors</button></div>';
-    if (PL.vend >= V.length) PL.vend = 0;
-    var v = V[PL.vend];
-    return '<div class="pl-cols"><section class="pl-box"><div class="pl-bh"><b>Vendors</b><span class="pl-hint">Only you see this</span><span class="grow"></span><button type="button" class="pl-lnk" id="pl-vedit">Edit</button></div><div class="pl-scroll"><table class="pl-vt"><thead><tr><th>Role</th><th>Name</th><th class="hide-s">Phone</th><th>Items</th></tr></thead><tbody>' +
-      V.map(function (x, i) { return '<tr class="' + (i === PL.vend ? 'on' : '') + '"><td dir="auto">' + esc(x.role) + '</td><td><button type="button" class="pl-lnk" data-plv="' + i + '" dir="auto">' + esc(x.name || '—') + '</button></td><td class="ph hide-s">' + esc(x.phone) + '</td><td>' + plVendorItems(x).length + '</td></tr>'; }).join('') +
-      '</tbody></table></div></section>' +
-      '<section class="pl-box"><div class="pl-bh"><b dir="auto">' + esc(v.name) + '’s sheet</b><span class="pl-hint" dir="auto">' + esc(v.role) + '</span><span class="grow"></span><button type="button" class="btn primary" id="pl-vcopy">Copy for WhatsApp</button></div><pre class="pl-sheet" id="pl-vsheet" dir="auto">' + esc(plSheet(v)) + '</pre></section></div>';
-  }
-  function plVendorsBind() {
-    var box = $('plan');
-    box.querySelectorAll('[data-plv]').forEach(function (b) { b.onclick = function () { PL.vend = Number(b.dataset.plv); planRender(); }; });
-    if ($('pl-vedit')) $('pl-vedit').onclick = function () { PL.editing = 'vendors'; planRender(); $('pl-vtext').focus(); };
-    if ($('pl-vcancel')) $('pl-vcancel').onclick = function () { PL.editing = null; planRender(); };
-    if ($('pl-vsave')) $('pl-vsave').onclick = function () {
-      var list = $('pl-vtext').value.split('\n').filter(function (l) { return l.trim(); }).map(function (l) { var p = l.split('|').map(function (x) { return x.trim(); }); return p.length > 1 ? { role: p[0], name: p[1], phone: p.slice(2).join(' ') } : { role: '', name: p[0], phone: '' }; });
-      $('pl-vsave').disabled = true;
-      plSave('vendors', list).then(function () { PL.editing = null; planRender(); toast('Vendors saved.'); }).catch(function (e) { $('pl-vsave').disabled = false; toast(e.server ? e.message : 'Couldn’t save. Try again.'); });
+  function schedPaste() {
+    $('sched').innerHTML = '<div class="sc-paste"><div class="sc-paste-h"><b>Paste from Word</b><span class="sc-hint">Copy the schedule from your Word file and paste it here. Day lines like “Friday 9/5”, times like “19:00 – Ceremony”, and the lines under them become details.</span></div>' +
+      '<textarea id="sc-ptext" dir="auto" placeholder="Paste here…" aria-label="Schedule from Word"></textarea>' +
+      '<div class="foot"><span class="sc-hint" id="sc-pinfo">Nothing pasted yet.</span><span style="flex:1"></span><button type="button" class="btn" id="sc-pcancel">Cancel</button><button type="button" class="btn primary" id="sc-pgo" disabled>Add to the schedule</button></div></div>';
+    var upd = function () { var n = scFromWord($('sc-ptext').value).length; $('sc-pgo').disabled = !n; $('sc-pinfo').textContent = n ? n + (n === 1 ? ' row found' : ' rows found') : ($('sc-ptext').value.trim() ? 'No rows found yet. Rows need a day line first (e.g. Friday 9/5), then times like 19:00 – Ceremony.' : 'Nothing pasted yet.'); };
+    $('sc-ptext').addEventListener('input', upd); $('sc-ptext').focus();
+    $('sc-pcancel').onclick = function () { SC.mode = 'view'; schedRender(); };
+    $('sc-pgo').onclick = function () {
+      var rows = scFromWord($('sc-ptext').value); if (!rows.length) return;
+      SC.rows = SC.rows.concat(rows); SC.mode = 'view'; schedRender(); schedChanged(true);
+      toast(rows.length + ' rows added. Click any text to fix it.');
     };
-    if ($('pl-vcopy')) $('pl-vcopy').onclick = function () {
-      var t = $('pl-vsheet').textContent;
-      (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { toast('Copied. Paste it in WhatsApp.'); }, function () {
-        var r = document.createRange(); r.selectNodeContents($('pl-vsheet')); var sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); toast('Selected. Copy it with Ctrl+C.');
-      });
-    };
-  }
-
-  // ----- template: days and due dates are kept relative to the wedding day ("Day -1", "Day 0", 21 days before) -----
-  function plDaysFrom(dmy) { var a = new Date(plIso(dmy) + 'T12:00:00'), w = new Date((PL.wedding.date || '') + 'T12:00:00'); return isNaN(a) || isNaN(w) ? null : Math.round((a - w) / 864e5); }
-  function plDateAt(n) { var w = new Date((PL.wedding.date || '') + 'T12:00:00'); if (isNaN(w)) return null; w.setDate(w.getDate() + n); return plPad(w.getDate()) + '/' + plPad(w.getMonth() + 1) + '/' + w.getFullYear(); }
-  function plSaveTemplate() {
-    var b = $('pl-save-tpl');
-    if (!PL.wedding.date) { toast('Set the wedding date in the dashboard first.'); return; }
-    if (b.dataset.arm !== '1') { b.dataset.arm = '1'; b.textContent = 'Replace the template? Click again'; setTimeout(function () { if (b.isConnected) { b.dataset.arm = ''; b.textContent = 'Save as template'; } }, 4000); return; }
-    var text = PL.data.timeline.split('\n').map(function (l) {
-      var m = PL_DAYRE.exec(l.trim()); if (!m) return l;
-      var n = plDaysFrom(plPad(m[2]) + '/' + plPad(m[3]) + '/' + (m[4] ? (m[4].length === 2 ? '20' + m[4] : m[4]) : plYear()));
-      var rest = (m[5] || '').replace(/\(?[^()]*(?:sunset|שקיעה)[^()]*\)?/i, '').trim();
-      return n === null ? l : 'Day ' + (n > 0 ? '+' : '') + n + (rest ? ' ' + rest : '');
-    }).join('\n');
-    var tpl = { v: 1, timeline: text, info: PL.data.info, vendors: PL.data.vendors,
-      todos: PL.data.todos.map(function (x) { return { task: x.task, who: x.who, days: x.due ? plDaysFrom(x.due) : null }; }) };
-    b.disabled = true; saving('busy');
-    api('saveTemplate', { template: JSON.stringify(tpl) }).then(function () { saving('ok'); toast('Saved as the template. New events can start from it.'); planRender(); })
-      .catch(function (e) { saving('err'); b.disabled = false; toast(e.server ? e.message : 'Couldn’t save the template. Try again.'); });
-  }
-  function plFromTemplate() {
-    var b = $('pl-tpl');
-    if (!PL.wedding.date) { toast('Set the wedding date in the dashboard first.'); return; }
-    b.disabled = true; b.textContent = 'Loading…'; saving('busy');
-    api('planTemplate', {}).then(function (res) {
-      if (!res.template) { saving('ok'); b.disabled = false; b.textContent = 'Start from template'; toast('There’s no template yet. Build one event’s plan and click Save as template.'); return; }
-      var t = JSON.parse(res.template), wd = PL.wedding.date;
-      var text = String(t.timeline || '').split('\n').map(function (l) {
-        var m = /^\s*Day\s*([+\-]?\d+)\b\s*(.*)$/i.exec(l); if (!m) return l;
-        var n = Number(m[1]), d = plDateAt(n), dd = d.split('/');
-        return PL_DAYS[new Date(plIso(d) + 'T12:00:00').getDay()] + ' ' + Number(dd[0]) + '/' + Number(dd[1]) + (n === 0 && PL.wedding.sunset ? ' (' + PL.wedding.sunset + ' is sunset)' : '') + (m[2] ? ' ' + m[2] : '');
-      }).join('\n');
-      var todos = (t.todos || []).map(function (x) { return { task: x.task, who: x.who, due: x.days === null || x.days === undefined ? '' : plDateAt(x.days), done: false }; });
-      return api('savePlan', { part: 'timeline', data: text })
-        .then(function () { return api('savePlan', { part: 'todos', data: todos }); })
-        .then(function () { return api('savePlan', { part: 'info', data: t.info || [] }); })
-        .then(function () { return api('savePlan', { part: 'vendors', data: t.vendors || [] }); })
-        .then(function (r) { saving('ok'); PL.data = r.plan; PL.model = plParse(PL.data.timeline); planRender(); toast('Started from the template. Check the timeline and change what’s different for this wedding.'); });
-    }).catch(function (e) { saving('err'); if (b.isConnected) { b.disabled = false; b.textContent = 'Start from template'; } toast(e.server ? e.message : 'Couldn’t load the template. Try again.'); });
   }
 
   loadCols();
