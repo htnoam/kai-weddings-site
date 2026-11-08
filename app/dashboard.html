@@ -152,6 +152,8 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
     <label class="f">Wedding date<input id="n-date" type="date"></label>
     <label class="f">Location<input id="n-place" placeholder="e.g. Limassol, Cyprus" autocomplete="off"></label>
     <label class="f">RSVP form opens in<select id="n-lang"><option value="he">Hebrew</option><option value="en">English</option></select></label>
+    <label class="f">Invitation design<select id="n-tpl"><option value="">Classic: envelope and form</option><option value="Grand">Grand: full wedding site (schedule, flights, form)</option></select></label>
+    <div class="hint">Preview: <a href="/demo-wedding/rsvp" target="_blank" rel="noopener">Classic</a> · <a href="/app/grand/" target="_blank" rel="noopener">Grand</a></div>
     <p class="hint" style="margin:0">A folder and a guest sheet will be created in Drive › KAI EVENTS.</p>
     <p class="err" id="n-err" hidden></p>
     <div class="act">
@@ -169,6 +171,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
       <label class="f">Wedding date<input data-k="Wedding Date" type="date"></label>
       <label class="f">Dates line on the invitation (optional)<input data-k="Dates Line" placeholder="e.g. 03 – 05 . 06 . 2027"></label>
       <label class="f">Form opens in<select data-k="Default Language"><option value="he">Hebrew</option><option value="en">English</option></select></label>
+      <label class="f">Invitation design<select data-k="Template"><option value="">Classic: envelope and form</option><option value="Grand">Grand: full wedding site (schedule, flights, form)</option></select></label>
     </div>
     <div class="sec">Photos</div>
     <div class="cols2">
@@ -292,7 +295,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   }); });
 
   // ---------- new event ----------
-  function openNew() { ['n-couple', 'n-date', 'n-place'].forEach(function (id) { $(id).value = ''; }); $('n-lang').value = 'he'; $('n-link').textContent = 'events.kaiwedd.com/…/rsvp'; $('n-err').hidden = true; $('dlg').hidden = false; $('n-couple').focus(); }
+  function openNew() { ['n-couple', 'n-date', 'n-place'].forEach(function (id) { $(id).value = ''; }); $('n-lang').value = 'he'; $('n-tpl').value = ''; $('n-link').textContent = 'events.kaiwedd.com/…/rsvp'; $('n-err').hidden = true; $('dlg').hidden = false; $('n-couple').focus(); }
   $('n-couple').addEventListener('input', function () { var s = slugify(this.value); $('n-link').textContent = 'events.kaiwedd.com/' + (s || '…') + '/rsvp'; });
   $('form').addEventListener('submit', function (e) {
     e.preventDefault();
@@ -300,7 +303,10 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
     var err = !f.couple ? 'Write the couple’s names.' : /[֐-׿]/.test(f.couple) ? 'Write the names in English. They become the link.' : !slugify(f.couple) ? 'Write the names in English letters.' : '';
     if (err) { $('n-err').textContent = err; $('n-err').hidden = false; return; }
     $('n-save').disabled = true; $('n-save').textContent = 'Creating…'; $('n-err').hidden = true;
+    var tpl = $('n-tpl').value;
     api('createEvent', { event: f }).then(function (res) {
+      return tpl ? api('saveSettings', { e: res.event.slug, settings: { Template: tpl } }).then(function () { return res; }) : res;
+    }).then(function (res) {
       $('dlg').hidden = true; toast('Created ' + res.event.couple + ' · events.kaiwedd.com/' + res.event.slug + '/rsvp'); load();
     }).catch(function (x) { $('n-err').textContent = x.server ? x.message : 'Couldn’t create the event. Try again.'; $('n-err').hidden = false; })
       .then(function () { $('n-save').disabled = false; $('n-save').textContent = 'Create Event'; });
