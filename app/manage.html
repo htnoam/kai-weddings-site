@@ -265,6 +265,11 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
 .vt.add { color: var(--soft); font-weight: 500; }
 .vcols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 12px; }
 .vc { display: flex; align-items: center; gap: 8px; font-size: 14px; padding: 3px 0; }
+.vcols.vord { grid-template-columns: minmax(0, 1fr); }
+.vc label { flex: 1; display: flex; align-items: center; gap: 8px; }
+.dh { cursor: grab; color: var(--soft); font-size: 16px; line-height: 1; padding: 4px 2px; touch-action: none; user-select: none; }
+.dh.off { visibility: hidden; }
+.colrow.dragging, .vc.dragging { background: #F1EFEA; border-radius: 6px; }
 th .rz { position: absolute; top: 0; right: -4px; width: 8px; height: 100%; cursor: col-resize; z-index: 4; }
 th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px, var(--ink) 3px, var(--ink) 5px, transparent 5px); }
 /* View tabs on the left, "Showing X of Y" (or the selection bar) on the right, in one row. */
@@ -862,17 +867,39 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     arrDate: 108, arrTime: 84, arrFlight: 116, arrBus: 120, depDate: 108, depTime: 84, depFlight: 116, depBus: 120, checkIn: 100, checkOut: 100, room: 80, table: 80 };
   var TYPE = {}; COLS.forEach(function (c) { TYPE[c.k] = c.type; });
   // Dates are kept as DD/MM/YYYY text, times as HH:MM.
-  function normDate(v) {
+  // Quick typing: 1409 or 14/9 → 14/09/<year>, 140927 → 14/09/2027. Year: the wedding's if known, else the next time that day comes.
+  function smartDate(v, year) {
     v = String(v || '').trim(); if (!v) return '';
-    var m = /^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2}|\d{4})$/.exec(v); if (!m) return v;
-    var y = m[3].length === 2 ? '20' + m[3] : m[3];
-    return ('0' + m[1]).slice(-2) + '/' + ('0' + m[2]).slice(-2) + '/' + y;
+    var d, mo, y, m = /^(\d{1,2})[\/.\-](\d{1,2})(?:[\/.\-](\d{2}|\d{4})?)?$/.exec(v);
+    if (m) { d = m[1]; mo = m[2]; y = m[3]; }
+    else if (/^(\d{3,4}|\d{6}|\d{8})$/.test(v)) {
+      if (v.length === 3) { if (Number(v.slice(1)) <= 12) { d = v.slice(0, 1); mo = v.slice(1); } else { d = v.slice(0, 2); mo = v.slice(2); } }
+      else { d = v.slice(0, 2); mo = v.slice(2, 4); y = v.slice(4); }
+    } else return v;
+    if (Number(d) < 1 || Number(d) > 31 || Number(mo) < 1 || Number(mo) > 12) return v;
+    if (y) y = y.length === 2 ? '20' + y : y;
+    else if (year) y = String(year);
+    else { var now = new Date(); y = now.getFullYear(); if (new Date(y, mo - 1, d) < new Date(y, now.getMonth(), now.getDate())) y++; }
+    return ('0' + d).slice(-2) + '/' + ('0' + mo).slice(-2) + '/' + y;
   }
-  function normTime(v) {
+  // 930 → 09:30, 2130 → 21:30, 21 → 21:00, 9.30 → 09:30
+  function smartTime(v) {
     v = String(v || '').trim(); if (!v) return '';
-    var m = /^(\d{1,2})[:.]?(\d{2})$/.exec(v); if (!m) return v;
-    return ('0' + m[1]).slice(-2) + ':' + m[2];
+    var h, mi, m = /^(\d{1,2})[:.](\d{2})$/.exec(v);
+    if (m) { h = m[1]; mi = m[2]; }
+    else if (/^\d{1,4}$/.test(v)) { if (v.length <= 2) { h = v; mi = '00'; } else { h = v.slice(0, -2); mi = v.slice(-2); } }
+    else return v;
+    if (Number(h) > 23 || Number(mi) > 59) return v;
+    return ('0' + h).slice(-2) + ':' + mi;
   }
+  // While typing a date the slashes come by themselves: 14 → 14/, 14/09 → 14/09/
+  document.addEventListener('input', function (e) {
+    var el = e.target; if (!el || el.placeholder !== 'DD/MM/YYYY' || e.inputType !== 'insertText') return;
+    if (/\/\/$/.test(el.value)) el.value = el.value.slice(0, -1);
+    else if (/^\d{2}$|^\d{1,2}\/\d{2}$/.test(el.value)) el.value += '/';
+  });
+  function normDate(v) { return smartDate(v, S.wedYear); }
+  function normTime(v) { return smartTime(v); }
   var HEB = /[֐-׿]/;
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
@@ -924,12 +951,47 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     });
     if (S.cols) { COLS.forEach(function (c) { if (S.cols.order.indexOf(c.k) < 0) S.cols.order.push(c.k); }); }
   }
+  function normCols(p) {
+    if (!p || !p.order) return null;
+    p = { order: p.order.slice(), hidden: (p.hidden || []).slice() };
+    COLS.forEach(function (c) { if (p.order.indexOf(c.k) < 0) p.order.push(c.k); });
+    p.order = p.order.filter(function (k, i, a) { return a.indexOf(k) === i && COLS.some(function (c) { return c.k === k; }); });
+    return p;
+  }
   function loadCols() {
     var def = { order: COLS.map(function (c) { return c.k; }), hidden: [] };
-    try { var p = JSON.parse(localStorage.getItem('kai-guest-cols') || 'null'); if (p && p.order) { COLS.forEach(function (c) { if (p.order.indexOf(c.k) < 0) p.order.push(c.k); }); p.order = p.order.filter(function (k) { return COLS.some(function (c) { return c.k === k; }); }); S.cols = p; return; } } catch (e) {}
+    try { var p = normCols(JSON.parse(localStorage.getItem('kai-guest-cols-' + EVENT) || localStorage.getItem('kai-guest-cols') || 'null')); if (p) { S.cols = p; return; } } catch (e) {}
     S.cols = def;
   }
-  function saveCols() { try { localStorage.setItem('kai-guest-cols', JSON.stringify(S.cols)); } catch (e) {} }
+  // Column order and hidden columns are kept per event on the server, so every computer sees the same.
+  var colsTimer = null;
+  function saveCols() {
+    try { localStorage.setItem('kai-guest-cols-' + EVENT, JSON.stringify(S.cols)); } catch (e) {}
+    clearTimeout(colsTimer);
+    colsTimer = setTimeout(function () {
+      colsTimer = null;
+      api('saveCols', { cols: S.cols }).catch(function (e) { toast(e.server ? e.message : 'Couldn’t save the column order. Try again.', null, null, true); });
+    }, 700);
+  }
+  // Drag rows to reorder (mouse and touch). Calls done() after a drop.
+  function dragRows(box, rowSel, done) {
+    box.addEventListener('pointerdown', function (e) {
+      var h = e.target.closest('.dh'); if (!h || !box.contains(h)) return;
+      var row = h.closest(rowSel); if (!row) return;
+      e.preventDefault(); row.classList.add('dragging');
+      function move(ev) {
+        var el = document.elementFromPoint(ev.clientX, ev.clientY), over = el && el.closest(rowSel);
+        if (!over || over === row || over.parentNode !== row.parentNode || over.dataset.pin) return;
+        var rows = Array.prototype.slice.call(row.parentNode.querySelectorAll(rowSel));
+        row.parentNode.insertBefore(row, rows.indexOf(over) > rows.indexOf(row) ? over.nextSibling : over);
+      }
+      function up() {
+        document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', up); document.removeEventListener('pointercancel', up);
+        row.classList.remove('dragging'); done();
+      }
+      document.addEventListener('pointermove', move); document.addEventListener('pointerup', up); document.addEventListener('pointercancel', up);
+    });
+  }
   // Guest No., First and Last Name always come first and stay frozen; the rest follows the current view (or the Columns setting on "All").
   function visibleCols() {
     if (S.missing && !S.trash) {
@@ -1039,6 +1101,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       briefLoad(res.brief);
       schedLoad(res.schedule, res.wedding);
       setCustom(res.custom || []);
+      S.wedYear = (/(\d{4})/.exec(res.wedding.date || '') || [])[1] || '';
+      var sc = normCols(res.cols); if (sc && !colsTimer) S.cols = sc;
       if (!curView()) S.view = '';
       if (!keepView && curView()) applyViewState(curView());
       $('couple').textContent = res.wedding.couple || 'Guest List';
@@ -1200,7 +1264,9 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   }
 
   function setTableWidth(cols) {
-    $('grid').style.minWidth = (34 + 34 + cols.reduce(function (t, c) { return t + (widthOf(c.k) || 260); }, 0)) + 'px';
+    // Exact width: each column keeps its own size and the table never stretches to fill the screen (that moved the other columns).
+    var w = 34 + 34 + cols.reduce(function (t, c) { return t + (widthOf(c.k) || 260); }, 0);
+    $('grid').style.minWidth = w + 'px'; $('grid').style.width = w + 'px';
   }
   // Freeze the checkbox, Guest No., First and Last Name columns on the left.
   function freeze() {
@@ -1263,7 +1329,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     setTableWidth(cols);
     $('thead').innerHTML = '<th class="chk"><span class="sr">Select</span></th>' + cols.map(function (c) {
       var arrow = S.sort.k === c.k ? (S.sort.dir > 0 ? ' ↑' : ' ↓') : '';
-      return '<th data-k="' + c.k + '"' + (widthOf(c.k) ? ' style="width:' + widthOf(c.k) + 'px"' : '') + ' aria-sort="' + (S.sort.k === c.k ? (S.sort.dir > 0 ? 'ascending' : 'descending') : 'none') + '"><button type="button" data-sort="' + c.k + '" title="' + esc(c.label) + '">' + esc(c.label) + arrow + '</button><button type="button" class="fbtn' + (S.filters[c.k] ? ' on' : '') + '" data-filter="' + c.k + '" aria-label="Filter ' + esc(c.label) + '" title="Filter"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 4h18l-7 8.5V19l-4 2v-8.5z"/></svg></button><span class="rz" data-rz="' + c.k + '" title="Drag to resize · double-click to reset"></span></th>';
+      return '<th data-k="' + c.k + '" style="width:' + (widthOf(c.k) || 260) + 'px" aria-sort="' + (S.sort.k === c.k ? (S.sort.dir > 0 ? 'ascending' : 'descending') : 'none') + '"><button type="button" data-sort="' + c.k + '" title="' + esc(c.label) + '">' + esc(c.label) + arrow + '</button><button type="button" class="fbtn' + (S.filters[c.k] ? ' on' : '') + '" data-filter="' + c.k + '" aria-label="Filter ' + esc(c.label) + '" title="Filter"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 4h18l-7 8.5V19l-4 2v-8.5z"/></svg></button><span class="rz" data-rz="' + c.k + '" title="Drag to resize · double-click to reset"></span></th>';
     }).join('') + '<th class="mo"><span class="sr">More</span></th>';
     var html = '', lastGroup = null;
     list.forEach(function (g) {
@@ -1685,12 +1751,14 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     function body() {
       return S.cols.order.map(function (k, i) {
         var c = COLS.filter(function (x) { return x.k === k; })[0];
-        return '<div class="colrow"><label><input type="checkbox" data-col="' + k + '"' + (S.cols.hidden.indexOf(k) < 0 ? ' checked' : '') + (c.fixed || PIN.indexOf(k) > -1 ? ' disabled' : '') + '>' + esc(c.label) + '</label>' +
+        var pinned = PIN.indexOf(k) > -1;
+        return '<div class="colrow" data-ck="' + k + '"' + (pinned ? ' data-pin="1"' : '') + '><span class="dh' + (pinned ? ' off' : '') + '" title="Drag to move" aria-hidden="true">⠿</span><label><input type="checkbox" data-col="' + k + '"' + (S.cols.hidden.indexOf(k) < 0 ? ' checked' : '') + (c.fixed || PIN.indexOf(k) > -1 ? ' disabled' : '') + '>' + esc(c.label) + '</label>' +
           '<button type="button" data-up="' + i + '" aria-label="Move ' + esc(c.label) + ' up"' + (i === 0 ? ' disabled' : '') + '>↑</button>' +
           '<button type="button" data-down="' + i + '" aria-label="Move ' + esc(c.label) + ' down"' + (i === S.cols.order.length - 1 ? ' disabled' : '') + '>↓</button></div>';
-      }).join('') + '<p class="meta" style="margin:8px 0 0;font-size:13px;color:var(--soft)">Hiding a column only hides it on this device. No data is deleted.</p>';
+      }).join('') + '<p class="meta" style="margin:8px 0 0;font-size:13px;color:var(--soft)">Drag ⠿ to change the order. The order and hidden columns are saved for this event on every computer. No data is deleted.</p>';
     }
     pick('Columns', body(), function () {});
+    colsBody = body;
     $('pick-ok').textContent = 'Done';
     $('pick-body').onclick = function (e) {
       var up = e.target.closest('[data-up]'), dn = e.target.closest('[data-down]'), o = S.cols.order;
@@ -1705,6 +1773,13 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       if (cb.checked) S.cols.hidden = h.filter(function (x) { return x !== k; }); else if (h.indexOf(k) < 0) h.push(k);
       saveCols(); render();
     };
+  });
+  // Drag in the Columns window (saves at once) and in the view editor (saved with the view).
+  var colsBody = null;
+  dragRows($('pick-body'), '.colrow[data-ck], .vc[data-vk]', function () {
+    if (!$('pick-body').querySelector('.colrow[data-ck]') || !colsBody) return;
+    S.cols.order = Array.prototype.map.call($('pick-body').querySelectorAll('.colrow[data-ck]'), function (r) { return r.dataset.ck; });
+    saveCols(); $('pick-body').innerHTML = colsBody(); render();
   });
   $('dlg2').addEventListener('transitionend', function () {});
   var pickObserver = new MutationObserver(function () { if ($('dlg2').hidden) { $('pick-ok').textContent = 'Apply'; $('pick-body').onclick = null; $('pick-body').onchange = null; } });
@@ -1735,9 +1810,9 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       '<label class="f">View name<input id="v-name" maxlength="40" value="' + esc(v ? v.name : '') + '" placeholder="e.g. Hotel" autocomplete="off"></label>' +
       '<div class="two" style="margin-top:10px"><label class="f">Show RSVP status<select id="v-status"><option value="">All</option>' + opt(STATUSES, v && v.status) + '</select></label>' +
       '<label class="f">Show age group<select id="v-age"><option value="">All</option>' + opt(AGES, v && v.age) + '</select></label></div>' +
-      '<div class="f" style="margin-top:12px">Columns</div><div class="vcols">' + COLS.map(function (c) {
+      '<div class="f" style="margin-top:12px">Columns <span style="font-weight:400;color:var(--soft)">· drag ⠿ to change the order</span></div><div class="vcols vord">' + PIN.map(colOf).concat(cols.map(colOf), COLS.filter(function (c) { return cols.indexOf(c.k) < 0; })).filter(function (c, i, a) { return c && a.indexOf(c) === i; }).map(function (c) {
         var pinned = PIN.indexOf(c.k) > -1;
-        return '<label class="vc"><input type="checkbox" data-vc="' + c.k + '"' + (pinned || cols.indexOf(c.k) > -1 ? ' checked' : '') + (pinned ? ' disabled' : '') + '>' + esc(c.label) + '</label>';
+        return '<div class="vc"' + (pinned ? '' : ' data-vk="' + c.k + '"') + '>' + (pinned ? '<span class="dh off" aria-hidden="true">⠿</span>' : '<span class="dh" title="Drag to move" aria-hidden="true">⠿</span>') + '<label><input type="checkbox" data-vc="' + c.k + '"' + (pinned || cols.indexOf(c.k) > -1 ? ' checked' : '') + (pinned ? ' disabled' : '') + '>' + esc(c.label) + '</label></div>';
       }).join('') + '</div>' +
       (stateSummary() ? '<label class="vc" style="margin-top:12px"><input type="checkbox" id="v-state"' + (!v || curView() === v ? ' checked' : '') + '>Save what’s on screen now: ' + esc(stateSummary()) + '</label>' : '') +
       (v ? '<button type="button" class="btn danger" id="v-del" style="margin-top:12px">Delete view</button>' : ''),
@@ -1747,7 +1822,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
         if (err) { $('pick-err').textContent = err; $('pick-err').hidden = false; return false; }
         var keep = $('v-state') && $('v-state').checked;
         saveView(v ? v.name : '', { name: name, status: $('v-status').value, age: $('v-age').value,
-          cols: COLS.filter(function (c) { var cb = $('pick-body').querySelector('[data-vc="' + c.k + '"]'); return PIN.indexOf(c.k) < 0 && cb && cb.checked; }).map(function (c) { return c.k; }),
+          cols: Array.prototype.filter.call($('pick-body').querySelectorAll('[data-vc]'), function (cb) { return PIN.indexOf(cb.dataset.vc) < 0 && cb.checked; }).map(function (cb) { return cb.dataset.vc; }),
           sort: keep ? { k: S.sort.k, dir: S.sort.dir } : v ? v.sort : null,
           filters: keep ? JSON.parse(JSON.stringify(S.filters)) : v ? v.filters : {} });
       });
@@ -2424,7 +2499,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       el.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); el.blur(); } if (e.key === 'Escape') { el.value = r[k]; el.blur(); } });
       el.addEventListener('change', function () {
         if (k !== 'time' && k !== 'until') return;
-        var v = el.value.trim(), m = /^(\d{1,2})[:.](\d{2})$/.exec(v);
+        var v = normTime(el.value), m = /^(\d{1,2})[:.](\d{2})$/.exec(v);
         if (v && (!m || Number(m[1]) > 23 || Number(m[2]) > 59)) { toast('Write the time as HH:MM, e.g. 18:45.'); el.value = r[k]; return; }
         r[k] = v ? scPad(m[1]) + ':' + m[2] : ''; schedChanged(true);
         if (k === 'time') { schedRender(); var w = scFocus(r, '[data-sck="what"]'); if (w) { w.blur(); w.closest('.sc-row').animate([{ background: '#FBF3D9' }, { background: 'transparent' }], 900); } }
@@ -2453,7 +2528,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     $('sc-addday').onclick = function () { $('sc-dayin').hidden = false; $('sc-dayin').focus(); };
     $('sc-dayin').addEventListener('keydown', function (e) {
       if (e.key !== 'Enter') return;
-      var m = /^(\d{1,2})[\/.](\d{1,2})[\/.](\d{2,4})$/.exec(this.value.trim()), d = m && scPad(m[1]) + '/' + scPad(m[2]) + '/' + (m[3].length === 2 ? '20' + m[3] : m[3]);
+      var m = /^(\d{1,2})[\/.](\d{1,2})[\/.](\d{2,4})$/.exec(normDate(this.value)), d = m && scPad(m[1]) + '/' + scPad(m[2]) + '/' + (m[3].length === 2 ? '20' + m[3] : m[3]);
       if (!d || !scName(d)) { toast('Write the day as DD/MM/YYYY, e.g. 09/05/2027.'); return; }
       SC.days.push(d); schedRender();
       var b = $('sched').querySelector('[data-scadd="' + d + '"]'); if (b) b.click();
@@ -2647,7 +2722,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     box.querySelectorAll('[data-brs]').forEach(function (el) { el.addEventListener('input', function () { var q = get(el.dataset.brs), p = String(q.a || '').split(' | '); p[el.dataset.part] = el.value; q.a = (p[0] || '') + (p[1] ? ' | ' + p[1] : ''); mark(el, q); brAnswer(q); }); });
     box.querySelectorAll('[data-bryn]').forEach(function (b) { b.onclick = function () { var q = get(b.dataset.bryn); q.a = q.a === b.dataset.v ? '' : b.dataset.v; briefRender(); brAnswer(q); }; });
     box.querySelectorAll('[data-brt]').forEach(function (el) { el.addEventListener('change', function () {
-      var v = el.value.trim(), m = /^(\d{1,2})[:.](\d{2})$/.exec(v);
+      var v = normTime(el.value), m = /^(\d{1,2})[:.](\d{2})$/.exec(v);
       if (v && (!m || Number(m[1]) > 23 || Number(m[2]) > 59)) { toast('Write the time as HH:MM, e.g. 19:00.'); el.value = D.times[el.dataset.brt] || ''; return; }
       D.times[el.dataset.brt] = v ? ('0' + m[1]).slice(-2) + ':' + m[2] : ''; el.value = D.times[el.dataset.brt]; brSaveStructure(true);
     }); });
