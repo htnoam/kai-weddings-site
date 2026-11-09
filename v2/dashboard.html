@@ -39,7 +39,7 @@
 #form .nchk{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:600;color:var(--text);cursor:pointer}#form .nchk input{width:17px;height:17px;margin:0;accent-color:var(--ink)}#form .nchk span{font-weight:400;font-size:12.5px;color:var(--soft)}
 #form #n-rsvpset{display:flex;flex-direction:column;gap:10px}#form #n-rsvpset[hidden]{display:none}
 #form .nmore{display:flex;justify-content:space-between;align-items:center;gap:10px}#form .nsum{font-size:13.5px;color:var(--soft);font-weight:400}#form .nsum b{color:var(--text);font-weight:600}
-#form #n-set{display:flex;flex-direction:column;gap:10px}#form #n-set[hidden]{display:none}
+
 #form .cpr{margin-top:0;grid-template-columns:88px 1fr 1fr 1.25fr}
 #form .err{margin:0 0 12px}
 #form select,#form input{font-family:inherit}
@@ -227,7 +227,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     <div class="nsec"><div class="nst">Details</div>
     <div class="row2">
       <label class="f full">Client’s email<input id="n-email" type="email" placeholder="e.g. dana@gmail.com" autocomplete="off"></label>
-      <div class="f full">Wedding weekend<div class="nrng"><input id="n-start" placeholder="from DD/MM/YYYY" inputmode="numeric" autocomplete="off" aria-label="Wedding weekend from"><span>–</span><input id="n-end" placeholder="to DD/MM/YYYY" inputmode="numeric" autocomplete="off" aria-label="Wedding weekend to"></div></div>
+      <div class="f full">Event dates<div class="nrng"><input id="n-start" placeholder="from DD/MM/YYYY" inputmode="numeric" autocomplete="off" aria-label="Event dates from"><span>–</span><input id="n-end" placeholder="to DD/MM/YYYY" inputmode="numeric" autocomplete="off" aria-label="Event dates to"></div></div>
       <label class="f">Wedding date<input id="n-date" placeholder="DD/MM/YYYY" inputmode="numeric" autocomplete="off"></label>
       <label class="f">Sunset on the wedding day<input id="n-sunset" placeholder="HH:MM" inputmode="numeric" autocomplete="off"></label>
       <label class="f">Venue<input id="n-venue" placeholder="e.g. Ktima Gerolemo" autocomplete="off"></label>
@@ -235,18 +235,17 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     </div>
     <datalist id="countries"><option value="Cyprus"><option value="Israel"><option value="Greece"><option value="Italy"><option value="Portugal"><option value="Spain"><option value="France"><option value="Montenegro"><option value="Croatia"><option value="Georgia"></datalist>
     </div>
+    <div class="nsec"><div class="nst">Schedule</div>
+    <label class="f">Start the schedule from<select id="n-stpl"><option value="">Loading…</option></select></label>
+    <div class="hint">The wedding day is built from the sunset time above. <button type="button" class="lnk" id="n-stm">Manage templates</button></div>
+    <div class="tl" id="n-stl" hidden></div>
+    </div>
     <div class="nsec">
       <label class="nchk"><input type="checkbox" id="n-rsvp"> Create an RSVP form <span>You can add it later from the events list.</span></label>
-      <div class="nmore"><div><div class="nst" style="margin:0 0 3px">Settings</div><div class="nsum" id="n-sum"></div></div><button type="button" class="lnk" id="n-more">Change ▾</button></div>
-      <div id="n-set" hidden>
-    <div id="n-rsvpset" hidden>
+      <div id="n-rsvpset" hidden>
     <label class="f">RSVP form opens in<select id="n-lang"><option value="he">Hebrew</option><option value="en">English</option></select></label>
     <label class="f">Invitation design<select id="n-tpl"><option value="">Classic: envelope and form</option><option value="Grand">Grand: full wedding site (schedule, flights, form)</option></select></label>
     <div class="hint">Preview: <a href="/v2/demo-wedding/rsvp" target="_blank" rel="noopener">Classic</a> · <a href="/app/grand/" target="_blank" rel="noopener">Grand</a></div>
-    </div>
-    <label class="f">Schedule template<select id="n-stpl"><option value="">Loading…</option></select></label>
-    <div class="hint">The wedding day is built from the sunset time above. <button type="button" class="lnk" id="n-stm">Manage templates</button></div>
-    <div class="tl" id="n-stl" hidden></div>
       </div>
     </div>
     <p class="err" id="n-err" hidden></p>
@@ -267,8 +266,8 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
       <label class="f">Country<input data-k="Country" list="countries"></label>
       <label class="f">Wedding date<input data-k="Wedding Date" placeholder="DD/MM/YYYY" inputmode="numeric"></label>
       <label class="f">Sunset on the wedding day<input data-k="Sunset Time" placeholder="HH:MM" inputmode="numeric"></label>
-      <label class="f">Wedding weekend · from<input data-k="Start Date" placeholder="DD/MM/YYYY" inputmode="numeric"></label>
-      <label class="f">Wedding weekend · to<input data-k="End Date" placeholder="DD/MM/YYYY" inputmode="numeric"></label>
+      <label class="f">Event dates · from<input data-k="Start Date" placeholder="DD/MM/YYYY" inputmode="numeric"></label>
+      <label class="f">Event dates · to<input data-k="End Date" placeholder="DD/MM/YYYY" inputmode="numeric"></label>
       <label class="f">Dates line on the invitation (optional)<input data-k="Dates Line" placeholder="e.g. 03 – 05 . 06 . 2027"></label>
       <label class="f">Form opens in<select data-k="Default Language"><option value="he">Hebrew</option><option value="en">English</option></select></label>
       <label class="f">Invitation design<select data-k="Template"><option value="">Classic: envelope and form</option><option value="Grand">Grand: full wedding site (schedule, flights, form)</option></select></label>
@@ -402,7 +401,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     if (/\/\/$/.test(el.value)) el.value = el.value.slice(0, -1);
     else if (/^\d{2}$|^\d{1,2}\/\d{2}$/.test(el.value)) el.value += '/';
   });
-  // The weekend dates take the wedding's year; every date and time shows in full once you leave the field.
+  // The event dates take the wedding's year; every date and time shows in full once you leave the field.
   function wedYear(v) { if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v.slice(0, 4); var d = smartDate(v); return /^\d{2}\/\d{2}\/\d{4}$/.test(d) ? d.slice(6) : ''; }
   function wedField(el) { return el && /^n-/.test(el.id || '') ? $('n-date') : document.querySelector('[data-k="Wedding Date"]'); }
   document.addEventListener('change', function (e) {
@@ -446,7 +445,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     var ended = EVENTS.filter(function (ev) { return ev.status === 'Ended'; }).sort(byDate);
     var shown = active.concat(SHOW_ENDED ? ended : []);
     var toggle = ended.length ? '<button type="button" class="endtoggle" data-ended>' + (SHOW_ENDED ? 'Hide ended events' : 'Show ended events (' + ended.length + ')') + '</button>' : '';
-    var when = function (ev) { return [fmtRange(ev.start, ev.end) && 'Weekend ' + fmtRange(ev.start, ev.end), ev.sunset && 'Sunset ' + ev.sunset].filter(Boolean).join(' · '); };
+    var when = function (ev) { return [fmtRange(ev.start, ev.end) && 'Dates ' + fmtRange(ev.start, ev.end), ev.sunset && 'Sunset ' + ev.sunset].filter(Boolean).join(' · '); };
     // Adults / children / babies are the confirmed guests broken down, so they sit under the Confirmed number.
     var ages = function (c) { return c.Confirmed ? [c.adults + ' adults', c.children && c.children + (c.children === 1 ? ' child' : ' children'), c.babies && c.babies + (c.babies === 1 ? ' baby' : ' babies')].filter(Boolean).join(' · ') : ''; };
     $('rows').innerHTML = shown.map(function (ev) {
@@ -559,15 +558,8 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
   }
   ['n-f1', 'n-f2'].forEach(function (id) { $(id).addEventListener('input', autoName); });
   $('n-chg').addEventListener('click', function () { $('n-cwrap').hidden = false; $('n-couple').focus(); });
-  // Settings are folded into one line ("Hebrew RSVP · Classic design · … schedule") until "Change" is clicked.
-  function nSum() {
-    var t = function (id) { var o = $(id).options[$(id).selectedIndex]; return o ? o.text.split(':')[0].replace(/ \(main\)$/, '') : ''; };
-    $('n-sum').innerHTML = ($('n-rsvp').checked ? '<b>' + esc(t('n-lang')) + '</b> RSVP · <b>' + esc(t('n-tpl')) + '</b> design · ' : 'No RSVP form · ') + '<b>' + esc(t('n-stpl')) + '</b> schedule';
-  }
-  ['n-lang', 'n-tpl', 'n-stpl'].forEach(function (id) { $(id).addEventListener('change', nSum); });
-  $('n-rsvp').addEventListener('change', function () { $('n-rsvpset').hidden = !this.checked; nSum(); });
-  $('n-more').addEventListener('click', function () { var h = !$('n-set').hidden; $('n-set').hidden = h; this.textContent = h ? 'Change ▾' : 'Close ▴'; });
-  function openNew() { NAMEX = false; $('n-cwrap').hidden = true; ['n-f1', 'n-l1', 'n-p1', 'n-f2', 'n-l2', 'n-p2'].forEach(function (id) { $(id).value = ''; }); $('n-r1').value = 'Bride'; $('n-r2').value = 'Groom'; $('n-rsvp').checked = false; $('n-rsvpset').hidden = true; ['n-couple', 'n-date', 'n-email', 'n-sunset', 'n-start', 'n-end', 'n-venue', 'n-country'].forEach(function (id) { $(id).value = ''; }); $('n-lang').value = 'he'; $('n-tpl').value = ''; $('n-err').hidden = true; $('n-set').hidden = true; $('n-more').textContent = 'Change ▾'; $('dlg').hidden = false; nSum(); autoName(); $('n-f1').focus(); STPL.manage = false; STPL.del = ''; stplLoad(); }
+  $('n-rsvp').addEventListener('change', function () { $('n-rsvpset').hidden = !this.checked; });
+  function openNew() { NAMEX = false; $('n-cwrap').hidden = true; ['n-f1', 'n-l1', 'n-p1', 'n-f2', 'n-l2', 'n-p2'].forEach(function (id) { $(id).value = ''; }); $('n-r1').value = 'Bride'; $('n-r2').value = 'Groom'; $('n-rsvp').checked = false; $('n-rsvpset').hidden = true; ['n-couple', 'n-date', 'n-email', 'n-sunset', 'n-start', 'n-end', 'n-venue', 'n-country'].forEach(function (id) { $(id).value = ''; }); $('n-lang').value = 'he'; $('n-tpl').value = ''; $('n-err').hidden = true; $('dlg').hidden = false; autoName(); $('n-f1').focus(); STPL.manage = false; STPL.del = ''; stplLoad(); }
   $('n-couple').addEventListener('input', function () { NAMEX = !!this.value.trim(); autoName(); });
   $('form').addEventListener('submit', function (e) {
     e.preventDefault();
@@ -577,7 +569,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     var err = !f.p1.first || !f.p2.first ? 'Write both first names in “The couple”.' : /[֐-׿]/.test(f.p1.first + f.p1.last + f.p2.first + f.p2.last) ? 'Write the couple’s names in English.' : !f.couple ? 'Write the couple’s names.' : /[֐-׿]/.test(f.couple) ? 'Write the names in English. They become the link.' : !slugify(f.couple) ? 'Write the names in English letters.' :
       f.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email) ? 'Check the client’s email address.' :
       f.date === null || f.start === null || f.end === null ? 'Write dates as DD/MM/YYYY, e.g. 04/06/2027.' : f.sunset === null ? 'Write the sunset time as HH:MM, e.g. 19:45.' :
-      f.start && f.end && f.end < f.start ? 'The wedding weekend ends before it starts. Check the dates.' : '';
+      f.start && f.end && f.end < f.start ? 'The event dates end before they start. Check the dates.' : '';
     if (err) { $('n-err').textContent = err; $('n-err').hidden = false; return; }
     $('n-save').disabled = true; $('n-save').textContent = 'Creating…'; $('n-err').hidden = true;
     var tpl = $('n-tpl').value; f.stpl = $('n-stpl').value;
@@ -594,8 +586,8 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
   function stplDraw() {
     var cur = $('n-stpl').value, main = (STPL.list.filter(function (t) { return t.main; })[0] || {}).name;
     $('n-stpl').innerHTML = STPL.list.length ? STPL.list.map(function (t) { return '<option value="' + esc(t.name) + '">' + esc(t.name) + (t.main ? ' (main)' : '') + '</option>'; }).join('') : '<option value="">No templates</option>';
-    $('n-stpl').value = STPL.list.some(function (t) { return t.name === cur; }) ? cur : (main || '');
-    nSum();
+    $('n-stpl').insertAdjacentHTML('beforeend', '<option value="__blank__">Blank: start from scratch</option>');
+    $('n-stpl').value = cur === '__blank__' || STPL.list.some(function (t) { return t.name === cur; }) ? cur : (main || '');
     $('n-stm').textContent = STPL.manage ? 'Close' : 'Manage templates';
     $('n-stl').hidden = !STPL.manage || !STPL.list.length;
     $('n-stl').innerHTML = STPL.list.map(function (t) {
@@ -660,7 +652,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     ['Wedding Date', 'Start Date', 'End Date'].forEach(function (k) { var x = toIso(vals[k], k === 'Wedding Date' ? '' : wedYear(vals['Wedding Date'] || '')); if (x === null) bad = 'Write dates as DD/MM/YYYY, e.g. 04/06/2027.'; else vals[k] = x; });
     var sun = toTime(vals['Sunset Time']); if (sun === null) bad = bad || 'Write the sunset time as HH:MM, e.g. 19:45.'; else vals['Sunset Time'] = sun;
     if (vals['Client Email'].trim() && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(vals['Client Email'].trim())) bad = bad || 'Check the client’s email address.';
-    if (!bad && vals['Start Date'] && vals['End Date'] && vals['End Date'] < vals['Start Date']) bad = 'The wedding weekend ends before it starts. Check the dates.';
+    if (!bad && vals['Start Date'] && vals['End Date'] && vals['End Date'] < vals['Start Date']) bad = 'The event dates end before they start. Check the dates.';
     if (bad) { $('e-err').textContent = bad; $('e-err').hidden = false; return; }
     $('e-save').disabled = true; $('e-save').textContent = 'Saving…';
     api('saveSettings', { e: EDIT.slug, settings: vals }).then(function () { $('dlg-e').hidden = true; toast('Saved. The form shows the new texts now.'); load(); })

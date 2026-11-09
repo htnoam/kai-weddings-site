@@ -5,3 +5,4 @@
 -- kai_rsvp_info returns "RSVP Form" so /<event>/rsvp shows "This RSVP form isn't open yet."
 -- kai_public refuses 'rsvp' and 'grandSave' while it's off. The guest area (/guests) is not affected.
 -- (Small in-place edits of kai_api, kai_public and kai_rsvp_info; see Supabase for the full functions.)
+-- kai_api_core 'createEvent': event.stpl = '__blank__' ("Blank: start from scratch") leaves the schedule empty instead of using a template.
