@@ -52,10 +52,19 @@
   var first = sb.auth.getSession().then(function (r) { session = r.data.session; if (session) done(); });
 
   // Resolves once someone is signed in (shows the sign-in screen until then).
+  // The couple's permanent link (?t=<token>) signs them in by itself: the server checks it and hands back a one-time sign-in link.
+  function wait(msg) { return new Promise(function (ok) { waiting.push(ok); if (document.body) showLogin(msg); else document.addEventListener('DOMContentLoaded', function () { showLogin(msg); }); }); }
+  var coupleTried = false;
   function ready() {
     return first.then(function () {
       if (session) return;
-      return new Promise(function (ok) { waiting.push(ok); if (document.body) showLogin(); else document.addEventListener('DOMContentLoaded', function () { showLogin(); }); });
+      var t = new URLSearchParams(location.search).get('t'), slug = (location.pathname.split('/').filter(Boolean)[1] || '').toLowerCase();
+      if (!t || coupleTried) return wait();
+      coupleTried = true;
+      return fetch(URL + '/functions/v1/couple-enter', { method: 'POST', headers: { apikey: ANON, Authorization: 'Bearer ' + ANON, 'Content-Type': 'application/json' }, body: JSON.stringify({ slug: slug, t: t }) })
+        .then(function (r) { return r.json(); })
+        .then(function (res) { if (res.ok && res.url) { location.replace(res.url); return new Promise(function () {}); } return wait(res.error); })
+        .catch(function () { return wait('Couldn’t sign you in. Check your connection and try again.'); });
     });
   }
 

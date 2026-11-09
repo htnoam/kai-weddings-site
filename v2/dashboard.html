@@ -380,7 +380,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
           '<button type="button" class="btn sm" data-edit="' + esc(ev.slug) + '">Edit RSVP</button>' +
         '</div></td>' +
         '<td><div class="links">' +
-          '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug + '/portal') + '" title="The couple’s guest list (/portal)">Portal · couple</button>' +
+          '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug + '/portal' + (ev.coupleToken ? '?t=' + ev.coupleToken : '')) + '" title="The couple’s guest list (/portal)">Portal · couple</button>' +
           '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug + '/rsvp') + '">RSVP</button>' +
           '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug + '/guests') + '" title="The guests’ area (/guests)">Guests</button>' +
         '</div></td>' +
@@ -398,7 +398,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
           '<button type="button" class="btn" data-edit="' + esc(ev.slug) + '">Edit RSVP</button>' +
           '<a class="btn" href="/v2/' + esc(ev.slug) + '/rsvp" target="_blank" rel="noopener">RSVP</a></div>' +
         '<div class="ec-b">' +
-          '<span class="ec-copy">Copy link:</span><button type="button" data-copy="' + esc(SITE + ev.slug + '/portal') + '">Portal · couple</button><button type="button" data-copy="' + esc(SITE + ev.slug + '/rsvp') + '">RSVP</button><button type="button" data-copy="' + esc(SITE + ev.slug + '/guests') + '">Guests</button></div>' +
+          '<span class="ec-copy">Copy link:</span><button type="button" data-copy="' + esc(SITE + ev.slug + '/portal' + (ev.coupleToken ? '?t=' + ev.coupleToken : '')) + '">Portal · couple</button><button type="button" data-copy="' + esc(SITE + ev.slug + '/rsvp') + '">RSVP</button><button type="button" data-copy="' + esc(SITE + ev.slug + '/guests') + '">Guests</button></div>' +
       '</div>';
     }).join('') + toggle;
   }
