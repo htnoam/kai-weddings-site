@@ -286,6 +286,9 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
 .dot-on::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #3BA55C; box-shadow: 0 0 0 2px rgba(59,165,92,.25); }
 @keyframes rowflash { 0%, 40% { background: #FFF1C2; } 100% { background: transparent; } }
 tbody tr.flash td { animation: rowflash 2.6s ease-out; }
+/* someone else is editing this cell right now (live) */
+td.oe { position: relative; box-shadow: inset 0 0 0 2px var(--oe); }
+td.oe .oe-tag { position: absolute; top: -8px; left: 2px; z-index: 4; background: var(--oe); color: #FFFFFF; font-size: 10.5px; font-weight: 600; line-height: 1; padding: 2px 5px; border-radius: 3px; white-space: nowrap; pointer-events: none; }
 .exmenu .mm-sep { height: 1px; background: var(--hair); margin: 4px 6px; }
 .dialog.imp { max-width: 900px; }
 .imp-p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.5; }
@@ -1253,7 +1256,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     }).join('') + '<button type="button" class="vt' + (S.missing ? ' on' : '') + '" data-missing="1" title="Confirmed guests with missing details, and possible duplicates">Missing info' + (nMiss ? ' <span class="vt-n">' + nMiss + '</span>' : '') + '</button>' +
       '<button type="button" class="vt add" data-newview="1">+ New View</button>';
     $('columns').textContent = S.missing ? 'What to check' : curView() ? 'Edit View' : 'Columns';
-    renderTable(list); renderCards(list); renderPanel();
+    renderTable(list); renderCards(list); renderPanel(); paintEditors();
   }
 
   function cellHtml(g, c) {
@@ -1493,7 +1496,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (S.editing) return;
     var no = Number(td.parentNode.dataset.no), k = td.dataset.k, g = byNo(no);
     var c = COLS.filter(function (x) { return x.k === k; })[0];
-    S.editing = { no: no, k: k };
+    S.editing = { no: no, k: k }; sendEditing();
     var box = td.querySelector('.c'), el;
     if (c.type === 'select') {
       el = document.createElement('select'); el.className = 'cell';
@@ -1509,7 +1512,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     box.innerHTML = ''; box.appendChild(el); el.focus(); if (el.select) el.select();
     var done = false;
     function finish(save) {
-      if (done) return; done = true; S.editing = null;
+      if (done) return; done = true; S.editing = null; sendEditing();
       if (save) { var f = {}; f[k] = el.value; update(no, f); } else render();
     }
     el.addEventListener('keydown', function (e) {
@@ -2352,6 +2355,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   }
   var LIVE = { ver: null, wait: false };
   function ping() {
+    liveJoin();
     if (document.visibilityState !== 'visible' || LIVE.wait || $('app').hidden) return;
     LIVE.wait = true;
     api('ping', { name: S.who }).then(function (res) {
@@ -2364,6 +2368,45 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   }
   setInterval(ping, 5000);
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') ping(); });
+
+  // ---------- live (Supabase Realtime): changes arrive at once, and you see who is editing which cell ----------
+  // Private channel "event:<event>": only Noam and the event's couple can listen. The 5-second check above stays as a backup.
+  var RT = { ch: null, eds: {} }, ED_COLORS = ['#C2410C', '#2E3A9E', '#0F766E', '#9D174D', '#6D28D9', '#A16207'];
+  function edColor(sid) { var h = 0; for (var i = 0; i < sid.length; i++) h = (h * 31 + sid.charCodeAt(i)) >>> 0; return ED_COLORS[h % ED_COLORS.length]; }
+  function paintEditors() {
+    if (!RT) return;
+    Array.prototype.forEach.call(document.querySelectorAll('td.oe'), function (td) { td.classList.remove('oe'); td.style.removeProperty('--oe'); var t = td.querySelector('.oe-tag'); if (t) t.remove(); });
+    var now = Date.now();
+    Object.keys(RT.eds).forEach(function (sid) {
+      var e = RT.eds[sid]; if (now - e.t > 40000) { delete RT.eds[sid]; return; }
+      var td = document.querySelector('tr[data-no="' + e.no + '"] td[data-k="' + e.k + '"]'); if (!td) return;
+      td.classList.add('oe'); td.style.setProperty('--oe', edColor(sid));
+      var tag = document.createElement('span'); tag.className = 'oe-tag'; tag.textContent = e.name; td.appendChild(tag);
+    });
+  }
+  function sendEditing() {
+    if (RT && RT.ch && RT.ch.send) RT.ch.send({ type: 'broadcast', event: 'editing', payload: { sid: SID, name: S.who, no: S.editing ? S.editing.no : null, k: S.editing ? S.editing.k : null } });
+  }
+  function liveJoin() {
+    if (!RT || RT.ch || !window.KAI || !KAI.sb || $('app').hidden) return;
+    RT.ch = true;
+    KAI.sb.auth.getSession().then(function (r) {
+      if (r.data.session) KAI.sb.realtime.setAuth(r.data.session.access_token);
+      RT.ch = KAI.sb.channel('event:' + EVENT, { config: { private: true, broadcast: { self: false } } })
+        .on('broadcast', { event: 'changed' }, function () { ping(); })
+        .on('broadcast', { event: 'editing' }, function (m) {
+          var p = m.payload || {}; if (!p.sid || p.sid === SID) return;
+          if (p.no == null) delete RT.eds[p.sid]; else RT.eds[p.sid] = { name: String(p.name || ''), no: p.no, k: String(p.k || ''), t: Date.now() };
+          paintEditors();
+        })
+        .subscribe(function (st) {
+          if (st === 'SUBSCRIBED' && S.editing) sendEditing();
+          if (st === 'CHANNEL_ERROR' || st === 'TIMED_OUT') { var c = RT.ch; RT.ch = null; try { KAI.sb.removeChannel(c); } catch (x) {} }   // try again on the next check
+        });
+    }).catch(function () { RT.ch = null; });
+  }
+  setInterval(function () { if (S.editing) sendEditing(); paintEditors(); }, 15000);
+  window.addEventListener('pagehide', function () { if (S.editing && RT.ch && RT.ch.send) RT.ch.send({ type: 'broadcast', event: 'editing', payload: { sid: SID, no: null } }); });
 
   // ---------- schedule (second section next to Guests) ----------
   // Shown only when the hub sends a schedule (event Settings › Wedding Plan = On). Noam edits right on the schedule; the couple reads it.
