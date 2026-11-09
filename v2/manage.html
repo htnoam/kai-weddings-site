@@ -1360,11 +1360,12 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     S.resizing = true; rz.classList.add('on');
     function move(ev) {
       var w = Math.max(48, Math.round(w0 + ev.clientX - x0));
-      th.style.width = w + 'px'; S.widths[k] = w; setTableWidth(visibleCols()); freeze();
+      th.style.width = w + 'px'; S.widths[k] = w; setTableWidth(visibleCols()); freeze(); paintSel();
     }
     function up() {
       document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up);
       rz.classList.remove('on'); S.resizing = false; paintSel();
+      COLDRAG.justMoved = true; setTimeout(function () { COLDRAG.justMoved = false; }, 0);   // the click that ends a resize doesn't select the column
       try { localStorage.setItem('kai-guest-widths', JSON.stringify(S.widths)); } catch (x) {}
     }
     document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
