@@ -24,6 +24,24 @@
 <style>#gh-change,#ghbar,.v2-hide{display:none!important}.v2tag{font-size:12px;font-weight:700;color:#8A5A12;background:#F7EBD3;border-radius:999px;padding:2px 8px;margin-left:8px;vertical-align:middle;font-family:inherit}.top-in a.btn{display:inline-flex;align-items:center;text-decoration:none;color:inherit}.cpbox{border:1px solid #E6E4DF;border-radius:8px;background:#FBF7EE;padding:10px 12px 12px;margin-top:4px}.cph{font-weight:700;color:#8A5A12;font-size:14px}.cph span{font-weight:400;color:#8A8A90;font-size:12.5px;margin-left:6px}
 .cpr{display:grid;grid-template-columns:96px 1fr 1fr;gap:8px;margin-top:8px}.cpr select,.cpr input{height:38px;border:1px solid var(--line,#D6D4CE);border-radius:6px;padding:0 10px;font:inherit;background:#fff;min-width:0}
 .lnk{border:none;background:none;color:var(--ink,#2E3A9E);font-weight:600;cursor:pointer;padding:0;font:inherit;text-decoration:underline}
+#form{padding:0;gap:0;max-width:540px;max-height:calc(100vh - 88px);overflow:hidden}
+#form .nh{padding:20px 24px 14px;border-bottom:1px solid var(--hair)}
+#form .nk,#form .nst{font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+#form .nst{margin-bottom:9px}#form .nst span{text-transform:none;letter-spacing:0;font-weight:400;margin-left:6px}
+#form .nname{font:600 30px/1.15 var(--serif);color:var(--ink);margin:3px 0 2px;overflow-wrap:anywhere}#form .nname.ph{color:#C9C7C1}
+#form .nlink{font-size:13px;color:var(--soft)}#form .nlink b{color:var(--text);font-weight:600}#form .nlink .lnk{margin-left:4px;font-size:13px}
+#form #n-cwrap{margin-top:10px}
+#form .nb{padding:0 24px;overflow-y:auto;flex:1;min-height:0}
+#form .nsec{padding:14px 0;border-bottom:1px solid var(--hair);display:flex;flex-direction:column;gap:10px}#form .nsec:last-of-type{border-bottom:none}
+#form .nsec .nst{margin-bottom:-2px}
+#form .full{grid-column:1/-1}
+#form .nrng{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}#form .nrng input{min-width:0}#form .nrng span{color:var(--soft);font-weight:400}
+#form .nmore{display:flex;justify-content:space-between;align-items:center;gap:10px}#form .nsum{font-size:13.5px;color:var(--soft);font-weight:400}#form .nsum b{color:var(--text);font-weight:600}
+#form #n-set{display:flex;flex-direction:column;gap:10px}#form #n-set[hidden]{display:none}
+#form .cpr{margin-top:0}
+#form .err{margin:0 0 12px}
+#form select,#form input{font-family:inherit}
+#form .act{padding:12px 24px;border-top:1px solid var(--hair);background:var(--soft-surface)}
 .signout{border:none;background:none;color:var(--ink);font-weight:600;cursor:pointer;font-size:13.5px}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Cormorant+Garamond:wght@600&display=swap">
@@ -193,31 +211,41 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
 
 <div class="overlay" id="dlg" hidden>
   <form class="dialog" id="form" role="dialog" aria-modal="true" aria-labelledby="dlg-title" novalidate>
-    <h2 id="dlg-title">New Event</h2>
-    <div class="cpbox"><div class="cph">The couple <span>Guests 1 and 2 on the list, always at the top. In English.</span></div>
+    <div class="nh">
+      <div class="nk">New event</div>
+      <h2 id="dlg-title" class="nname"><span id="n-shown">Couple’s names</span></h2>
+      <div class="nlink"><span id="n-link">events.kaiwedd.com/…/rsvp</span> <button type="button" class="lnk" id="n-chg">change</button></div>
+      <label class="f" id="n-cwrap" hidden>Event name (in English)<input id="n-couple" placeholder="e.g. Dana & Omer" autocomplete="off"></label>
+    </div>
+    <div class="nb">
+    <div class="nsec"><div class="nst">The couple <span>Guests 1 and 2 on the list. In English.</span></div>
       <div class="cpr"><select id="n-r1" aria-label="Role"><option>Groom</option><option>Bride</option></select><input id="n-f1" placeholder="First name *" autocomplete="off"><input id="n-l1" placeholder="Last name" autocomplete="off"></div>
       <div class="cpr"><select id="n-r2" aria-label="Role"><option>Groom</option><option selected>Bride</option></select><input id="n-f2" placeholder="First name *" autocomplete="off"><input id="n-l2" placeholder="Last name" autocomplete="off"></div>
     </div>
-    <div class="hint">Shown as <b id="n-shown">…</b> · <span id="n-link">events.kaiwedd.com/…/rsvp</span> · <button type="button" class="lnk" id="n-chg">change</button></div>
-    <label class="f" id="n-cwrap" hidden>Event name (in English)<input id="n-couple" placeholder="e.g. Dana & Omer" autocomplete="off"></label>
-    <label class="f">Client’s email<input id="n-email" type="email" placeholder="e.g. dana@gmail.com" autocomplete="off"></label>
+    <div class="nsec"><div class="nst">Date &amp; place</div>
     <div class="row2">
       <label class="f">Wedding date<input id="n-date" placeholder="DD/MM/YYYY" inputmode="numeric" autocomplete="off"></label>
       <label class="f">Sunset on the wedding day<input id="n-sunset" placeholder="HH:MM" inputmode="numeric" autocomplete="off"></label>
-      <label class="f">Wedding weekend · from<input id="n-start" placeholder="DD/MM/YYYY" inputmode="numeric" autocomplete="off"></label>
-      <label class="f">Wedding weekend · to<input id="n-end" placeholder="DD/MM/YYYY" inputmode="numeric" autocomplete="off"></label>
+      <div class="f full">Wedding weekend<div class="nrng"><input id="n-start" placeholder="from DD/MM/YYYY" inputmode="numeric" autocomplete="off" aria-label="Wedding weekend from"><span>–</span><input id="n-end" placeholder="to DD/MM/YYYY" inputmode="numeric" autocomplete="off" aria-label="Wedding weekend to"></div></div>
       <label class="f">Venue<input id="n-venue" placeholder="e.g. Ktima Gerolemo" autocomplete="off"></label>
       <label class="f">Country<input id="n-country" list="countries" placeholder="e.g. Cyprus" autocomplete="off"></label>
+      <label class="f full">Client’s email<input id="n-email" type="email" placeholder="e.g. dana@gmail.com" autocomplete="off"></label>
     </div>
     <datalist id="countries"><option value="Cyprus"><option value="Israel"><option value="Greece"><option value="Italy"><option value="Portugal"><option value="Spain"><option value="France"><option value="Montenegro"><option value="Croatia"><option value="Georgia"></datalist>
+    </div>
+    <div class="nsec">
+      <div class="nmore"><div><div class="nst" style="margin:0 0 3px">Settings</div><div class="nsum" id="n-sum"></div></div><button type="button" class="lnk" id="n-more">Change ▾</button></div>
+      <div id="n-set" hidden>
     <label class="f">RSVP form opens in<select id="n-lang"><option value="he">Hebrew</option><option value="en">English</option></select></label>
     <label class="f">Invitation design<select id="n-tpl"><option value="">Classic: envelope and form</option><option value="Grand">Grand: full wedding site (schedule, flights, form)</option></select></label>
     <div class="hint">Preview: <a href="/v2/demo-wedding/rsvp" target="_blank" rel="noopener">Classic</a> · <a href="/app/grand/" target="_blank" rel="noopener">Grand</a></div>
     <label class="f">Schedule template<select id="n-stpl"><option value="">Loading…</option></select></label>
     <div class="hint">The wedding day is built from the sunset time above. <button type="button" class="lnk" id="n-stm">Manage templates</button></div>
     <div class="tl" id="n-stl" hidden></div>
-    <p class="hint" style="margin:0">The event is created in the new system (Supabase).</p>
+      </div>
+    </div>
     <p class="err" id="n-err" hidden></p>
+    </div>
     <div class="act">
       <button type="button" class="btn" id="n-cancel">Cancel</button>
       <button type="submit" class="btn primary" id="n-save">Create Event</button>
@@ -512,11 +540,18 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
   var NAMEX = false;
   function autoName() {
     if (!NAMEX) { var a = $('n-f1').value.trim(), b = $('n-f2').value.trim(); $('n-couple').value = a && b ? a + ' & ' + b : a || b; }
-    var s = slugify($('n-couple').value); $('n-shown').textContent = $('n-couple').value.trim() || '…'; $('n-link').textContent = 'events.kaiwedd.com' + BASE + (s || '…') + '/rsvp';
+    var s = slugify($('n-couple').value), nm = $('n-couple').value.trim(); $('n-shown').textContent = nm || 'Couple’s names'; $('dlg-title').classList.toggle('ph', !nm); $('n-link').innerHTML = 'events.kaiwedd.com' + BASE + (s ? '<b>' + esc(s) + '</b>' : '…') + '/rsvp';
   }
   ['n-f1', 'n-f2'].forEach(function (id) { $(id).addEventListener('input', autoName); });
   $('n-chg').addEventListener('click', function () { $('n-cwrap').hidden = false; $('n-couple').focus(); });
-  function openNew() { NAMEX = false; $('n-cwrap').hidden = true; ['n-f1', 'n-l1', 'n-f2', 'n-l2'].forEach(function (id) { $(id).value = ''; }); $('n-r1').value = 'Groom'; $('n-r2').value = 'Bride'; ['n-couple', 'n-date', 'n-email', 'n-sunset', 'n-start', 'n-end', 'n-venue', 'n-country'].forEach(function (id) { $(id).value = ''; }); $('n-lang').value = 'he'; $('n-tpl').value = ''; $('n-link').textContent = 'events.kaiwedd.com' + BASE + '…/rsvp'; $('n-err').hidden = true; $('dlg').hidden = false; autoName(); $('n-f1').focus(); STPL.manage = false; STPL.del = ''; stplLoad(); }
+  // Settings are folded into one line ("Hebrew RSVP · Classic design · … schedule") until "Change" is clicked.
+  function nSum() {
+    var t = function (id) { var o = $(id).options[$(id).selectedIndex]; return o ? o.text.split(':')[0].replace(/ \(main\)$/, '') : ''; };
+    $('n-sum').innerHTML = '<b>' + esc(t('n-lang')) + '</b> RSVP · <b>' + esc(t('n-tpl')) + '</b> design · <b>' + esc(t('n-stpl')) + '</b> schedule';
+  }
+  ['n-lang', 'n-tpl', 'n-stpl'].forEach(function (id) { $(id).addEventListener('change', nSum); });
+  $('n-more').addEventListener('click', function () { var h = !$('n-set').hidden; $('n-set').hidden = h; this.textContent = h ? 'Change ▾' : 'Close ▴'; });
+  function openNew() { NAMEX = false; $('n-cwrap').hidden = true; ['n-f1', 'n-l1', 'n-f2', 'n-l2'].forEach(function (id) { $(id).value = ''; }); $('n-r1').value = 'Groom'; $('n-r2').value = 'Bride'; ['n-couple', 'n-date', 'n-email', 'n-sunset', 'n-start', 'n-end', 'n-venue', 'n-country'].forEach(function (id) { $(id).value = ''; }); $('n-lang').value = 'he'; $('n-tpl').value = ''; $('n-err').hidden = true; $('n-set').hidden = true; $('n-more').textContent = 'Change ▾'; $('dlg').hidden = false; nSum(); autoName(); $('n-f1').focus(); STPL.manage = false; STPL.del = ''; stplLoad(); }
   $('n-couple').addEventListener('input', function () { NAMEX = !!this.value.trim(); autoName(); });
   $('form').addEventListener('submit', function (e) {
     e.preventDefault();
@@ -544,6 +579,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     var cur = $('n-stpl').value, main = (STPL.list.filter(function (t) { return t.main; })[0] || {}).name;
     $('n-stpl').innerHTML = STPL.list.length ? STPL.list.map(function (t) { return '<option value="' + esc(t.name) + '">' + esc(t.name) + (t.main ? ' (main)' : '') + '</option>'; }).join('') : '<option value="">No templates</option>';
     $('n-stpl').value = STPL.list.some(function (t) { return t.name === cur; }) ? cur : (main || '');
+    nSum();
     $('n-stm').textContent = STPL.manage ? 'Close' : 'Manage templates';
     $('n-stl').hidden = !STPL.manage || !STPL.list.length;
     $('n-stl').innerHTML = STPL.list.map(function (t) {
