@@ -4,3 +4,4 @@
 --   guest_log, changes and rsvp_map follow. Used once for maya-yotam (Maya, Yotam added as 1, 2) and amit-or (Amit, Or moved to 1, 2).
 -- kai_api 'setCouple' {no, couple} (Noam only); 'createEvent' takes event.p1 / event.p2 {first, last, role} and adds them as guests 1 and 2.
 -- (The kai_api changes were small in-place edits of the wrapper; see Supabase for the full function.)
+-- 9 Nov 2026: createEvent also saves the couple's phones (event.p1.phone / event.p2.phone) on guests 1 and 2.
