@@ -688,6 +688,18 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   .br-h h1 { font-size: 22px; }
 }
 
+/* ===== Computer: Guests / Schedule / Questions in a narrow icon rail on the left (9 Nov 2026) ===== */
+@media (min-width: 760px) {
+  body:has(#sect:not([hidden])) { padding-left: 64px; }
+  .top .sect { position: fixed; left: 0; top: 0; bottom: 0; z-index: 30; width: 64px; flex-direction: column; align-items: center; gap: 4px; padding: 10px 0; margin: 0;
+    background: #FAF9F7; border: none; border-right: 1px solid var(--hair); border-radius: 0; }
+  .top .sect button { position: relative; width: 54px; height: auto; padding: 8px 0 6px; border-radius: 8px; flex-direction: column; gap: 3px; font-size: 11px; font-weight: 500; color: var(--muted); }
+  .top .sect button:hover { background: var(--soft-surface); color: var(--text); }
+  .top .sect button.on { background: #E8EDFB; color: var(--ink); font-weight: 700; }
+  .top .sect svg { width: 20px; height: 20px; }
+  .top .sect .bn { position: absolute; top: 3px; right: 7px; min-width: 16px; height: 16px; padding: 0 4px; background: #C2410C; color: #FFFFFF; font-size: 10px; font-weight: 700; }
+  .top .sect button.on .bn { background: #C2410C; }
+}
 /* ===== Computer layout, option 1 (9 Nov 2026): one quiet header line, one toolbar, view tabs at the bottom like Excel's sheet tabs ===== */
 @media (min-width: 760px) {
   .top-in { justify-content: flex-start; padding: 10px 32px 2px !important; }
