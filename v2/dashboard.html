@@ -535,8 +535,8 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
       toast(end ? ev.couple + ' is marked as ended.' : ev.couple + ' is back with the active events.');
     }).catch(function (x) { toast(x.server ? x.message : 'Couldn’t update the event. Try again.', true); });
   });
-  // ---------- welcome email to the couple (sent from Noam's Gmail by the old Hub, within a minute) ----------
-  var WA = 'https://wa.me/972528344374';
+  // ---------- welcome email to the couple (sent from Noam's Gmail as "KAI Event Planners" by the old Hub, within a minute) ----------
+  var WA = 'https://wa.me/972528344374', IG = 'https://instagram.com/kai_wedding_planners';
   function welLine(ev) {
     var w = ev.welcome; if (!w) return '';
     if (w.sent) return '<div class="sub wsent">✉ Welcome email sent ' + esc(w.sent) + '</div>';
@@ -548,20 +548,20 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     var where = [o.venue, o.country].filter(Boolean).join(', '), meta = [d, where].filter(Boolean).join(' · ');
     var names = o.couple || '', namesHe = names.replace(/ & /, ' ו');
     var T = he ? {
-      subject: 'ברוכים הבאים, ' + names + ' 💍', hi: 'מזל טוב! 🥂', p: 'אני כל כך שמח שבחרתם בנו ללוות אתכם בדרך לחתונה. מהיום אנחנו כאן לכל שאלה, רעיון או התלבטות.',
+      subject: 'ברוכים הבאים, ' + names + ' 💍', hi: 'מזל טוב! 🥂', p: 'אנחנו ב־KAI Event Planners כל כך שמחים שבחרתם בנו ללוות אתכם בדרך לחתונה. מהיום אנחנו כאן לכל שאלה, רעיון או התלבטות.',
       list: 'הכל במקום אחד, בפורטל האישי שלכם:', items: ['רשימת האורחים, עם אישורי ההגעה', 'הלו״ז של יום החתונה', 'שאלות קצרות שנשמח שתענו עליהן'],
-      btn: 'כניסה לפורטל שלכם', keep: 'שמרו את המייל הזה, הלינק תמיד יעבוד.', wa: '💬 כתבו לי בוואטסאפ', name: 'נועם', role: 'מתכנן החתונה שלכם · KAI Events'
+      btn: 'כניסה לפורטל שלכם', keep: 'שמרו את המייל הזה, הלינק תמיד יעבוד.', wa: '💬 כתבו לנו בוואטסאפ', ig: 'עקבו אחרינו באינסטגרם', name: 'באהבה,', role: 'צוות KAI Event Planners'
     } : {
-      subject: 'Welcome, ' + names + ' 💍', hi: 'Congratulations! 🥂', p: 'I’m so happy you chose us to be with you on the way to your wedding. From today, we’re here for every question, idea and decision.',
+      subject: 'Welcome, ' + names + ' 💍', hi: 'Congratulations! 🥂', p: 'We at KAI Event Planners are so happy you chose us to be with you on the way to your wedding. From today, we’re here for every question, idea and decision.',
       list: 'Everything in one place, in your own portal:', items: ['Your guest list, with every RSVP', 'The wedding day schedule', 'A few short questions for you'],
-      btn: 'Open your portal', keep: 'Keep this email, the link always works.', wa: '💬 Message me on WhatsApp', name: 'Noam', role: 'Your event planner · KAI Events'
+      btn: 'Open your portal', keep: 'Keep this email, the link always works.', wa: '💬 Message us on WhatsApp', ig: 'Follow us on Instagram', name: 'With love,', role: 'The KAI Event Planners team'
     };
     var dir = he ? 'rtl' : 'ltr', al = he ? 'right' : 'left', font = he ? "Arial,'Helvetica Neue',sans-serif" : "'Helvetica Neue',Arial,sans-serif";
     var html = '<!doctype html><html dir="' + dir + '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>' +
       '<body style="margin:0;padding:0;background:#FBF7EE;">' +
       '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FBF7EE;"><tr><td align="center" style="padding:28px 12px;">' +
       '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#FFFFFF;border:1px solid #EFE7D6;border-radius:10px;" dir="' + dir + '"><tr><td align="center" style="padding:34px 28px 30px;font-family:' + font + ';color:#3A3A40;">' +
-      '<div style="font-family:Georgia,serif;font-size:14px;letter-spacing:5px;color:#2E3A9E;">KAI EVENTS</div>' +
+      '<div style="font-family:Georgia,serif;font-size:13px;letter-spacing:4px;color:#2E3A9E;">KAI EVENT PLANNERS</div>' +
       '<div style="width:40px;height:1px;background:#D9C9A3;margin:16px auto;line-height:1px;font-size:1px;">&nbsp;</div>' +
       '<div dir="ltr" style="font-family:Georgia,\'Times New Roman\',serif;font-size:32px;line-height:1.15;color:#2E3A9E;font-weight:bold;">' + esc(names) + '</div>' +
       (meta ? '<div dir="ltr" style="font-size:13px;color:#6E6E75;letter-spacing:.5px;margin-top:6px;">' + esc(meta) + '</div>' : '') +
@@ -571,11 +571,12 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
       '<div style="margin:24px 0 6px;"><a href="' + esc(link) + '" style="display:inline-block;background:#2E3A9E;color:#FFFFFF;text-decoration:none;font-weight:bold;font-size:15px;padding:13px 28px;border-radius:999px;">' + esc(T.btn) + '</a></div>' +
       '<div dir="ltr" style="font-size:12px;color:#8A8A90;"><a href="' + esc(link) + '" style="color:#8A8A90;">' + esc(link.replace('https://', '')) + '</a></div>' +
       '<p style="font-size:13.5px;line-height:1.6;margin:16px 0 8px;">' + esc(T.keep) + '</p>' +
-      '<a href="' + WA + '" style="display:inline-block;border:1px solid #CFE8D5;background:#F3FBF5;color:#1E7A3C;text-decoration:none;font-weight:bold;font-size:13.5px;padding:8px 18px;border-radius:999px;">' + esc(T.wa) + '</a>' +
-      '<div style="font-family:Georgia,serif;font-size:19px;color:#1F1F21;margin-top:22px;">' + esc(T.name) + '</div>' +
-      '<div style="font-size:12.5px;color:#6E6E75;margin-top:2px;">' + esc(T.role) + '</div>' +
+      '<a href="' + WA + '" style="display:inline-block;border:1px solid #CFE8D5;background:#F3FBF5;color:#1E7A3C;text-decoration:none;font-weight:bold;font-size:13.5px;padding:8px 18px;border-radius:999px;margin:4px;">' + esc(T.wa) + '</a>' +
+      '<a href="' + IG + '" style="display:inline-block;border:1px solid #F1D3E2;background:#FDF4F8;color:#A3195B;text-decoration:none;font-weight:bold;font-size:13.5px;padding:8px 18px;border-radius:999px;margin:4px;">📷 ' + esc(T.ig) + '</a>' +
+      '<div style="font-size:14px;color:#6E6E75;margin-top:22px;">' + esc(T.name) + '</div>' +
+      '<div style="font-family:Georgia,serif;font-size:19px;color:#1F1F21;margin-top:2px;">' + esc(T.role) + '</div>' +
       '</td></tr></table>' +
-      '<div style="font-family:Arial,sans-serif;font-size:11.5px;color:#9A9AA0;margin-top:14px;">KAI Events · Cyprus &amp; Israel</div>' +
+      '<div style="font-family:Arial,sans-serif;font-size:11.5px;color:#9A9AA0;margin-top:14px;">KAI Event Planners · Cyprus &amp; Israel</div>' +
       '</td></tr></table></body></html>';
     return { subject: T.subject, html: html };
   }
