@@ -1,0 +1,3 @@
+-- After the move the couple keeps the old link /<event>/portal (no code), like the old system.
+-- kai_couple_enter(slug, '') signs them in only when Settings › "Couple Open Link" = on. A real token still works as before.
+-- Edge functions: couple-enter (accepts empty t and returns to the page it came from), kai-hook (the couple's own RSVP site → kai_public).

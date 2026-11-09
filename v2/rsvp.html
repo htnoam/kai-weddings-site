@@ -261,7 +261,8 @@ html[dir=ltr] input[type=tel] { text-align: left; }
   // Shared RSVP form for every event. The event comes from the address (weddings.kaiwedd.com/<event>),
   // its texts and photos from the event's Settings (edited on the KAI Events dashboard).
   // v2 (Supabase): /v2/<event>/rsvp
-  var EVENT = (location.pathname.split('/').filter(Boolean)[1] || '').toLowerCase();
+  var EVENT = (location.pathname.split('/').filter(Boolean)[location.pathname.indexOf('/v2/') === 0 ? 1 : 0] || '').toLowerCase();
+  var BASE = location.pathname.indexOf('/v2/') === 0 ? '/v2/' : '/';   // /v2/<event>/… or, after the move, the old /<event>/… links
   var $ = function (id) { return document.getElementById(id); };
   var T = {
     he: {
@@ -404,7 +405,7 @@ html[dir=ltr] input[type=tel] { text-align: left; }
         var more = CFG && ['Portal Flights', 'Portal Stay', 'Portal Info'].some(function (k) { return CFG[k] === 'on'; });
         $('to-portal').hidden = !more || attend === 'no';
         if (more) {
-          $('portal-go').href = '/v2/' + EVENT + '/guests' + (L === 'en' ? '?lang=en' : '');
+          $('portal-go').href = BASE + EVENT + '/guests' + (L === 'en' ? '?lang=en' : '');
           if (payload.phone) try { localStorage.setItem('kai-portal-' + EVENT, payload.phone); } catch (x) {}
         }
         $('rsvp').hidden = true; $('thanks').hidden = false;

@@ -839,7 +839,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
 (function () {
   'use strict';
   // v2 (Supabase): /v2/<event>/portal. Who you are (Noam or the couple) comes from the sign-in, not from the link.
-  var EVENT = (location.pathname.split('/').filter(Boolean)[1] || '').toLowerCase();
+  var EVENT = (location.pathname.split('/').filter(Boolean)[location.pathname.indexOf('/v2/') === 0 ? 1 : 0] || '').toLowerCase();
+  var BASE = location.pathname.indexOf('/v2/') === 0 ? '/v2/' : '/';   // /v2/<event>/… or, after the move, the old /<event>/… links
   var KEY = '';
   var AGES = ['Adult', 'Child', 'Baby'];
   var STATUSES = ['Confirmed', 'Maybe', 'Declined'];   // Maybe = not answered yet, or answered maybe
@@ -2263,7 +2264,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   }
   function remindText(r) {
     return remindTemplate().replace(/\{name\}/g, joinNames(r.guests.map(function (g) { return g.first; })))
-      .replace(/\{couple\}/g, $('couple').textContent || '').replace(/\{link\}/g, 'https://events.kaiwedd.com/v2/' + EVENT + '/rsvp');
+      .replace(/\{couple\}/g, $('couple').textContent || '').replace(/\{link\}/g, 'https://events.kaiwedd.com' + BASE + EVENT + '/rsvp');
   }
   function remindRows() {
     var list = remindList();

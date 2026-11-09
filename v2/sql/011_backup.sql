@@ -1,0 +1,2 @@
+-- Nightly backup: the old Hub's backupAll (3:00) also calls kai_backup(key) and saves the JSON in Drive › KAI EVENTS › "Backups (new system)" (keeps 30).
+-- The key is in kai_config 'backup_key' and in the Hub (V2_BACKUP_KEY). Function body: see Supabase (returns every table as JSON).

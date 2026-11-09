@@ -13,14 +13,16 @@ const json = (o: unknown, status = 200) => new Response(JSON.stringify(o), { sta
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   try {
-    const { slug, t } = await req.json();
-    if (!/^[a-z0-9-]{1,40}$/.test(String(slug || "")) || !/^[a-f0-9]{20,80}$/.test(String(t || ""))) return json({ ok: false, error: "This link is not valid." });
+    const { slug, t, path } = await req.json();
+    // t = the event's couple token; empty t is the old open couple link /<event>/portal (only for events with Settings › Couple Open Link = on)
+    if (!/^[a-z0-9-]{1,40}$/.test(String(slug || "")) || !/^([a-f0-9]{20,80})?$/.test(String(t ?? ""))) return json({ ok: false, error: "This link is not valid." });
+    const back = typeof path === "string" && /^\/[a-z0-9-]{1,40}\/portal\/?$/.test(path) ? path : `/v2/${slug}/portal`;
     const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false } });
-    const { data: email, error } = await admin.rpc("kai_couple_enter", { p_slug: slug, p_token: t });
+    const { data: email, error } = await admin.rpc("kai_couple_enter", { p_slug: slug, p_token: String(t ?? "") });
     if (error || !email) return json({ ok: false, error: "This link is not valid. Ask Noam for a new one." });
     await admin.auth.admin.createUser({ email, email_confirm: true }).catch(() => null);   // fine if it already exists
     const { data, error: e2 } = await admin.auth.admin.generateLink({
-      type: "magiclink", email, options: { redirectTo: `https://events.kaiwedd.com/v2/${slug}/portal` },
+      type: "magiclink", email, options: { redirectTo: `https://events.kaiwedd.com${back}` },
     });
     if (e2 || !data?.properties?.action_link) return json({ ok: false, error: "Couldn’t sign you in. Try again in a minute." });
     return json({ ok: true, url: data.properties.action_link });

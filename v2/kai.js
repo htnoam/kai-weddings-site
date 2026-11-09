@@ -58,12 +58,15 @@
   function ready() {
     return first.then(function () {
       if (session) return;
-      var t = new URLSearchParams(location.search).get('t'), slug = (location.pathname.split('/').filter(Boolean)[1] || '').toLowerCase();
-      if (!t || coupleTried) return wait();
+      var parts = location.pathname.split('/').filter(Boolean), v2 = parts[0] === 'v2', slug = ((v2 ? parts[1] : parts[0]) || '').toLowerCase();
+      var t = new URLSearchParams(location.search).get('t');
+      // After the move the couple keeps the old link /<event>/portal (no code); Noam's own link and /admin sign in by email.
+      if (t == null && !v2 && parts[1] === 'portal' && !parts[2]) t = '';
+      if (t == null || coupleTried) return wait();
       coupleTried = true;
-      return fetch(URL + '/functions/v1/couple-enter', { method: 'POST', headers: { apikey: ANON, Authorization: 'Bearer ' + ANON, 'Content-Type': 'application/json' }, body: JSON.stringify({ slug: slug, t: t }) })
+      return fetch(URL + '/functions/v1/couple-enter', { method: 'POST', headers: { apikey: ANON, Authorization: 'Bearer ' + ANON, 'Content-Type': 'application/json' }, body: JSON.stringify({ slug: slug, t: t, path: location.pathname }) })
         .then(function (r) { return r.json(); })
-        .then(function (res) { if (res.ok && res.url) { location.replace(res.url); return new Promise(function () {}); } return wait(res.error); })
+        .then(function (res) { if (res.ok && res.url) { location.replace(res.url); return new Promise(function () {}); } return wait(t === '' ? '' : res.error); })
         .catch(function () { return wait('Couldn’t sign you in. Check your connection and try again.'); });
     });
   }

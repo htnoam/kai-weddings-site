@@ -206,7 +206,8 @@ button.btn:disabled { opacity: .6; }
 (function () {
   'use strict';
   // v2 (Supabase): /v2/<event>/guests
-  var EVENT = (location.pathname.split('/').filter(Boolean)[1] || '').toLowerCase();
+  var EVENT = (location.pathname.split('/').filter(Boolean)[location.pathname.indexOf('/v2/') === 0 ? 1 : 0] || '').toLowerCase();
+  var BASE = location.pathname.indexOf('/v2/') === 0 ? '/v2/' : '/';   // /v2/<event>/… or, after the move, the old /<event>/… links
   var STORE = 'kai-portal-' + EVENT;
   var $ = function (id) { return document.getElementById(id); };
   var T = {
@@ -390,7 +391,7 @@ button.btn:disabled { opacity: .6; }
   function setApp() {
     var name = INFO && INFO.couple || 'KAI';
     $('apptitle').setAttribute('content', name); $('touchicon').href = photo(180); $('home-img').src = photo(180);
-    var m = { name: name, short_name: name, start_url: location.origin + '/v2/' + EVENT + '/guests', scope: location.origin + '/', display: 'standalone',
+    var m = { name: name, short_name: name, start_url: location.origin + BASE + EVENT + '/guests', scope: location.origin + '/', display: 'standalone',
       background_color: '#E9E3D8', theme_color: '#E9E3D8',
       icons: [{ src: photo(192), sizes: '192x192' }, { src: photo(512), sizes: '512x512' }] };
     var l = document.getElementById('manifest');

@@ -1387,7 +1387,7 @@ body.revealed .hero-lines path{animation:draw 3.2s var(--sc-ease-out) .6s forwar
      a personal link (?r=<id>), so guests can come back any time, from any
      device, and change or cancel. The sheet replaces that id's rows on save. */
   // KAI: answers go straight to the planner's guest list (KAI Events Hub). The event is the first part of the link.
-  var EVENT = window.KAI_EVENT || (location.pathname.split('/').filter(Boolean)[1] || '').toLowerCase();
+  var EVENT = window.KAI_EVENT || (location.pathname.split('/').filter(Boolean)[location.pathname.indexOf('/v2/') === 0 ? 1 : 0] || '').toLowerCase();
   var hub = function(body){ return KAI_PUB(body); };
   var R = C.rsvp, RKEY = 'kai-grand-' + EVENT;
   var modal = $('#modal'), sheet = $('#sheet'), form = $('#rsvpForm'), nameEl = $('#rName'), guestsEl = $('#guests'), msg = $('#msg');

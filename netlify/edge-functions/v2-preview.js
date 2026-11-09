@@ -7,7 +7,8 @@ const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</
 
 export default async (request, context) => {
   const res = await context.next();
-  const slug = (new URL(request.url).pathname.split('/').filter(Boolean)[1] || '').toLowerCase();
+  const path = new URL(request.url).pathname, v2 = path.indexOf('/v2/') === 0;
+  const slug = (path.split('/').filter(Boolean)[v2 ? 1 : 0] || '').toLowerCase();
   if (!/^[a-z0-9-]{1,40}$/.test(slug) || !(res.headers.get('content-type') || '').includes('text/html')) return res;
   let st = null;
   try {
@@ -22,13 +23,14 @@ export default async (request, context) => {
   const desc = [st.place, when, 'You’re invited'].filter(Boolean).join(' · ');
   const img = st['Share Image'] || st['Hero Image'] || '';
   const meta = '<meta name="description" content="' + esc(desc) + '">\n<meta property="og:type" content="website">\n' +
-    '<meta property="og:url" content="https://events.kaiwedd.com/v2/' + slug + '/rsvp">\n<meta property="og:title" content="' + esc(title) + '">\n' +
+    '<meta property="og:url" content="https://events.kaiwedd.com' + (v2 ? '/v2/' : '/') + slug + '/rsvp">\n<meta property="og:title" content="' + esc(title) + '">\n' +
     '<meta property="og:description" content="' + esc(desc) + '">\n' +
     (img ? '<meta property="og:image" content="' + esc(img) + '">\n<meta name="twitter:card" content="summary_large_image">\n' : '');
   let html = await res.text();
+  if (html.indexOf('property="og:title"') > -1) return new Response(html, { status: res.status, headers: res.headers });   // the event's own page has its own preview
   html = html.replace(/<title>[^<]*<\/title>/, '<title>' + esc(title) + '</title>').replace('<head>', '<head>\n' + meta);
   const headers = new Headers(res.headers); headers.delete('content-length');
   return new Response(html, { status: res.status, headers });
 };
 
-export const config = { path: ['/v2/*/rsvp', '/v2/*/rsvp/'] };
+export const config = { path: ['/v2/*/rsvp', '/v2/*/rsvp/', '/amit-or', '/amit-or/', '/amit-or/rsvp', '/amit-or/rsvp/'] };

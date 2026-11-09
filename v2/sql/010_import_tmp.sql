@@ -1,0 +1,4 @@
+-- One-time copy of the old system's events (maya-yotam, amit-or) on 9 Nov 2026.
+-- kai_import_event(p) inserted an event with its settings, guests, views, log, changes and reminders, read in the browser from
+-- the event's Google Sheet. It was callable only with a one-time secret, and access was removed right after (revoked, secret cleared).
+-- Run again on move day (after deleting the copied events) to bring the copy up to date.
