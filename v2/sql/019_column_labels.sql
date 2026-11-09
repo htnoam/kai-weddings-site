@@ -1,0 +1,3 @@
+-- Rename columns per event, Noam only (9 Nov 2026). kai_api 'colLabel' {e, k, label} ('' = back to the original name)
+-- stores Settings › "Column Labels" = {"group":"Family", …}; 'list' returns it as "labels". Only the shown name changes; data keeps the key.
+-- (Added to the kai_api wrapper from 009 with a small in-place edit; see Supabase for the full function.)

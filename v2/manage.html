@@ -1032,6 +1032,26 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     });
     if (S.cols) { COLS.forEach(function (c) { if (S.cols.order.indexOf(c.k) < 0) S.cols.order.push(c.k); }); }
   }
+  // Column names chosen by Noam for this event (only the name shown; the data keeps the column's key). c.base = the original name.
+  var LABELS = {};
+  function applyLabels(map) {
+    LABELS = map || {};
+    COLS.forEach(function (c) { if (c.base == null) c.base = c.label; c.label = LABELS[c.k] || c.base; });
+  }
+  function renameCol(k) {
+    var c = colOf(k); if (!c || !S.admin) return;
+    pick('Rename column', '<label class="f" for="rn-name">Name for this event</label><input id="rn-name" maxlength="40" value="' + esc(c.label) + '" style="width:100%;height:38px;border:1px solid var(--line);border-radius:6px;padding:0 10px;font:inherit">' +
+      '<p class="meta" style="margin:8px 0 0;font-size:13px;color:var(--soft)">Original name: ' + esc(c.base || c.label) + '. Only the name changes; the data stays as it is.</p>', function () {
+      var v = $('rn-name').value.trim(); if (v === (c.base || '')) v = '';
+      saveLabel(k, v);
+    });
+    setTimeout(function () { var f = $('rn-name'); if (f) f.select(); }, 0);
+  }
+  function saveLabel(k, v) {
+    saving('busy');
+    api('colLabel', { k: k, label: v }).then(function (res) { applyLabels(res.labels); saving('ok'); render(); })
+      .catch(function (e) { saving('err'); toast(e.server ? e.message : 'Couldn’t rename the column. Try again.', null, null, true); });
+  }
   function normCols(p) {
     if (!p || !p.order) return null;
     p = { order: p.order.slice(), hidden: (p.hidden || []).slice() };
@@ -1180,6 +1200,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       briefLoad(res.brief);
       schedLoad(res.schedule, res.wedding);
       setCustom(res.custom || []);
+      applyLabels(res.labels || {});
       S.wedYear = (/(\d{4})/.exec(res.wedding.date || '') || [])[1] || '';
       var sc = normCols(res.cols); if (sc && !colsTimer) S.cols = sc;
       if (!curView()) S.view = '';
@@ -2413,7 +2434,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       if (rows.length < 2) throw new Error('empty');
       IMP.head = rows[0]; IMP.rows = rows.slice(1); IMP.map = {};
       IMP_FIELDS.forEach(function (f) {
-        var words = IMP_GUESS[f.k] || [f.label.toLowerCase()];
+        var words = (IMP_GUESS[f.k] || [(f.base || f.label).toLowerCase()]).concat(f.base && f.label !== f.base ? [f.label.toLowerCase()] : []);
         var i = IMP.head.findIndex(function (h) { h = h.toLowerCase(); return words.some(function (w) { return h === w; }); });
         if (i < 0) i = IMP.head.findIndex(function (h, j) { h = h.toLowerCase(); return !Object.keys(IMP.map).some(function (k) { return IMP.map[k] === j; }) && words.some(function (w) { return w.length > 2 && h.indexOf(w) > -1; }); });
         if (i > -1 && !Object.keys(IMP.map).some(function (k) { return IMP.map[k] === i; })) IMP.map[f.k] = i;
@@ -2641,7 +2662,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var th = e.target.closest('th[data-k]'); if (!th) return;
     e.preventDefault();
     var k = th.dataset.k, c = colOf(k), cur = S.align[k] || '';
-    var m = openX('<div class="mh">' + esc(c ? c.label : k) + ' · Align</div>' + [['', 'Automatic'], ['l', 'Left'], ['c', 'Center'], ['r', 'Right']].map(function (o) {
+    var ren = S.admin && c ? '<button type="button" class="mi" data-ren="' + k + '">Rename column…</button>' + (LABELS[k] ? '<button type="button" class="mi" data-unren="' + k + '">Reset name to “' + esc(c.base) + '”</button>' : '') + '<hr>' : '';
+    var m = openX(ren + '<div class="mh">' + esc(c ? c.label : k) + ' · Align</div>' + [['', 'Automatic'], ['l', 'Left'], ['c', 'Center'], ['r', 'Right']].map(function (o) {
       return '<button type="button" class="mi' + (o[0] === cur ? ' cur' : '') + '" data-al="' + o[0] + '" data-k="' + k + '">' + o[1] + (o[0] === cur ? '<em>✓</em>' : '') + '</button>';
     }).join(''));
     m.style.right = 'auto';
@@ -2652,6 +2674,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var b = e.target.closest('button'); if (!b) return;
     if (b.dataset.dir) { S.sort.dir = Number(b.dataset.dir); render(); openSort(); return; }
     if (b.dataset.sk) { var k = b.dataset.sk; S.sort = { k: k, dir: S.sort.k === k ? S.sort.dir : 1 }; closeX(); render(); return; }
+    if (b.dataset.ren) { closeX(); renameCol(b.dataset.ren); return; }
+    if (b.dataset.unren) { closeX(); saveLabel(b.dataset.unren, ''); return; }
     if (b.dataset.al != null) {
       if (b.dataset.al) S.align[b.dataset.k] = b.dataset.al; else delete S.align[b.dataset.k];
       try { localStorage.setItem('kai-align', JSON.stringify(S.align)); } catch (x) {}
