@@ -687,6 +687,42 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   .br-qe select, .br-qe .extra { grid-column: 1; }
   .br-h h1 { font-size: 22px; }
 }
+
+/* ===== Computer layout, option 1 (9 Nov 2026): one quiet header line, one toolbar, view tabs at the bottom like Excel's sheet tabs ===== */
+@media (min-width: 760px) {
+  .top-in { justify-content: flex-start; padding: 10px 32px 2px !important; }
+  .top .stats { flex: 0 1 auto; justify-content: flex-start; gap: 0; margin-left: 8px; align-items: baseline; }
+  .top .stat, .top .stat.total, .stat-grp { background: transparent !important; color: var(--muted) !important; box-shadow: none !important; }
+  .top .stat { flex-direction: row; align-items: baseline; gap: 4px; padding: 2px 0; border-radius: 0; filter: none !important; }
+  .top .stat .v { order: -1; font-size: 14px; font-weight: 700; color: var(--text, #2B2B30); }
+  .top .stat .k { font-size: 14px; font-weight: 400; letter-spacing: 0; text-transform: lowercase; color: var(--muted) !important; border-bottom: 1px dotted #B8B6B0; }
+  .top .stat.total .k { font-size: 0; border-bottom: none; } .top .stat.total .k::after { content: 'guests'; font-size: 14px; }
+  .top .stat:hover .k { color: var(--ink) !important; border-bottom-color: var(--ink); }
+  .top .stat.cur .k { color: var(--ink) !important; font-weight: 700; border-bottom: 2px solid var(--ink); }
+  .top .stat.total.cur .k { border-bottom: none; font-weight: 400; color: var(--muted) !important; }
+  .top .stat:not(.total):not(.sub)::before { content: '·'; order: -2; margin: 0 8px 0 4px; color: var(--soft); border: none; }
+  .stat-grp .stat.sub { display: none; }
+  .me { margin-left: auto; position: relative; }
+  #refresh { display: none; }
+  .save.ok { font-size: 0; } .save.ok svg { width: 16px; height: 16px; }
+  .avatar { width: 30px; height: 30px; border-radius: 50%; border: none; background: var(--ink); color: #FFFFFF; font-weight: 700; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+  .whopop { position: absolute; right: 0; top: 38px; z-index: 50; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 12px 28px -12px rgba(0,0,0,.3); padding: 12px 14px; font-size: 13.5px; color: var(--text, #2B2B30); white-space: nowrap; display: flex; flex-direction: column; gap: 4px; }
+  .whopop[hidden] { display: none; }
+  .whopop .whomail { color: var(--soft); font-size: 12.5px; }
+  .whopop .signout { align-self: flex-start; margin-top: 6px; }
+  #app:not([hidden]) { gap: 10px !important; }
+  #f-age, #f-group, #groupby, #columns, #remind { display: none !important; }
+  #viewbtn { margin-inline-start: auto; }
+  #more { margin-inline-start: 0 !important; } #more .lbl { display: none; }
+  .layout { order: 1; align-items: stretch; } .tablewrap { border-radius: 4px 4px 0 0; }
+  .tabrow { order: 2; margin: -10px 0 0; align-items: stretch; background: #FAF9F7; border: 1px solid var(--line); border-top: none; border-radius: 0 0 4px 4px; }
+  .tabrow .vtabs { align-items: stretch; gap: 0; flex-wrap: nowrap; overflow-x: auto; margin: 0; }
+  .vt { height: 34px; border: none; border-right: 1px solid var(--hair); border-radius: 0; margin: 0; padding: 0 16px; background: transparent; font-weight: 500; color: var(--muted); }
+  .vt.on { background: var(--surface); color: var(--ink); font-weight: 700; box-shadow: inset 0 2px 0 var(--ink); border-color: var(--hair); }
+  .vt.add { border-right: none; }
+  .vt .vt-n { background: none; color: var(--soft); font-weight: 400; padding: 0; min-width: 0; margin-left: 5px; font-size: 13px; }
+  .tabrow .subbar { align-self: center; padding: 0 14px; }
+}
 </style>
 <style id="freeze"></style>
 </head>
@@ -734,6 +770,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       <button type="button" class="btn dashed desk" id="addcol" hidden>+ Add Column</button>
       <button type="button" class="btn desk" id="remind" hidden></button>
       <button type="button" class="btn desk chgbtn" id="chgbtn" hidden title="Changes made by guests or the couple that you haven't looked at yet">Changes to review <i id="chgn"></i></button>
+      <button type="button" class="btn desk" id="viewbtn" aria-haspopup="menu" aria-expanded="false">View ▾</button>
       <button type="button" class="btn" id="more" aria-haspopup="menu" aria-expanded="false" style="margin-inline-start:auto">⋯<span class="lbl"> More</span></button>
     </section>
 
@@ -1137,8 +1174,10 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       if (!keepView && curView()) applyViewState(curView());
       $('couple').textContent = res.wedding.couple || 'Guest List';
       $('when').textContent = [fmtDate(res.wedding.date), res.wedding.place].filter(Boolean).join(' · ');
-      $('who').innerHTML = 'Signed in as ' + esc(res.who) + ' · <button type="button" class="signout" title="' + esc(KAI.email()) + '">Sign out</button>';
+      $('who').innerHTML = '<button type="button" class="avatar" aria-haspopup="true" title="Signed in as ' + esc(res.who) + '">' + esc(String(res.who || '?').trim().charAt(0).toUpperCase()) + '</button>' +
+        '<span class="whopop" hidden>Signed in as <b>' + esc(res.who) + '</b><span class="whomail">' + esc(KAI.email()) + '</span><button type="button" class="signout">Sign out</button></span>';
       $('who').querySelector('.signout').onclick = function () { try { localStorage.removeItem(CK_LIST()); } catch (e) {} KAI.signOut(); };
+      $('who').querySelector('.avatar').onclick = function (ev) { ev.stopPropagation(); var pp = $('who').querySelector('.whopop'); pp.hidden = !pp.hidden; };
       $('addcol').hidden = true;
       $('refresh').hidden = false;
       document.title = 'Guest List – ' + (res.wedding.couple || 'Wedding');
@@ -2523,8 +2562,18 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     moreMenu.style.left = Math.max(8, Math.min(r.right - moreMenu.offsetWidth, innerWidth - moreMenu.offsetWidth - 8)) + 'px';
     this.setAttribute('aria-expanded', 'true');
   });
+  $('viewbtn').addEventListener('click', function (e) {
+    e.stopPropagation();
+    if (!moreMenu.hidden) { moreMenu.hidden = true; return; }
+    moreMenu.innerHTML = '<button type="button" role="menuitem" data-mm="groupby">' + (S.groupBy ? '✓ ' : '') + 'Group by family</button>' +
+      '<button type="button" role="menuitem" data-mm="columns">' + esc($('columns').textContent) + '…</button>';
+    var r = this.getBoundingClientRect();
+    moreMenu.hidden = false; moreMenu.style.top = (r.bottom + 4) + 'px';
+    moreMenu.style.left = Math.max(8, Math.min(r.right - moreMenu.offsetWidth, innerWidth - moreMenu.offsetWidth - 8)) + 'px';
+  });
   moreMenu.addEventListener('click', function (e) {
     var b = e.target.closest('[data-mm]'); if (!b) return;
+    if (b.dataset.mm === 'groupby' || b.dataset.mm === 'columns') { moreMenu.hidden = true; $(b.dataset.mm).click(); return; }
     moreMenu.hidden = true; $('more').setAttribute('aria-expanded', 'false');
     var a = b.dataset.mm;
     if (a === 'add') openAdd(null);
@@ -2739,7 +2788,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     });
   }
   $('remind').addEventListener('click', openRemind);
-  document.addEventListener('click', function () { if (!moreMenu.hidden) { moreMenu.hidden = true; $('more').setAttribute('aria-expanded', 'false'); } });
+  document.addEventListener('click', function () { if (!moreMenu.hidden) { moreMenu.hidden = true; $('more').setAttribute('aria-expanded', 'false'); } var wp = document.querySelector('.whopop'); if (wp) wp.hidden = true; });
   var exMenu = document.createElement('div');
   exMenu.className = 'exmenu'; exMenu.hidden = true; exMenu.setAttribute('role', 'menu');
   exMenu.innerHTML = '<button type="button" role="menuitem" data-ex="csv">Excel (CSV)</button><button type="button" role="menuitem" data-ex="pdf">PDF report</button>';
