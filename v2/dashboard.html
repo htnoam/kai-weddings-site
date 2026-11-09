@@ -21,7 +21,7 @@
   })();
 </script>
 <title>KAI Events · New</title>
-<style>#gh-change,#ghbar,#n-tpl,#n-stpl,#n-stm,#n-stl,#e-view,#e-portal,#e-grand,.v2-hide,#form-e .sec,#form-e .sec + .cols2{display:none!important}.v2tag{font-size:12px;font-weight:700;color:#8A5A12;background:#F7EBD3;border-radius:999px;padding:2px 8px;margin-left:8px;vertical-align:middle;font-family:inherit}.signout{border:none;background:none;color:var(--ink);font-weight:600;cursor:pointer;font-size:13.5px}</style>
+<style>#gh-change,#ghbar,.v2-hide{display:none!important}.v2tag{font-size:12px;font-weight:700;color:#8A5A12;background:#F7EBD3;border-radius:999px;padding:2px 8px;margin-left:8px;vertical-align:middle;font-family:inherit}.signout{border:none;background:none;color:var(--ink);font-weight:600;cursor:pointer;font-size:13.5px}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Cormorant+Garamond:wght@600&display=swap">
 <style>
@@ -189,7 +189,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
   <form class="dialog" id="form" role="dialog" aria-modal="true" aria-labelledby="dlg-title" novalidate>
     <h2 id="dlg-title">New Event</h2>
     <label class="f">Couple names (in English) *<input id="n-couple" placeholder="e.g. Dana & Omer" autocomplete="off"></label>
-    <div class="hint">The guest list will be: <b id="n-link">events.kaiwedd.com/v2/…/portal</b></div>
+    <div class="hint">Links will be: <b id="n-link">events.kaiwedd.com/v2/…/rsvp</b></div>
     <label class="f">Client’s email<input id="n-email" type="email" placeholder="e.g. dana@gmail.com" autocomplete="off"></label>
     <div class="row2">
       <label class="f">Wedding date<input id="n-date" placeholder="DD/MM/YYYY" inputmode="numeric" autocomplete="off"></label>
@@ -200,13 +200,13 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
       <label class="f">Country<input id="n-country" list="countries" placeholder="e.g. Cyprus" autocomplete="off"></label>
     </div>
     <datalist id="countries"><option value="Cyprus"><option value="Israel"><option value="Greece"><option value="Italy"><option value="Portugal"><option value="Spain"><option value="France"><option value="Montenegro"><option value="Croatia"><option value="Georgia"></datalist>
-    <label class="f v2-hide">RSVP form opens in<select id="n-lang"><option value="he">Hebrew</option><option value="en">English</option></select></label>
-    <label class="f v2-hide">Invitation design<select id="n-tpl"><option value="">Classic: envelope and form</option><option value="Grand">Grand: full wedding site (schedule, flights, form)</option></select></label>
-    <div class="hint v2-hide">Preview: <a href="/demo-wedding/rsvp" target="_blank" rel="noopener">Classic</a> · <a href="/app/grand/" target="_blank" rel="noopener">Grand</a></div>
-    <label class="f v2-hide">Schedule template<select id="n-stpl"><option value="">Loading…</option></select></label>
-    <div class="hint v2-hide">The wedding day is built from the sunset time above. <button type="button" class="lnk" id="n-stm">Manage templates</button></div>
+    <label class="f">RSVP form opens in<select id="n-lang"><option value="he">Hebrew</option><option value="en">English</option></select></label>
+    <label class="f">Invitation design<select id="n-tpl"><option value="">Classic: envelope and form</option><option value="Grand">Grand: full wedding site (schedule, flights, form)</option></select></label>
+    <div class="hint">Preview: <a href="/v2/demo-wedding/rsvp" target="_blank" rel="noopener">Classic</a> · <a href="/app/grand/" target="_blank" rel="noopener">Grand</a></div>
+    <label class="f">Schedule template<select id="n-stpl"><option value="">Loading…</option></select></label>
+    <div class="hint">The wedding day is built from the sunset time above. <button type="button" class="lnk" id="n-stm">Manage templates</button></div>
     <div class="tl" id="n-stl" hidden></div>
-    <p class="hint" style="margin:0">The event is created in the new system (Supabase). The couple signs in with the client’s email.</p>
+    <p class="hint" style="margin:0">The event is created in the new system (Supabase).</p>
     <p class="err" id="n-err" hidden></p>
     <div class="act">
       <button type="button" class="btn" id="n-cancel">Cancel</button>
@@ -226,9 +226,9 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
       <label class="f">Sunset on the wedding day<input data-k="Sunset Time" placeholder="HH:MM" inputmode="numeric"></label>
       <label class="f">Wedding weekend · from<input data-k="Start Date" placeholder="DD/MM/YYYY" inputmode="numeric"></label>
       <label class="f">Wedding weekend · to<input data-k="End Date" placeholder="DD/MM/YYYY" inputmode="numeric"></label>
-      <label class="f v2-hide">Dates line on the invitation (optional)<input data-k="Dates Line" placeholder="e.g. 03 – 05 . 06 . 2027"></label>
-      <label class="f v2-hide">Form opens in<select data-k="Default Language"><option value="he">Hebrew</option><option value="en">English</option></select></label>
-      <label class="f v2-hide">Invitation design<select data-k="Template"><option value="">Classic: envelope and form</option><option value="Grand">Grand: full wedding site (schedule, flights, form)</option></select></label>
+      <label class="f">Dates line on the invitation (optional)<input data-k="Dates Line" placeholder="e.g. 03 – 05 . 06 . 2027"></label>
+      <label class="f">Form opens in<select data-k="Default Language"><option value="he">Hebrew</option><option value="en">English</option></select></label>
+      <label class="f">Invitation design<select data-k="Template"><option value="">Classic: envelope and form</option><option value="Grand">Grand: full wedding site (schedule, flights, form)</option></select></label>
     </div>
     <div class="sec">Photos</div>
     <div class="cols2">
@@ -257,7 +257,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
       <label class="f">Small note · English<input data-k="Hosting Note EN"></label>
       <label class="f he">הערה קטנה · עברית<input data-k="Hosting Note HE"></label>
     </div>
-    <div class="sec">Guest area · events.kaiwedd.com/<span id="e-slug"></span>/guests</div>
+    <div class="sec">Guest area · events.kaiwedd.com/v2/<span id="e-slug"></span>/guests</div>
     <div class="cols2">
       <label class="f chk"><input type="checkbox" data-k="Portal RSVP" data-default="on"> RSVP per family member</label>
       <label class="f chk"><input type="checkbox" data-k="Portal Flights"> Flight details (guests fill in)</label>
@@ -376,10 +376,13 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
         n(c.Maybe, 'c-warn') + n(c.Declined, 'c-bad') +
         '<td><div class="links">' +
           '<a class="btn sm primary" href="/v2/' + esc(ev.slug) + '/portal" target="_blank" rel="noopener">Guest list</a>' +
-          '<button type="button" class="btn sm" data-edit="' + esc(ev.slug) + '">Edit event</button>' +
+          '<a class="btn sm" href="/v2/' + esc(ev.slug) + '/rsvp" target="_blank" rel="noopener">RSVP</a>' +
+          '<button type="button" class="btn sm" data-edit="' + esc(ev.slug) + '">Edit RSVP</button>' +
         '</div></td>' +
         '<td><div class="links">' +
           '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug + '/portal') + '" title="The couple’s guest list (/portal)">Portal · couple</button>' +
+          '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug + '/rsvp') + '">RSVP</button>' +
+          '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug + '/guests') + '" title="The guests’ area (/guests)">Guests</button>' +
         '</div></td>' +
         '<td><button type="button" class="dots" data-menu="' + esc(ev.slug) + '" aria-label="More actions">⋯</button></td></tr>';
     }).join('') + (toggle ? '<tr><td colspan="10">' + toggle + '</td></tr>' : '');
@@ -392,8 +395,10 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
         '<div class="ec-n"><span><b>' + v(c.total) + '</b> guests</span><span class="c-ok"><b>' + v(c.Confirmed) + '</b> ✓</span><span class="c-warn"><b>' + v(c.Maybe) + '</b> maybe</span><span class="c-bad"><b>' + v(c.Declined) + '</b> ✗</span></div>' +
         (ages(c) ? '<div class="sub">Confirmed: ' + ages(c) + '</div>' : '') +
         '<div class="ec-a"><a class="btn primary" href="/v2/' + esc(ev.slug) + '/portal" target="_blank" rel="noopener">Guest list</a>' +
-          '<button type="button" class="btn" data-edit="' + esc(ev.slug) + '">Edit event</button></div>' +
-        '<div class="ec-b"><span class="ec-copy">Copy link:</span><button type="button" data-copy="' + esc(SITE + ev.slug + '/portal') + '">Portal · couple</button></div>' +
+          '<button type="button" class="btn" data-edit="' + esc(ev.slug) + '">Edit RSVP</button>' +
+          '<a class="btn" href="/v2/' + esc(ev.slug) + '/rsvp" target="_blank" rel="noopener">RSVP</a></div>' +
+        '<div class="ec-b">' +
+          '<span class="ec-copy">Copy link:</span><button type="button" data-copy="' + esc(SITE + ev.slug + '/portal') + '">Portal · couple</button><button type="button" data-copy="' + esc(SITE + ev.slug + '/rsvp') + '">RSVP</button><button type="button" data-copy="' + esc(SITE + ev.slug + '/guests') + '">Guests</button></div>' +
       '</div>';
     }).join('') + toggle;
   }
@@ -453,8 +458,8 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
   }); });
 
   // ---------- new event ----------
-  function openNew() { ['n-couple', 'n-date', 'n-email', 'n-sunset', 'n-start', 'n-end', 'n-venue', 'n-country'].forEach(function (id) { $(id).value = ''; }); $('n-lang').value = 'he'; $('n-tpl').value = ''; $('n-link').textContent = 'events.kaiwedd.com/v2/…/portal'; $('n-err').hidden = true; $('dlg').hidden = false; $('n-couple').focus(); }
-  $('n-couple').addEventListener('input', function () { var s = slugify(this.value); $('n-link').textContent = 'events.kaiwedd.com/v2/' + (s || '…') + '/portal'; });
+  function openNew() { ['n-couple', 'n-date', 'n-email', 'n-sunset', 'n-start', 'n-end', 'n-venue', 'n-country'].forEach(function (id) { $(id).value = ''; }); $('n-lang').value = 'he'; $('n-tpl').value = ''; $('n-link').textContent = 'events.kaiwedd.com/v2/…/rsvp'; $('n-err').hidden = true; $('dlg').hidden = false; $('n-couple').focus(); STPL.manage = false; STPL.del = ''; stplLoad(); }
+  $('n-couple').addEventListener('input', function () { var s = slugify(this.value); $('n-link').textContent = 'events.kaiwedd.com/v2/' + (s || '…') + '/rsvp'; });
   $('form').addEventListener('submit', function (e) {
     e.preventDefault();
     var f = { couple: $('n-couple').value.trim(), date: toIso($('n-date').value), lang: $('n-lang').value, email: $('n-email').value.trim(),
@@ -465,11 +470,11 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
       f.start && f.end && f.end < f.start ? 'The wedding weekend ends before it starts. Check the dates.' : '';
     if (err) { $('n-err').textContent = err; $('n-err').hidden = false; return; }
     $('n-save').disabled = true; $('n-save').textContent = 'Creating…'; $('n-err').hidden = true;
-    var tpl = '';
+    var tpl = $('n-tpl').value; f.stpl = $('n-stpl').value;
     api('createEvent', { event: f }).then(function (res) {
       return tpl ? api('saveSettings', { e: res.event.slug, settings: { Template: tpl } }).then(function () { return res; }) : res;
     }).then(function (res) {
-      $('dlg').hidden = true; toast('Created ' + res.event.couple + ' · events.kaiwedd.com/v2/' + res.event.slug + '/portal'); load();
+      $('dlg').hidden = true; toast('Created ' + res.event.couple + ' · events.kaiwedd.com/v2/' + res.event.slug + '/rsvp' + (res.schedule ? ' · schedule from ' + res.schedule : f.date && f.sunset ? '' : ' · no schedule yet (needs date and sunset)')); load();
     }).catch(function (x) { $('n-err').textContent = x.server ? x.message : 'Couldn’t create the event. Try again.'; $('n-err').hidden = false; })
       .then(function () { $('n-save').disabled = false; $('n-save').textContent = 'Create Event'; });
   });
@@ -519,7 +524,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
   function openEdit(slug) {
     var ev = EVENTS.filter(function (x) { return x.slug === slug; })[0]; if (!ev) return;
     EDIT = { slug: slug, vals: {} };
-    $('e-title').textContent = 'Edit event · ' + ev.couple; $('e-view').href = '/' + slug + '/rsvp'; $('e-portal').href = '/' + slug + '/guests'; $('e-slug').textContent = slug; $('e-err').hidden = true;
+    $('e-title').textContent = 'Edit RSVP form · ' + ev.couple; $('e-view').href = '/v2/' + slug + '/rsvp'; $('e-portal').href = '/v2/' + slug + '/guests'; $('e-slug').textContent = slug; $('e-err').hidden = true;
     $('dlg-e').hidden = false; $('e-save').disabled = true;
     document.querySelectorAll('#form-e [data-k]').forEach(function (el) { el.value = ''; });
     api('rsvpInfo', { e: slug }).then(function (res) {
@@ -547,7 +552,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     if (!bad && vals['Start Date'] && vals['End Date'] && vals['End Date'] < vals['Start Date']) bad = 'The wedding weekend ends before it starts. Check the dates.';
     if (bad) { $('e-err').textContent = bad; $('e-err').hidden = false; return; }
     $('e-save').disabled = true; $('e-save').textContent = 'Saving…';
-    api('saveSettings', { e: EDIT.slug, settings: vals }).then(function () { $('dlg-e').hidden = true; toast('Saved.'); load(); })
+    api('saveSettings', { e: EDIT.slug, settings: vals }).then(function () { $('dlg-e').hidden = true; toast('Saved. The form shows the new texts now.'); load(); })
       .catch(function (x) { $('e-err').textContent = x.server ? x.message : 'Couldn’t save. Try again.'; $('e-err').hidden = false; })
       .then(function () { $('e-save').disabled = false; $('e-save').textContent = 'Save'; });
   });
@@ -667,7 +672,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
   }
   function gCleanTop(c) { var r = {}; Object.keys(c).forEach(function (s) { var v = c[s]; if (Array.isArray(v)) r[s] = gClean(v); else if (v && typeof v === 'object') { r[s] = {}; Object.keys(v).forEach(function (k) { r[s][k] = Array.isArray(v[k]) ? gClean(v[k]) : v[k]; }); } else r[s] = v; }); return r; }
   $('e-grand').addEventListener('click', function () {
-    var ev = EDIT.ev; $('g-title').textContent = 'Grand site texts · ' + ev.couple; $('g-view').href = '/' + ev.slug + '/rsvp';
+    var ev = EDIT.ev; $('g-title').textContent = 'Grand site texts · ' + ev.couple; $('g-view').href = '/v2/' + ev.slug + '/rsvp';
     $('g-body').textContent = 'Loading…'; $('g-err').hidden = true; $('g-note').hidden = true; $('g-save').disabled = true; $('dlg-g').hidden = false;
     fetch('/app/grand/config.js', { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (txt) {
       var w = {}; new Function('window', txt)(w); G.base = w.SITE; G.shapes = {}; gShapes(G.base, '');

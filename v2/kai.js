@@ -59,7 +59,19 @@
     });
   }
 
+  // Photos (dashboard › Edit RSVP / Grand texts): straight to Supabase Storage, public link back. Same answer as the old Hub.
+  function upload(data) {
+    var bin = atob(data.data || ''), u8 = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+    var path = String(data.e || 'event').replace(/[^a-z0-9-]/g, '') + '/' + Date.now() + '-' + String(data.name || 'image.jpg').replace(/[^A-Za-z0-9._-]/g, '-');
+    return ready().then(function () { return sb.storage.from('event-images').upload(path, new Blob([u8], { type: data.mime || 'image/jpeg' }), { contentType: data.mime || 'image/jpeg', upsert: false }); })
+      .then(function (r) {
+        if (r.error) { var e = new Error('Couldn’t upload the photo: ' + r.error.message); e.server = true; throw e; }
+        return { ok: true, url: sb.storage.from('event-images').getPublicUrl(path).data.publicUrl };
+      });
+  }
   function api(action, data) {
+    if (action === 'uploadImage') return upload(data || {});
     return ready().then(function () { return sb.rpc('kai_api', { p_action: action, p_data: data || {} }); }).then(function (r) {
       if (r.error) { var x = new Error('Couldn’t reach the server. Check your connection.'); throw x; }
       var res = r.data || {};

@@ -2188,7 +2188,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   }
   function remindText(r) {
     return remindTemplate().replace(/\{name\}/g, joinNames(r.guests.map(function (g) { return g.first; })))
-      .replace(/\{couple\}/g, $('couple').textContent || '').replace(/\{link\}/g, 'https://events.kaiwedd.com/' + EVENT + '/rsvp');
+      .replace(/\{couple\}/g, $('couple').textContent || '').replace(/\{link\}/g, 'https://events.kaiwedd.com/v2/' + EVENT + '/rsvp');
   }
   function remindRows() {
     var list = remindList();
