@@ -308,10 +308,8 @@ tbody tr.flash td { animation: rowflash 2.6s ease-out; }
 .selbar b { color: var(--text, #2B2B30); font-weight: 600; }
 .menu .kb { float: right; color: var(--soft); font-size: 12px; margin-left: 18px; }
 .fp-sort { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 2px 0 8px; border-bottom: 1px solid var(--hair); margin-bottom: 8px; }
-/* the couple: always first, light cream rows with a tag, a line under them */
+/* the couple's rows (guests 1 and 2): light cream */
 #grid tr.cp-row td { background: #FBF7EE; }
-#grid tr.cp-row + tr:not(.cp-row) td { border-top: 2px solid #D9C9A3; }
-.ctag { display: inline-block; font-size: 10.5px; font-weight: 700; color: #8A5A12; background: #F7EBD3; border-radius: 999px; padding: 1px 7px; margin-left: 7px; vertical-align: 1px; }
 /* drag a column header to move the column */
 .colghost { position: fixed; z-index: 60; pointer-events: none; background: #FFFFFF; border: 1px solid var(--line); box-shadow: 0 6px 18px rgba(0,0,0,.14); border-radius: 4px; padding: 6px 10px; font-size: 12.5px; font-weight: 600; color: var(--ink); opacity: .95; }
 .coldrop { position: absolute; top: 0; bottom: 0; width: 3px; margin-left: -1px; background: var(--ink); z-index: 5; pointer-events: none; }
@@ -1291,8 +1289,6 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       order.forEach(function (n) { list.forEach(function (g) { if ((g.group || '—') === n) out.push(g); }); });
       list = out;
     }
-    // The couple (guests marked Groom / Bride / Couple) always first, in their own order.
-    if (!S.trash) { var cpl = list.filter(function (g) { return g.couple; }).sort(function (a, b) { return a.no - b.no; }); if (cpl.length) list = cpl.concat(list.filter(function (g) { return !g.couple; })); }
     return list;
   }
 
@@ -1367,7 +1363,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var v = g[c.k];
     if (c.k === 'status') return '<span class="pill ' + esc(v) + '">' + esc(v) + '</span>';
     if (c.k === 'phone') return '<span style="font-variant-numeric:tabular-nums">' + esc(prettyPhone(v)) + '</span>' + (v ? '<a class="wa" href="' + waLink(v) + '" target="_blank" rel="noopener" aria-label="WhatsApp ' + esc(g.first) + '" data-noedit="1"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.6-5.2A8.5 8.5 0 1 1 21 11.5z"></path></svg></a>' : '');
-    if (c.k === 'first') { var dp = S.missing && dupOf(g); return '<b>' + esc(v) + '</b>' + (g.couple ? '<span class="ctag">' + esc(g.couple) + '</span>' : '') + (dp ? ' <span class="dup" title="Same name as guest #' + dp.no + '">same as #' + dp.no + '</span>' : ''); }
+    if (c.k === 'first') { var dp = S.missing && dupOf(g); return '<b>' + esc(v) + '</b>' + (dp ? ' <span class="dup" title="Same name as guest #' + dp.no + '">same as #' + dp.no + '</span>' : ''); }
     if (!v && c.k === 'group') return '<span class="ph">—</span>';
     return esc(v);
   }
