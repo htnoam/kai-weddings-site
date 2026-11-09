@@ -275,7 +275,7 @@ html[dir=ltr] input[type=tel] { text-align: left; }
       types: [['adult', 'מבוגר', ''], ['child', 'ילד', 'עד גיל 10'], ['baby', 'תינוק', 'עד גיל 2']], ageOf: 'גיל אורח', more: 'אורח נוסף', less: 'פחות אורחים',
       questions: 'שאלות? נועם סלח, מפיק האירוע,<br>ישמח לעזור.', waBtn: 'הודעה לנועם בווטסאפ', insta: 'עקבו אחרינו באינסטגרם',
       intro: 'היי, יקרים ואהובים שלנו.\nיש סיבה שהגעתם עד לכאן!', ask: 'תצטרפו אלינו?', script: 'נתראה שם', thanks: 'התשובה שלכם נשמרה. מחכים לחגוג איתכם!',
-      weddingDay: 'יום החתונה', locale: 'he-IL', missing: 'האירוע לא נמצא. בדקו את הלינק.'
+      weddingDay: 'יום החתונה', locale: 'he-IL', missing: 'האירוע לא נמצא. בדקו את הלינק.', closed: 'טופס האישור עוד לא פתוח.'
     },
     en: {
       invited: 'You’re invited', title: 'We’re <em>getting</em> married!', first: 'First name', last: 'Last name', namesHint: 'Please write the names in English letters',
@@ -287,7 +287,7 @@ html[dir=ltr] input[type=tel] { text-align: left; }
       types: [['adult', 'Adult', ''], ['child', 'Child', 'up to 10'], ['baby', 'Baby', 'up to 2']], ageOf: 'Age of guest', more: 'Add a guest', less: 'Remove a guest',
       questions: 'Questions? Noam Salach, the event planner,<br>is happy to help.', waBtn: 'Message Noam on WhatsApp', insta: 'Follow us on Instagram',
       intro: 'Hi, our dear and beloved ones.\nThere’s a reason you’re here!', ask: 'Will you join us?', script: 'See you there', thanks: 'Your reply is saved. We can’t wait to celebrate with you!',
-      weddingDay: 'Wedding day', locale: 'en-GB', missing: 'This event was not found. Please check the link.'
+      weddingDay: 'Wedding day', locale: 'en-GB', missing: 'This event was not found. Please check the link.', closed: 'This RSVP form isn’t open yet.'
     }
   };
   var CFG = null, L = 'he';
@@ -431,6 +431,7 @@ html[dir=ltr] input[type=tel] { text-align: left; }
     .then(function (res) {
       if (!res.ok) throw new Error(res.error);
       CFG = res.event;
+      if (CFG['RSVP Form'] === 'off') { if (CFG['Default Language'] === 'en' || CFG['Default Language'] === 'he') L = chosen ? L : CFG['Default Language']; document.querySelector('.page').innerHTML = '<div class="missing">' + T[L].closed + '</div>'; return; }
       if (CFG.Template === 'Grand') return loadGrand(CFG);   // this event uses the Grand design
       if (!chosen && (CFG['Default Language'] === 'en' || CFG['Default Language'] === 'he')) L = CFG['Default Language'];
       if (CFG['Hero Image']) { $('h-img').src = CFG['Hero Image']; $('h-img').alt = CFG.couple; $('h-sea').hidden = false; $('hero').classList.remove('no-photo'); }

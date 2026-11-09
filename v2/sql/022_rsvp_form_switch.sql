@@ -1,0 +1,7 @@
+-- 9 Nov 2026: the RSVP form can be off for an event (events.settings "RSVP Form" = 'off').
+-- kai_api 'createEvent': event.rsvp = 'off' (the New Event checkbox, unticked by default) sets it.
+-- kai_api 'rsvpForm' {e, on} (Noam only): "+ RSVP form" in the events list turns it on; ⋯ › "Turn off the RSVP form" turns it off.
+-- kai_api 'events': each event gets rsvpOff (hides RSVP / Edit RSVP / copy RSVP in the dashboard).
+-- kai_rsvp_info returns "RSVP Form" so /<event>/rsvp shows "This RSVP form isn't open yet."
+-- kai_public refuses 'rsvp' and 'grandSave' while it's off. The guest area (/guests) is not affected.
+-- (Small in-place edits of kai_api, kai_public and kai_rsvp_info; see Supabase for the full functions.)
