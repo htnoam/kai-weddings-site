@@ -43,6 +43,10 @@
 #form .cpr{margin-top:0;grid-template-columns:88px 1fr 1fr 1.25fr}
 #form .err{margin:0 0 12px}
 #form select,#form input{font-family:inherit}
+#form .nwrow{display:flex;align-items:center;gap:12px;margin-left:25px}#form .nwrow select{height:36px;border:1px solid var(--line);border-radius:4px;padding:0 10px;font:inherit;font-size:14.5px;background:#fff;width:150px}#form .nwrow[hidden]{display:none}
+.wdlg{max-width:620px}.wbar{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13.5px;color:var(--soft)}.wbar select{height:32px;border:1px solid var(--line);border-radius:4px;padding:0 8px;font:inherit;background:#fff}
+#w-frame{width:100%;height:min(62vh,640px);border:1px solid var(--hair);border-radius:6px;background:#FBF7EE}
+.wsent{color:var(--ok)}.wwait{color:var(--warn)}.wbad{color:var(--bad)}
 #form .act{padding:12px 24px;border-top:1px solid var(--hair);background:var(--soft-surface)}
 .signout{border:none;background:none;color:var(--ink);font-weight:600;cursor:pointer;font-size:13.5px}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -248,6 +252,10 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     <div class="hint">Preview: <a href="/v2/demo-wedding/rsvp" target="_blank" rel="noopener">Classic</a> · <a href="/app/grand/" target="_blank" rel="noopener">Grand</a></div>
       </div>
     </div>
+    <div class="nsec"><div class="nst">Welcome email</div>
+      <label class="nchk"><input type="checkbox" id="n-wel" checked> Send the couple a welcome email <span>To the client’s email above.</span></label>
+      <div class="nwrow" id="n-welset"><select id="n-wlang" aria-label="Email language"><option value="he">Hebrew</option><option value="en">English</option></select><button type="button" class="lnk" id="n-wprev">Preview</button></div>
+    </div>
     <p class="err" id="n-err" hidden></p>
     </div>
     <div class="act">
@@ -255,6 +263,15 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
       <button type="submit" class="btn primary" id="n-save">Create Event</button>
     </div>
   </form>
+</div>
+<div class="overlay" id="dlg-w" hidden>
+  <div class="dialog wdlg" role="dialog" aria-modal="true" aria-labelledby="w-title">
+    <h2 id="w-title">Welcome email</h2>
+    <div class="wbar"><span id="w-to"></span><select id="w-lang" aria-label="Email language"><option value="he">Hebrew</option><option value="en">English</option></select></div>
+    <iframe id="w-frame" title="Email preview"></iframe>
+    <p class="err" id="w-err" hidden></p>
+    <div class="act"><button type="button" class="btn" id="w-cancel">Close</button><button type="button" class="btn primary" id="w-send">Send</button></div>
+  </div>
 </div>
 <div class="overlay" id="dlg-e" hidden>
   <form class="dialog wide" id="form-e" role="dialog" aria-modal="true" aria-labelledby="e-title" novalidate>
@@ -451,7 +468,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     $('rows').innerHTML = shown.map(function (ev) {
       var c = ev.counts || {}, n = function (v, cls) { return '<td class="num' + '"><span class="' + (v ? cls : 'sub') + '">' + (v == null ? '—' : v) + '</span></td>'; };
       return '<tr' + (ev.status === 'Ended' ? ' class="ended"' : '') + '>' +
-        '<td><div class="couple">' + esc(ev.couple) + '</div><div class="sub">/' + esc(ev.slug) + (ev.status === 'Ended' ? ' · Ended' : '') + (ev.error ? ' · ' + esc(ev.error) : '') + '</div></td>' +
+        '<td><div class="couple">' + esc(ev.couple) + '</div><div class="sub">/' + esc(ev.slug) + (ev.status === 'Ended' ? ' · Ended' : '') + (ev.error ? ' · ' + esc(ev.error) : '') + '</div>' + welLine(ev) + '</td>' +
         '<td>' + esc(fmtDate(ev.date)) + (when(ev) ? '<div class="sub">' + esc(when(ev)) + '</div>' : '') + '</td><td>' + esc(ev.place) + '</td>' +
         n(c.total, '') +
         '<td class="num"><span class="' + (c.Confirmed ? 'c-ok' : 'sub') + '">' + (c.Confirmed == null ? '—' : c.Confirmed) + '</span>' + (ages(c) ? '<div class="sub">' + ages(c) + '</div>' : '') + '</td>' +
@@ -497,7 +514,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     if (MENU === b.dataset.menu && !$('menu').hidden) { closeMenu(); return; }
     var ev = EVENTS.filter(function (x) { return x.slug === b.dataset.menu; })[0]; if (!ev) return;
     MENU = ev.slug; var m = $('menu');
-    m.innerHTML = (ev.rsvpOff ? '' : '<button type="button" data-act="rsvpoff">Turn off the RSVP form</button>') + '<button type="button" data-act="end">' + (ev.status === 'Ended' ? 'Move back to active events' : 'Mark as ended') + '</button>' +
+    m.innerHTML = '<button type="button" data-act="welcome">' + (ev.welcome && ev.welcome.sent ? 'Send the welcome email again' : 'Send the welcome email') + '</button>' + (ev.rsvpOff ? '' : '<button type="button" data-act="rsvpoff">Turn off the RSVP form</button>') + '<button type="button" data-act="end">' + (ev.status === 'Ended' ? 'Move back to active events' : 'Mark as ended') + '</button>' +
       '<button type="button" class="del" data-act="del">Delete event…</button>';
     m.hidden = false;
     var r = b.getBoundingClientRect(), w = m.offsetWidth, h = m.offsetHeight;
@@ -510,6 +527,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     var ev = EVENTS.filter(function (x) { return x.slug === MENU; })[0]; closeMenu(); if (!ev) return;
     if (b.dataset.act === 'del') { openDelete(ev); return; }
     if (b.dataset.act === 'rsvpoff') { rsvpForm(ev, false); return; }
+    if (b.dataset.act === 'welcome') { openWelcome(ev); return; }
     var end = ev.status !== 'Ended';
     toast('Saving…');
     api('endEvent', { slug: ev.slug, ended: end }).then(function () {
@@ -517,6 +535,77 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
       toast(end ? ev.couple + ' is marked as ended.' : ev.couple + ' is back with the active events.');
     }).catch(function (x) { toast(x.server ? x.message : 'Couldn’t update the event. Try again.', true); });
   });
+  // ---------- welcome email to the couple (sent from Noam's Gmail by the old Hub, within a minute) ----------
+  var WA = 'https://wa.me/972528344374';
+  function welLine(ev) {
+    var w = ev.welcome; if (!w) return '';
+    if (w.sent) return '<div class="sub wsent">✉ Welcome email sent ' + esc(w.sent) + '</div>';
+    if (w.error) return '<div class="sub wbad" title="' + esc(w.error) + '">✉ Welcome email not sent</div>';
+    return '<div class="sub wwait">✉ Welcome email on its way</div>';
+  }
+  function welcomeMail(o, lang) {
+    var he = lang === 'he', link = SITE + o.slug + '/portal', d = o.date ? o.date.split('-').reverse().join('.') : '';
+    var where = [o.venue, o.country].filter(Boolean).join(', '), meta = [d, where].filter(Boolean).join(' · ');
+    var names = o.couple || '', namesHe = names.replace(/ & /, ' ו');
+    var T = he ? {
+      subject: 'ברוכים הבאים, ' + names + ' 💍', hi: 'מזל טוב! 🥂', p: 'אני כל כך שמח שבחרתם בנו ללוות אתכם בדרך לחתונה. מהיום אנחנו כאן לכל שאלה, רעיון או התלבטות.',
+      list: 'הכל במקום אחד, בפורטל האישי שלכם:', items: ['רשימת האורחים, עם אישורי ההגעה', 'הלו״ז של יום החתונה', 'שאלות קצרות שנשמח שתענו עליהן'],
+      btn: 'כניסה לפורטל שלכם', keep: 'שמרו את המייל הזה, הלינק תמיד יעבוד.', wa: '💬 כתבו לי בוואטסאפ', name: 'נועם', role: 'מתכנן החתונה שלכם · KAI Events'
+    } : {
+      subject: 'Welcome, ' + names + ' 💍', hi: 'Congratulations! 🥂', p: 'I’m so happy you chose us to be with you on the way to your wedding. From today, we’re here for every question, idea and decision.',
+      list: 'Everything in one place, in your own portal:', items: ['Your guest list, with every RSVP', 'The wedding day schedule', 'A few short questions for you'],
+      btn: 'Open your portal', keep: 'Keep this email, the link always works.', wa: '💬 Message me on WhatsApp', name: 'Noam', role: 'Your event planner · KAI Events'
+    };
+    var dir = he ? 'rtl' : 'ltr', al = he ? 'right' : 'left', font = he ? "Arial,'Helvetica Neue',sans-serif" : "'Helvetica Neue',Arial,sans-serif";
+    var html = '<!doctype html><html dir="' + dir + '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>' +
+      '<body style="margin:0;padding:0;background:#FBF7EE;">' +
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FBF7EE;"><tr><td align="center" style="padding:28px 12px;">' +
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#FFFFFF;border:1px solid #EFE7D6;border-radius:10px;" dir="' + dir + '"><tr><td align="center" style="padding:34px 28px 30px;font-family:' + font + ';color:#3A3A40;">' +
+      '<div style="font-family:Georgia,serif;font-size:14px;letter-spacing:5px;color:#2E3A9E;">KAI EVENTS</div>' +
+      '<div style="width:40px;height:1px;background:#D9C9A3;margin:16px auto;line-height:1px;font-size:1px;">&nbsp;</div>' +
+      '<div dir="ltr" style="font-family:Georgia,\'Times New Roman\',serif;font-size:32px;line-height:1.15;color:#2E3A9E;font-weight:bold;">' + esc(names) + '</div>' +
+      (meta ? '<div dir="ltr" style="font-size:13px;color:#6E6E75;letter-spacing:.5px;margin-top:6px;">' + esc(meta) + '</div>' : '') +
+      '<p style="font-size:15px;line-height:1.65;margin:20px 0 14px;">' + esc(T.hi) + '<br>' + esc(T.p) + '</p>' +
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FBF7EE;border-radius:8px;"><tr><td style="padding:12px 16px;text-align:' + al + ';font-size:14.5px;line-height:1.9;" dir="' + dir + '">' +
+        esc(T.list) + T.items.map(function (x) { return '<br><span style="color:#2E3A9E;font-weight:bold;">✓</span>&nbsp; ' + esc(x); }).join('') + '</td></tr></table>' +
+      '<div style="margin:24px 0 6px;"><a href="' + esc(link) + '" style="display:inline-block;background:#2E3A9E;color:#FFFFFF;text-decoration:none;font-weight:bold;font-size:15px;padding:13px 28px;border-radius:999px;">' + esc(T.btn) + '</a></div>' +
+      '<div dir="ltr" style="font-size:12px;color:#8A8A90;"><a href="' + esc(link) + '" style="color:#8A8A90;">' + esc(link.replace('https://', '')) + '</a></div>' +
+      '<p style="font-size:13.5px;line-height:1.6;margin:16px 0 8px;">' + esc(T.keep) + '</p>' +
+      '<a href="' + WA + '" style="display:inline-block;border:1px solid #CFE8D5;background:#F3FBF5;color:#1E7A3C;text-decoration:none;font-weight:bold;font-size:13.5px;padding:8px 18px;border-radius:999px;">' + esc(T.wa) + '</a>' +
+      '<div style="font-family:Georgia,serif;font-size:19px;color:#1F1F21;margin-top:22px;">' + esc(T.name) + '</div>' +
+      '<div style="font-size:12.5px;color:#6E6E75;margin-top:2px;">' + esc(T.role) + '</div>' +
+      '</td></tr></table>' +
+      '<div style="font-family:Arial,sans-serif;font-size:11.5px;color:#9A9AA0;margin-top:14px;">KAI Events · Cyprus &amp; Israel</div>' +
+      '</td></tr></table></body></html>';
+    return { subject: T.subject, html: html };
+  }
+  // One dialog for both: preview from New Event (no Send) and send / send again from the ⋯ menu.
+  var WEL = null;
+  function welDraw() { var w = welcomeMail(WEL.o, $('w-lang').value); $('w-frame').srcdoc = w.html; $('w-to').textContent = (WEL.to ? 'To ' + WEL.to + ' · ' : '') + w.subject; }
+  function welOpen(o, to, lang, canSend) {
+    WEL = { o: o, to: to, send: canSend }; $('w-lang').value = lang; $('w-send').hidden = !canSend; $('w-err').hidden = true;
+    $('w-send').disabled = false; $('w-send').textContent = 'Send'; welDraw(); $('dlg-w').hidden = false;
+  }
+  function openWelcome(ev) {
+    var cut = (ev.place || '').lastIndexOf(',');
+    welOpen({ couple: ev.couple, date: ev.date, venue: ev.venue || (cut > 0 ? ev.place.slice(0, cut).trim() : ev.place || ''), country: ev.country || (cut > 0 ? ev.place.slice(cut + 1).trim() : ''), slug: ev.slug }, ev.email || '', 'he', true);
+    WEL.ev = ev;
+    if (!ev.email) { $('w-err').textContent = 'This event has no client email. Add it in Edit RSVP first.'; $('w-err').hidden = false; $('w-send').disabled = true; }
+  }
+  $('w-lang').addEventListener('change', welDraw);
+  $('w-cancel').addEventListener('click', function () { $('dlg-w').hidden = true; });
+  $('w-send').addEventListener('click', function () {
+    var w = welcomeMail(WEL.o, $('w-lang').value), b = this; b.disabled = true; b.textContent = 'Sending…';
+    api('queueEmail', { e: WEL.o.slug, to: WEL.to, subject: w.subject, html: w.html }).then(function () {
+      $('dlg-w').hidden = true; toast('The welcome email is on its way to ' + WEL.to + '.'); load();
+    }).catch(function (x) { $('w-err').textContent = x.server ? x.message : 'Couldn’t send. Try again.'; $('w-err').hidden = false; b.disabled = false; b.textContent = 'Send'; });
+  });
+  $('n-wel').addEventListener('change', function () { $('n-welset').hidden = !this.checked; });
+  $('n-wprev').addEventListener('click', function () {
+    var c = $('n-couple').value.trim() || 'Couple’s names';
+    welOpen({ couple: c, date: toIso($('n-date').value) || '', venue: $('n-venue').value.trim(), country: $('n-country').value.trim(), slug: slugify(c) || 'event' }, $('n-email').value.trim(), $('n-wlang').value, false);
+  });
+  $('w-lang').addEventListener('change', function () { if (!WEL.send) $('n-wlang').value = this.value; });
   // RSVP form on / off per event (off: the /rsvp link says the form isn't open).
   function rsvpForm(ev, on) {
     toast('Saving…');
@@ -559,7 +648,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
   ['n-f1', 'n-f2'].forEach(function (id) { $(id).addEventListener('input', autoName); });
   $('n-chg').addEventListener('click', function () { $('n-cwrap').hidden = false; $('n-couple').focus(); });
   $('n-rsvp').addEventListener('change', function () { $('n-rsvpset').hidden = !this.checked; });
-  function openNew() { NAMEX = false; $('n-cwrap').hidden = true; ['n-f1', 'n-l1', 'n-p1', 'n-f2', 'n-l2', 'n-p2'].forEach(function (id) { $(id).value = ''; }); $('n-r1').value = 'Bride'; $('n-r2').value = 'Groom'; $('n-rsvp').checked = false; $('n-rsvpset').hidden = true; ['n-couple', 'n-date', 'n-email', 'n-sunset', 'n-start', 'n-end', 'n-venue', 'n-country'].forEach(function (id) { $(id).value = ''; }); $('n-lang').value = 'he'; $('n-tpl').value = ''; $('n-err').hidden = true; $('dlg').hidden = false; autoName(); $('n-f1').focus(); STPL.manage = false; STPL.del = ''; stplLoad(); }
+  function openNew() { NAMEX = false; $('n-cwrap').hidden = true; ['n-f1', 'n-l1', 'n-p1', 'n-f2', 'n-l2', 'n-p2'].forEach(function (id) { $(id).value = ''; }); $('n-r1').value = 'Bride'; $('n-r2').value = 'Groom'; $('n-rsvp').checked = false; $('n-rsvpset').hidden = true; $('n-wel').checked = true; $('n-welset').hidden = false; $('n-wlang').value = 'he'; ['n-couple', 'n-date', 'n-email', 'n-sunset', 'n-start', 'n-end', 'n-venue', 'n-country'].forEach(function (id) { $(id).value = ''; }); $('n-lang').value = 'he'; $('n-tpl').value = ''; $('n-err').hidden = true; $('dlg').hidden = false; autoName(); $('n-f1').focus(); STPL.manage = false; STPL.del = ''; stplLoad(); }
   $('n-couple').addEventListener('input', function () { NAMEX = !!this.value.trim(); autoName(); });
   $('form').addEventListener('submit', function (e) {
     e.preventDefault();
@@ -567,7 +656,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
       p1: { first: $('n-f1').value.trim(), last: $('n-l1').value.trim(), phone: $('n-p1').value.trim(), role: $('n-r1').value }, p2: { first: $('n-f2').value.trim(), last: $('n-l2').value.trim(), phone: $('n-p2').value.trim(), role: $('n-r2').value }, date: toIso($('n-date').value), lang: $('n-lang').value, email: $('n-email').value.trim(),
       start: toIso($('n-start').value, wedYear($('n-date').value)), end: toIso($('n-end').value, wedYear($('n-date').value)), sunset: toTime($('n-sunset').value), venue: $('n-venue').value.trim(), country: $('n-country').value.trim() };
     var err = !f.p1.first || !f.p2.first ? 'Write both first names in “The couple”.' : /[֐-׿]/.test(f.p1.first + f.p1.last + f.p2.first + f.p2.last) ? 'Write the couple’s names in English.' : !f.couple ? 'Write the couple’s names.' : /[֐-׿]/.test(f.couple) ? 'Write the names in English. They become the link.' : !slugify(f.couple) ? 'Write the names in English letters.' :
-      f.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email) ? 'Check the client’s email address.' :
+      f.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email) ? 'Check the client’s email address.' : $('n-wel').checked && !f.email ? 'Add the client’s email for the welcome email, or untick it.' :
       f.date === null || f.start === null || f.end === null ? 'Write dates as DD/MM/YYYY, e.g. 04/06/2027.' : f.sunset === null ? 'Write the sunset time as HH:MM, e.g. 19:45.' :
       f.start && f.end && f.end < f.start ? 'The event dates end before they start. Check the dates.' : '';
     if (err) { $('n-err').textContent = err; $('n-err').hidden = false; return; }
@@ -576,7 +665,12 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     api('createEvent', { event: f }).then(function (res) {
       return tpl ? api('saveSettings', { e: res.event.slug, settings: { Template: tpl } }).then(function () { return res; }) : res;
     }).then(function (res) {
-      $('dlg').hidden = true; toast('Created ' + res.event.couple + ' · events.kaiwedd.com' + BASE + res.event.slug + '/rsvp' + (res.schedule ? ' · schedule from ' + res.schedule : f.date && f.sunset ? '' : ' · no schedule yet (needs date and sunset)')); load();
+      if (!$('n-wel').checked) return res;
+      var w = welcomeMail({ couple: res.event.couple || f.couple, date: f.date, venue: f.venue, country: f.country, slug: res.event.slug }, $('n-wlang').value);
+      return api('queueEmail', { e: res.event.slug, to: f.email, subject: w.subject, html: w.html }).then(function () { res.mailed = true; return res; }, function () { res.mailed = false; return res; });
+    }).then(function (res) {
+      if (res.mailed === false) toast('The event was created, but the welcome email wasn’t sent. Send it from the ⋯ menu.', true);
+      $('dlg').hidden = true; toast('Created ' + res.event.couple + (res.mailed ? ' · welcome email on its way' : '') + ' · events.kaiwedd.com' + BASE + res.event.slug + '/rsvp' + (res.schedule ? ' · schedule from ' + res.schedule : f.date && f.sunset ? '' : ' · no schedule yet (needs date and sunset)')); load();
     }).catch(function (x) { $('n-err').textContent = x.server ? x.message : 'Couldn’t create the event. Try again.'; $('n-err').hidden = false; })
       .then(function () { $('n-save').disabled = false; $('n-save').textContent = 'Create Event'; });
   });
@@ -606,7 +700,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     else if (b.hasAttribute('data-tdn')) { STPL.del = ''; stplDraw(); }
     else if (b.dataset.tdy) { var n = b.dataset.tdy; api('deleteScheduleTemplate', { name: n }).then(function (r) { stplSet(r); toast('Template “' + n + '” deleted'); }).catch(function (x) { toast(x.message, true); }); }
   });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { if (!$('dlg-g').hidden) { $('dlg-g').hidden = true; return; } $('dlg').hidden = true; $('dlg-e').hidden = true; $('dlg-d').hidden = true; closeMenu(); } });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { if (!$('dlg-g').hidden) { $('dlg-g').hidden = true; return; } if (!$('dlg-w').hidden) { $('dlg-w').hidden = true; return; } $('dlg').hidden = true; $('dlg-e').hidden = true; $('dlg-d').hidden = true; closeMenu(); } });
 
   // ---------- edit RSVP form (texts and photos are saved in the event's Settings) ----------
   var EDIT = { slug: '', vals: {} };
