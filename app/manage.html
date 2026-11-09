@@ -636,6 +636,11 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
 .sc-copy { background: var(--surface); border: 1px solid var(--hair); border-radius: 6px; }
 .sc-copy-h { padding: 10px 14px; border-bottom: 1px solid var(--hair); display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
 .sc-copy-l { display: flex; flex-direction: column; }
+.sc-tsave { padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
+.sc-tsave input { height: 36px; border: 1px solid var(--line); border-radius: 4px; padding: 0 10px; max-width: 360px; background: var(--surface); }
+.sc-copy .foot { display: flex; gap: 8px; align-items: center; padding: 10px 14px; border-top: 1px solid var(--hair); background: var(--soft-surface); }
+.sc-row.sunrow { background: #FBF3E2; }
+.sc-row.sunrow .sc-t, .sc-row.sunrow .sc-what, .sc-row.sunrow .sc-t .ie, .sc-row.sunrow .sc-what .ie { color: #8A5A12; }
 .sc-copy-l button { border: none; border-bottom: 1px solid var(--row-line); background: none; text-align: left; padding: 10px 14px; display: flex; gap: 10px; align-items: baseline; font-size: 14.5px; }
 .sc-copy-l button:hover { background: var(--ink-soft); }
 .sc-copy-l button b { color: var(--ink); }
@@ -2285,7 +2290,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
 
   // ---------- schedule (second section next to Guests) ----------
   // Shown only when the hub sends a schedule (event Settings › Wedding Plan = On). Noam edits right on the schedule; the couple reads it.
-  // Row: { id, day DD/MM/YYYY, time, until, what, where, who, notes: [{ text, red, hidden }], couple (the couple sees it), red }
+  // Row: { id, day DD/MM/YYYY, time, until, what, where, who, notes: [{ text, red, hidden }], couple (the couple sees it), red, kind ('' | 'fixed' | 'sunset', from a template) }
   // The hub leaves hidden rows and hidden lines out of the couple's copy. Every change is saved on its own, a moment after typing stops.
   var SC = { on: false, rows: [], wedding: {}, days: [], mode: 'view', dirty: false, timer: null, saving: false };
   var SC_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -2348,18 +2353,20 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var box = $('sched'), admin = S.admin;
     if (SC.mode === 'paste') { schedPaste(); return; }
     if (SC.mode === 'copy') { schedCopy(); return; }
+    if (SC.mode === 'tpl') { schedFromTpl(); return; }
+    if (SC.mode === 'savetpl') { schedSaveTpl(); return; }
     scSort();
     var reds = SC.rows.reduce(function (a, r) { return a + (r.red ? 1 : 0) + r.notes.filter(function (n) { return n.red; }).length; }, 0);
     var h = '<div class="sc-bar">' + (admin ? '<span class="sc-hint">Click any text to change it. On a row or a single line: the flag marks it in red, the eye hides it from the couple.</span>' : '') +
       '<span class="grow"></span>' + (reds ? '<button type="button" class="sc-redcount" id="sc-reds">' + reds + (reds === 1 ? ' needs attention' : ' need attention') + '</button>' : '') +
-      (admin ? '<button type="button" class="btn" id="sc-copy">Copy from another event</button><button type="button" class="btn" id="sc-paste">Paste from Word</button>' : '') + '</div>';
+      (admin && SC.rows.length ? '<button type="button" class="btn" id="sc-savetpl">Save as template</button>' : '') + (admin ? '<button type="button" class="btn" id="sc-copy">Copy from another event</button><button type="button" class="btn" id="sc-paste">Paste from Word</button>' : '') + '</div>';
     var open = BR.on ? brCounts()[1] - brCounts()[0] : 0;
     if (!admin && open) h += '<div class="sc-banner">יש ' + open + (open === 1 ? ' שאלה' : ' שאלות') + ' לבריף החופה שמחכות לכם<button type="button" class="btn primary" data-gobrief>לשאלות</button></div>';
     var days = {}, order = [];
     SC.rows.forEach(function (r, i) { if (!days[r.day]) { days[r.day] = []; order.push(r.day); } days[r.day].push(i); });
     if (admin) SC.days.forEach(function (d) { if (!days[d]) { days[d] = []; order.push(d); } });
     order.sort(function (a, b) { return (scIso(a) || '9999') < (scIso(b) || '9999') ? -1 : 1; });
-    if (!order.length) h += '<div class="sc-empty">' + (admin ? '<b>No schedule yet.</b><span>Paste it from Word, or add the first day.</span>' : 'The schedule isn’t ready yet. Noam will add it here.') + '</div>';
+    if (!order.length) h += '<div class="sc-empty">' + (admin ? '<b>No schedule yet.</b><span>Start from a template, paste it from Word, or add the first day.</span><button type="button" class="btn primary" id="sc-fromtpl">Start from template</button>' : 'The schedule isn’t ready yet. Noam will add it here.') + '</div>';
     var sunset = function (d) { return scIso(d) === SC.wedding.date && SC.wedding.sunset ? '<span class="sun">Sunset ' + esc(SC.wedding.sunset) + '</span>' : ''; };
     h += order.map(function (d) {
       return '<section class="sc-day"><div class="sc-dh"><b>' + esc(scName(d)) + '</b><span>' + esc(d) + '</span>' + sunset(d) + '</div>' +
@@ -2379,7 +2386,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     return '<button type="button" class="sc-brieflink" data-gobrief>בריף חופה ←' + (open ? '<span class="bn">' + open + '</span>' : '') + '</button>';
   }
   function scRowRead(r) {
-    return '<div class="sc-row' + (r.red ? ' red' : '') + '"><div class="sc-t">' + esc(r.time) + (r.until ? '<small>until ' + esc(r.until) + '</small>' : '') + '</div><div class="sc-w">' +
+    return '<div class="sc-row' + (r.red ? ' red' : '') + (r.kind === 'sunset' ? ' sunrow' : '') + '"><div class="sc-t">' + esc(r.time) + (r.until ? '<small>until ' + esc(r.until) + '</small>' : '') + '</div><div class="sc-w">' +
       '<div class="sc-what" dir="auto">' + esc(r.what) + '</div>' +
       ([r.where, r.who].filter(Boolean).length ? '<div class="sc-sub" dir="auto">' + esc([r.where, r.who].filter(Boolean).join(' · ')) + '</div>' : '') +
       (r.notes.length ? '<ul class="sc-notes">' + r.notes.map(function (n) { return '<li dir="auto"' + (n.red ? ' class="red"' : '') + '>' + esc(n.text) + '</li>'; }).join('') + '</ul>' : '') + scBriefLink(r) + '</div></div>';
@@ -2390,7 +2397,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       if (k === 'what') return '<textarea rows="1" class="ie grow" dir="auto" data-sci="' + i + '" data-sck="' + k + '" placeholder="' + ph + '" aria-label="' + ph + '">' + esc(r[k]) + '</textarea>';
       return '<input class="ie' + (cls ? ' ' + cls : '') + '" dir="auto" data-sci="' + i + '" data-sck="' + k + '" value="' + esc(r[k]) + '" placeholder="' + ph + '" aria-label="' + ph + '"' + (k === 'time' || k === 'until' ? ' inputmode="numeric"' : '') + '>'; };
     var btn = function (attr, on, icon, label) { return '<button type="button" class="sc-ab' + (on ? ' on' : '') + '" ' + attr + ' title="' + label + '" aria-label="' + label + '">' + icon + '</button>'; };
-    return '<div class="sc-row ed' + (r.couple ? '' : ' off') + (r.red ? ' red' : '') + '">' +
+    return '<div class="sc-row ed' + (r.couple ? '' : ' off') + (r.red ? ' red' : '') + (r.kind === 'sunset' ? ' sunrow' : '') + '">' +
       '<div class="sc-t">' + f('time', 'HH:MM') + '<span class="' + (r.until ? '' : 'opt') + '">' + f('until', 'until', 'until') + '</span></div>' +
       '<div class="sc-w"><div class="sc-what">' + f('what', 'What happens') + (r.couple ? '' : '<span class="sc-tag">Only you</span>') + '</div>' +
       '<div class="sc-pair' + (r.where || r.who ? '' : ' opt') + '"><span style="flex:3" class="' + (r.where ? '' : 'opt') + '">' + f('where', 'Where') + '</span><span style="flex:2" class="' + (r.who ? '' : 'opt') + '">' + f('who', 'Who') + '</span></div>' +
@@ -2453,6 +2460,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     });
     $('sc-paste').onclick = function () { schedFlush(); SC.mode = 'paste'; schedRender(); };
     $('sc-copy').onclick = function () { schedFlush(); SC.mode = 'copy'; schedRender(); };
+    if ($('sc-fromtpl')) $('sc-fromtpl').onclick = function () { SC.mode = 'tpl'; schedRender(); };
+    if ($('sc-savetpl')) $('sc-savetpl').onclick = function () { SC.mode = 'savetpl'; schedRender(); };
   }
 
   // ----- copy from another event: the rows are added here with their days moved to this wedding (red marks kept) -----
@@ -2481,6 +2490,49 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
         });
       }; });
     }).catch(function () { if ($('sc-clist')) $('sc-clist').innerHTML = '<span class="sc-hint" style="padding:12px 14px">Couldn’t load the events. Check your connection and try again.</span>'; });
+  }
+
+  // ----- schedule templates: the wedding day is built once from this event's sunset; after that it's a normal schedule -----
+  function scWaitSaved() { schedFlush(); return new Promise(function (ok) { (function w() { if (!SC.dirty && !SC.saving) ok(); else setTimeout(w, 200); })(); }); }
+  function schedFromTpl() {
+    var box = $('sched'), sun = SC.wedding.sunset;
+    box.innerHTML = '<div class="sc-copy"><div class="sc-copy-h"><b>Start from template</b><span class="sc-hint">' + (sun ? 'Wedding-day times are set from this event’s sunset (' + esc(sun) + '), rounded to 5 minutes. After that nothing moves by itself.' : 'Add the sunset time to this event first (Dashboard › Edit).') + '</span><span style="flex:1"></span><button type="button" class="btn" id="sc-tcancel">Cancel</button></div><div class="sc-copy-l" id="sc-tlist">' + (sun ? '<span class="sc-hint" style="padding:12px 14px">Loading templates…</span>' : '') + '</div></div>';
+    $('sc-tcancel').onclick = function () { SC.mode = 'view'; schedRender(); };
+    if (!sun) return;
+    api('scheduleTemplates', {}).then(function (res) {
+      if (SC.mode !== 'tpl') return;
+      var list = (res.templates || []).slice().sort(function (a, b) { return (b.main ? 1 : 0) - (a.main ? 1 : 0); });
+      $('sc-tlist').innerHTML = list.length ? list.map(function (t) { return '<button type="button" data-tpl="' + esc(t.name) + '"><b>' + esc(t.name) + '</b><span>' + (t.main ? 'Main' : '') + '</span></button>'; }).join('') : '<span class="sc-hint" style="padding:12px 14px">There are no templates yet.</span>';
+      $('sc-tlist').querySelectorAll('[data-tpl]').forEach(function (b) { b.onclick = function () {
+        $('sc-tlist').querySelectorAll('button').forEach(function (x) { x.disabled = true; }); b.querySelector('span').textContent = 'Building…';
+        api('scheduleFromTemplate', { name: b.dataset.tpl }).then(function (r) {
+          SC.rows = r.schedule || []; SC.mode = 'view'; schedRender(); toast('Schedule built from ' + r.template + ' · sunset ' + sun + '.');
+        }).catch(function (e) {
+          toast(e.server ? e.message : 'Couldn’t build the schedule. Check your connection and try again.');
+          $('sc-tlist').querySelectorAll('button').forEach(function (x) { x.disabled = false; }); b.querySelector('span').textContent = '';
+        });
+      }; });
+    }).catch(function () { if ($('sc-tlist')) $('sc-tlist').innerHTML = '<span class="sc-hint" style="padding:12px 14px">Couldn’t load the templates. Check your connection and try again.</span>'; });
+  }
+  function schedSaveTpl() {
+    var box = $('sched'), names = [];
+    box.innerHTML = '<div class="sc-copy"><div class="sc-copy-h"><b>Save as template</b><span class="sc-hint">New events can start from it. Wedding-day times are saved relative to this event’s sunset' + (SC.wedding.sunset ? ' (' + esc(SC.wedding.sunset) + ')' : '') + '.</span></div>' +
+      '<div class="sc-tsave"><input id="sc-tname" list="sc-tnames" placeholder="Template name" aria-label="Template name" autocomplete="off"><datalist id="sc-tnames"></datalist><span class="sc-hint" id="sc-tstat">Pick an existing name to update it, or type a new one.</span></div>' +
+      '<div class="foot"><span style="flex:1"></span><button type="button" class="btn" id="sc-tscancel">Cancel</button><button type="button" class="btn primary" id="sc-tsgo" disabled>Save template</button></div></div>';
+    var inp = $('sc-tname'), upd = function () {
+      var n = inp.value.trim(), ex = names.some(function (x) { return x.toLowerCase() === n.toLowerCase(); });
+      $('sc-tstat').textContent = !n ? 'Pick an existing name to update it, or type a new one.' : ex ? 'Will update the existing template “' + n + '”.' : 'Will be saved as a new template.';
+      $('sc-tsgo').disabled = !n; $('sc-tsgo').textContent = ex ? 'Update template' : 'Save template';
+    };
+    inp.addEventListener('input', upd); inp.addEventListener('keydown', function (e) { if (e.key === 'Enter' && inp.value.trim()) $('sc-tsgo').click(); }); inp.focus();
+    api('scheduleTemplates', {}).then(function (res) { names = (res.templates || []).map(function (t) { return t.name; }); if ($('sc-tnames')) { $('sc-tnames').innerHTML = names.map(function (n) { return '<option value="' + esc(n) + '">'; }).join(''); upd(); } }).catch(function () {});
+    $('sc-tscancel').onclick = function () { SC.mode = 'view'; schedRender(); };
+    $('sc-tsgo').onclick = function () {
+      var b = this, n = inp.value.trim(); if (!n) return; b.disabled = true; b.textContent = 'Saving…';
+      scWaitSaved().then(function () { return api('saveScheduleTemplate', { name: n }); }).then(function (r) {
+        SC.mode = 'view'; schedRender(); toast(r.updated ? 'Template “' + r.name + '” updated.' : 'Saved as template “' + r.name + '”.');
+      }).catch(function (e) { toast(e.server ? e.message : 'Couldn’t save the template. Check your connection and try again.'); b.disabled = false; upd(); });
+    };
   }
 
   // ----- paste from Word: a one-time helper. Day lines, "HH:MM – text" lines, and the lines under them as details -----
