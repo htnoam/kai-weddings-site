@@ -1,3 +1,8 @@
+# New system (Supabase), built next to the current one: /v2/admin (dashboard) and /v2/<event>/portal (guest list)
+/v2/admin             /v2/dashboard.html     200
+/v2/admin/            /v2/dashboard.html     200
+/v2/:slug/portal      /v2/manage.html        200
+/v2/:slug/portal/     /v2/manage.html        200
 # Event links: /<event>/rsvp · /<event>/guests (guest area) · /<event>/portal (couple's guest list)
 # Old links keep working and move to the new ones.
 /:slug/guest          /:slug/guests          301!

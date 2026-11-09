@@ -1,0 +1,743 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<link rel="apple-touch-icon" href="/app/icons/kai-180.png">
+<link rel="icon" type="image/png" href="/app/icons/kai-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="KAI Events">
+<meta name="theme-color" content="#FFFFFF">
+<script>
+  // Saved to the home screen: KAI logo, named "KAI Events", opens this same link.
+  (function () {
+    var m = { name: 'KAI Events', short_name: 'KAI Events', start_url: location.href, scope: location.origin + '/', display: 'standalone', background_color: '#F4F2EE', theme_color: '#FFFFFF',
+      icons: [{ src: location.origin + '/app/icons/kai-192.png', sizes: '192x192', type: 'image/png' }, { src: location.origin + '/app/icons/kai-512.png', sizes: '512x512', type: 'image/png' },
+        { src: location.origin + '/app/icons/kai-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }] };
+    var l = document.createElement('link'); l.rel = 'manifest'; l.href = 'data:application/manifest+json,' + encodeURIComponent(JSON.stringify(m)); document.head.appendChild(l);
+  })();
+</script>
+<title>KAI Events · New</title>
+<style>#gh-change,#ghbar,#n-tpl,#n-stpl,#n-stm,#n-stl,#e-view,#e-portal,#e-grand,.v2-hide,#form-e .sec,#form-e .sec + .cols2{display:none!important}.v2tag{font-size:12px;font-weight:700;color:#8A5A12;background:#F7EBD3;border-radius:999px;padding:2px 8px;margin-left:8px;vertical-align:middle;font-family:inherit}.signout{border:none;background:none;color:var(--ink);font-weight:600;cursor:pointer;font-size:13.5px}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Cormorant+Garamond:wght@600&display=swap">
+<style>
+/* Events dashboard: one row per event, with counts and links. Same look as the guest screen. */
+:root {
+  --bg: #F4F2EE; --surface: #FFFFFF; --soft-surface: #FAF9F6;
+  --ink: #2E3A9E; --ink-dark: #232D80; --ink-soft: #F0F1FA;
+  --text: #1F1F21; --muted: #4A4A50; --soft: #6E6E75;
+  --line: #D6D4CE; --hair: #E4E1DA;
+  --ok: #2F6B2F; --ok-bg: #E3EEDF; --warn: #8A5A12; --tent: #2E3A9E; --bad: #9B2C2C;
+  --sans: 'Assistant', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.4 var(--sans); }
+[hidden] { display: none !important; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.top { background: var(--surface); border-bottom: 1px solid var(--hair); }
+.top-in { padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.brand { font: 600 24px/1 var(--serif); color: var(--ink); }
+.btn { height: 32px; padding: 0 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); font-weight: 500; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; text-decoration: none; color: var(--text); font-size: 13.5px; }
+.btn:hover { background: var(--soft-surface); }
+.btn.primary { background: var(--ink); border-color: var(--ink); color: #FFFFFF; font-weight: 600; }
+.btn.primary:hover { background: var(--ink-dark); }
+.btn.sm { height: 26px; padding: 0 8px; font-size: 12.5px; }
+.lnk { border: none; background: none; padding: 0; color: var(--ink); font-weight: 600; font-size: 12.5px; cursor: pointer; }
+.lnk:hover { text-decoration: underline; text-underline-offset: 3px; }
+.tl { border: 1px solid var(--hair); border-radius: 4px; display: flex; flex-direction: column; }
+.tl-r { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-bottom: 1px solid var(--row-line); flex-wrap: wrap; font-size: 13.5px; }
+.tl-r:last-child { border-bottom: none; }
+.tl-r .n { flex: 1; min-width: 100px; font-weight: 600; }
+.tl-tag { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11.5px; font-weight: 700; background: #F7EBD3; color: #8A5A12; }
+.tl-r .btn.del { color: var(--bad); }
+.wrap { padding: 12px 16px 40px; }
+.gate { background: var(--surface); border: 1px solid var(--hair); border-radius: 6px; padding: 32px 20px; text-align: center; color: var(--muted); }
+.tablewrap { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 1100px; font-size: 13.5px; }
+th { text-align: left; font-size: 12.5px; font-weight: 600; color: var(--muted); background: #F1EFEA; border-bottom: 1px solid var(--line); border-right: 1px solid var(--hair); padding: 7px 10px; white-space: nowrap; }
+td { border-bottom: 1px solid var(--hair); border-right: 1px solid var(--hair); padding: 6px 10px; vertical-align: middle; white-space: nowrap; }
+th:last-child, td:last-child { border-right: none; }
+tbody tr:hover td { background: #F8F7F3; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.couple { font-weight: 700; font-size: 14.5px; }
+.sub { color: var(--soft); font-size: 12.5px; }
+.c-ok { color: var(--ok); font-weight: 700; } .c-tent { color: var(--tent); font-weight: 600; } .c-warn { color: var(--warn); font-weight: 600; } .c-bad { color: var(--bad); font-weight: 600; }
+.links { display: flex; gap: 4px; flex-wrap: nowrap; }
+.empty { padding: 28px; text-align: center; color: var(--soft); }
+.overlay { position: fixed; inset: 0; z-index: 60; background: rgba(31,31,33,.45); display: flex; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 64px 16px 24px; }
+.dialog { width: 100%; max-width: 460px; background: #FFFFFF; border-radius: 8px; padding: 22px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 30px 60px -20px rgba(0,0,0,.4); }
+.dialog h2 { margin: 0; font-size: 19px; }
+.f { display: flex; flex-direction: column; gap: 3px; font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.f input { height: 36px; border: 1px solid var(--line); border-radius: 4px; padding: 0 10px; font-size: 14.5px; font-weight: 400; color: var(--text); }
+.hint { font-size: 12.5px; color: var(--soft); }
+.hint b { color: var(--ink); font-weight: 600; }
+.err { margin: 0; color: var(--bad); font-size: 13.5px; }
+.act { display: flex; gap: 8px; justify-content: flex-end; }
+.f select, .f textarea { border: 1px solid var(--line); border-radius: 4px; padding: 6px 10px; font-size: 14.5px; font-weight: 400; color: var(--text); background: #FFFFFF; }
+.f select { height: 36px; }
+.f.chk { flex-direction: row; align-items: center; gap: 8px; font-size: 14px; color: var(--text); }
+.f.chk input { width: 18px; height: 18px; accent-color: var(--ink); margin: 0; }
+.f textarea { resize: vertical; min-height: 60px; line-height: 1.45; }
+.dialog.wide { max-width: 860px; }
+.cols2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px; }
+.cols2 .he { direction: rtl; }
+.sec { margin: 6px 0 -4px; font-size: 13px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: .06em; border-top: 1px solid var(--hair); padding-top: 12px; }
+.img-row { display: flex; align-items: center; gap: 10px; }
+.img-row img { width: 72px; height: 72px; object-fit: cover; border-radius: 4px; border: 1px solid var(--hair); background: var(--soft-surface); }
+.img-row .none { width: 72px; height: 72px; border-radius: 4px; border: 1px dashed var(--line); display: grid; place-items: center; font-size: 11px; color: var(--soft); }
+@media (max-width: 700px) { .cols2 { grid-template-columns: 1fr; } }
+.ghbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: #FFF6E5; border: 1px solid #E8D3A6; border-radius: 6px; padding: 8px 12px; margin-bottom: 10px; font-size: 13.5px; color: #6B4A0E; }
+.ghbar input { flex: 1 1 260px; height: 30px; border: 1px solid var(--line); border-radius: 4px; padding: 0 8px; font-size: 13.5px; }
+.ecards { display: none; }
+@media (max-width: 759px) {
+  .tablewrap { display: none; }
+  .ecards { display: flex; flex-direction: column; gap: 10px; }
+  .ecard { background: var(--surface); border: 1px solid var(--hair); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .ecard .couple { font: 600 22px/1.1 var(--serif); color: var(--ink); }
+  .ecard .sub { font-size: 13px; }
+  .ec-n { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 14.5px; color: var(--muted); }
+  .ec-n b { font-size: 17px; }
+  .ec-a { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 6px; margin-top: 2px; }
+  .ec-a .btn { height: 40px; justify-content: center; font-size: 14.5px; border-radius: 8px; }
+  .ec-b { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; font-size: 13.5px; padding-top: 8px; border-top: 1px solid var(--hair); }
+  .ec-b a, .ec-b button { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; border: none; background: none; padding: 4px 0; font-size: 13.5px; }
+  .ec-copy { color: var(--soft); margin-left: auto; }
+  .ec-h { position: relative; padding-right: 34px; }
+  .ec-h .dots { position: absolute; top: -4px; right: -4px; width: 36px; height: 36px; font-size: 20px; }
+  .ecard.ended { opacity: .7; }
+  .top-in { gap: 8px; }
+  .wrap { padding: 10px 12px 32px; }
+  .f input, .f select, .f textarea, .ghbar input { font-size: 16px; }
+  .overlay { padding: max(16px, env(safe-area-inset-top, 0px)) 12px 24px; }
+}
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.dots { width: 28px; height: 26px; border: 1px solid transparent; border-radius: 4px; background: none; color: var(--soft); font-size: 17px; line-height: 1; cursor: pointer; }
+.dots:hover { border-color: var(--line); background: var(--soft-surface); color: var(--text); }
+.menu { position: absolute; z-index: 65; min-width: 190px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 12px 30px -10px rgba(0,0,0,.3); padding: 4px; }
+.menu button { display: block; width: 100%; text-align: left; border: none; background: none; padding: 8px 10px; border-radius: 4px; font-size: 13.5px; color: var(--text); cursor: pointer; }
+.menu button:hover { background: var(--soft-surface); }
+.menu button.del { color: var(--bad); border-top: 1px solid var(--hair); border-radius: 0 0 4px 4px; }
+tr.ended td { color: var(--soft); background: var(--soft-surface); }
+.endtoggle { border: none; background: none; color: var(--muted); font-weight: 600; font-size: 13px; padding: 4px 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.btn.danger { background: var(--bad); border-color: var(--bad); color: #FFFFFF; font-weight: 600; }
+.btn.danger:disabled { opacity: .45; }
+.gx details { border: 1px solid var(--hair); border-radius: 6px; margin-bottom: 8px; background: #FFFFFF; }
+.gx summary { cursor: pointer; padding: 10px 12px; font-weight: 700; font-size: 14px; color: var(--ink); }
+.gx summary .warn { color: var(--warn); font-weight: 600; font-size: 12px; margin-left: 8px; }
+.gx .body { padding: 2px 12px 12px; display: flex; flex-direction: column; gap: 8px; }
+.gx .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px 12px; }
+.gx .item { border: 1px dashed var(--line); border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; gap: 8px; background: var(--soft-surface); }
+.gx .item-h { display: flex; align-items: center; justify-content: space-between; font-size: 12.5px; font-weight: 700; color: var(--muted); }
+.gx .sub-h { font-size: 12.5px; font-weight: 700; color: var(--muted); margin-top: 4px; }
+.gx .rowx { display: flex; gap: 6px; align-items: center; }
+.gx .rowx input { flex: 1 1 0; min-width: 0; height: 32px; border: 1px solid var(--line); border-radius: 4px; padding: 0 8px; font-size: 14px; }
+.gx .x { border: none; background: none; color: var(--soft); font-size: 13px; cursor: pointer; padding: 2px 6px; }
+.gx .x:hover { color: var(--bad); }
+.gx .f input, .gx .f select { height: 32px; font-size: 14px; }
+.gx .f textarea { font-size: 14px; min-height: 52px; }
+.gx-note { background: #FFF6E5; border: 1px solid #E8D3A6; border-radius: 6px; padding: 8px 12px; font-size: 13px; color: #6B4A0E; }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 24px; z-index: 70; background: var(--text); color: #FFFFFF; border-radius: 6px; padding: 10px 16px; font-size: 14px; max-width: calc(100% - 32px); }
+.toast.bad { background: var(--bad); }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="/v2/kai.js"></script>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <span class="brand">KAI Events<span class="v2tag">New system</span></span>
+    <div style="display:flex;gap:8px">
+      <button type="button" class="btn" id="gh-change" hidden>GitHub key</button>
+      <button type="button" class="signout" id="signout">Sign out</button>
+      <button type="button" class="btn" id="refresh">Refresh</button>
+      <button type="button" class="btn primary" id="new">+ New Event</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="ghbar" id="ghbar" hidden>
+    <span id="gh-msg"></span>
+    <input id="gh-key" type="password" placeholder="Paste the GitHub key (github_pat_…)" autocomplete="off">
+    <button type="button" class="btn sm primary" id="gh-save">Save key</button>
+  </div>
+  <div class="gate" id="gate">Loading events…</div>
+  <div class="tablewrap" id="list" hidden>
+    <table>
+      <thead><tr>
+        <th>Event</th><th>Date</th><th>Location</th>
+        <th class="num">Guests</th><th class="num">Confirmed</th>
+        <th class="num">Maybe</th><th class="num">Declined</th>
+        <th>Open</th><th>Copy link</th><th></th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div class="empty" id="empty" hidden>No events yet. Click “+ New Event” to open the first one.</div>
+  </div>
+  <div class="ecards" id="ecards"></div>
+</main>
+
+<div class="overlay" id="dlg" hidden>
+  <form class="dialog" id="form" role="dialog" aria-modal="true" aria-labelledby="dlg-title" novalidate>
+    <h2 id="dlg-title">New Event</h2>
+    <label class="f">Couple names (in English) *<input id="n-couple" placeholder="e.g. Dana & Omer" autocomplete="off"></label>
+    <div class="hint">The guest list will be: <b id="n-link">events.kaiwedd.com/v2/…/portal</b></div>
+    <label class="f">Client’s email<input id="n-email" type="email" placeholder="e.g. dana@gmail.com" autocomplete="off"></label>
+    <div class="row2">
+      <label class="f">Wedding date<input id="n-date" placeholder="DD/MM/YYYY" inputmode="numeric" autocomplete="off"></label>
+      <label class="f">Sunset on the wedding day<input id="n-sunset" placeholder="HH:MM" inputmode="numeric" autocomplete="off"></label>
+      <label class="f">Wedding weekend · from<input id="n-start" placeholder="DD/MM/YYYY" inputmode="numeric" autocomplete="off"></label>
+      <label class="f">Wedding weekend · to<input id="n-end" placeholder="DD/MM/YYYY" inputmode="numeric" autocomplete="off"></label>
+      <label class="f">Venue<input id="n-venue" placeholder="e.g. Ktima Gerolemo" autocomplete="off"></label>
+      <label class="f">Country<input id="n-country" list="countries" placeholder="e.g. Cyprus" autocomplete="off"></label>
+    </div>
+    <datalist id="countries"><option value="Cyprus"><option value="Israel"><option value="Greece"><option value="Italy"><option value="Portugal"><option value="Spain"><option value="France"><option value="Montenegro"><option value="Croatia"><option value="Georgia"></datalist>
+    <label class="f v2-hide">RSVP form opens in<select id="n-lang"><option value="he">Hebrew</option><option value="en">English</option></select></label>
+    <label class="f v2-hide">Invitation design<select id="n-tpl"><option value="">Classic: envelope and form</option><option value="Grand">Grand: full wedding site (schedule, flights, form)</option></select></label>
+    <div class="hint v2-hide">Preview: <a href="/demo-wedding/rsvp" target="_blank" rel="noopener">Classic</a> · <a href="/app/grand/" target="_blank" rel="noopener">Grand</a></div>
+    <label class="f v2-hide">Schedule template<select id="n-stpl"><option value="">Loading…</option></select></label>
+    <div class="hint v2-hide">The wedding day is built from the sunset time above. <button type="button" class="lnk" id="n-stm">Manage templates</button></div>
+    <div class="tl" id="n-stl" hidden></div>
+    <p class="hint" style="margin:0">The event is created in the new system (Supabase). The couple signs in with the client’s email.</p>
+    <p class="err" id="n-err" hidden></p>
+    <div class="act">
+      <button type="button" class="btn" id="n-cancel">Cancel</button>
+      <button type="submit" class="btn primary" id="n-save">Create Event</button>
+    </div>
+  </form>
+</div>
+<div class="overlay" id="dlg-e" hidden>
+  <form class="dialog wide" id="form-e" role="dialog" aria-modal="true" aria-labelledby="e-title" novalidate>
+    <h2 id="e-title">Edit RSVP form</h2>
+    <div class="cols2">
+      <label class="f">Couple names (English)<input data-k="Couple Names"></label>
+      <label class="f">Client’s email<input data-k="Client Email" type="email"></label>
+      <label class="f">Venue<input data-k="Venue"></label>
+      <label class="f">Country<input data-k="Country" list="countries"></label>
+      <label class="f">Wedding date<input data-k="Wedding Date" placeholder="DD/MM/YYYY" inputmode="numeric"></label>
+      <label class="f">Sunset on the wedding day<input data-k="Sunset Time" placeholder="HH:MM" inputmode="numeric"></label>
+      <label class="f">Wedding weekend · from<input data-k="Start Date" placeholder="DD/MM/YYYY" inputmode="numeric"></label>
+      <label class="f">Wedding weekend · to<input data-k="End Date" placeholder="DD/MM/YYYY" inputmode="numeric"></label>
+      <label class="f v2-hide">Dates line on the invitation (optional)<input data-k="Dates Line" placeholder="e.g. 03 – 05 . 06 . 2027"></label>
+      <label class="f v2-hide">Form opens in<select data-k="Default Language"><option value="he">Hebrew</option><option value="en">English</option></select></label>
+      <label class="f v2-hide">Invitation design<select data-k="Template"><option value="">Classic: envelope and form</option><option value="Grand">Grand: full wedding site (schedule, flights, form)</option></select></label>
+    </div>
+    <div class="sec">Photos</div>
+    <div class="cols2">
+      <div class="f">Main photo (bottom of the invitation)<div class="img-row" data-img="Hero Image"></div></div>
+      <div class="f">WhatsApp preview photo<div class="img-row" data-img="Share Image"></div></div>
+    </div>
+    <div class="sec">Texts · leave a field empty to use the default</div>
+    <div class="cols2">
+      <label class="f">Opening text · English<textarea data-k="Intro EN" rows="3" placeholder="Hi, our dear and beloved ones.&#10;There’s a reason you’re here!"></textarea></label>
+      <label class="f he">פתיחה · עברית<textarea data-k="Intro HE" rows="3" placeholder="היי, יקרים ואהובים שלנו.&#10;יש סיבה שהגעתם עד לכאן!"></textarea></label>
+      <label class="f">Question · English<input data-k="Ask EN" placeholder="Will you join us?"></label>
+      <label class="f he">שאלה · עברית<input data-k="Ask HE" placeholder="תצטרפו אלינו?"></label>
+      <label class="f">Script line · English<input data-k="Script EN" placeholder="See you there"></label>
+      <label class="f he">שורה בכתב יד · עברית<input data-k="Script HE" placeholder="נתראה שם"></label>
+      <label class="f">Thank-you text · English<textarea data-k="Thanks EN" rows="2" placeholder="Your reply is saved. We can’t wait to celebrate with you!"></textarea></label>
+      <label class="f he">טקסט תודה · עברית<textarea data-k="Thanks HE" rows="2" placeholder="התשובה שלכם נשמרה. מחכים לחגוג איתכם!"></textarea></label>
+    </div>
+    <div class="sec">Hosting block · optional, hidden when empty</div>
+    <div class="cols2">
+      <label class="f">Title · English<input data-k="Hosting Title EN" placeholder="We take care of everything ❤️"></label>
+      <label class="f he">כותרת · עברית<input data-k="Hosting Title HE" placeholder="דואגים לכם מא׳ ועד ת׳ ❤️"></label>
+      <label class="f">Tags, separated by commas · English<input data-k="Hosting Chips EN" placeholder="Accommodation, Meals, Transfers"></label>
+      <label class="f he">תגיות, מופרדות בפסיקים · עברית<input data-k="Hosting Chips HE" placeholder="לינה, ארוחות, הסעות"></label>
+      <label class="f">Text · English<textarea data-k="Hosting Text EN" rows="2"></textarea></label>
+      <label class="f he">טקסט · עברית<textarea data-k="Hosting Text HE" rows="2"></textarea></label>
+      <label class="f">Small note · English<input data-k="Hosting Note EN"></label>
+      <label class="f he">הערה קטנה · עברית<input data-k="Hosting Note HE"></label>
+    </div>
+    <div class="sec">Guest area · events.kaiwedd.com/<span id="e-slug"></span>/guests</div>
+    <div class="cols2">
+      <label class="f chk"><input type="checkbox" data-k="Portal RSVP" data-default="on"> RSVP per family member</label>
+      <label class="f chk"><input type="checkbox" data-k="Portal Flights"> Flight details (guests fill in)</label>
+      <label class="f chk"><input type="checkbox" data-k="Portal Stay"> Hotel room &amp; table (view only)</label>
+      <label class="f chk"><input type="checkbox" data-k="Portal Info"> Event info (the text below)</label>
+      <label class="f">Event info · English<textarea data-k="Info EN" rows="4" placeholder="One line per item. A schedule line: 14/09 | Welcome evening | 19:30 · Pool bar"></textarea></label>
+      <label class="f he">מידע על האירוע · עברית<textarea data-k="Info HE" rows="4" placeholder="שורה לכל פריט. שורת לוח זמנים: 14/09 | ערב קבלת פנים | 19:30 · בר הבריכה"></textarea></label>
+    </div>
+    <p class="err" id="e-err" hidden></p>
+    <div class="act">
+      <a class="btn" id="e-view" target="_blank" rel="noopener">Open the form</a>
+      <a class="btn" id="e-portal" target="_blank" rel="noopener">Open the portal</a>
+      <button type="button" class="btn" id="e-grand" hidden>Grand site texts…</button>
+      <span style="flex:1"></span>
+      <button type="button" class="btn" id="e-cancel">Cancel</button>
+      <button type="submit" class="btn primary" id="e-save">Save</button>
+    </div>
+  </form>
+</div>
+<div class="overlay" id="dlg-d" hidden>
+  <form class="dialog" id="form-d" role="dialog" aria-modal="true" aria-labelledby="d-title" novalidate>
+    <h2 id="d-title">Delete event</h2>
+    <p class="hint" style="margin:0;font-size:14px;color:var(--text)">The event leaves this list and its links stop working. Its Drive folder (guest sheet and backups) goes to the Drive trash, where it can be restored for 30 days.</p>
+    <label class="f">To confirm, type the event link: <b id="d-slug" style="color:var(--text)"></b><input id="d-in" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
+    <p class="err" id="d-err" hidden></p>
+    <div class="act">
+      <button type="button" class="btn" id="d-cancel">Cancel</button>
+      <button type="submit" class="btn danger" id="d-save" disabled>Delete event</button>
+    </div>
+  </form>
+</div>
+<div class="menu" id="menu" hidden></div>
+<div class="overlay" id="dlg-g" hidden>
+  <form class="dialog wide" id="form-g" role="dialog" aria-modal="true" aria-labelledby="g-title" novalidate>
+    <h2 id="g-title">Grand site texts</h2>
+    <p class="hint" style="margin:0">Everything guests see on the Grand site. Empty fields are hidden on the site. Changes show on the site as soon as you save.</p>
+    <div class="gx-note" id="g-note" hidden></div>
+    <div class="gx" id="g-body">Loading…</div>
+    <p class="err" id="g-err" hidden></p>
+    <div class="act">
+      <a class="btn" id="g-view" target="_blank" rel="noopener">Open the site</a>
+      <span style="flex:1"></span>
+      <button type="button" class="btn" id="g-cancel">Cancel</button>
+      <button type="submit" class="btn primary" id="g-save">Save</button>
+    </div>
+  </form>
+</div>
+<input type="file" id="e-file" accept="image/*" hidden>
+<input type="file" id="g-file" accept="image/*" hidden>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function () {
+  'use strict';
+  // v2 (Supabase). Only Noam's email can open this page.
+  var SITE = 'https://events.kaiwedd.com/v2/';
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var EVENTS = [];
+
+  function api(action, data) {
+    return KAI.api(action, data);
+  }
+  function toast(msg, bad) { var t = $('toast'); clearTimeout(toast.t); t.className = 'toast' + (bad ? ' bad' : ''); t.textContent = msg; t.hidden = false; toast.t = setTimeout(function () { t.hidden = true; }, 3500); }
+  function slugify(s) { return String(s || '').toLowerCase().replace(/&/g, ' ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40); }
+  // Dates are saved as YYYY-MM-DD and shown and typed as DD/MM/YYYY.
+  function fmtDate(d) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d || ''); return m ? m[3] + '/' + m[2] + '/' + m[1] : (d || '');
+  }
+  function toIso(v) {
+    v = String(v || '').trim(); if (!v) return '';
+    var m = /^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})$/.exec(v); if (!m) return null;
+    var iso = m[3] + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[1]).slice(-2), t = new Date(iso + 'T12:00:00');
+    return isNaN(t) || t.getDate() !== Number(m[1]) ? null : iso;
+  }
+  function toTime(v) {
+    v = String(v || '').trim(); if (!v) return '';
+    var m = /^(\d{1,2})[:.](\d{2})$/.exec(v); return m && Number(m[1]) < 24 && Number(m[2]) < 60 ? ('0' + m[1]).slice(-2) + ':' + m[2] : null;
+  }
+  function fmtRange(a, b) {
+    if (!a && !b) return ''; if (!a || !b) return fmtDate(a || b);
+    return a.slice(0, 7) === b.slice(0, 7) ? a.slice(8) + '–' + fmtDate(b) : fmtDate(a).slice(0, 5) + ' – ' + fmtDate(b);
+  }
+  // Nearest date first; events without a date go last.
+  function byDate(a, b) { var x = /^\d{4}-/.test(a.date) ? a.date : '9999', y = /^\d{4}-/.test(b.date) ? b.date : '9999'; return x < y ? -1 : x > y ? 1 : String(a.couple).localeCompare(String(b.couple)); }
+  var SHOW_ENDED = false;
+
+  // Show the last list straight away (saved on this device), then refresh it from the hub.
+  function load() {
+    var saved = null; try { saved = JSON.parse(localStorage.getItem('kai-v2-events') || 'null'); } catch (x) {}
+    if (saved && saved.events && !EVENTS.length) { EVENTS = saved.events; render(); }
+    else if (!EVENTS.length) { $('gate').hidden = false; $('gate').textContent = 'Loading events…'; }
+    return api('events').then(function (res) {
+      EVENTS = res.events; render(); renderGh(res.github || {});
+      try { localStorage.setItem('kai-v2-events', JSON.stringify({ events: res.events })); } catch (x) {}
+    })
+      .catch(function (e) { $('gate').textContent = e.server ? e.message : 'Couldn’t load the events. Check your connection and click Refresh.'; });
+  }
+  function render() {
+    $('gate').hidden = true; $('list').hidden = false;
+    $('empty').hidden = EVENTS.length > 0;
+    var active = EVENTS.filter(function (ev) { return ev.status !== 'Ended'; }).sort(byDate);
+    var ended = EVENTS.filter(function (ev) { return ev.status === 'Ended'; }).sort(byDate);
+    var shown = active.concat(SHOW_ENDED ? ended : []);
+    var toggle = ended.length ? '<button type="button" class="endtoggle" data-ended>' + (SHOW_ENDED ? 'Hide ended events' : 'Show ended events (' + ended.length + ')') + '</button>' : '';
+    var when = function (ev) { return [fmtRange(ev.start, ev.end) && 'Weekend ' + fmtRange(ev.start, ev.end), ev.sunset && 'Sunset ' + ev.sunset].filter(Boolean).join(' · '); };
+    // Adults / children / babies are the confirmed guests broken down, so they sit under the Confirmed number.
+    var ages = function (c) { return c.Confirmed ? [c.adults + ' adults', c.children && c.children + (c.children === 1 ? ' child' : ' children'), c.babies && c.babies + (c.babies === 1 ? ' baby' : ' babies')].filter(Boolean).join(' · ') : ''; };
+    $('rows').innerHTML = shown.map(function (ev) {
+      var c = ev.counts || {}, n = function (v, cls) { return '<td class="num' + '"><span class="' + (v ? cls : 'sub') + '">' + (v == null ? '—' : v) + '</span></td>'; };
+      return '<tr' + (ev.status === 'Ended' ? ' class="ended"' : '') + '>' +
+        '<td><div class="couple">' + esc(ev.couple) + '</div><div class="sub">/' + esc(ev.slug) + (ev.status === 'Ended' ? ' · Ended' : '') + (ev.error ? ' · ' + esc(ev.error) : '') + '</div></td>' +
+        '<td>' + esc(fmtDate(ev.date)) + (when(ev) ? '<div class="sub">' + esc(when(ev)) + '</div>' : '') + '</td><td>' + esc(ev.place) + '</td>' +
+        n(c.total, '') +
+        '<td class="num"><span class="' + (c.Confirmed ? 'c-ok' : 'sub') + '">' + (c.Confirmed == null ? '—' : c.Confirmed) + '</span>' + (ages(c) ? '<div class="sub">' + ages(c) + '</div>' : '') + '</td>' +
+        n(c.Maybe, 'c-warn') + n(c.Declined, 'c-bad') +
+        '<td><div class="links">' +
+          '<a class="btn sm primary" href="/v2/' + esc(ev.slug) + '/portal" target="_blank" rel="noopener">Guest list</a>' +
+          '<button type="button" class="btn sm" data-edit="' + esc(ev.slug) + '">Edit event</button>' +
+        '</div></td>' +
+        '<td><div class="links">' +
+          '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug + '/portal') + '" title="The couple’s guest list (/portal)">Portal · couple</button>' +
+        '</div></td>' +
+        '<td><button type="button" class="dots" data-menu="' + esc(ev.slug) + '" aria-label="More actions">⋯</button></td></tr>';
+    }).join('') + (toggle ? '<tr><td colspan="10">' + toggle + '</td></tr>' : '');
+    // Phones: one card per event instead of the wide table.
+    $('ecards').innerHTML = shown.map(function (ev) {
+      var c = ev.counts || {}, v = function (x) { return x == null ? '—' : x; };
+      return '<div class="ecard' + (ev.status === 'Ended' ? ' ended' : '') + '">' +
+        '<div class="ec-h"><div class="couple">' + esc(ev.couple) + '</div><div class="sub">' + esc([fmtDate(ev.date), ev.place, ev.status === 'Ended' ? 'Ended' : ''].filter(Boolean).join(' · ')) + '</div>' + (when(ev) ? '<div class="sub">' + esc(when(ev)) + '</div>' : '') + (ev.error ? '<div class="err">' + esc(ev.error) + '</div>' : '') +
+          '<button type="button" class="dots" data-menu="' + esc(ev.slug) + '" aria-label="More actions">⋯</button></div>' +
+        '<div class="ec-n"><span><b>' + v(c.total) + '</b> guests</span><span class="c-ok"><b>' + v(c.Confirmed) + '</b> ✓</span><span class="c-warn"><b>' + v(c.Maybe) + '</b> maybe</span><span class="c-bad"><b>' + v(c.Declined) + '</b> ✗</span></div>' +
+        (ages(c) ? '<div class="sub">Confirmed: ' + ages(c) + '</div>' : '') +
+        '<div class="ec-a"><a class="btn primary" href="/v2/' + esc(ev.slug) + '/portal" target="_blank" rel="noopener">Guest list</a>' +
+          '<button type="button" class="btn" data-edit="' + esc(ev.slug) + '">Edit event</button></div>' +
+        '<div class="ec-b"><span class="ec-copy">Copy link:</span><button type="button" data-copy="' + esc(SITE + ev.slug + '/portal') + '">Portal · couple</button></div>' +
+      '</div>';
+    }).join('') + toggle;
+  }
+
+  // ---------- ⋯ menu: mark as ended / delete ----------
+  var MENU = '';
+  function closeMenu() { $('menu').hidden = true; MENU = ''; }
+  ['rows', 'ecards'].forEach(function (id) { $(id).addEventListener('click', function (e) {
+    if (e.target.closest('[data-ended]')) { SHOW_ENDED = !SHOW_ENDED; render(); return; }
+    var b = e.target.closest('[data-menu]'); if (!b) return;
+    e.stopPropagation();
+    if (MENU === b.dataset.menu && !$('menu').hidden) { closeMenu(); return; }
+    var ev = EVENTS.filter(function (x) { return x.slug === b.dataset.menu; })[0]; if (!ev) return;
+    MENU = ev.slug; var m = $('menu');
+    m.innerHTML = '<button type="button" data-act="end">' + (ev.status === 'Ended' ? 'Move back to active events' : 'Mark as ended') + '</button>' +
+      '<button type="button" class="del" data-act="del">Delete event…</button>';
+    m.hidden = false;
+    var r = b.getBoundingClientRect(), w = m.offsetWidth, h = m.offsetHeight;
+    m.style.left = scrollX + Math.max(8, Math.min(r.right - w, innerWidth - w - 8)) + 'px';
+    m.style.top = scrollY + (r.bottom + h + 8 > innerHeight ? r.top - h - 4 : r.bottom + 4) + 'px';
+  }); });
+  document.addEventListener('click', function (e) { if (!e.target.closest('#menu')) closeMenu(); });
+  $('menu').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-act]'); if (!b) return;
+    var ev = EVENTS.filter(function (x) { return x.slug === MENU; })[0]; closeMenu(); if (!ev) return;
+    if (b.dataset.act === 'del') { openDelete(ev); return; }
+    var end = ev.status !== 'Ended';
+    toast('Saving…');
+    api('endEvent', { slug: ev.slug, ended: end }).then(function () {
+      ev.status = end ? 'Ended' : ''; render();
+      toast(end ? ev.couple + ' is marked as ended.' : ev.couple + ' is back with the active events.');
+    }).catch(function (x) { toast(x.server ? x.message : 'Couldn’t update the event. Try again.', true); });
+  });
+  var DEL = null;
+  function openDelete(ev) {
+    DEL = ev; $('d-title').textContent = 'Delete ' + ev.couple + '?'; $('d-slug').textContent = ev.slug;
+    $('d-in').value = ''; $('d-save').disabled = true; $('d-err').hidden = true; $('dlg-d').hidden = false; $('d-in').focus();
+  }
+  $('d-in').addEventListener('input', function () { $('d-save').disabled = this.value.trim() !== DEL.slug; });
+  $('d-cancel').addEventListener('click', function () { $('dlg-d').hidden = true; });
+  $('form-d').addEventListener('submit', function (e) {
+    e.preventDefault(); if ($('d-in').value.trim() !== DEL.slug) return;
+    var ev = DEL; $('d-save').disabled = true; $('d-save').textContent = 'Deleting…';
+    api('deleteEvent', { slug: ev.slug, confirm: ev.slug }).then(function () {
+      EVENTS = EVENTS.filter(function (x) { return x.slug !== ev.slug; }); render();
+      try { localStorage.setItem('kai-v2-events', JSON.stringify({ events: EVENTS })); } catch (x) {}
+      $('dlg-d').hidden = true; toast(ev.couple + ' was deleted.');
+    }).catch(function (x) { $('d-err').textContent = x.server ? x.message : 'Couldn’t delete the event. Try again.'; $('d-err').hidden = false; })
+      .then(function () { $('d-save').textContent = 'Delete event'; $('d-save').disabled = $('d-in').value.trim() !== ev.slug; });
+  });
+
+  ['rows', 'ecards'].forEach(function (id) { $(id).addEventListener('click', function (e) {
+    var b = e.target.closest('[data-copy]'); if (!b) return;
+    var text = b.dataset.copy, done = function () { toast('Copied ' + text); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () { prompt('Copy this link:', text); });
+    else prompt('Copy this link:', text);
+  }); });
+
+  // ---------- new event ----------
+  function openNew() { ['n-couple', 'n-date', 'n-email', 'n-sunset', 'n-start', 'n-end', 'n-venue', 'n-country'].forEach(function (id) { $(id).value = ''; }); $('n-lang').value = 'he'; $('n-tpl').value = ''; $('n-link').textContent = 'events.kaiwedd.com/v2/…/portal'; $('n-err').hidden = true; $('dlg').hidden = false; $('n-couple').focus(); }
+  $('n-couple').addEventListener('input', function () { var s = slugify(this.value); $('n-link').textContent = 'events.kaiwedd.com/v2/' + (s || '…') + '/portal'; });
+  $('form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var f = { couple: $('n-couple').value.trim(), date: toIso($('n-date').value), lang: $('n-lang').value, email: $('n-email').value.trim(),
+      start: toIso($('n-start').value), end: toIso($('n-end').value), sunset: toTime($('n-sunset').value), venue: $('n-venue').value.trim(), country: $('n-country').value.trim() };
+    var err = !f.couple ? 'Write the couple’s names.' : /[֐-׿]/.test(f.couple) ? 'Write the names in English. They become the link.' : !slugify(f.couple) ? 'Write the names in English letters.' :
+      f.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email) ? 'Check the client’s email address.' :
+      f.date === null || f.start === null || f.end === null ? 'Write dates as DD/MM/YYYY, e.g. 04/06/2027.' : f.sunset === null ? 'Write the sunset time as HH:MM, e.g. 19:45.' :
+      f.start && f.end && f.end < f.start ? 'The wedding weekend ends before it starts. Check the dates.' : '';
+    if (err) { $('n-err').textContent = err; $('n-err').hidden = false; return; }
+    $('n-save').disabled = true; $('n-save').textContent = 'Creating…'; $('n-err').hidden = true;
+    var tpl = '';
+    api('createEvent', { event: f }).then(function (res) {
+      return tpl ? api('saveSettings', { e: res.event.slug, settings: { Template: tpl } }).then(function () { return res; }) : res;
+    }).then(function (res) {
+      $('dlg').hidden = true; toast('Created ' + res.event.couple + ' · events.kaiwedd.com/v2/' + res.event.slug + '/portal'); load();
+    }).catch(function (x) { $('n-err').textContent = x.server ? x.message : 'Couldn’t create the event. Try again.'; $('n-err').hidden = false; })
+      .then(function () { $('n-save').disabled = false; $('n-save').textContent = 'Create Event'; });
+  });
+  $('n-cancel').addEventListener('click', function () { $('dlg').hidden = true; });
+  // Schedule templates: pick one for the new event; set the main one or delete one under "Manage templates".
+  var STPL = { list: [], manage: false, del: '' };
+  function stplDraw() {
+    var cur = $('n-stpl').value, main = (STPL.list.filter(function (t) { return t.main; })[0] || {}).name;
+    $('n-stpl').innerHTML = STPL.list.length ? STPL.list.map(function (t) { return '<option value="' + esc(t.name) + '">' + esc(t.name) + (t.main ? ' (main)' : '') + '</option>'; }).join('') : '<option value="">No templates</option>';
+    $('n-stpl').value = STPL.list.some(function (t) { return t.name === cur; }) ? cur : (main || '');
+    $('n-stm').textContent = STPL.manage ? 'Close' : 'Manage templates';
+    $('n-stl').hidden = !STPL.manage || !STPL.list.length;
+    $('n-stl').innerHTML = STPL.list.map(function (t) {
+      if (STPL.del === t.name) return '<div class="tl-r"><span class="n">Delete “' + esc(t.name) + '”?</span><button type="button" class="btn sm del" data-tdy="' + esc(t.name) + '">Delete</button><button type="button" class="btn sm" data-tdn>Cancel</button></div>';
+      return '<div class="tl-r"><span class="n">' + esc(t.name) + '</span>' + (t.main ? '<span class="tl-tag">Main</span>' : '<button type="button" class="btn sm" data-tmain="' + esc(t.name) + '">Set as main</button>') +
+        (STPL.list.length > 1 ? '<button type="button" class="btn sm del" data-tdel="' + esc(t.name) + '">Delete</button>' : '') + '</div>';
+    }).join('');
+  }
+  function stplSet(res) { STPL.list = res.templates || []; STPL.del = ''; stplDraw(); }
+  function stplLoad() { api('scheduleTemplates').then(stplSet).catch(function () { $('n-stpl').innerHTML = '<option value="">Main template</option>'; }); }
+  $('n-stm').addEventListener('click', function () { STPL.manage = !STPL.manage; STPL.del = ''; stplDraw(); });
+  $('n-stl').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.tmain) api('mainScheduleTemplate', { name: b.dataset.tmain }).then(function (r) { STPL.list.forEach(function (t) { t.main = false; }); $('n-stpl').value = ''; stplSet(r); }).catch(function (x) { toast(x.message, true); });
+    else if (b.dataset.tdel) { STPL.del = b.dataset.tdel; stplDraw(); }
+    else if (b.hasAttribute('data-tdn')) { STPL.del = ''; stplDraw(); }
+    else if (b.dataset.tdy) { var n = b.dataset.tdy; api('deleteScheduleTemplate', { name: n }).then(function (r) { stplSet(r); toast('Template “' + n + '” deleted'); }).catch(function (x) { toast(x.message, true); }); }
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { if (!$('dlg-g').hidden) { $('dlg-g').hidden = true; return; } $('dlg').hidden = true; $('dlg-e').hidden = true; $('dlg-d').hidden = true; closeMenu(); } });
+
+  // ---------- edit RSVP form (texts and photos are saved in the event's Settings) ----------
+  var EDIT = { slug: '', vals: {} };
+  function imgRow(key) {
+    var url = EDIT.vals[key] || '';
+    return (url ? '<img src="' + esc(url) + '" alt="">' : '<span class="none">No photo</span>') +
+      '<button type="button" class="btn sm" data-up="' + key + '">' + (url ? 'Replace' : 'Upload') + '</button>' +
+      (url ? '<button type="button" class="btn sm" data-rm="' + key + '">Remove</button>' : '');
+  }
+  function fillEdit() {
+    document.querySelectorAll('#form-e [data-k]').forEach(function (el) {
+      var v = EDIT.vals[el.dataset.k] || '';
+      if (el.type === 'checkbox') el.checked = (v || el.dataset.default || 'off') === 'on';
+      else el.value = v || (el.tagName === 'SELECT' ? 'he' : '');
+    });
+    document.querySelectorAll('#form-e [data-img]').forEach(function (el) { el.innerHTML = imgRow(el.dataset.img); });
+  }
+  function openEdit(slug) {
+    var ev = EVENTS.filter(function (x) { return x.slug === slug; })[0]; if (!ev) return;
+    EDIT = { slug: slug, vals: {} };
+    $('e-title').textContent = 'Edit event · ' + ev.couple; $('e-view').href = '/' + slug + '/rsvp'; $('e-portal').href = '/' + slug + '/guests'; $('e-slug').textContent = slug; $('e-err').hidden = true;
+    $('dlg-e').hidden = false; $('e-save').disabled = true;
+    document.querySelectorAll('#form-e [data-k]').forEach(function (el) { el.value = ''; });
+    api('rsvpInfo', { e: slug }).then(function (res) {
+      var o = res.event; EDIT.vals = o; EDIT.vals['Couple Names'] = o.couple; EDIT.vals['Wedding Date'] = fmtDate(o.date); EDIT.vals['Location'] = o.place;
+      // Event details that guests don't see come from the events list.
+      var cut = (ev.place || '').lastIndexOf(',');
+      EDIT.vals['Client Email'] = ev.email || ''; EDIT.vals['Sunset Time'] = ev.sunset || ''; EDIT.vals['Start Date'] = fmtDate(ev.start); EDIT.vals['End Date'] = fmtDate(ev.end);
+      EDIT.vals['Venue'] = ev.venue || (ev.country ? '' : cut > 0 ? ev.place.slice(0, cut).trim() : ev.place || '');
+      EDIT.vals['Country'] = ev.country || (ev.venue ? '' : cut > 0 ? ev.place.slice(cut + 1).trim() : '');
+      fillEdit(); $('e-save').disabled = false; EDIT.ev = ev; showGrandBtn();
+    }).catch(function (e) { $('e-err').textContent = e.server ? e.message : 'Couldn’t load the form texts.'; $('e-err').hidden = false; });
+  }
+  ['rows', 'ecards'].forEach(function (id) { $(id).addEventListener('click', function (e) { var b = e.target.closest('[data-edit]'); if (b) openEdit(b.dataset.edit); }); });
+  $('e-cancel').addEventListener('click', function () { $('dlg-e').hidden = true; });
+  $('form-e').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var vals = {};
+    document.querySelectorAll('#form-e [data-k]').forEach(function (el) { vals[el.dataset.k] = el.type === 'checkbox' ? (el.checked ? 'on' : 'off') : el.value; });
+    ['Hero Image', 'Share Image'].forEach(function (k) { vals[k] = EDIT.vals[k] || ''; });
+    if (!vals['Couple Names'].trim()) { $('e-err').textContent = 'Write the couple’s names.'; $('e-err').hidden = false; return; }
+    var bad = '';
+    ['Wedding Date', 'Start Date', 'End Date'].forEach(function (k) { var x = toIso(vals[k]); if (x === null) bad = 'Write dates as DD/MM/YYYY, e.g. 04/06/2027.'; else vals[k] = x; });
+    var sun = toTime(vals['Sunset Time']); if (sun === null) bad = bad || 'Write the sunset time as HH:MM, e.g. 19:45.'; else vals['Sunset Time'] = sun;
+    if (vals['Client Email'].trim() && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(vals['Client Email'].trim())) bad = bad || 'Check the client’s email address.';
+    if (!bad && vals['Start Date'] && vals['End Date'] && vals['End Date'] < vals['Start Date']) bad = 'The wedding weekend ends before it starts. Check the dates.';
+    if (bad) { $('e-err').textContent = bad; $('e-err').hidden = false; return; }
+    $('e-save').disabled = true; $('e-save').textContent = 'Saving…';
+    api('saveSettings', { e: EDIT.slug, settings: vals }).then(function () { $('dlg-e').hidden = true; toast('Saved.'); load(); })
+      .catch(function (x) { $('e-err').textContent = x.server ? x.message : 'Couldn’t save. Try again.'; $('e-err').hidden = false; })
+      .then(function () { $('e-save').disabled = false; $('e-save').textContent = 'Save'; });
+  });
+  var upKey = '';
+  $('form-e').addEventListener('click', function (e) {
+    var up = e.target.closest('[data-up]'), rm = e.target.closest('[data-rm]');
+    if (up) { upKey = up.dataset.up; $('e-file').value = ''; $('e-file').click(); }
+    if (rm) { EDIT.vals[rm.dataset.rm] = ''; fillEdit(); }
+  });
+  // Photos are resized in the browser (max 1600 px, JPEG) and stored in the event's Drive folder › Images.
+  $('e-file').addEventListener('change', function () {
+    var file = this.files[0]; if (!file) return;
+    var row = document.querySelector('#form-e [data-img="' + upKey + '"]'); row.innerHTML = '<span class="none">Uploading…</span>';
+    var img = new Image(), url = URL.createObjectURL(file);
+    img.onload = function () {
+      var max = 1600, k = Math.min(1, max / Math.max(img.width, img.height)), c = document.createElement('canvas');
+      c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+      var data = c.toDataURL('image/jpeg', 0.86).split(',')[1];
+      api('uploadImage', { e: EDIT.slug, name: upKey.replace(' ', '-') + '.jpg', mime: 'image/jpeg', data: data })
+        .then(function (res) { EDIT.vals[upKey] = res.url; fillEdit(); toast('Photo uploaded. Click Save to keep it.'); })
+        .catch(function (x) { fillEdit(); toast(x.server ? x.message : 'Couldn’t upload the photo.', true); });
+    };
+    img.onerror = function () { fillEdit(); toast('That file is not an image.', true); };
+    img.src = url;
+  });
+  $('new').addEventListener('click', openNew);
+
+  // ---------- Grand site texts (saved as JSON in the event's Settings › Grand Config) ----------
+  // The form is built from the Grand template's own config.js, so every text, time and list on the site is here.
+  function showGrandBtn() { $('e-grand').hidden = document.querySelector('#form-e [data-k="Template"]').value !== 'Grand'; }
+  document.querySelector('#form-e [data-k="Template"]').addEventListener('change', showGrandBtn);
+  var G = { cfg: null, base: null, shapes: {} };
+  var G_SECTIONS = { couple: 'Couple', parents: 'Parents', dates: 'Dates & calendar', gate: 'Opening screen (envelope & boarding pass)', hero: 'Top of the page',
+    invitation: 'Invitation', countdown: 'Countdown', schedule: 'Schedule', details: 'What’s included', flights: 'Flights', packing: 'Packing list',
+    location: 'Location', rsvp: 'RSVP form', nav: 'Top menu' };
+  var G_HINT = { timezone: 'e.g. +03:00', countdownTo: 'YYYY-MM-DDTHH:MM', start: 'YYYY-MM-DDTHH:MM', end: 'YYYY-MM-DDTHH:MM', date: 'YYYY-MM-DD', time: 'HH:MM', until: 'HH:MM (optional)' };
+  var G_ICONS = ['', 'plane', 'bus', 'key', 'bed', 'coffee', 'pool', 'drop', 'sparkles', 'camera', 'glass', 'rings', 'dinner', 'music', 'moon', 'suitcase', 'heart', 'taverna', 'sun'];
+  var G_OLD = /עמית|Atlantis|Larnaca|לרנקה|Mazotos|AO 2705|שרלי|סולומון/;   // left over from Amit & Or's site
+  var human = function (k) { return String(k).replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^./, function (c) { return c.toUpperCase(); }); };
+  var clone = function (o) { return JSON.parse(JSON.stringify(o)); };
+  function gMerge(a, b) { Object.keys(b).forEach(function (k) { if (b[k] && typeof b[k] === 'object' && !Array.isArray(b[k]) && a[k] && typeof a[k] === 'object') gMerge(a[k], b[k]); else a[k] = b[k]; }); return a; }
+  // The shape of each list item = every key any item of that list has in the template (so optional ones like "until" show too).
+  function gShapes(o, path) {
+    if (Array.isArray(o)) {
+      var key = path + '[]', sh = G.shapes[key] = G.shapes[key] || {};
+      o.forEach(function (it) {
+        if (it && typeof it === 'object' && !Array.isArray(it)) Object.keys(it).forEach(function (k) { if (!(k in sh)) sh[k] = Array.isArray(it[k]) ? [] : typeof it[k] === 'boolean' ? false : ''; });
+        else if (Array.isArray(it)) sh.__cols = Math.max(sh.__cols || 0, it.length);
+        gShapes(it, key);
+      });
+    } else if (o && typeof o === 'object') Object.keys(o).forEach(function (k) { gShapes(o[k], path + '.' + k); });
+  }
+  function gAt(path) { return path.reduce(function (o, k) { return o[k]; }, G.cfg); }
+  function gField(k, v, path, spath) {
+    var P = esc(JSON.stringify(path)), lab = '<label class="f">' + esc(human(k));
+    if (typeof v === 'boolean') return '<label class="f chk"><input type="checkbox" data-gp="' + P + '"' + (v ? ' checked' : '') + '> ' + esc(k === 'highlight' ? 'Highlight' : human(k)) + '</label>';
+    if (k === 'photo') return lab + ' · link or upload<div class="rowx"><input data-gp="' + P + '" value="' + esc(v) + '" placeholder="No photo"><button type="button" class="btn sm" data-gup="' + P + '">Upload</button></div></label>';
+    if (k === 'icon') return lab + '<select data-gp="' + P + '">' + G_ICONS.map(function (n) { return '<option' + (n === v ? ' selected' : '') + '>' + n + '</option>'; }).join('') + '</select></label>';
+    if (typeof v === 'number') return lab + '<input type="number" min="1" max="30" data-gp="' + P + '" value="' + esc(v) + '"></label>';
+    if (Array.isArray(v)) return gList(k, v, path, spath);
+    if (v && typeof v === 'object') return '<div class="sub-h">' + esc(human(k)) + '</div><div class="grid">' + Object.keys(v).map(function (k2) { return gField(k2, v[k2], path.concat(k2), spath + '.' + k2); }).join('') + '</div>';
+    var long = String(v).length > 70 || k === 'text' || k === 'details';
+    return lab + (long ? '<textarea dir="auto" rows="2" data-gp="' + P + '">' + esc(v) + '</textarea>' : '<input dir="auto" data-gp="' + P + '" value="' + esc(v) + '" placeholder="' + esc(G_HINT[k] || '') + '">') + '</label>';
+  }
+  function gList(k, arr, path, spath) {
+    var key = spath + '[]', sh = G.shapes[key] || {}, P = esc(JSON.stringify(path));
+    var objs = arr.some(function (x) { return x && typeof x === 'object' && !Array.isArray(x); }) || Object.keys(sh).filter(function (x) { return x !== '__cols'; }).length;
+    var rows = sh.__cols || arr.some(Array.isArray);
+    if (!objs && !rows) return '<label class="f">' + esc(human(k)) + ' · one per line<textarea dir="auto" rows="' + Math.min(8, Math.max(2, arr.length)) + '" data-gl="' + P + '">' + esc(arr.join('\n')) + '</textarea></label>';
+    var out = '<div class="sub-h">' + esc(human(k)) + '</div>';
+    if (rows) {
+      var n = sh.__cols || 2;
+      out += arr.map(function (r, i) { return '<div class="rowx">' + Array.apply(null, Array(n)).map(function (_, j) { return '<input dir="auto" data-gp="' + esc(JSON.stringify(path.concat(i, j))) + '" value="' + esc(r[j] == null ? '' : r[j]) + '">'; }).join('') + '<button type="button" class="x" data-grm="' + esc(JSON.stringify(path.concat(i))) + '" title="Remove">✕</button></div>'; }).join('');
+    } else {
+      out += arr.map(function (it, i) {
+        var full = gMerge(clone(sh), it);
+        Object.keys(full).forEach(function (kk) { if (!(kk in it)) it[kk] = full[kk]; });   // optional keys get a field too
+        return '<div class="item"><div class="item-h"><span>' + esc(human(k).replace(/sses$/, 'ss').replace(/([^s])s$/, '$1')) + ' ' + (i + 1) + '</span><button type="button" class="x" data-grm="' + esc(JSON.stringify(path.concat(i))) + '">Remove</button></div>' +
+          '<div class="grid">' + Object.keys(it).filter(function (kk) { return !Array.isArray(it[kk]) || !(it[kk].length && typeof it[kk][0] === 'object'); }).map(function (kk) { return gField(kk, it[kk], path.concat(i, kk), key + '.' + kk); }).join('') + '</div>' +
+          Object.keys(it).filter(function (kk) { return Array.isArray(it[kk]) && it[kk].length && typeof it[kk][0] === 'object'; }).map(function (kk) { return gField(kk, it[kk], path.concat(i, kk), key + '.' + kk); }).join('') +
+        '</div>';
+      }).join('');
+    }
+    return out + '<div><button type="button" class="btn sm" data-gadd="' + P + '" data-gshape="' + esc(key) + '">+ Add</button></div>';
+  }
+  function gRender() {
+    var open = {}; document.querySelectorAll('#g-body details').forEach(function (d) { open[d.dataset.s] = d.open; });
+    var c = G.cfg, left = [];
+    $('g-body').innerHTML = Object.keys(G_SECTIONS).filter(function (s) { return s in c; }).map(function (s) {
+      var old = G_OLD.test(JSON.stringify(c[s])); if (old) left.push(G_SECTIONS[s]);
+      return '<details data-s="' + s + '"' + (open[s] ? ' open' : '') + '><summary>' + esc(G_SECTIONS[s]) + (old ? '<span class="warn">still has Amit &amp; Or’s details</span>' : '') + '</summary><div class="body">' +
+        (Array.isArray(c[s]) ? gList(s, c[s], [s], '.' + s) : '<div class="grid">' + Object.keys(c[s]).filter(function (k) { var v = c[s][k]; return !(Array.isArray(v) && v.length && typeof v[0] === 'object') && !(v && typeof v === 'object' && !Array.isArray(v)); }).map(function (k) { return gField(k, c[s][k], [s, k], '.' + s + '.' + k); }).join('') + '</div>' +
+          Object.keys(c[s]).filter(function (k) { var v = c[s][k]; return (Array.isArray(v) && v.length && typeof v[0] === 'object') || (v && typeof v === 'object' && !Array.isArray(v)); }).map(function (k) { return gField(k, c[s][k], [s, k], '.' + s + '.' + k); }).join('')) +
+      '</div></details>';
+    }).join('');
+    $('g-note').hidden = !left.length;
+    $('g-note').textContent = left.length ? 'These sections still have texts from Amit & Or’s site: ' + left.join(', ') + '. Open them and change what applies.' : '';
+  }
+  // A new Grand event starts from the template, with this event's own names, dates and place filled in.
+  function gPrefill(c, ev) {
+    var names = String(ev.couple || '').split(/\s*&\s*/);
+    if (names.length === 2) { c.couple.name1 = names[0]; c.couple.name2 = names[1]; c.couple.monogram = [names[0].charAt(0).toUpperCase(), names[1].charAt(0).toUpperCase()]; if (c.gate) c.gate.passenger = [c.gate.passenger[0], names[0] + ' & ' + names[1]]; }
+    var a = ev.start || ev.date, b = ev.end || ev.date;
+    if (a) {
+      c.dates.display = a === b ? fmtDate(a).replace(/\//g, '.') : (a.slice(0, 7) === b.slice(0, 7) ? a.slice(8) + '–' + fmtDate(b).replace(/\//g, '.') : fmtDate(a).slice(0, 5).replace('/', '.') + '–' + fmtDate(b).replace(/\//g, '.'));
+      c.dates.countdownTo = a + 'T10:00'; c.dates.calendar.start = a + 'T10:00'; c.dates.calendar.end = b + 'T13:00';
+    }
+    if (ev.country) c.hero.country = ev.country.toUpperCase();
+    if (ev.venue) { c.hero.place = ev.venue; c.location.name = ev.venue; c.location.mapQuery = [ev.venue, ev.country].filter(Boolean).join(' '); c.location.area = [ev.venue, ev.country].filter(Boolean).join(' · '); }
+    return c;
+  }
+  function gClean(o) {   // drop empty optional fields inside list items, so the site hides them
+    if (Array.isArray(o)) return o.map(gClean).filter(function (x) { return !((Array.isArray(x) && x.every(function (y) { return !String(y).trim(); })) || (x && typeof x === 'object' && !Array.isArray(x) && !Object.keys(x).length)); });
+    if (o && typeof o === 'object') { var r = {}; Object.keys(o).forEach(function (k) { var v = gClean(o[k]); if (v === '' || v === false || (Array.isArray(v) && !v.length)) return; r[k] = v; }); return r; }
+    return o;
+  }
+  function gCleanTop(c) { var r = {}; Object.keys(c).forEach(function (s) { var v = c[s]; if (Array.isArray(v)) r[s] = gClean(v); else if (v && typeof v === 'object') { r[s] = {}; Object.keys(v).forEach(function (k) { r[s][k] = Array.isArray(v[k]) ? gClean(v[k]) : v[k]; }); } else r[s] = v; }); return r; }
+  $('e-grand').addEventListener('click', function () {
+    var ev = EDIT.ev; $('g-title').textContent = 'Grand site texts · ' + ev.couple; $('g-view').href = '/' + ev.slug + '/rsvp';
+    $('g-body').textContent = 'Loading…'; $('g-err').hidden = true; $('g-note').hidden = true; $('g-save').disabled = true; $('dlg-g').hidden = false;
+    fetch('/app/grand/config.js', { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (txt) {
+      var w = {}; new Function('window', txt)(w); G.base = w.SITE; G.shapes = {}; gShapes(G.base, '');
+      var saved = null; try { saved = JSON.parse(EDIT.vals['Grand Config'] || 'null'); } catch (x) {}
+      G.cfg = saved ? gMerge(clone(G.base), saved) : gPrefill(clone(G.base), ev);
+      gRender(); $('g-save').disabled = false;
+    }).catch(function () { $('g-body').textContent = 'Couldn’t load the Grand template. Check your connection and try again.'; });
+  });
+  $('g-body').addEventListener('input', function (e) {
+    var el = e.target, p = el.dataset.gp, l = el.dataset.gl;
+    if (p) { p = JSON.parse(p); var o = gAt(p.slice(0, -1)); o[p[p.length - 1]] = el.type === 'checkbox' ? el.checked : el.type === 'number' ? Number(el.value) || 1 : el.value; }
+    if (l) { l = JSON.parse(l); gAt(l.slice(0, -1))[l[l.length - 1]] = el.value.split('\n').map(function (x) { return x.trim(); }).filter(Boolean); }
+  });
+  $('g-body').addEventListener('click', function (e) {
+    var rm = e.target.closest('[data-grm]'), add = e.target.closest('[data-gadd]');
+    if (rm) { var p = JSON.parse(rm.dataset.grm); gAt(p.slice(0, -1)).splice(p[p.length - 1], 1); gRender(); }
+    if (add) {
+      var arr = gAt(JSON.parse(add.dataset.gadd)), sh = G.shapes[add.dataset.gshape] || {};
+      arr.push(sh.__cols ? Array.apply(null, Array(sh.__cols)).map(function () { return ''; }) : clone(sh));
+      gRender();
+    }
+  });
+  // Photos: resized in the browser like the RSVP photos and stored in the event's Drive folder › Images.
+  var gUp = null;
+  $('g-body').addEventListener('click', function (e) { var b = e.target.closest('[data-gup]'); if (!b) return; gUp = JSON.parse(b.dataset.gup); $('g-file').value = ''; $('g-file').click(); });
+  $('g-file').addEventListener('change', function () {
+    var file = this.files[0], p = gUp; if (!file || !p) return;
+    toast('Uploading the photo…');
+    var img = new Image(), url = URL.createObjectURL(file);
+    img.onload = function () {
+      var max = 1600, k = Math.min(1, max / Math.max(img.width, img.height)), c = document.createElement('canvas');
+      c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+      api('uploadImage', { e: EDIT.ev.slug, name: 'grand-' + p[0] + '.jpg', mime: 'image/jpeg', data: c.toDataURL('image/jpeg', 0.86).split(',')[1] })
+        .then(function (res) { gAt(p.slice(0, -1))[p[p.length - 1]] = res.url; gRender(); toast('Photo uploaded. Click Save to keep it.'); })
+        .catch(function (x) { toast(x.server ? x.message : 'Couldn’t upload the photo.', true); });
+    };
+    img.onerror = function () { toast('That file is not an image.', true); };
+    img.src = url;
+  });
+  $('g-cancel').addEventListener('click', function () { $('dlg-g').hidden = true; });
+  $('form-g').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var json = JSON.stringify(gCleanTop(G.cfg));
+    if (json.length > 45000) { $('g-err').textContent = 'The texts are too long to save. Shorten some of them.'; $('g-err').hidden = false; return; }
+    $('g-save').disabled = true; $('g-save').textContent = 'Saving…';
+    api('saveSettings', { e: EDIT.ev.slug, settings: { 'Grand Config': json } }).then(function () {
+      EDIT.vals['Grand Config'] = json; $('dlg-g').hidden = true; toast('Saved. The Grand site shows the new texts now.');
+    }).catch(function (x) { $('g-err').textContent = x.server ? x.message : 'Couldn’t save. Try again.'; $('g-err').hidden = false; })
+      .then(function () { $('g-save').disabled = false; $('g-save').textContent = 'Save'; });
+  });
+
+  // ---------- GitHub key (lets the hub write each event's WhatsApp link preview) ----------
+  function renderGh(gh) {
+    $('ghbar').hidden = gh.set && !gh.error; $('gh-change').hidden = !(gh.set && !gh.error);
+    $('gh-msg').textContent = gh.error ? gh.error : 'WhatsApp link previews are off until you add a GitHub key.';
+  }
+  $('gh-change').addEventListener('click', function () { $('gh-msg').textContent = 'Paste a new GitHub key to replace the current one.'; $('ghbar').hidden = false; $('gh-key').focus(); });
+  $('gh-save').addEventListener('click', function () {
+    var key = $('gh-key').value.trim(); if (!key) return;
+    var b = this; b.disabled = true; b.textContent = 'Checking…';
+    api('githubKey', { key: key }).then(function () { $('gh-key').value = ''; $('ghbar').hidden = true; $('gh-change').hidden = false; toast('GitHub key saved. Link previews are on.'); })
+      .catch(function (e) { toast(e.server ? e.message : 'Couldn’t save the key.', true); })
+      .then(function () { b.disabled = false; b.textContent = 'Save key'; });
+  });
+  $('signout').addEventListener('click', function () { try { localStorage.removeItem('kai-v2-events'); } catch (x) {} KAI.signOut(); });
+  $('refresh').addEventListener('click', load);
+  load();
+})();
+</script>
+<script src="/app/dtpick.js"></script>
+</body>
+</html>
