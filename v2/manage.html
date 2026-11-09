@@ -287,6 +287,10 @@ th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px,
 @keyframes rowflash { 0%, 40% { background: #FFF1C2; } 100% { background: transparent; } }
 tbody tr.flash td { animation: rowflash 2.6s ease-out; }
 /* someone else is editing this cell right now (live) */
+/* drag a column header to move the column */
+.colghost { position: fixed; z-index: 60; pointer-events: none; background: #FFFFFF; border: 1px solid var(--line); box-shadow: 0 6px 18px rgba(0,0,0,.14); border-radius: 4px; padding: 6px 10px; font-size: 12.5px; font-weight: 600; color: var(--ink); opacity: .95; }
+.coldrop { position: absolute; top: 0; bottom: 0; width: 3px; margin-left: -1px; background: var(--ink); z-index: 5; pointer-events: none; }
+th.colmoving { opacity: .45; }
 td.oe { position: relative; box-shadow: inset 0 0 0 2px var(--oe); }
 td.oe .oe-tag { position: absolute; top: -8px; left: 2px; z-index: 4; background: var(--oe); color: #FFFFFF; font-size: 10.5px; font-weight: 600; line-height: 1; padding: 2px 5px; border-radius: 3px; white-space: nowrap; pointer-events: none; }
 .exmenu .mm-sep { height: 1px; background: var(--hair); margin: 4px 6px; }
@@ -1600,6 +1604,59 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var f = e.target.closest('[data-filter]'); if (f) openFilter(f.dataset.filter, f);
   });
 
+  // ---------- move a column: drag its header left or right (saved for this tab / "All", for everyone) ----------
+  var COLDRAG = { justMoved: false };
+  $('thead').addEventListener('mousedown', function (e) {
+    if (e.button !== 0 || S.missing || e.target.closest('[data-rz],[data-filter]')) return;
+    var th = e.target.closest('th[data-k]'); if (!th || PIN.indexOf(th.dataset.k) > -1) return;
+    var x0 = e.clientX, y0 = e.clientY, k = th.dataset.k, on = false, ghost = null, line = null, drop = null, wrap = th.closest('.tablewrap'), scrollT = null;
+    function targets() { return Array.prototype.filter.call($('thead').querySelectorAll('th[data-k]'), function (t) { return PIN.indexOf(t.dataset.k) < 0; }); }
+    function place(cx) {
+      var ths = targets(), wr = wrap.getBoundingClientRect(), i;
+      for (i = 0; i < ths.length; i++) { var r = ths[i].getBoundingClientRect(); if (cx < r.left + r.width / 2) break; }
+      drop = i;
+      var edge = i < ths.length ? ths[i].getBoundingClientRect().left : ths[ths.length - 1].getBoundingClientRect().right;
+      line.style.left = (edge - wr.left + wrap.scrollLeft) + 'px';
+    }
+    function move(ev) {
+      if (!on) {
+        if (Math.abs(ev.clientX - x0) < 6 || Math.abs(ev.clientX - x0) < Math.abs(ev.clientY - y0)) return;
+        on = true; S.resizing = true; th.classList.add('colmoving');
+        ghost = document.createElement('div'); ghost.className = 'colghost'; ghost.textContent = (colOf(k) || {}).label || k; document.body.appendChild(ghost);
+        line = document.createElement('div'); line.className = 'coldrop'; wrap.style.position = 'relative'; wrap.appendChild(line);
+      }
+      ev.preventDefault();
+      ghost.style.left = (ev.clientX + 12) + 'px'; ghost.style.top = (ev.clientY + 10) + 'px';
+      place(ev.clientX);
+      clearInterval(scrollT); var wr = wrap.getBoundingClientRect(), dir = ev.clientX < wr.left + 40 ? -1 : ev.clientX > wr.right - 40 ? 1 : 0;   // near the edge: scroll the table
+      if (dir) scrollT = setInterval(function () { wrap.scrollLeft += dir * 18; place(ev.clientX); }, 30);
+    }
+    function up() {
+      document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); clearInterval(scrollT);
+      if (!on) return;
+      th.classList.remove('colmoving'); ghost.remove(); line.remove(); S.resizing = false;
+      COLDRAG.justMoved = true; setTimeout(function () { COLDRAG.justMoved = false; }, 0);
+      var keys = targets().map(function (t) { return t.dataset.k; }), from = keys.indexOf(k);
+      if (drop === null || drop === from || drop === from + 1) return;
+      keys.splice(drop > from ? drop - 1 : drop, 0, keys.splice(from, 1)[0]);
+      moveCols(keys);
+    }
+    document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
+  });
+  // keys: the visible columns (after Guest No., First and Last Name) in their new order
+  function moveCols(keys) {
+    var v = curView();
+    if (v) {
+      var before = v.cols.slice(); v.cols = keys.filter(function (k) { return v.cols.indexOf(k) > -1; }); render(); saving('busy');
+      api('saveView', { old: v.name, view: v }).then(function (res) { S.views = res.views; saving('ok'); render(); })
+        .catch(function (e) { v.cols = before; saving('err'); toast(e.server ? e.message : 'Couldn’t save the column order. Try again.', null, null, true); render(); });
+      return;
+    }
+    var seq = keys.slice();   // hidden columns keep their place in the list
+    S.cols.order = S.cols.order.map(function (k) { return keys.indexOf(k) > -1 ? seq.shift() : k; });
+    saveCols(); render();
+  }
+  $('thead').addEventListener('click', function (e) { if (COLDRAG.justMoved) { e.stopPropagation(); e.preventDefault(); } }, true);   // a drag is not a sort click
   $('thead').addEventListener('click', function (e) {
     var fb = e.target.closest('[data-filter]'); if (fb) { e.stopPropagation(); openFilter(fb.dataset.filter, fb); return; }
     var b = e.target.closest('[data-sort]'); if (!b) return;
