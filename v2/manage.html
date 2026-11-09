@@ -308,6 +308,10 @@ tbody tr.flash td { animation: rowflash 2.6s ease-out; }
 .selbar b { color: var(--text, #2B2B30); font-weight: 600; }
 .menu .kb { float: right; color: var(--soft); font-size: 12px; margin-left: 18px; }
 .fp-sort { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 2px 0 8px; border-bottom: 1px solid var(--hair); margin-bottom: 8px; }
+/* the couple: always first, light cream rows with a tag, a line under them */
+#grid tr.cp-row td { background: #FBF7EE; }
+#grid tr.cp-row + tr:not(.cp-row) td { border-top: 2px solid #D9C9A3; }
+.ctag { display: inline-block; font-size: 10.5px; font-weight: 700; color: #8A5A12; background: #F7EBD3; border-radius: 999px; padding: 1px 7px; margin-left: 7px; vertical-align: 1px; }
 /* drag a column header to move the column */
 .colghost { position: fixed; z-index: 60; pointer-events: none; background: #FFFFFF; border: 1px solid var(--line); box-shadow: 0 6px 18px rgba(0,0,0,.14); border-radius: 4px; padding: 6px 10px; font-size: 12.5px; font-weight: 600; color: var(--ink); opacity: .95; }
 .coldrop { position: absolute; top: 0; bottom: 0; width: 3px; margin-left: -1px; background: var(--ink); z-index: 5; pointer-events: none; }
@@ -1287,6 +1291,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       order.forEach(function (n) { list.forEach(function (g) { if ((g.group || '—') === n) out.push(g); }); });
       list = out;
     }
+    // The couple (guests marked Groom / Bride / Couple) always first, in their own order.
+    if (!S.trash) { var cpl = list.filter(function (g) { return g.couple; }).sort(function (a, b) { return a.no - b.no; }); if (cpl.length) list = cpl.concat(list.filter(function (g) { return !g.couple; })); }
     return list;
   }
 
@@ -1361,7 +1367,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var v = g[c.k];
     if (c.k === 'status') return '<span class="pill ' + esc(v) + '">' + esc(v) + '</span>';
     if (c.k === 'phone') return '<span style="font-variant-numeric:tabular-nums">' + esc(prettyPhone(v)) + '</span>' + (v ? '<a class="wa" href="' + waLink(v) + '" target="_blank" rel="noopener" aria-label="WhatsApp ' + esc(g.first) + '" data-noedit="1"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.6-5.2A8.5 8.5 0 1 1 21 11.5z"></path></svg></a>' : '');
-    if (c.k === 'first') { var dp = S.missing && dupOf(g); return '<b>' + esc(v) + '</b>' + (dp ? ' <span class="dup" title="Same name as guest #' + dp.no + '">same as #' + dp.no + '</span>' : ''); }
+    if (c.k === 'first') { var dp = S.missing && dupOf(g); return '<b>' + esc(v) + '</b>' + (g.couple ? '<span class="ctag">' + esc(g.couple) + '</span>' : '') + (dp ? ' <span class="dup" title="Same name as guest #' + dp.no + '">same as #' + dp.no + '</span>' : ''); }
     if (!v && c.k === 'group') return '<span class="ph">—</span>';
     return esc(v);
   }
@@ -1447,7 +1453,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
         var fl = D.fl[lastD] ? Object.keys(D.fl[lastD]).map(function (f) { return '<span>' + esc(f) + ' · ' + D.fl[lastD][f] + '</span>'; }).join('') : '';
         html += '<tr class="grp dh' + (lastD ? '' : ' none') + '"><td colspan="' + (cols.length + 2) + '"><span class="gh"><b>' + esc(dhLabel(D.k, lastD)) + '</b><span class="cnt">' + nGuests(D.n[lastD]) + '</span>' + (fl ? '<span class="fl">' + fl + '</span>' : '') + '</span></td></tr>';
       }
-      var cls = (S.open === g.no ? 'open-row' : (S.checked[g.no] ? 'sel-row' : '')) + (CH[g.no] && !S.trash ? ' has-chg' : '');
+      var cls = (S.open === g.no ? 'open-row' : (S.checked[g.no] ? 'sel-row' : '')) + (CH[g.no] && !S.trash ? ' has-chg' : '') + (g.couple && !S.trash ? ' cp-row' : '');
       var gc = !S.trash && CH[g.no];
       html += '<tr data-no="' + g.no + '" class="' + cls + '">' +
         '<td class="chk" title="Select this guest"><span class="rn">' + (gi + 1) + '</span></td>' +
@@ -2135,6 +2141,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
         '<button type="button" class="mi" role="menuitem" data-m="fval">Filter by this value</button><hr>' : '') +
       '<div class="mh">' + (many ? nos.length + ' selected guests' : esc(g.first + ' ' + g.last) + ' · #' + g.no) + '</div>' +
       (many ? '' : '<button type="button" class="mi" role="menuitem" data-m="open">Open details</button>') +
+      (many || !S.admin ? '' : g.couple ? '<button type="button" class="mi" role="menuitem" data-m="cp-">Remove from the couple</button>'
+        : '<button type="button" class="mi" role="menuitem" data-m="cp-Groom">Mark as the couple · Groom</button><button type="button" class="mi" role="menuitem" data-m="cp-Bride">Mark as the couple · Bride</button>') +
       '<div class="mh">Change status</div><div class="seg">' + STATUSES.map(function (s) { return '<button type="button" data-m="status" data-v="' + s + '" class="' + (!many && g.status === s ? 'cur' : '') + '">' + s + '</button>'; }).join('') + '</div>' +
       '<div class="mh">Change age group</div><div class="seg">' + AGES.map(function (s) { return '<button type="button" data-m="age" data-v="' + s + '" class="' + (!many && g.age === s ? 'cur' : '') + '">' + s + '</button>'; }).join('') + '</div>' +
       '<hr><button type="button" class="mi" role="menuitem" data-m="group">Assign to group…</button>' +
@@ -2171,6 +2179,12 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (a === 'sorta' || a === 'sortz') { if (G.c) { S.sort = { k: G.c.k, dir: a === 'sorta' ? 1 : -1 }; render(); } return; }
     if (a === 'fval') { if (G.c) { var fg = byNo(G.c.no); S.filters[G.c.k] = [fg ? cellVal(fg, G.c.k) : '']; render(); } return; }
     if (a === 'add') { openAdd(); return; }
+    if (a.indexOf('cp-') === 0) {
+      saving('busy');
+      api('setCouple', { no: g.no, couple: a.slice(3) }).then(function (res) { Object.assign(byNo(g.no), res.guest); saving('ok'); render(); })
+        .catch(function (e) { saving('err'); toast(e.server ? e.message : 'Couldn’t save. Try again.', null, null, true); });
+      return;
+    }
     if (a === 'open') { S.open = g.no; render(); }
     else if (a === 'status' || a === 'age') { var f = {}; f[a] = b.dataset.v; if (nos.length > 1) bulk(nos, f); else update(g.no, f); }
     else if (a === 'group') pickGroup(nos);
