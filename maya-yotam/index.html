@@ -234,7 +234,9 @@ footer p { margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1
 
 <script>
 (function () {
-  var RSVP_URL = 'https://script.google.com/macros/s/AKfycbwu6hLPWCdnjcX8NVWjCHjQHNrP5Tjj-lx76JgHN7OEfZYDx30dP0FAJVVAbL3s06WQ/exec';
+  // KAI Events, new system (Supabase): the answers go straight to Noam's guest list.
+  var RSVP_URL = 'https://icqwbbmscoednenpielh.supabase.co/rest/v1/rpc/kai_public', RSVP_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImljcXdiYm1zY29lZG5lbnBpZWxoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQyMDY3MTMsImV4cCI6MjEwOTc4MjcxM30.ZWXEnYa61bZgiYXEHETDIULZ9hplkKLxpgu7eJgkEy8';
+  function post(body) { return fetch(RSVP_URL, { method: 'POST', headers: { apikey: RSVP_KEY, Authorization: 'Bearer ' + RSVP_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ p: body }) }); }
   var guests = 2, attend = 'yes', compData = {}, partyId = '';
   var TYPES = [['adult', 'מבוגר', ''], ['child', 'ילד', 'עד גיל 10'], ['baby', 'תינוק', 'עד גיל 2']];
   var $ = function (id) { return document.getElementById(id); };
@@ -300,7 +302,7 @@ footer p { margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1
       attend: attend, note: $('note').value, companions: companions };
     var btn = this.querySelector('.send'), label = btn.textContent;
     btn.disabled = true; btn.textContent = 'שולחים…';
-    fetch(RSVP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
+    post(payload)
       .then(function (r) { return r.json(); })
       .then(function (res) {
         if (!res.ok) throw new Error(res.error);
@@ -318,7 +320,7 @@ footer p { margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1
   });
   $('edit').addEventListener('click', function () { $('thanks').hidden = true; $('rsvp').hidden = false; });
   var PORTAL_MORE = false;
-  fetch(RSVP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'rsvpInfo', e: 'maya-yotam' }) })
+  post({ action: 'rsvpInfo', e: 'maya-yotam' })
     .then(function (r) { return r.json(); })
     .then(function (res) { var ev = res && res.event || {}; PORTAL_MORE = ['Portal Flights', 'Portal Stay', 'Portal Info'].some(function (k) { return ev[k] === 'on'; }); })
     .catch(function () {});

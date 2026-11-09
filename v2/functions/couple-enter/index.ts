@@ -16,7 +16,7 @@ Deno.serve(async (req: Request) => {
     const { slug, t, path } = await req.json();
     // t = the event's couple token; empty t is the old open couple link /<event>/portal (only for events with Settings › Couple Open Link = on)
     if (!/^[a-z0-9-]{1,40}$/.test(String(slug || "")) || !/^([a-f0-9]{20,80})?$/.test(String(t ?? ""))) return json({ ok: false, error: "This link is not valid." });
-    const back = typeof path === "string" && /^\/[a-z0-9-]{1,40}\/portal\/?$/.test(path) ? path : `/v2/${slug}/portal`;
+    const back = typeof path === "string" && /^\/[a-z0-9-]{1,40}\/portal(\/[A-Za-z0-9_-]{1,40})?\/?$/.test(path) ? path : `/v2/${slug}/portal`;
     const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false } });
     const { data: email, error } = await admin.rpc("kai_couple_enter", { p_slug: slug, p_token: String(t ?? "") });
     if (error || !email) return json({ ok: false, error: "This link is not valid. Ask Noam for a new one." });

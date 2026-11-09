@@ -33,4 +33,4 @@ export default async (request, context) => {
   return new Response(html, { status: res.status, headers });
 };
 
-export const config = { path: ['/v2/*/rsvp', '/v2/*/rsvp/', '/amit-or', '/amit-or/', '/amit-or/rsvp', '/amit-or/rsvp/'] };
+export const config = { path: ['/v2/*/rsvp', '/v2/*/rsvp/', '/*/rsvp', '/*/rsvp/', '/amit-or', '/amit-or/', '/demo-wedding', '/demo-wedding/'] };

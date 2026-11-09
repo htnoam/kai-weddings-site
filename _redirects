@@ -7,16 +7,22 @@
 /v2/:slug/rsvp/       /v2/rsvp.html          200
 /v2/:slug/guests      /v2/portal.html        200
 /v2/:slug/guests/     /v2/portal.html        200
-# Moved to the new system (Supabase): the same addresses, served by the v2 pages. Amit & Or since 9 Nov 2026. (Old system: /app/…)
+# Moved to the new system (Supabase), 9 Nov 2026: the same addresses, served by the v2 pages. (Old system: /app/…, still in the repo.)
+/admin                /v2/dashboard.html     200!
+/admin/*              /v2/dashboard.html     200!
+/:slug/portal         /v2/manage.html        200!
+/:slug/portal/        /v2/manage.html        200!
+/:slug/portal/*       /v2/manage.html        200!
+/:slug/guests         /v2/portal.html        200!
+/:slug/guests/        /v2/portal.html        200!
+/maya-yotam/rsvp      /maya-yotam/           200!
+/maya-yotam/rsvp/     /maya-yotam/           200!
+/:slug/rsvp           /v2/rsvp.html          200!
+/:slug/rsvp/          /v2/rsvp.html          200!
 /amit-or              /v2/rsvp.html          200!
 /amit-or/             /v2/rsvp.html          200!
-/amit-or/rsvp         /v2/rsvp.html          200!
-/amit-or/rsvp/        /v2/rsvp.html          200!
-/amit-or/guests       /v2/portal.html        200!
-/amit-or/guests/      /v2/portal.html        200!
-/amit-or/portal       /v2/manage.html        200!
-/amit-or/portal/      /v2/manage.html        200!
-/amit-or/portal/*     /v2/manage.html        200!
+/demo-wedding         /v2/rsvp.html          200!
+/demo-wedding/        /v2/rsvp.html          200!
 # Event links: /<event>/rsvp · /<event>/guests (guest area) · /<event>/portal (couple's guest list)
 # Old links keep working and move to the new ones.
 /:slug/guest          /:slug/guests          301!
