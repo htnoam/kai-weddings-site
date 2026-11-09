@@ -358,8 +358,16 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     if (/\/\/$/.test(el.value)) el.value = el.value.slice(0, -1);
     else if (/^\d{2}$|^\d{1,2}\/\d{2}$/.test(el.value)) el.value += '/';
   });
-  function toIso(v) {
-    v = smartDate(v); if (!v) return '';
+  // The weekend dates take the wedding's year; every date and time shows in full once you leave the field.
+  function wedYear(v) { if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v.slice(0, 4); var d = smartDate(v); return /^\d{2}\/\d{2}\/\d{4}$/.test(d) ? d.slice(6) : ''; }
+  function wedField(el) { return el && /^n-/.test(el.id || '') ? $('n-date') : document.querySelector('[data-k="Wedding Date"]'); }
+  document.addEventListener('change', function (e) {
+    var el = e.target; if (!el || !el.placeholder) return;
+    if (el.placeholder === 'HH:MM') el.value = smartTime(el.value);
+    else if (el.placeholder === 'DD/MM/YYYY') { var w = wedField(el); el.value = smartDate(el.value, w && w !== el ? wedYear(w.value) : ''); }
+  });
+  function toIso(v, year) {
+    v = smartDate(v, year); if (!v) return '';
     var m = /^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})$/.exec(v); if (!m) return null;
     var iso = m[3] + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[1]).slice(-2), t = new Date(iso + 'T12:00:00');
     return isNaN(t) || t.getDate() !== Number(m[1]) ? null : iso;
@@ -494,7 +502,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
   $('form').addEventListener('submit', function (e) {
     e.preventDefault();
     var f = { couple: $('n-couple').value.trim(), date: toIso($('n-date').value), lang: $('n-lang').value, email: $('n-email').value.trim(),
-      start: toIso($('n-start').value), end: toIso($('n-end').value), sunset: toTime($('n-sunset').value), venue: $('n-venue').value.trim(), country: $('n-country').value.trim() };
+      start: toIso($('n-start').value, wedYear($('n-date').value)), end: toIso($('n-end').value, wedYear($('n-date').value)), sunset: toTime($('n-sunset').value), venue: $('n-venue').value.trim(), country: $('n-country').value.trim() };
     var err = !f.couple ? 'Write the couple’s names.' : /[֐-׿]/.test(f.couple) ? 'Write the names in English. They become the link.' : !slugify(f.couple) ? 'Write the names in English letters.' :
       f.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email) ? 'Check the client’s email address.' :
       f.date === null || f.start === null || f.end === null ? 'Write dates as DD/MM/YYYY, e.g. 04/06/2027.' : f.sunset === null ? 'Write the sunset time as HH:MM, e.g. 19:45.' :
@@ -577,7 +585,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     ['Hero Image', 'Share Image'].forEach(function (k) { vals[k] = EDIT.vals[k] || ''; });
     if (!vals['Couple Names'].trim()) { $('e-err').textContent = 'Write the couple’s names.'; $('e-err').hidden = false; return; }
     var bad = '';
-    ['Wedding Date', 'Start Date', 'End Date'].forEach(function (k) { var x = toIso(vals[k]); if (x === null) bad = 'Write dates as DD/MM/YYYY, e.g. 04/06/2027.'; else vals[k] = x; });
+    ['Wedding Date', 'Start Date', 'End Date'].forEach(function (k) { var x = toIso(vals[k], k === 'Wedding Date' ? '' : wedYear(vals['Wedding Date'] || '')); if (x === null) bad = 'Write dates as DD/MM/YYYY, e.g. 04/06/2027.'; else vals[k] = x; });
     var sun = toTime(vals['Sunset Time']); if (sun === null) bad = bad || 'Write the sunset time as HH:MM, e.g. 19:45.'; else vals['Sunset Time'] = sun;
     if (vals['Client Email'].trim() && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(vals['Client Email'].trim())) bad = bad || 'Check the client’s email address.';
     if (!bad && vals['Start Date'] && vals['End Date'] && vals['End Date'] < vals['Start Date']) bad = 'The wedding weekend ends before it starts. Check the dates.';
