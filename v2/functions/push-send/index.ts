@@ -1,5 +1,6 @@
 // KAI Events v2 · push-send: every 3 minutes (pg_cron) sends Noam's phone one notification per event with the changes
-// guests and couples made since the last run (notify_queue). Quiet hours 23:00–07:00 Israel time: they wait for the morning.
+// guests and couples made since the last run (notify_queue). Couples who turned notifications on hear only about their own
+// event, and only new guests and RSVP changes made by others. Quiet hours 23:00–07:00 Israel time: they wait for the morning.
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 import webpush from "npm:web-push@3.6.7";
@@ -19,12 +20,32 @@ Deno.serve(async (req: Request) => {
     const { data: u } = await db.auth.getUser(token);
     const email = (u?.user?.email || "").toLowerCase();
     const { data: adm } = email ? await db.from("admins").select("email").eq("email", email).limit(1) : { data: [] };
-    if (!adm || !adm.length || !body.test) return new Response(JSON.stringify({ ok: false, error: "Not allowed." }), { status: 401, headers: { ...cors, "Content-Type": "application/json" } });
+    // The couple can test their own phone too (signed in, member of that event).
+    let member = false;
+    if (email && (!adm || !adm.length) && body.slug) {
+      const { data: evr } = await db.from("events").select("id").eq("slug", String(body.slug).toLowerCase()).limit(1);
+      if (evr && evr.length) { const { data: m } = await db.from("event_members").select("email").eq("event_id", evr[0].id).eq("email", email).limit(1); member = !!(m && m.length); }
+    }
+    if (((!adm || !adm.length) && !member) || !body.test) return new Response(JSON.stringify({ ok: false, error: "Not allowed." }), { status: 401, headers: { ...cors, "Content-Type": "application/json" } });
     const r = await run(db, C, true, email, String(body.endpoint || ""));
     return new Response(JSON.stringify(r), { headers: { ...cors, "Content-Type": "application/json" } });
   }
+  if (body.alert) return json(await alert(db, C, String(body.alert).slice(0, 400)));
   return json(await run(db, C, !!body.test, ""));
 });
+
+// The morning health check (pg_cron, kai_health) found something that stopped working: tell Noam's phones.
+// deno-lint-ignore no-explicit-any
+async function alert(db: any, C: Record<string, string>, text: string) {
+  webpush.setVapidDetails("mailto:htnoam@gmail.com", C.vapid_public, C.vapid_private);
+  const { data: subs } = await db.from("push_subs").select("*").eq("audience", "admin");
+  let sent = 0;
+  for (const s of subs || []) {
+    const payload = JSON.stringify({ title: "KAI · something needs a look ⚠️", body: text, tag: "kai-health", url: "/admin" + (C.admin_code ? "/" + C.admin_code : "") });
+    try { await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, payload, { TTL: 86400, urgency: "high" }); sent++; } catch (_e) { /* a dead phone is cleaned up by the regular run */ }
+  }
+  return { ok: true, sent };
+}
 
 // deno-lint-ignore no-explicit-any
 async function run(db: any, C: Record<string, string>, test: boolean, onlyEmail: string, onlyEndpoint = "") {
@@ -39,34 +60,43 @@ async function run(db: any, C: Record<string, string>, test: boolean, onlyEmail:
   const subs = (all || []).filter((s: { email: string; endpoint: string }) => (!onlyEmail || s.email === onlyEmail) && (!onlyEndpoint || s.endpoint === onlyEndpoint));
   if (!subs.length) return { ok: true, subs: 0 };
 
-  let groups: { slug: string; title: string; body: string; n: number }[] = [];
+  let groups: { slug: string; title: string; body: string; n: number; couple?: boolean }[] = [];
   let ids: number[] = [];
   if (body.test) {
-    groups = [{ slug: "*", title: "KAI Events", body: "Notifications are on ✅ You’ll get guest updates here.", n: 0 }];
+    groups = [{ slug: "*", title: "KAI Event Planners", body: "Notifications are on ✅ You’ll get guest updates here.", n: 0 }];
   } else {
-    const { data: rows } = await db.from("notify_queue").select("id, event_id, txt").is("sent_at", null).order("id").limit(500);
+    const { data: rows } = await db.from("notify_queue").select("id, event_id, txt, who, kind").is("sent_at", null).order("id").limit(500);
     if (!rows || !rows.length) return { ok: true, sent: 0 };
     ids = rows.map((r: { id: number }) => r.id);
     const evIds = [...new Set(rows.map((r: { event_id: string }) => r.event_id))];
-    const { data: evs } = await db.from("events").select("id, slug, couple").in("id", evIds);
-    const ev: Record<string, { slug: string; couple: string }> = {}; (evs || []).forEach((e: { id: string; slug: string; couple: string }) => { ev[e.id] = e; });
-    for (const id of evIds) {
-      const lines = [...new Set(rows.filter((r: { event_id: string }) => r.event_id === id).map((r: { txt: string }) => r.txt))];
-      const e = ev[id] || { slug: "", couple: "KAI Events" };
+    const { data: evs } = await db.from("events").select("id, slug, couple, settings").in("id", evIds);
+    // deno-lint-ignore no-explicit-any
+    const ev: Record<string, any> = {}; (evs || []).forEach((e: { id: string }) => { ev[e.id] = e; });
+    type Row = { event_id: string; txt: string; who: string; kind: string };
+    const group = (slug: string, title: string, lines: string[], couple: boolean) => {
       const shown = lines.slice(0, 3).join("\n") + (lines.length > 3 ? "\n+" + (lines.length - 3) + " more" : "");
-      groups.push({ slug: e.slug, title: e.couple + (lines.length > 1 ? " · " + lines.length + " updates" : ""), body: shown, n: lines.length });
+      groups.push({ slug, title: title + (lines.length > 1 ? " · " + lines.length + " updates" : ""), body: shown, n: lines.length, couple });
+    };
+    for (const id of evIds) {
+      const mine = (rows as Row[]).filter((r) => r.event_id === id);
+      const e = ev[id] || { slug: "", couple: "KAI Event Planners", settings: {} };
+      const names = String((e.settings && e.settings["Couple Names"]) || e.couple || "");
+      group(e.slug, e.couple, [...new Set(mine.map((r) => r.txt))], false);
+      const forCouple = [...new Set(mine.filter((r) => (r.kind === "added" || r.kind === "rsvp") && r.who !== names && r.who !== "couple").map((r) => r.txt))];
+      if (forCouple.length && e.slug) group(e.slug, names || e.couple, forCouple, true);
     }
   }
 
   let sent = 0; const errs: string[] = [];
   for (const s of subs) {
-    const mine = groups.filter((g) => g.slug === "*" || !s.slug || g.slug === s.slug);
+    const couple = s.audience === "couple";
+    const mine = groups.filter((g) => g.slug === "*" || (couple ? g.couple && g.slug === s.slug : !g.couple && (!s.slug || g.slug === s.slug)));
     if (!mine.length) continue;
     const badge = (s.unseen || 0) + mine.reduce((a, g) => a + g.n, 0);
     let alive = true;
     for (const g of mine) {
       const slug = g.slug === "*" ? s.slug : g.slug;
-      const payload = JSON.stringify({ title: g.title, body: g.body, badge, tag: slug || "kai", url: (slug ? "/" + slug + "/portal" : "/admin") + (C.admin_code ? "/" + C.admin_code : "") });
+      const payload = JSON.stringify({ title: g.title, body: g.body, badge, tag: slug || "kai", url: (slug ? "/" + slug + "/portal" : "/admin") + (C.admin_code && !couple ? "/" + C.admin_code : "") });
       try {
         await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, payload, { TTL: 86400, urgency: "normal" });
         sent++;
