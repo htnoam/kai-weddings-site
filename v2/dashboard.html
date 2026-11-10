@@ -496,9 +496,9 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
         n(c.Maybe, 'c-warn') + n(c.Declined, 'c-bad') +
         '<td><div class="links">' +
           '<a class="btn sm primary" href="' + BASE + esc(ev.slug) + '/portal' + (ACODE ? '/' + esc(ACODE) : '') + '" target="_blank" rel="noopener">Guest list</a>' +
+          '<button type="button" class="btn sm" data-editev="' + esc(ev.slug) + '">Edit event</button>' +
           (ev.rsvpOff ? '<button type="button" class="btn sm" data-rsvpon="' + esc(ev.slug) + '">+ RSVP form</button>' :
-          '<a class="btn sm" href="' + BASE + esc(ev.slug) + '/rsvp" target="_blank" rel="noopener">RSVP</a>' +
-          '<button type="button" class="btn sm" data-edit="' + esc(ev.slug) + '">Edit RSVP</button>') +
+          '<a class="btn sm" href="' + BASE + esc(ev.slug) + '/rsvp" target="_blank" rel="noopener">RSVP</a>') +
         '</div></td>' +
         '<td><div class="links">' +
           '<button type="button" class="btn sm" data-copy="' + esc(SITE + ev.slug + '/portal') + '" title="The couple’s guest list (/portal)">Portal · couple</button>' +
@@ -516,8 +516,8 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
         '<div class="ec-n"><span><b>' + v(c.total) + '</b> guests</span><span class="c-ok"><b>' + v(c.Confirmed) + '</b> ✓</span><span class="c-warn"><b>' + v(c.Maybe) + '</b> maybe</span><span class="c-bad"><b>' + v(c.Declined) + '</b> ✗</span></div>' +
         (ages(c) ? '<div class="sub">Confirmed: ' + ages(c) + '</div>' : '') +
         '<div class="ec-a"><a class="btn primary" href="' + BASE + esc(ev.slug) + '/portal' + (ACODE ? '/' + esc(ACODE) : '') + '" target="_blank" rel="noopener">Guest list</a>' +
+          '<button type="button" class="btn" data-editev="' + esc(ev.slug) + '">Edit event</button>' +
           (ev.rsvpOff ? '<button type="button" class="btn" data-rsvpon="' + esc(ev.slug) + '">+ RSVP form</button></div>' :
-          '<button type="button" class="btn" data-edit="' + esc(ev.slug) + '">Edit RSVP</button>' +
           '<a class="btn" href="' + BASE + esc(ev.slug) + '/rsvp" target="_blank" rel="noopener">RSVP</a></div>') +
         '<div class="ec-b">' +
           '<span class="ec-copy">Copy link:</span><button type="button" data-copy="' + esc(SITE + ev.slug + '/portal') + '">Portal · couple</button>' + (ev.rsvpOff ? '' : '<button type="button" data-copy="' + esc(SITE + ev.slug + '/rsvp') + '">RSVP</button>') + '<button type="button" data-copy="' + esc(SITE + ev.slug + '/guests') + '">Guests</button></div>' +
@@ -535,7 +535,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     if (MENU === b.dataset.menu && !$('menu').hidden) { closeMenu(); return; }
     var ev = EVENTS.filter(function (x) { return x.slug === b.dataset.menu; })[0]; if (!ev) return;
     MENU = ev.slug; var m = $('menu');
-    m.innerHTML = '<button type="button" data-act="editev">Edit event</button><button type="button" data-act="welcome">' + (ev.welcome && ev.welcome.sent ? 'Send the welcome email again' : 'Send the welcome email') + '</button>' + (ev.rsvpOff ? '' : '<button type="button" data-act="rsvpoff">Turn off the RSVP form</button>') + '<button type="button" data-act="end">' + (ev.status === 'Ended' ? 'Move back to active events' : 'Mark as ended') + '</button>' +
+    m.innerHTML = (ev.rsvpOff ? '' : '<button type="button" data-act="editrsvp">Edit RSVP form</button>') + '<button type="button" data-act="welcome">' + (ev.welcome && ev.welcome.sent ? 'Send the welcome email again' : 'Send the welcome email') + '</button>' + (ev.rsvpOff ? '' : '<button type="button" data-act="rsvpoff">Turn off the RSVP form</button>') + '<button type="button" data-act="end">' + (ev.status === 'Ended' ? 'Move back to active events' : 'Mark as ended') + '</button>' +
       '<button type="button" class="del" data-act="del">Delete event…</button>';
     m.hidden = false;
     var r = b.getBoundingClientRect(), w = m.offsetWidth, h = m.offsetHeight;
@@ -549,7 +549,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     if (b.dataset.act === 'del') { openDelete(ev); return; }
     if (b.dataset.act === 'rsvpoff') { rsvpForm(ev, false); return; }
     if (b.dataset.act === 'welcome') { openWelcome(ev); return; }
-    if (b.dataset.act === 'editev') { openEvEdit(ev); return; }
+    if (b.dataset.act === 'editrsvp') { openEdit(ev.slug); return; }
     var end = ev.status !== 'Ended';
     toast('Saving…');
     api('endEvent', { slug: ev.slug, ended: end }).then(function () {
@@ -690,6 +690,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     $('dlg-ev').hidden = false;
   }
   $('ev-cancel').addEventListener('click', function () { $('dlg-ev').hidden = true; });
+  ['rows', 'ecards'].forEach(function (id) { $(id).addEventListener('click', function (e) { var b = e.target.closest('[data-editev]'); if (!b) return; var ev = EVENTS.filter(function (x) { return x.slug === b.dataset.editev; })[0]; if (ev) openEvEdit(ev); }); });
   $('form-ev').addEventListener('submit', function (e) {
     e.preventDefault();
     var vals = {}; document.querySelectorAll('#form-ev [data-k]').forEach(function (el) { vals[el.dataset.k] = el.value; });
