@@ -658,9 +658,14 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
 .br-times input::placeholder { color: #C8C5BD; font-weight: 500; }
 .br-q { display: flex; flex-direction: column; gap: 6px; padding: 12px 16px; border-bottom: 1px solid var(--row-line); }
 .br-q:last-child { border-bottom: none; }
-.br-q.missing { box-shadow: inset -3px 0 0 var(--bad); background: #FDF3F3; }
+.br-langsel { height: 34px; border: 1px solid var(--line); border-radius: 4px; padding: 0 8px; font: inherit; font-size: 14px; background: var(--surface); }
+#br-allv { position: fixed; inset: 0; z-index: 300; background: rgba(20,20,30,.4); display: flex; align-items: center; justify-content: center; padding: 16px; }
+#br-allv[hidden] { display: none; }
+#br-allv .ba-in { background: var(--surface); border-radius: 10px; width: 100%; max-width: 640px; max-height: 86vh; display: flex; flex-direction: column; overflow: hidden; }
+#br-allv .ba-h { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+#br-allv pre { margin: 0; padding: 14px 16px; overflow: auto; white-space: pre-wrap; font: inherit; font-size: 14.5px; line-height: 1.6; }
 .br-ql { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; }
-.br-ql .miss { font-size: 11.5px; color: var(--bad); background: #F7E1E1; border-radius: 999px; height: 20px; padding: 0 8px; display: inline-flex; align-items: center; }
+.br-ql .miss { font-size: 11.5px; color: var(--soft); background: #F1F0EC; border-radius: 999px; height: 20px; padding: 0 8px; display: inline-flex; align-items: center; }
 .br-ql .ok { color: #2F6B2F; font-size: 13px; }
 .br-q input[type=text], .br-q textarea { width: 100%; border: 1px solid var(--line); border-radius: 4px; padding: 7px 10px; background: var(--surface); font-size: 15px; direction: rtl; unicode-bidi: plaintext; }
 .br-q textarea { min-height: 44px; resize: none; overflow: hidden; line-height: 1.5; }
@@ -3101,7 +3106,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       '<span class="grow"></span>' + (reds ? '<button type="button" class="sc-redcount" id="sc-reds">' + reds + (reds === 1 ? ' needs attention' : ' need attention') + '</button>' : '') +
       (admin && SC.rows.length ? '<button type="button" class="btn" id="sc-savetpl">Save as template</button>' : '') + (admin ? '<button type="button" class="btn" id="sc-copy">Copy from another event</button><button type="button" class="btn" id="sc-paste">Paste from Word</button>' : '') + '</div>';
     var open = BR.on ? brCounts()[1] - brCounts()[0] : 0;
-    if (!admin && open) h += '<div class="sc-banner">יש ' + open + (open === 1 ? ' שאלה' : ' שאלות') + ' לבריף החופה שמחכות לכם<button type="button" class="btn primary" data-gobrief>לשאלות</button></div>';
+    if (!admin && open) h += '<div class="sc-banner" dir="' + (brLang() === 'he' ? 'rtl' : 'ltr') + '">' + BR_T[brLang()].banner(open) + '<button type="button" class="btn primary" data-gobrief>' + BR_T[brLang()].go + '</button></div>';
     var days = {}, order = [];
     SC.rows.forEach(function (r, i) { if (!days[r.day]) { days[r.day] = []; order.push(r.day); } days[r.day].push(i); });
     if (admin) SC.days.forEach(function (d) { if (!days[d]) { days[d] = []; order.push(d); } });
@@ -3123,7 +3128,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function scBriefLink(r) {
     if (!BR.on || !/ceremony|חופה|טקס/i.test(r.what || '')) return '';
     var open = brCounts()[1] - brCounts()[0];
-    return '<button type="button" class="sc-brieflink" data-gobrief>בריף חופה ←' + (open ? '<span class="bn">' + open + '</span>' : '') + '</button>';
+    return '<button type="button" class="sc-brieflink" data-gobrief dir="' + (brLang() === 'he' ? 'rtl' : 'ltr') + '">' + BR_T[brLang()].link2 + (open ? '<span class="bn">' + open + '</span>' : '') + '</button>';
   }
   function scRowRead(r) {
     return '<div class="sc-row' + (r.red ? ' red' : '') + (r.kind === 'sunset' ? ' sunrow' : '') + '"><div class="sc-t">' + esc(r.time) + (r.until ? '<small>until ' + esc(r.until) + '</small>' : '') + '</div><div class="sc-w">' +
@@ -3310,6 +3315,51 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   // brief = { times: { sunset, call, start }, sections: [{ title, qs: [{ id, label, type: text|long|yesno|song, extra, a, a2 }] }] }
   var BR = { on: false, data: null, edit: false, timers: {}, sTimer: null, busy: 0 };
   var BR_TYPES = [['text', 'תשובה קצרה'], ['long', 'תשובה ארוכה / רשימה'], ['yesno', 'כן / לא + פירוט'], ['song', 'שיר (שם + לינק)']];
+  // The questionnaire speaks the event's language (brief.lang): Hebrew, or English with neutral wording for couples from abroad.
+  var BR_T = {
+    he: { title: 'בריף הטקס', edit: 'עריכת השאלות', hint: 'התשובות נשמרות לבד. אפשר למלא בכמה פעמים ולחזור לשנות.', times: 'שעות', youFill: 'אתה ממלא', noamFills: 'נועם ממלא',
+      sunset: 'שקיעה', call: 'קריאה ראשונה', start: 'תחילת הטקס', of: ' מתוך ', answered: ' נענו', answer: 'התשובה שלכם', lines: 'אפשר לכתוב כמה שורות', song: 'שם השיר והאמן', link: 'לינק (יוטיוב / ספוטיפיי)',
+      yes: 'כן', no: 'לא', notYet: 'עוד לא', all: 'כל התשובות', copy: 'העתקה', copied: 'הועתק', close: 'סגירה', none: 'עוד אין תשובות.', lang: 'שפת השאלון', banner: function (n) { return 'יש ' + n + (n === 1 ? ' שאלה' : ' שאלות') + ' לבריף שמחכות לכם'; }, go: 'לשאלות', link2: 'בריף הטקס ←' },
+    en: { title: 'Ceremony brief', edit: 'Edit questions', hint: 'Answers save by themselves. Fill it in over a few visits and come back to change anything.', times: 'Times', youFill: 'You fill these', noamFills: 'Noam fills these',
+      sunset: 'Sunset', call: 'First call', start: 'Ceremony starts', of: ' of ', answered: ' answered', answer: 'Your answer', lines: 'A few lines are fine', song: 'Song and artist', link: 'Link (YouTube / Spotify)',
+      yes: 'Yes', no: 'No', notYet: 'Not yet', all: 'All answers', copy: 'Copy', copied: 'Copied', close: 'Close', none: 'No answers yet.', lang: 'Questions language', banner: function (n) { return n + (n === 1 ? ' question' : ' questions') + ' in your brief are waiting for you'; }, go: 'Answer now', link2: 'Ceremony brief →' }
+  };
+  // The standard questions in both languages (English uses neutral wording: no chuppah, no glass-breaking jargon).
+  var BR_DICT = [['אנשים', 'People'], ['פרטי הטקס', 'Ceremony details'], ['מוזיקה', 'Music'], ['בקשות מיוחדות', 'Special requests'], ['נושא חדש', 'New topic'],
+    ['שמות הורי החתן', 'Names of the groom’s parents'], ['שמות הורי הכלה', 'Names of the bride’s parents'], ['מי מעביר את הטקס? (שם וטלפון)', 'Who is leading the ceremony? (name and phone)'],
+    ['ילדי/ות פרחים (שמות וגילאים)', 'Flower children (names and ages)'], ['מי נושא/ת את הטבעות?', 'Who carries the rings?'], ['מי שומר/ת על הטבעות עד הטקס?', 'Who keeps the rings until the ceremony?'],
+    ['סדר הכניסה לחופה (מי נכנס, באיזה סדר ועם מי)', 'Order of the entrance (who walks in, in what order, with whom)'], ['מי עומד תחת החופה?', 'Who stands with you at the ceremony?'],
+    ['הינומה?', 'Veil?'], ['שבירת כוס?', 'Breaking a glass?'], ['מי מביא את הכוס?', 'Who brings the glass?'], ['סוג יין', 'Wine for the ceremony'], ['נדרים?', 'Personal vows?'], ['מי מתחיל?', 'Who goes first?'],
+    ['נאומים או קטעי קריאה בטקס? (מי ובאיזה סדר)', 'Speeches or readings at the ceremony? (who, and in what order)'], ['רוצים לציין מישהו יקר שלא יהיה איתנו?', 'Would you like to remember someone dear who can’t be with us?'],
+    ['שיר כניסה לחופה', 'Entrance song'], ['שיר נפרד לכניסת הכלה?', 'A separate song for the bride’s entrance?'], ['איזה שיר?', 'Which song?'],
+    ['שיר שבירת הכוס / יציאה מהחופה', 'Song for the end of the ceremony / walking out'], ['בקשות מיוחדות', 'Special requests']];
+  function brLang() { return BR.data && BR.data.lang === 'en' ? 'en' : 'he'; }
+  function brTr(text, to) { var t = String(text || '').trim(); for (var i = 0; i < BR_DICT.length; i++) { var d = BR_DICT[i]; if ((to === 'en' ? d[0] : d[1]) === t) return to === 'en' ? d[1] : d[0]; } return text; }
+  function brSetLang(to) {
+    var D = BR.data, yn = to === 'en' ? { 'כן': 'Yes', 'לא': 'No' } : { 'Yes': 'כן', 'No': 'לא' };
+    D.lang = to;
+    D.sections.forEach(function (sc) { sc.title = brTr(sc.title, to); sc.qs.forEach(function (q) { q.label = brTr(q.label, to); q.extra = brTr(q.extra, to); if (q.type === 'yesno' && yn[q.a]) q.a = yn[q.a]; }); });
+    brSaveStructure(true); briefRender();
+  }
+  // All answers on one page, ready to copy to the officiant or the venue.
+  function brAllText() {
+    var T = BR_T[brLang()], D = BR.data, out = [];
+    var tm = [['sunset', T.sunset], ['call', T.call], ['start', T.start]].filter(function (t) { return D.times[t[0]]; }).map(function (t) { return t[1] + ': ' + D.times[t[0]]; });
+    if (tm.length) out.push(T.times + '\n' + tm.join('\n'));
+    D.sections.forEach(function (sc) {
+      var qs = sc.qs.filter(brAnswered).map(function (q) { return '• ' + q.label + '\n  ' + String(q.a || '').replace(/ \| /, ' – ') + (q.a2 ? ' (' + q.a2 + ')' : ''); });
+      if (qs.length) out.push(sc.title + '\n' + qs.join('\n'));
+    });
+    return out.join('\n\n');
+  }
+  function brShowAll() {
+    var T = BR_T[brLang()], txt = brAllText(), d = document.getElementById('br-allv');
+    if (!d) { d = document.createElement('div'); d.id = 'br-allv'; document.body.appendChild(d); d.addEventListener('click', function (e) { if (e.target === d || e.target.closest('[data-brall="close"]')) d.hidden = true; }); }
+    d.dir = brLang() === 'he' ? 'rtl' : 'ltr';
+    d.innerHTML = '<div class="ba-in"><div class="ba-h"><b>' + esc(T.all) + '</b><span class="grow"></span><button type="button" class="btn" data-brall="copy">' + esc(T.copy) + '</button><button type="button" class="btn" data-brall="close">' + esc(T.close) + '</button></div><pre>' + esc(txt || T.none) + '</pre></div>';
+    d.hidden = false;
+    d.querySelector('[data-brall="copy"]').onclick = function () { var b = this; (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () { b.textContent = T.copied; }).catch(function () { var r = document.createRange(); r.selectNodeContents(d.querySelector('pre')); var sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); }); };
+  }
   var brAnswered = function (q) { return !!String(q.a || '').replace(/\|/g, '').trim(); };
   var brCounts = function () { var n = 0, t = 0; if (BR.data) BR.data.sections.forEach(function (s) { s.qs.forEach(function (q) { t++; if (brAnswered(q)) n++; }); }); return [n, t]; };
   function briefLoad(b) {
@@ -3322,9 +3372,9 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function brBadge() {
     var c = brCounts(), left = c[1] - c[0];
     $('s-brief-n').textContent = left; $('s-brief-n').hidden = !left;
-    if ($('br-progt')) { $('br-progt').textContent = c[0] + ' מתוך ' + c[1] + ' נענו'; $('br-progb').style.width = (c[1] ? Math.round(100 * c[0] / c[1]) : 0) + '%'; }
+    if ($('br-progt')) { $('br-progt').textContent = c[0] + BR_T[brLang()].of + c[1] + BR_T[brLang()].answered; $('br-progb').style.width = (c[1] ? Math.round(100 * c[0] / c[1]) : 0) + '%'; }
   }
-  function brSaved(ok) { var el = $('br-saved'); if (el) { el.textContent = ok ? '✓ נשמר' : ''; clearTimeout(brSaved.t); brSaved.t = setTimeout(function () { if ($('br-saved')) $('br-saved').textContent = ''; }, 1600); } }
+  function brSaved(ok) { var el = $('br-saved'); if (el) { el.textContent = ok ? '✓ ' + (brLang() === 'en' ? 'Saved' : 'נשמר') : ''; clearTimeout(brSaved.t); brSaved.t = setTimeout(function () { if ($('br-saved')) $('br-saved').textContent = ''; }, 1600); } }
   // one answer, a moment after typing stops
   function brAnswer(q) {
     clearTimeout(BR.timers[q.id]);
@@ -3351,26 +3401,28 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function briefRender() {
     if (!BR.data) return;
     if (BR.edit && S.admin) { brEditRender(); return; }
-    var admin = S.admin, D = BR.data;
-    var h = '<div class="br-h"><h1>בריף חופה</h1><div class="br-prog"><span class="bar"><i id="br-progb"></i></span><span id="br-progt"></span></div><span class="br-saved" id="br-saved"></span><span class="grow"></span>' +
-      (admin ? '<button type="button" class="btn" id="br-edit">עריכת השאלות</button>' : '') + '</div>' +
-      (admin ? '' : '<p class="sc-hint" style="margin:0">התשובות נשמרות לבד. אפשר למלא בכמה פעמים ולחזור לשנות.</p>') +
-      '<section class="br-sec"><div class="br-sh"><b>שעות</b><span class="grow"></span><span class="n">' + (admin ? 'אתה ממלא' : 'נועם ממלא') + '</span></div><div class="br-times">' +
-      [['sunset', 'שקיעה'], ['call', 'קריאה ראשונה'], ['start', 'תחילת החופה']].map(function (t) {
+    var admin = S.admin, D = BR.data, T = BR_T[brLang()];
+    $('brief').dir = brLang() === 'he' ? 'rtl' : 'ltr';
+    var h = '<div class="br-h"><h1>' + T.title + '</h1><div class="br-prog"><span class="bar"><i id="br-progb"></i></span><span id="br-progt"></span></div><span class="br-saved" id="br-saved"></span><span class="grow"></span>' +
+      '<button type="button" class="btn" id="br-all">' + T.all + '</button>' +
+      (admin ? '<select id="br-lang" class="br-langsel" aria-label="' + T.lang + '"><option value="he"' + (brLang() === 'he' ? ' selected' : '') + '>עברית</option><option value="en"' + (brLang() === 'en' ? ' selected' : '') + '>English</option></select><button type="button" class="btn" id="br-edit">' + T.edit + '</button>' : '') + '</div>' +
+      (admin ? '' : '<p class="sc-hint" style="margin:0">' + T.hint + '</p>') +
+      '<section class="br-sec"><div class="br-sh"><b>' + T.times + '</b><span class="grow"></span><span class="n">' + (admin ? T.youFill : T.noamFills) + '</span></div><div class="br-times">' +
+      [['sunset', T.sunset], ['call', T.call], ['start', T.start]].map(function (t) {
         var v = D.times[t[0]] || '';
         return '<div><small>' + t[1] + '</small>' + (admin ? '<input data-brt="' + t[0] + '" value="' + esc(v) + '" placeholder="HH:MM" inputmode="numeric" aria-label="' + t[1] + '">' : '<b>' + esc(v || '—') + '</b>') + '</div>';
       }).join('') + '</div></section>';
     h += D.sections.map(function (s, si) {
       var n = s.qs.filter(brAnswered).length;
-      return '<section class="br-sec"><div class="br-sh"><b>' + esc(s.title) + '</b><span class="grow"></span><span class="n">' + n + ' מתוך ' + s.qs.length + '</span></div>' +
+      return '<section class="br-sec"><div class="br-sh"><b>' + esc(s.title) + '</b><span class="grow"></span><span class="n">' + n + T.of + s.qs.length + '</span></div>' +
         s.qs.map(function (q, qi) {
           var id = si + ':' + qi, miss = !brAnswered(q), f = '';
-          if (q.type === 'text') f = '<input type="text" data-bra="' + id + '" value="' + esc(q.a) + '" placeholder="התשובה שלכם">';
-          if (q.type === 'long') f = '<textarea data-bra="' + id + '" placeholder="אפשר לכתוב כמה שורות" rows="2">' + esc(q.a) + '</textarea>';
-          if (q.type === 'song') { var p = String(q.a || '').split(' | '); f = '<div class="two"><input type="text" data-brs="' + id + '" data-part="0" value="' + esc(p[0] || '') + '" placeholder="שם השיר והאמן"><input type="text" data-brs="' + id + '" data-part="1" value="' + esc(p[1] || '') + '" placeholder="לינק (יוטיוב / ספוטיפיי)" dir="ltr"></div>'; }
-          if (q.type === 'yesno') f = '<div class="br-yn" role="group"><button type="button" data-bryn="' + id + '" data-v="כן" class="' + (q.a === 'כן' ? 'on' : '') + '">כן</button><button type="button" data-bryn="' + id + '" data-v="לא" class="' + (q.a === 'לא' ? 'on' : '') + '">לא</button></div>' +
-            (q.a === 'כן' && q.extra ? '<input type="text" data-bra2="' + id + '" value="' + esc(q.a2) + '" placeholder="' + esc(q.extra) + '">' : '');
-          return '<div class="br-q' + (miss && admin ? ' missing' : '') + '"><div class="br-ql">' + esc(q.label) + (miss ? (admin ? '<span class="miss">חסר</span>' : '') : '<span class="ok">✓</span>') + '</div>' + f + '</div>';
+          if (q.type === 'text') f = '<input type="text" data-bra="' + id + '" value="' + esc(q.a) + '" placeholder="' + T.answer + '">';
+          if (q.type === 'long') f = '<textarea data-bra="' + id + '" placeholder="' + T.lines + '" rows="2">' + esc(q.a) + '</textarea>';
+          if (q.type === 'song') { var p = String(q.a || '').split(' | '); f = '<div class="two"><input type="text" data-brs="' + id + '" data-part="0" value="' + esc(p[0] || '') + '" placeholder="' + T.song + '"><input type="text" data-brs="' + id + '" data-part="1" value="' + esc(p[1] || '') + '" placeholder="' + T.link + '" dir="ltr"></div>'; }
+          if (q.type === 'yesno') f = '<div class="br-yn" role="group"><button type="button" data-bryn="' + id + '" data-v="' + T.yes + '" class="' + (q.a === T.yes ? 'on' : '') + '">' + T.yes + '</button><button type="button" data-bryn="' + id + '" data-v="' + T.no + '" class="' + (q.a === T.no ? 'on' : '') + '">' + T.no + '</button></div>' +
+            (q.a === T.yes && q.extra ? '<input type="text" data-bra2="' + id + '" value="' + esc(q.a2) + '" placeholder="' + esc(q.extra) + '">' : '');
+          return '<div class="br-q"><div class="br-ql">' + esc(q.label) + (miss ? (admin ? '<span class="miss">' + T.notYet + '</span>' : '') : '<span class="ok">✓</span>') + '</div>' + f + '</div>';
         }).join('') + '</section>';
     }).join('');
     var box = $('brief'); box.innerHTML = h; brBadge();
@@ -3379,8 +3431,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var get = function (id) { var p = id.split(':'); return D.sections[p[0]].qs[p[1]]; };
     var mark = function (el, q) {
       var b = el.closest('.br-q'), l = b.querySelector('.br-ql'), m = l.querySelector('.miss, .ok'); if (m) m.remove();
-      b.classList.toggle('missing', admin && !brAnswered(q));
-      l.insertAdjacentHTML('beforeend', brAnswered(q) ? '<span class="ok">✓</span>' : (admin ? '<span class="miss">חסר</span>' : ''));
+      l.insertAdjacentHTML('beforeend', brAnswered(q) ? '<span class="ok">✓</span>' : (admin ? '<span class="miss">' + BR_T[brLang()].notYet + '</span>' : ''));
     };
     box.querySelectorAll('[data-bra]').forEach(function (el) { el.addEventListener('input', function () { var q = get(el.dataset.bra); q.a = el.value; mark(el, q); brAnswer(q); }); });
     box.querySelectorAll('[data-bra2]').forEach(function (el) { el.addEventListener('input', function () { var q = get(el.dataset.bra2); q.a2 = el.value; brAnswer(q); }); });
@@ -3392,6 +3443,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       D.times[el.dataset.brt] = v ? ('0' + m[1]).slice(-2) + ':' + m[2] : ''; el.value = D.times[el.dataset.brt]; brSaveStructure(true);
     }); });
     if ($('br-edit')) $('br-edit').onclick = function () { BR.edit = true; briefRender(); };
+    if ($('br-lang')) $('br-lang').onchange = function () { brSetLang(this.value); };
+    $('br-all').onclick = brShowAll;
   }
 
   function brEditRender() {
