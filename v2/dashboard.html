@@ -120,6 +120,10 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .dialog.wide { max-width: 860px; }
 .cols2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px; }
 .cols2 .he { direction: rtl; }
+.cols2 > *, .cols2 .f input, .cols2 .f select, .cols2 .f textarea { min-width: 0; }
+.nrng { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center; }
+.nrng input { min-width: 0; }
+.nrng span { color: var(--soft); font-weight: 400; }
 .sec { margin: 6px 0 -4px; font-size: 13px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: .06em; border-top: 1px solid var(--hair); padding-top: 12px; }
 .img-row { display: flex; align-items: center; gap: 10px; }
 .img-row img { width: 72px; height: 72px; object-fit: cover; border-radius: 4px; border: 1px solid var(--hair); background: var(--soft-surface); }
@@ -240,7 +244,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     <div class="nsec"><div class="nst">Details</div>
     <div class="row2">
       <label class="f full">Client’s email<input id="n-email" type="email" placeholder="e.g. dana@gmail.com" autocomplete="off"></label>
-      <div class="f full">Event dates<div class="nrng"><input id="n-start" placeholder="from DD/MM/YYYY" inputmode="numeric" autocomplete="off" aria-label="Event dates from"><span>–</span><input id="n-end" placeholder="to DD/MM/YYYY" inputmode="numeric" autocomplete="off" aria-label="Event dates to"></div></div>
+      <div class="f full">Event dates<div class="nrng"><input id="n-start" placeholder="DD/MM/YYYY" inputmode="numeric" autocomplete="off" aria-label="Event dates from"><span>–</span><input id="n-end" placeholder="DD/MM/YYYY" inputmode="numeric" autocomplete="off" aria-label="Event dates to"></div></div>
       <label class="f">Wedding date<input id="n-date" placeholder="DD/MM/YYYY" inputmode="numeric" autocomplete="off"></label>
       <label class="f">Sunset on the wedding day<input id="n-sunset" placeholder="HH:MM" inputmode="numeric" autocomplete="off"></label>
       <label class="f">Venue<input id="n-venue" placeholder="e.g. Ktima Gerolemo" autocomplete="off"></label>
@@ -282,18 +286,26 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     <div class="act"><button type="button" class="btn" id="w-cancel">Close</button><button type="button" class="btn primary" id="w-send">Send</button></div>
   </div>
 </div>
+<div class="overlay" id="dlg-ev" hidden>
+  <form class="dialog" id="form-ev" role="dialog" aria-modal="true" aria-labelledby="ev-title" novalidate>
+    <h2 id="ev-title">Edit event</h2>
+    <label class="f">Couple names (English)<input data-k="Couple Names" autocomplete="off"></label>
+    <label class="f">Client’s email<input data-k="Client Email" type="email" autocomplete="off"></label>
+    <div class="f">Event dates<div class="nrng"><input data-k="Start Date" placeholder="DD/MM/YYYY" inputmode="numeric" autocomplete="off" aria-label="Event dates from"><span>–</span><input data-k="End Date" placeholder="DD/MM/YYYY" inputmode="numeric" autocomplete="off" aria-label="Event dates to"></div></div>
+    <div class="row2">
+      <label class="f">Wedding date<input data-k="Wedding Date" placeholder="DD/MM/YYYY" inputmode="numeric" autocomplete="off"></label>
+      <label class="f">Sunset<input data-k="Sunset Time" placeholder="HH:MM" inputmode="numeric" autocomplete="off"></label>
+      <label class="f">Venue<input data-k="Venue" autocomplete="off"></label>
+      <label class="f">Country<input data-k="Country" list="countries" autocomplete="off"></label>
+    </div>
+    <p class="err" id="ev-err" hidden></p>
+    <div class="act"><button type="button" class="btn" id="ev-cancel">Cancel</button><button type="submit" class="btn primary" id="ev-save">Save</button></div>
+  </form>
+</div>
 <div class="overlay" id="dlg-e" hidden>
   <form class="dialog wide" id="form-e" role="dialog" aria-modal="true" aria-labelledby="e-title" novalidate>
     <h2 id="e-title">Edit RSVP form</h2>
     <div class="cols2">
-      <label class="f">Couple names (English)<input data-k="Couple Names"></label>
-      <label class="f">Client’s email<input data-k="Client Email" type="email"></label>
-      <label class="f">Venue<input data-k="Venue"></label>
-      <label class="f">Country<input data-k="Country" list="countries"></label>
-      <label class="f">Wedding date<input data-k="Wedding Date" placeholder="DD/MM/YYYY" inputmode="numeric"></label>
-      <label class="f">Sunset on the wedding day<input data-k="Sunset Time" placeholder="HH:MM" inputmode="numeric"></label>
-      <label class="f">Event dates · from<input data-k="Start Date" placeholder="DD/MM/YYYY" inputmode="numeric"></label>
-      <label class="f">Event dates · to<input data-k="End Date" placeholder="DD/MM/YYYY" inputmode="numeric"></label>
       <label class="f">Dates line on the invitation (optional)<input data-k="Dates Line" placeholder="e.g. 03 – 05 . 06 . 2027"></label>
       <label class="f">Form opens in<select data-k="Default Language"><option value="he">Hebrew</option><option value="en">English</option></select></label>
       <label class="f">Invitation design<select data-k="Template"><option value="">Classic: envelope and form</option><option value="Grand">Grand: full wedding site (schedule, flights, form)</option></select></label>
@@ -523,7 +535,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     if (MENU === b.dataset.menu && !$('menu').hidden) { closeMenu(); return; }
     var ev = EVENTS.filter(function (x) { return x.slug === b.dataset.menu; })[0]; if (!ev) return;
     MENU = ev.slug; var m = $('menu');
-    m.innerHTML = '<button type="button" data-act="welcome">' + (ev.welcome && ev.welcome.sent ? 'Send the welcome email again' : 'Send the welcome email') + '</button>' + (ev.rsvpOff ? '' : '<button type="button" data-act="rsvpoff">Turn off the RSVP form</button>') + '<button type="button" data-act="end">' + (ev.status === 'Ended' ? 'Move back to active events' : 'Mark as ended') + '</button>' +
+    m.innerHTML = '<button type="button" data-act="editev">Edit event</button><button type="button" data-act="welcome">' + (ev.welcome && ev.welcome.sent ? 'Send the welcome email again' : 'Send the welcome email') + '</button>' + (ev.rsvpOff ? '' : '<button type="button" data-act="rsvpoff">Turn off the RSVP form</button>') + '<button type="button" data-act="end">' + (ev.status === 'Ended' ? 'Move back to active events' : 'Mark as ended') + '</button>' +
       '<button type="button" class="del" data-act="del">Delete event…</button>';
     m.hidden = false;
     var r = b.getBoundingClientRect(), w = m.offsetWidth, h = m.offsetHeight;
@@ -537,6 +549,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     if (b.dataset.act === 'del') { openDelete(ev); return; }
     if (b.dataset.act === 'rsvpoff') { rsvpForm(ev, false); return; }
     if (b.dataset.act === 'welcome') { openWelcome(ev); return; }
+    if (b.dataset.act === 'editev') { openEvEdit(ev); return; }
     var end = ev.status !== 'Ended';
     toast('Saving…');
     api('endEvent', { slug: ev.slug, ended: end }).then(function () {
@@ -666,6 +679,32 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     if (parts[0] === 'admin' && !parts[1]) { try { history.replaceState(null, '', '/admin/' + encodeURIComponent(ACODE) + location.search + location.hash); } catch (x) {} setManifest(); }
     if (typeof render === 'function' && EVENTS.length) render();
   }).catch(function () {});
+  // ---------- Edit event (⋯ menu): the event's own details, for every event (with or without an RSVP form) ----------
+  var EVX = null;
+  function openEvEdit(ev) {
+    EVX = ev; var cut = (ev.place || '').lastIndexOf(',');
+    var v = { 'Couple Names': ev.couple || '', 'Client Email': ev.email || '', 'Start Date': fmtDate(ev.start), 'End Date': fmtDate(ev.end), 'Wedding Date': fmtDate(ev.date), 'Sunset Time': ev.sunset || '',
+      'Venue': ev.venue || (ev.country ? '' : cut > 0 ? ev.place.slice(0, cut).trim() : ev.place || ''), 'Country': ev.country || (ev.venue ? '' : cut > 0 ? ev.place.slice(cut + 1).trim() : '') };
+    document.querySelectorAll('#form-ev [data-k]').forEach(function (el) { el.value = v[el.dataset.k] || ''; });
+    $('ev-title').textContent = 'Edit event · ' + ev.couple; $('ev-err').hidden = true; $('ev-save').disabled = false; $('ev-save').textContent = 'Save';
+    $('dlg-ev').hidden = false;
+  }
+  $('ev-cancel').addEventListener('click', function () { $('dlg-ev').hidden = true; });
+  $('form-ev').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var vals = {}; document.querySelectorAll('#form-ev [data-k]').forEach(function (el) { vals[el.dataset.k] = el.value; });
+    var err = function (m) { $('ev-err').textContent = m; $('ev-err').hidden = false; };
+    if (!vals['Couple Names'].trim()) return err('Write the couple’s names.');
+    var bad = '';
+    ['Wedding Date', 'Start Date', 'End Date'].forEach(function (k) { var x = toIso(vals[k], k === 'Wedding Date' ? '' : wedYear(vals['Wedding Date'] || '')); if (x === null) bad = bad || 'Write dates as DD/MM/YYYY, e.g. 04/06/2027.'; else vals[k] = x; });
+    var sun = toTime(vals['Sunset Time']); if (sun === null) bad = bad || 'Write the sunset time as HH:MM, e.g. 19:45.'; else vals['Sunset Time'] = sun;
+    if (vals['Client Email'].trim() && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(vals['Client Email'].trim())) bad = bad || 'Check the client’s email address.';
+    if (!bad && vals['Start Date'] && vals['End Date'] && vals['End Date'] < vals['Start Date']) bad = 'The event dates end before they start. Check the dates.';
+    if (bad) return err(bad);
+    $('ev-save').disabled = true; $('ev-save').textContent = 'Saving…';
+    api('saveSettings', { e: EVX.slug, settings: vals }).then(function () { $('dlg-ev').hidden = true; toast('Saved.'); load(); })
+      .catch(function (x) { err(x.server ? x.message : 'Couldn’t save. Try again.'); $('ev-save').disabled = false; $('ev-save').textContent = 'Save'; });
+  });
   // RSVP form on / off per event (off: the /rsvp link says the form isn't open).
   function rsvpForm(ev, on) {
     toast('Saving…');
@@ -760,7 +799,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     else if (b.hasAttribute('data-tdn')) { STPL.del = ''; stplDraw(); }
     else if (b.dataset.tdy) { var n = b.dataset.tdy; api('deleteScheduleTemplate', { name: n }).then(function (r) { stplSet(r); toast('Template “' + n + '” deleted'); }).catch(function (x) { toast(x.message, true); }); }
   });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { if (!$('dlg-g').hidden) { $('dlg-g').hidden = true; return; } if (!$('dlg-w').hidden) { $('dlg-w').hidden = true; return; } $('dlg').hidden = true; $('dlg-e').hidden = true; $('dlg-d').hidden = true; closeMenu(); } });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { if (!$('dlg-g').hidden) { $('dlg-g').hidden = true; return; } if (!$('dlg-w').hidden) { $('dlg-w').hidden = true; return; } $('dlg').hidden = true; $('dlg-e').hidden = true; $('dlg-ev').hidden = true; $('dlg-d').hidden = true; closeMenu(); } });
 
   // ---------- edit RSVP form (texts and photos are saved in the event's Settings) ----------
   var EDIT = { slug: '', vals: {} };
@@ -774,7 +813,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     document.querySelectorAll('#form-e [data-k]').forEach(function (el) {
       var v = EDIT.vals[el.dataset.k] || '';
       if (el.type === 'checkbox') el.checked = (v || el.dataset.default || 'off') === 'on';
-      else el.value = v || (el.tagName === 'SELECT' ? 'he' : '');
+      else el.value = v || (el.tagName === 'SELECT' ? (el.dataset.k === 'Default Language' ? 'he' : el.options[0].value) : '');
     });
     document.querySelectorAll('#form-e [data-img]').forEach(function (el) { el.innerHTML = imgRow(el.dataset.img); });
   }
@@ -801,13 +840,6 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     var vals = {};
     document.querySelectorAll('#form-e [data-k]').forEach(function (el) { vals[el.dataset.k] = el.type === 'checkbox' ? (el.checked ? 'on' : 'off') : el.value; });
     ['Hero Image', 'Share Image'].forEach(function (k) { vals[k] = EDIT.vals[k] || ''; });
-    if (!vals['Couple Names'].trim()) { $('e-err').textContent = 'Write the couple’s names.'; $('e-err').hidden = false; return; }
-    var bad = '';
-    ['Wedding Date', 'Start Date', 'End Date'].forEach(function (k) { var x = toIso(vals[k], k === 'Wedding Date' ? '' : wedYear(vals['Wedding Date'] || '')); if (x === null) bad = 'Write dates as DD/MM/YYYY, e.g. 04/06/2027.'; else vals[k] = x; });
-    var sun = toTime(vals['Sunset Time']); if (sun === null) bad = bad || 'Write the sunset time as HH:MM, e.g. 19:45.'; else vals['Sunset Time'] = sun;
-    if (vals['Client Email'].trim() && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(vals['Client Email'].trim())) bad = bad || 'Check the client’s email address.';
-    if (!bad && vals['Start Date'] && vals['End Date'] && vals['End Date'] < vals['Start Date']) bad = 'The event dates end before they start. Check the dates.';
-    if (bad) { $('e-err').textContent = bad; $('e-err').hidden = false; return; }
     $('e-save').disabled = true; $('e-save').textContent = 'Saving…';
     api('saveSettings', { e: EDIT.slug, settings: vals }).then(function () { $('dlg-e').hidden = true; toast('Saved. The form shows the new texts now.'); load(); })
       .catch(function (x) { $('e-err').textContent = x.server ? x.message : 'Couldn’t save. Try again.'; $('e-err').hidden = false; })
