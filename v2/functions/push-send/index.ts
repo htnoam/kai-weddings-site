@@ -11,7 +11,7 @@ Deno.serve(async (req: Request) => {
   const { data: cfg } = await db.from("kai_config").select("k, v").in("k", ["vapid_public", "vapid_private", "push_cron_key"]);
   const C: Record<string, string> = {}; (cfg || []).forEach((r: { k: string; v: string }) => { C[r.k] = String(r.v); });
   const body = await req.json().catch(() => ({}));
-  const cors = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, apikey, content-type" };
+  const cors = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info", "Access-Control-Allow-Methods": "POST, OPTIONS" };
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   if (!C.push_cron_key || req.headers.get("x-kai-key") !== C.push_cron_key) {
     // Noam's own "Send a test" button: signed in as an admin, test only.
