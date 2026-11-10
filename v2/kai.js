@@ -94,11 +94,25 @@
   // Resolves once someone is signed in (shows the sign-in screen until then).
   // The couple's permanent link (?t=<token>) signs them in by itself: the server checks it and hands back a one-time sign-in link.
   function wait(msg) { return new Promise(function (ok) { waiting.push(ok); if (document.body) showLogin(msg); else document.addEventListener('DOMContentLoaded', function () { showLogin(msg); }); }); }
-  var coupleTried = false;
+  var coupleTried = false, adminTried = false;
   function ready() {
     return first.then(function () {
       if (session) return;
       var parts = location.pathname.split('/').filter(Boolean), v2 = parts[0] === 'v2', slug = ((v2 ? parts[1] : parts[0]) || '').toLowerCase();
+      // Noam's own links (/admin/<code>, /<event>/portal/<code>) sign him in straight away, no email (admin-enter).
+      var code = v2 ? '' : parts[0] === 'admin' ? (parts[1] || '') : parts[1] === 'portal' ? (parts[2] || '') : '';
+      if (code && !adminTried) {
+        adminTried = true;
+        return fetch(URL + '/functions/v1/admin-enter', { method: 'POST', headers: { apikey: ANON, Authorization: 'Bearer ' + ANON, 'Content-Type': 'application/json' }, body: JSON.stringify({ code: code }) })
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (!res.ok || !res.token_hash) return ready();
+            return sb.auth.verifyOtp({ token_hash: res.token_hash, type: 'magiclink' }).then(function (v) {
+              if (!v.error && v.data && v.data.session) { session = v.data.session; hideLogin(); done(); return; }
+              return ready();
+            });
+          }).catch(function () { return ready(); });
+      }
       var t = new URLSearchParams(location.search).get('t');
       // After the move the couple keeps the old link /<event>/portal (no code); Noam's own link and /admin sign in by email.
       if (t == null && !v2 && parts[1] === 'portal' && parts[2] !== 'htnoam23') t = '';

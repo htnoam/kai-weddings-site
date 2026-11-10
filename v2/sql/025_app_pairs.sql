@@ -5,3 +5,5 @@
 create table if not exists public.app_pairs (pair text primary key, email text not null, created_at timestamptz not null default now(),
   confirmed_at timestamptz, claimed_at timestamptz);
 alter table public.app_pairs enable row level security;
+-- Also 10 Nov: edge function admin-enter. Noam's own links /admin/<code> and /<event>/portal/<code> sign him in with no email
+-- (code in kai_config 'admin_code'; a one-time token for the admin's email). Used by the home-screen app (start page = that link).
