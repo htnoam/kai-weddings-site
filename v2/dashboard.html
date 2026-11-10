@@ -144,7 +144,10 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   .ec-h { position: relative; padding-right: 34px; }
   .ec-h .dots { position: absolute; top: -4px; right: -4px; width: 36px; height: 36px; font-size: 20px; }
   .ecard.ended { opacity: .7; }
-  .top-in { gap: 8px; }
+  .top-in { gap: 8px; flex-wrap: nowrap; padding: 8px 12px; }
+  .pc-only, .v2tag { display: none !important; }
+  .brand { white-space: nowrap; }
+  .tact .signout { white-space: nowrap; }
   .wrap { padding: 10px 12px 32px; }
   .f input, .f select, .f textarea, .ghbar input { font-size: 16px; }
   .overlay { padding: max(16px, env(safe-area-inset-top, 0px)) 12px 24px; }
@@ -186,15 +189,15 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
 <header class="top">
   <div class="top-in">
     <span class="brand">KAI Events<span class="v2tag">New system</span></span>
-    <div style="display:flex;gap:8px">
+    <div class="tact" style="display:flex;gap:8px;align-items:center">
       <button type="button" class="btn" id="gh-change" hidden>GitHub key</button>
-      <a class="btn" href="https://supabase.com/dashboard/project/icqwbbmscoednenpielh/editor" target="_blank" rel="noopener" title="All the data (Supabase › Table Editor)">Database ↗</a>
-      <a class="btn" href="https://drive.google.com/drive/folders/13ypmv22Z6dFjkhl0mlGy0E6JA3miz56I" target="_blank" rel="noopener" title="Nightly backups in Google Drive">Backups ↗</a>
+      <a href="https://supabase.com/dashboard/project/icqwbbmscoednenpielh/editor" target="_blank" rel="noopener" title="All the data (Supabase › Table Editor)" class="btn pc-only">Database ↗</a>
+      <a class="btn pc-only" href="https://drive.google.com/drive/folders/13ypmv22Z6dFjkhl0mlGy0E6JA3miz56I" target="_blank" rel="noopener" title="Nightly backups in Google Drive">Backups ↗</a>
       <span class="bellw"><button type="button" class="btn" id="bell" title="Notifications on this phone">🔔</button>
         <div class="bellpop" id="bellpop" hidden><b id="bp-t">Notifications</b><p id="bp-p"></p><div class="bp-a" id="bp-a"></div></div></span>
       <button type="button" class="signout" id="signout">Sign out</button>
-      <button type="button" class="btn" id="refresh">Refresh</button>
-      <button type="button" class="btn primary" id="new">+ New Event</button>
+      <button type="button" class="btn pc-only" id="refresh">Refresh</button>
+      <button type="button" class="btn primary" id="new">+ New<span class="pc-only"> Event</span></button>
     </div>
   </div>
 </header>
