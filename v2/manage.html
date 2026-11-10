@@ -223,7 +223,7 @@ input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--ink); marg
 table { border-collapse: separate; border-spacing: 0; table-layout: fixed; min-width: 1000px; font-size: 13.5px; }
 th { position: sticky; top: 0; z-index: 2; background: #F1EFEA; color: var(--muted); font-size: 12.5px; border-bottom: 1px solid var(--line); border-right: 1px solid var(--hair); }
 th button { padding: 6px 8px; overflow: hidden; text-overflow: ellipsis; }
-th.chk, td.chk { width: 34px; padding: 0; text-align: center; }
+th.chk, td.chk { width: 44px; padding: 0; text-align: center; }
 th[data-k="no"] { width: 76px; } th[data-k="first"] { width: 120px; } th[data-k="last"] { width: 140px; }
 th[data-k="group"] { width: 180px; } th[data-k="age"] { width: 80px; } th[data-k="status"] { width: 112px; }
 th.mo { width: 34px !important; border-right: none; }
@@ -310,8 +310,10 @@ tbody tr.flash td { animation: rowflash 2.6s ease-out; }
 #grid td.chk.selh { background: #DCE3F7 !important; }
 #grid td.chk.selh .rn { color: var(--ink); font-weight: 700; }
 #grid td.chk { cursor: pointer; }
-#grid td.chk .rn { display: block; text-align: center; color: var(--soft); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+#grid td.chk .rn { display: block; text-align: center; color: var(--muted); font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; }
 #grid th.corner { cursor: pointer; }
+#grid th.corner .nosort { border: none; background: none; font: inherit; font-size: 11.5px; font-weight: 700; color: var(--soft); padding: 4px 2px; cursor: pointer; }
+#grid th.corner .nosort:hover { color: var(--ink); }
 .gov { position: absolute; pointer-events: none; z-index: 1; box-sizing: border-box; }
 .gov.box { border: 1px solid var(--ink); }
 .gov.cp { border: 2px dashed #2F9E44; }
@@ -384,6 +386,7 @@ th[data-k] > button[data-sort] { padding-right: 26px; }
 .vt-n { display: inline-block; min-width: 18px; padding: 0 5px; margin-left: 4px; border-radius: 999px; background: var(--warn); color: #FFFFFF; font-size: 11px; line-height: 17px; text-align: center; }
 td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .dup { margin-left: 4px; padding: 0 6px; border-radius: 3px; background: #FBEDED; color: var(--bad); font-size: 11px; font-weight: 600; white-space: nowrap; }
+.dup.mz { background: #FBF3E2; color: #8A5A12; }
 .mob, .mob-ic, .sumline { display: none; }
 .fbadge { position: absolute; top: -6px; right: -6px; min-width: 17px; height: 17px; padding: 0 4px; border-radius: 999px; background: var(--ink); color: #FFFFFF; font-size: 10.5px; font-weight: 700; line-height: 17px; text-align: center; }
 #mfilter { position: relative; }
@@ -412,6 +415,9 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
   .me #refresh .lbl { display: none; } .mob-ic { display: block; }
   .sumline { order: 2; flex: 1 0 100%; display: flex; align-items: center; gap: 6px; width: auto; height: auto; padding: 0 0 2px; border: none; background: none; font-size: 13px; color: var(--muted); text-align: left; justify-content: flex-start; }
   .sumline b { color: var(--text); } .sumline b.ok { color: var(--ok); } .sumline b.warn { color: var(--warn); } .sumline b.bad { color: var(--bad); }
+  .sumline .sl { padding: 4px 2px; border-radius: 4px; }
+  .sumline .sl.cur { background: var(--soft-surface); box-shadow: inset 0 -2px 0 currentColor; }
+  .vt.add { display: none; }
   .sumline .chev { flex: none; color: var(--soft); transition: transform .15s; }
   .sumline[aria-expanded="true"] .chev { transform: rotate(180deg); }
   .top .stats.mclosed { display: none; }
@@ -538,6 +544,9 @@ tr.has-chg td.chk { box-shadow: inset 4px 0 0 #C2410C; }
   .card .sd { margin-left: 0; }
   .card .wa { background: none; width: 42px; height: 42px; color: #25A244; }
   .card .wa svg { width: 21px; height: 21px; }
+  .card .wa.tel { color: var(--ink); width: 38px; }
+  .card .wa.tel svg { width: 19px; height: 19px; }
+  .card .cpt { color: var(--soft); font-style: italic; }
   .card .agt { display: inline-block; padding: 0 6px; border-radius: 3px; background: #EEF0FA; color: var(--ink); font-size: 12px; font-weight: 600; line-height: 18px; }
   .fp-row { min-height: 40px; } .fp-only { visibility: visible; color: var(--ink); }
 }
@@ -635,7 +644,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
 /* ===== Ceremony brief (third section: Questions; Hebrew, right to left) ===== */
 .sect .bn { min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: #F7E1E1; color: var(--bad); font-size: 11.5px; display: inline-flex; align-items: center; justify-content: center; }
 .sect button.on .bn { background: #FFFFFF; }
-.br { direction: rtl; display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 900px; margin: 4px auto 0; }
+.br { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 900px; margin: 4px auto 0; }
 .br-h { display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; }
 .br-h h1 { margin: 0; font: 700 26px/1.1 var(--sans); color: var(--ink); }
 .br-h .grow { flex: 1; }
@@ -667,7 +676,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
 .br-ql { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; }
 .br-ql .miss { font-size: 11.5px; color: var(--soft); background: #F1F0EC; border-radius: 999px; height: 20px; padding: 0 8px; display: inline-flex; align-items: center; }
 .br-ql .ok { color: #2F6B2F; font-size: 13px; }
-.br-q input[type=text], .br-q textarea { width: 100%; border: 1px solid var(--line); border-radius: 4px; padding: 7px 10px; background: var(--surface); font-size: 15px; direction: rtl; unicode-bidi: plaintext; }
+.br-q input[type=text], .br-q textarea { width: 100%; border: 1px solid var(--line); border-radius: 4px; padding: 7px 10px; background: var(--surface); font-size: 15px; unicode-bidi: plaintext; }
 .br-q textarea { min-height: 44px; resize: none; overflow: hidden; line-height: 1.5; }
 .br-q input[type=text]:focus, .br-q textarea:focus { border-color: var(--ink); outline: none; box-shadow: 0 0 0 3px var(--ink-soft); }
 .br-q .two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -676,16 +685,16 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
 .br-yn button + button { border-inline-start: 1px solid var(--line); }
 .br-yn button.on { background: var(--ink); color: #FFFFFF; }
 .br-qe { display: grid; grid-template-columns: minmax(0, 1fr) 170px auto; gap: 8px; align-items: center; padding: 8px 16px; border-bottom: 1px solid var(--row-line); }
-.br-qe input, .br-qe select { height: 34px; border: 1px solid var(--line); border-radius: 4px; padding: 0 8px; background: var(--surface); font-size: 14.5px; direction: rtl; min-width: 0; }
+.br-qe input, .br-qe select { height: 34px; border: 1px solid var(--line); border-radius: 4px; padding: 0 8px; background: var(--surface); font-size: 14.5px; min-width: 0; }
 .br-qe .extra { grid-column: 1 / 3; font-size: 13.5px; }
 .br-qe .x { border: none; background: none; color: var(--soft); width: 30px; height: 30px; border-radius: 4px; }
 .br-qe .x:hover { color: var(--bad); background: #F7EDED; }
 .br-add { border: none; background: none; color: var(--ink); font-weight: 600; font-size: 13.5px; padding: 8px 16px; }
 .br-add:hover { text-decoration: underline; text-underline-offset: 3px; }
-.sc-brieflink { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; height: 26px; padding: 0 12px; font-size: 13px; font-weight: 700; color: var(--ink); margin-top: 6px; align-self: flex-start; direction: rtl; }
+.sc-brieflink { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; height: 26px; padding: 0 12px; font-size: 13px; font-weight: 700; color: var(--ink); margin-top: 6px; align-self: flex-start; }
 .sc-brieflink:hover { border-color: var(--ink); }
 .sc-brieflink .bn { min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: #F7E1E1; color: var(--bad); font-size: 11.5px; display: inline-flex; align-items: center; justify-content: center; }
-.sc-banner { display: flex; align-items: center; gap: 10px; background: var(--ink-soft); border: 1px solid #D5D8F2; border-radius: 6px; padding: 10px 14px; color: var(--ink); font-weight: 600; direction: rtl; flex-wrap: wrap; }
+.sc-banner { display: flex; align-items: center; gap: 10px; background: var(--ink-soft); border: 1px solid #D5D8F2; border-radius: 6px; padding: 10px 14px; color: var(--ink); font-weight: 600; flex-wrap: wrap; }
 .sc-banner .btn { margin-inline-start: auto; }
 .sc-copy { background: var(--surface); border: 1px solid var(--hair); border-radius: 6px; }
 .sc-copy-h { padding: 10px 14px; border-bottom: 1px solid var(--hair); display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
@@ -694,6 +703,29 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
 .sc-tsave input { height: 36px; border: 1px solid var(--line); border-radius: 4px; padding: 0 10px; max-width: 360px; background: var(--surface); }
 .sc-copy .foot { display: flex; gap: 8px; align-items: center; padding: 10px 14px; border-top: 1px solid var(--hair); background: var(--soft-surface); }
 .sc-row.sunrow { background: #FBF3E2; }
+#sumv { position: fixed; inset: 0; z-index: 300; background: rgba(20,20,30,.4); display: flex; align-items: center; justify-content: center; padding: 16px; }
+#sumv[hidden] { display: none; }
+#sumv .sv-in { background: var(--surface); border-radius: 10px; width: 100%; max-width: 560px; max-height: 88vh; display: flex; flex-direction: column; overflow: hidden; }
+#sumv .sv-h { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+#sumv .sv-b { overflow: auto; padding: 6px 16px 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 4px 22px; }
+#sumv h3 { margin: 12px 0 4px; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--soft); }
+#sumv table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+#sumv table { table-layout: auto; }
+#sumv td { padding: 4px 0; border-bottom: 1px solid var(--row-line); width: auto; min-width: 0; max-width: none; height: auto; }
+#sumv td.n { width: 56px; }
+#sumv td.n { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+#sumv ul { margin: 6px 0 0; padding-left: 16px; font-size: 13px; color: var(--muted); }
+#sumv .sv-f { grid-column: 1 / -1; margin: 10px 0 0; font-size: 12.5px; color: var(--soft); }
+.sc-cms { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; margin-top: 6px; }
+.sc-cm { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; background: #F3EEFB; border-radius: 6px; padding: 6px 10px; font-size: 13.5px; max-width: 560px; }
+.sc-cm.done { background: var(--soft-surface); color: var(--soft); }
+.sc-cm .cm-t { font-weight: 500; }
+.sc-cm .cm-m { font-size: 12px; color: var(--soft); }
+.sc-cms .cm-add { font-size: 12.5px; opacity: .75; }
+.sc-row:not(:hover):not(:focus-within) .sc-cms .cm-add { opacity: .35; }
+.cm-form { display: flex; flex-direction: column; gap: 6px; width: 100%; max-width: 560px; }
+.cm-form textarea { width: 100%; border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; font: inherit; font-size: 14px; resize: vertical; }
+.cm-form span { display: flex; gap: 6px; }
 .sc-row.sunrow .sc-t, .sc-row.sunrow .sc-what, .sc-row.sunrow .sc-t .ie, .sc-row.sunrow .sc-what .ie { color: #8A5A12; }
 .sc-copy-l button { border: none; border-bottom: 1px solid var(--row-line); background: none; text-align: left; padding: 10px 14px; display: flex; gap: 10px; align-items: baseline; font-size: 14.5px; }
 .sc-copy-l button:hover { background: var(--ink-soft); }
@@ -1125,6 +1157,9 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     return PIN.map(colOf).concat(rest.filter(function (c) { return PIN.indexOf(c.k) < 0; }));
   }
 
+  // The table shows Guest No. in the first (select) column, so it isn't repeated as a column of its own.
+  function tableCols() { return visibleCols().filter(function (c) { return c.k !== 'no'; }); }
+
   // ---------- helpers ----------
   function normPhone(p) {
     var s = String(p || '').replace(/[^\d+]/g, '');
@@ -1233,12 +1268,12 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       $('when').textContent = [fmtDate(res.wedding.date), res.wedding.place].filter(Boolean).join(' · ');
       $('who').innerHTML = '<button type="button" class="avatar" aria-haspopup="true" title="Signed in as ' + esc(res.who) + '">' + esc(String(res.who || '?').trim().charAt(0).toUpperCase()) + '</button>' +
         '<span class="whopop" hidden>Signed in as <b>' + esc(res.who) + '</b><span class="whomail">' + esc(KAI.email()) + '</span>' +
-        (res.admin ? '<span class="pushbox"><b>🔔 Notifications for this event</b><span class="pushtxt"></span><span class="pusha"></span></span>' : '') +
+        '<span class="pushbox"><b>🔔 Notifications for this event</b><span class="pushtxt"></span><span class="pusha"></span></span>' +
         '<button type="button" class="signout">Sign out</button></span>';
       $('who').querySelector('.signout').onclick = function () { try { localStorage.removeItem(CK_LIST()); } catch (e) {} KAI.signOut(); };
       $('who').querySelector('.avatar').onclick = function (ev) { ev.stopPropagation(); var pp = $('who').querySelector('.whopop'); pp.hidden = !pp.hidden; if (!pp.hidden) pushDraw(); };
       $('who').querySelector('.whopop').onclick = function (ev) { ev.stopPropagation(); };
-      if (res.admin) pushInit();
+      pushInit();
       $('addcol').hidden = true;
       $('refresh').hidden = false;
       document.title = 'Guest List – ' + (res.wedding.couple || 'Wedding');
@@ -1260,9 +1295,10 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   // ---------- Missing info: confirmed guests with empty details, and possible duplicates ----------
   // What to check is chosen per event on this device (the "What to check" button on that tab).
   function missOptions() {
-    return [{ id: 'arr', label: 'Arrival flight', keys: ['arrDate', 'arrTime', 'arrFlight'] },
-      { id: 'dep', label: 'Departure flight', keys: ['depDate', 'depTime', 'depFlight'] },
-      { id: 'hotel', label: 'Check in / out', keys: ['checkIn', 'checkOut'] },
+    // need: the one detail that decides it (a flight with a date but no time yet isn't "missing" – it's on its way).
+    return [{ id: 'arr', label: 'Arrival flight', keys: ['arrDate', 'arrTime', 'arrFlight'], need: 'arrDate' },
+      { id: 'dep', label: 'Departure flight', keys: ['depDate', 'depTime', 'depFlight'], need: 'depDate' },
+      { id: 'hotel', label: 'Check in / out', keys: ['checkIn', 'checkOut'], need: 'checkIn' },
       { id: 'room', label: 'Room #', keys: ['room'] },
       { id: 'table', label: 'Table #', keys: ['table'] }]
       .concat(COLS.filter(function (c) { return c.custom; }).map(function (c) { return { id: c.k, label: c.label, keys: [c.k] }; }));
@@ -1277,9 +1313,14 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var k = dupKey(g); if (!k) return null;
     return live().filter(function (x) { return x.no !== g.no && dupKey(x) === k; })[0] || null;
   }
+  // Only confirmed guests count, and not the couple themselves (they're the hosts).
+  function missChecksOf(g) {
+    if (g.deleted || g.status !== 'Confirmed' || g.couple) return [];
+    return missChecks().filter(function (x) { return x.need ? !cellVal(g, x.need) : x.keys.some(function (k) { return !cellVal(g, k); }); });
+  }
   function missingOf(g) {
     if (g.deleted) return [];
-    var out = g.status === 'Confirmed' ? missChecks().filter(function (x) { return x.keys.some(function (k) { return !cellVal(g, k); }); }).map(function (x) { return x.label; }) : [];
+    var out = missChecksOf(g).map(function (x) { return x.label; });
     if (dupOf(g)) out.push('Possible duplicate');
     return out;
   }
@@ -1340,7 +1381,9 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     // Phones: one line of counts; tapping it opens the full buttons. It stays open while a count is used as a filter.
     var cv = curView(), statFilter = S.status !== (cv ? cv.status : '') || S.age !== (cv ? cv.age : '');
     var sumOpen = S.sumOpen || statFilter;
-    $('sumline').innerHTML = '<span><b>' + L.length + '</b> guests · <b class="ok">' + c('Confirmed') + '</b> ✓ · <b class="warn">' + c('Maybe') + '</b> maybe · <b class="bad">' + c('Declined') + '</b> ✗</span>' +
+    // Each count is its own tap: it shows only those guests (tap again to show everyone).
+    var sl = function (st, cls, txt) { return '<span class="sl' + (S.status === st ? ' cur' : '') + '" data-sfs="' + st + '"><b class="' + cls + '">' + c(st) + '</b> ' + txt + '</span>'; };
+    $('sumline').innerHTML = '<span><span class="sl" data-sfs=""><b>' + L.length + '</b> guests</span> · ' + sl('Confirmed', 'ok', '✓') + ' · ' + sl('Maybe', 'warn', 'maybe') + ' · ' + sl('Declined', 'bad', '✗') + '</span>' +
       '<svg class="chev" aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
     $('sumline').setAttribute('aria-expanded', sumOpen);
     $('stats').classList.toggle('mclosed', !sumOpen);
@@ -1390,27 +1433,30 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var v = g[c.k];
     if (c.k === 'status') return '<span class="pill ' + esc(v) + '">' + esc(v) + '</span>';
     if (c.k === 'phone') return '<span style="font-variant-numeric:tabular-nums">' + esc(prettyPhone(v)) + '</span>' + (v ? '<a class="wa" href="' + waLink(v) + '" target="_blank" rel="noopener" aria-label="WhatsApp ' + esc(g.first) + '" data-noedit="1"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.6-5.2A8.5 8.5 0 1 1 21 11.5z"></path></svg></a>' : '');
-    if (c.k === 'first') { var dp = S.missing && dupOf(g); return '<b>' + esc(v) + '</b>' + (dp ? ' <span class="dup" title="Same name as guest #' + dp.no + '">same as #' + dp.no + '</span>' : ''); }
+    if (c.k === 'first') {
+      var dp = S.missing && dupOf(g), ms = S.missing ? missChecksOf(g).map(function (x) { return x.label; }) : [];
+      return '<b>' + esc(v) + '</b>' + (dp ? ' <span class="dup" title="Same name as guest #' + dp.no + '">same as #' + dp.no + '</span>' : '') + (ms.length ? ' <span class="dup mz" title="Missing: ' + esc(ms.join(', ')) + '">no ' + esc(ms.join(', ').toLowerCase()) + '</span>' : '');
+    }
     if (!v && c.k === 'group') return '<span class="ph">—</span>';
     return esc(v);
   }
 
   function setTableWidth(cols) {
     // Exact width: each column keeps its own size and the table never stretches to fill the screen (that moved the other columns).
-    var w = 34 + 34 + cols.reduce(function (t, c) { return t + (widthOf(c.k) || 260); }, 0);
+    var w = 44 + 34 + cols.reduce(function (t, c) { return t + (widthOf(c.k) || 260); }, 0);
     $('grid').style.minWidth = w + 'px'; $('grid').style.width = w + 'px';
   }
-  // Freeze the checkbox, Guest No., First and Last Name columns on the left.
+  // Freeze the Guest No. (select) column and First and Last Name on the left.
   function freeze() {
     var ths = $('thead').children, css = '', left = 0;
-    for (var i = 0; i < 4 && i < ths.length; i++) {
+    for (var i = 0; i < 3 && i < ths.length; i++) {
       var n = i + 1;
       css += '#grid thead th:nth-child(' + n + '){left:' + left + 'px;z-index:3}' +
         'tbody tr[data-no] td:nth-child(' + n + '){position:sticky;left:' + left + 'px;z-index:1}' +
         ':where(tbody tr[data-no] td:nth-child(' + n + ')){background:var(--surface)}';
       left += ths[i].offsetWidth;
     }
-    css += '#grid thead th:nth-child(4),tbody tr[data-no] td:nth-child(4){box-shadow:inset -2px 0 0 var(--line)}';
+    css += '#grid thead th:nth-child(3),tbody tr[data-no] td:nth-child(3){box-shadow:inset -2px 0 0 var(--line)}';
     $('freeze').textContent = css;
   }
 
@@ -1422,7 +1468,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     S.resizing = true; rz.classList.add('on');
     function move(ev) {
       var w = Math.max(48, Math.round(w0 + ev.clientX - x0));
-      th.style.width = w + 'px'; S.widths[k] = w; setTableWidth(visibleCols()); freeze(); paintSel();
+      th.style.width = w + 'px'; S.widths[k] = w; setTableWidth(tableCols()); freeze(); paintSel();
     }
     function up() {
       document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up);
@@ -1456,13 +1502,16 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   }
   function nGuests(n) { return n + (n === 1 ? ' guest' : ' guests'); }
 
+  // Short headers in the table (the full name shows on hover and everywhere else).
+  var SHORT = { 'Guest Group': 'Group', 'Age Group': 'Age', 'RSVP Status': 'RSVP', 'Arrival Flight Date': 'Arr. date', 'Arrival Flight Time': 'Arr. time', 'Arrival Flight Number': 'Arr. flight',
+    'Arrival Bus': 'Arr. bus', 'Departure Flight Date': 'Dep. date', 'Departure Flight Time': 'Dep. time', 'Departure Flight Number': 'Dep. flight', 'Departure Bus': 'Dep. bus' };
   function renderTable(list) {
-    var cols = visibleCols();
+    var cols = tableCols();
     var D = dateHead(list), lastD = null; DHK = D ? D.k : '';
     setTableWidth(cols);
-    $('thead').innerHTML = '<th class="chk corner" title="Select all"><span class="sr">Select all</span></th>' + cols.map(function (c) {
+    $('thead').innerHTML = '<th class="chk corner" title="Select all"><button type="button" class="nosort" title="Sort by Guest No.">#' + (S.sort.k === 'no' ? (S.sort.dir > 0 ? '↑' : '↓') : '') + '</button><span class="sr">Select all</span></th>' + cols.map(function (c) {
       var arrow = S.sort.k === c.k ? (S.sort.dir > 0 ? ' ↑' : ' ↓') : '';
-      return '<th data-k="' + c.k + '" style="width:' + (widthOf(c.k) || 260) + 'px" aria-sort="' + (S.sort.k === c.k ? (S.sort.dir > 0 ? 'ascending' : 'descending') : 'none') + '"><button type="button" data-sort="' + c.k + '" title="' + esc(c.label) + '">' + esc(c.label) + arrow + '</button><button type="button" class="fbtn' + (S.filters[c.k] ? ' on' : '') + '" data-filter="' + c.k + '" aria-label="Filter ' + esc(c.label) + '" title="Filter"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 4h18l-7 8.5V19l-4 2v-8.5z"/></svg></button><span class="rz" data-rz="' + c.k + '" title="Drag to resize · double-click to reset"></span></th>';
+      return '<th data-k="' + c.k + '" style="width:' + (widthOf(c.k) || 260) + 'px" aria-sort="' + (S.sort.k === c.k ? (S.sort.dir > 0 ? 'ascending' : 'descending') : 'none') + '"><button type="button" data-sort="' + c.k + '" title="' + esc(c.label) + '">' + esc(SHORT[c.label] || c.label) + arrow + '</button><button type="button" class="fbtn' + (S.filters[c.k] ? ' on' : '') + '" data-filter="' + c.k + '" aria-label="Filter ' + esc(c.label) + '" title="Filter"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 4h18l-7 8.5V19l-4 2v-8.5z"/></svg></button><span class="rz" data-rz="' + c.k + '" title="Drag to resize · double-click to reset"></span></th>';
     }).join('') + '<th class="mo"><span class="sr">More</span></th>';
     var html = '', lastGroup = null;
     list.forEach(function (g, gi) {
@@ -1479,10 +1528,10 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       var cls = (S.open === g.no ? 'open-row' : (S.checked[g.no] ? 'sel-row' : '')) + (CH[g.no] && !S.trash ? ' has-chg' : '') + (g.couple && !S.trash ? ' cp-row' : '');
       var gc = !S.trash && CH[g.no];
       html += '<tr data-no="' + g.no + '" class="' + cls + '">' +
-        '<td class="chk" title="Select this guest"><span class="rn">' + (gi + 1) + '</span></td>' +
+        '<td class="chk" title="Guest No. ' + g.no + ' · click to select"><span class="rn">' + g.no + '</span></td>' +
         cols.map(function (c) {
           var editable = !S.trash && !c.fixed;
-          var miss = S.missing && g.status === 'Confirmed' && !cellVal(g, c.k) && missChecks().some(function (x) { return x.keys.indexOf(c.k) > -1; });
+          var miss = S.missing && !cellVal(g, c.k) && missChecksOf(g).some(function (x) { return x.keys.indexOf(c.k) > -1; });
           var al = alignOf(c.k), chg = gc && (gc[c.k] || (c.k === 'first' && gc['*']));
           return '<td class="' + (c.k === 'no' ? 'num' : '') + (editable ? ' ed' : '') + (miss ? ' miss' : '') + (chg ? ' chg' : '') + ' al-' + al + '" data-k="' + c.k + '"' + (editable && !chg ? ' title="Double-click to edit"' : '') + '><div class="c"' + (al === 'a' ? ' dir="auto"' : '') + '>' + cellHtml(g, c) + '</div></td>';
         }).join('') +
@@ -1505,7 +1554,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
         '<div class="mn"><div class="l1"><button type="button" class="nm" data-open="' + g.no + '">' + esc(g.first + ' ' + g.last) + '</button><span class="no">#' + g.no + '</span></div>' +
         '<div class="l2">' + cardLine(g) + '</div></div><span class="sd ' + esc(g.status) + '" title="' + esc(g.status) + '"></span>' +
         (S.trash ? '<button type="button" class="btn" data-restore="' + g.no + '" style="height:34px">Restore</button>'
-          : (g.phone ? '<a class="wa" href="' + waLink(g.phone) + '" target="_blank" rel="noopener" aria-label="WhatsApp ' + esc(g.first) + '"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.6-5.2A8.5 8.5 0 1 1 21 11.5z"></path></svg></a>' : '')) +
+          : (g.phone ? '<a class="wa tel" href="tel:' + esc(normPhone(g.phone)) + '" aria-label="Call ' + esc(g.first) + '"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg></a>' +
+            '<a class="wa" href="' + waLink(g.phone) + '" target="_blank" rel="noopener" aria-label="WhatsApp ' + esc(g.first) + '"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.6-5.2A8.5 8.5 0 1 1 21 11.5z"></path></svg></a>' : '')) +
         '</div>';
     });
     $('cards').innerHTML = html || '<div class="empty">' + (S.trash ? 'No deleted guests.' : 'No guests match these filters.') + '</div>';
@@ -1515,6 +1565,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function cardLine(g) {
     // Group (only when it isn't the guest's own name) · age · arrival date · room.
     var bits = [], gr = cellVal(g, 'group'), ad = cellVal(g, 'arrDate'), rm = cellVal(g, 'room');
+    if (g.couple && !g.phone) bits.push('<span class="cpt">' + esc(g.couple === 'Couple' ? 'The couple' : g.couple) + '</span>');
     if (gr && gr.toLowerCase() !== (g.first + ' ' + g.last).trim().toLowerCase()) bits.push('<span class="grp">' + esc(gr) + '</span>');
     if (g.age && g.age !== 'Adult') bits.push('<span class="agt">' + esc(g.age) + '</span>');
     if (ad && DHK !== 'arrDate') bits.push('✈ ' + esc(ad.slice(0, 5)));
@@ -1759,7 +1810,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   // G.a / G.b: corners of the current range (G.a = where it started). G.c: the active cell. G.extra: earlier ranges added with Ctrl.
   var G = { a: null, b: null, c: null, extra: [], copy: null, undo: [], redo: [], menuCut: false };
   function gRows() { return Array.prototype.map.call($('tbody').querySelectorAll('tr[data-no]'), function (tr) { return Number(tr.dataset.no); }); }
-  function gCols() { return visibleCols().map(function (c) { return c.k; }); }
+  function gCols() { return tableCols().map(function (c) { return c.k; }); }
   function gIdx(p, R, C) { return p ? { r: R.indexOf(p.no), c: C.indexOf(p.k) } : { r: -1, c: -1 }; }
   function gRect(a, b, R, C) {
     var x = gIdx(a, R, C), y = gIdx(b, R, C);
@@ -2124,6 +2175,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   $('thead').addEventListener('click', function (e) { if (COLDRAG.justMoved) { e.stopPropagation(); e.preventDefault(); } }, true);   // a drag is not a sort click
   $('thead').addEventListener('click', function (e) {
     var fb = e.target.closest('[data-filter]'); if (fb) { e.stopPropagation(); openFilter(fb.dataset.filter, fb); return; }
+    if (e.target.closest('.nosort')) { S.sort = { k: 'no', dir: S.sort.k === 'no' ? -S.sort.dir : 1 }; render(); return; }
     if (e.target.closest('th.corner')) { gSelectAll(); return; }
     var th = e.target.closest('th[data-k]'); if (!th) return;
     gSelectCols(th.dataset.k, e.shiftKey, e.ctrlKey || e.metaKey);
@@ -2623,11 +2675,12 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       '<button type="button" role="menuitem" data-mm="import">Import Guests</button>' +
       '<button type="button" role="menuitem" data-mm="csv">Export to Excel (CSV)</button>' +
       '<button type="button" role="menuitem" data-mm="pdf">Export PDF report</button>' +
+      '<button type="button" role="menuitem" data-mm="summary">Summary</button>' +
       '<button type="button" role="menuitem" data-mm="remind">WhatsApp reminders (' + remindList().length + ')</button>' +
       '<button type="button" role="menuitem" data-mm="trash">Deleted guests (' + (S.delCount || 0) + ')</button>' +
       (canInstall() ? '<button type="button" role="menuitem" data-mm="install">Save to home screen</button>' : '') +
       (!S.admin ? '<div class="mm-sep"></div><button type="button" role="menuitem" data-mm="kaicode">KAI sign-in</button>' : '') +
-      (S.admin ? '<div class="mm-sep"></div><button type="button" role="menuitem" data-mm="push">🔔 Notifications</button><button type="button" role="menuitem" data-mm="addcol">+ Add Column</button>' : '');
+      '<div class="mm-sep"></div><button type="button" role="menuitem" data-mm="push">🔔 Notifications</button>' + (S.admin ? '<button type="button" role="menuitem" data-mm="addcol">+ Add Column</button>' : '');
     var r = this.getBoundingClientRect();
     moreMenu.hidden = false;
     moreMenu.style.top = (r.bottom + 4) + 'px';
@@ -2657,13 +2710,16 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     else if (a === 'remind') openRemind();
     else if (a === 'install') openInstall();
     else if (a === 'push') openPushSheet();
+    else if (a === 'summary') openSummary();
     else if (a === 'kaicode') {
       // A home-screen app that opened as the couple: Noam types his code once and this app is his from then on.
       var c = window.prompt('Your KAI code'); if (!c) return;
       KAI.adminEnter(c).then(function (ok) { if (ok) location.replace('/' + EVENT + '/portal/' + encodeURIComponent(c.trim())); else toast('That code isn’t right.', null, null, true); });
     }
   });
-  $('sumline').addEventListener('click', function () {
+  $('sumline').addEventListener('click', function (e) {
+    var t = e.target.closest('[data-sfs]');
+    if (t) { var st = t.dataset.sfs; S.status = st && S.status === st ? '' : st; S.age = ''; S.trash = false; $('f-status').value = S.status; $('f-age').value = ''; render(); return; }
     var open = this.getAttribute('aria-expanded') !== 'true';
     S.sumOpen = open;
     if (!open) { var cv = curView(); S.status = cv ? cv.status : ''; S.age = cv ? cv.age : ''; $('f-status').value = S.status; $('f-age').value = S.age; }
@@ -2927,7 +2983,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if ('clearAppBadge' in navigator) navigator.clearAppBadge().catch(function () {});
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
     navigator.serviceWorker.register('/sw.js', { scope: '/' }).then(function (reg) { PUSH.reg = reg; return reg.pushManager.getSubscription(); })
-      .then(function (sub) { PUSH.sub = sub; if (sub) api('pushSeen', { endpoint: sub.endpoint }).catch(function () {}); }).catch(function () {});
+      .then(function (sub) { PUSH.sub = sub; if (sub) api('pushSeen', { endpoint: sub.endpoint, slug: EVENT }).catch(function () {}); }).catch(function () {});
   }
   // Noam on a link without his code (e.g. /amit-or/portal): put the code in the address, so "Add to Home Screen" makes an app
   // that always opens as Noam (not as the couple).
@@ -2941,6 +2997,40 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       try { history.replaceState(null, '', '/' + EVENT + '/portal/' + encodeURIComponent(r.code) + location.search + location.hash); } catch (x) { return; }
       setAppManifest(name);
     }).catch(function () {});
+  }
+  // ---------- Summary: the numbers for the venue and the caterer, always up to date ----------
+  function sumData() {
+    var C = live().filter(function (g) { return g.status === 'Confirmed'; }), out = [];
+    var cnt = function (list, f) { var m = {}; list.forEach(function (g) { var v = f(g); if (v) m[v] = (m[v] || 0) + 1; }); return Object.keys(m).sort(function (a, b) { return m[b] - m[a]; }).map(function (k) { return [k, m[k]]; }); };
+    var AG = { Adult: 'Adults', Child: 'Children', Baby: 'Babies' };
+    out.push({ t: 'Confirmed', rows: [['Total', C.length]].concat(AGES.map(function (a) { return [AG[a], C.filter(function (g) { return g.age === a; }).length]; })) });
+    var cust = COLS.filter(function (c) { return c.custom; });
+    var menu = cust.filter(function (c) { return /menu|meal|dish|מנה|תפריט/i.test(c.label); })[0];
+    var allg = cust.filter(function (c) { return /allerg|sensitiv|diet|kosher|אלרג|רגיש|כשר/i.test(c.label); });
+    if (menu) out.push({ t: menu.label, rows: cnt(C, function (g) { return cellVal(g, menu.k) || '(not chosen)'; }) });
+    allg.forEach(function (c) {
+      var r = cnt(C, function (g) { var v = cellVal(g, c.k); return v && !/^(none|no|לא|אין|-)$/i.test(v) ? v : ''; });
+      out.push({ t: c.label, rows: r.length ? r : [['None', '']], who: C.filter(function (g) { var v = cellVal(g, c.k); return v && !/^(none|no|לא|אין|-)$/i.test(v); }).map(function (g) { return g.first + ' ' + g.last + ': ' + cellVal(g, c.k); }) });
+    });
+    var arr = cnt(C, function (g) { return cellVal(g, 'arrDate'); }).sort(function (a, b) { return dateKey(a[0]) < dateKey(b[0]) ? -1 : 1; });
+    var noArr = C.filter(function (g) { return !cellVal(g, 'arrDate'); }).length;
+    if (arr.length) out.push({ t: 'Arrivals', rows: arr.map(function (x) { return [dhLabel('arrDate', x[0]), x[1]]; }).concat(noArr ? [['No flight yet', noArr]] : []) });
+    var rooms = {}; C.forEach(function (g) { var r = cellVal(g, 'room'); if (r) rooms[r] = 1; });
+    var nRooms = Object.keys(rooms).length;
+    if (nRooms) out.push({ t: 'Rooms', rows: [['Rooms in use', nRooms], ['Guests without a room', C.filter(function (g) { return !cellVal(g, 'room'); }).length]] });
+    return out;
+  }
+  function openSummary() {
+    var d = document.getElementById('sumv'), D = sumData();
+    if (!d) { d = document.createElement('div'); d.id = 'sumv'; document.body.appendChild(d); d.addEventListener('click', function (e) { e.stopPropagation(); if (e.target === d || e.target.closest('[data-sv="close"]')) d.hidden = true; }); }
+    var txt = D.map(function (b) { return b.t + '\n' + b.rows.map(function (r) { return '  ' + r[0] + (r[1] !== '' ? ': ' + r[1] : ''); }).join('\n') + (b.who && b.who.length ? '\n' + b.who.map(function (w) { return '   – ' + w; }).join('\n') : ''); }).join('\n\n');
+    d.innerHTML = '<div class="sv-in"><div class="sv-h"><b>Summary · ' + esc($('couple').textContent) + '</b><span class="grow"></span><button type="button" class="btn" data-sv="copy">Copy</button><button type="button" class="btn" data-sv="close">Close</button></div><div class="sv-b">' +
+      D.map(function (b) {
+        return '<section><h3>' + esc(b.t) + '</h3><table>' + b.rows.map(function (r) { return '<tr><td dir="auto">' + esc(r[0]) + '</td><td class="n">' + esc(r[1]) + '</td></tr>'; }).join('') + '</table>' +
+          (b.who && b.who.length ? '<ul>' + b.who.map(function (w) { return '<li dir="auto">' + esc(w) + '</li>'; }).join('') + '</ul>' : '') + '</section>';
+      }).join('') + '<p class="sv-f">Counts only guests who confirmed. Updates by itself.</p></div></div>';
+    d.hidden = false;
+    d.querySelector('[data-sv="copy"]').onclick = function () { var b = this; (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () { b.textContent = 'Copied'; }).catch(function () {}); };
   }
   // Phones: the avatar is hidden, so ⋯ › 🔔 Notifications opens the same box in a small sheet.
   function openPushSheet() {
@@ -2956,10 +3046,10 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function pushDraw(box) {
     box = box || document.querySelector('.whopop .pushbox'); if (!box) return;
     var t = box.querySelector('.pushtxt'), a = box.querySelector('.pusha');
-    if (PUSH.sub) { t.textContent = 'On for this app: every change in ' + ($('couple').textContent || 'this event') + ', every few minutes. Quiet 23:00–07:00.'; a.innerHTML = '<button type="button" data-p="test">Send a test</button><button type="button" data-p="off">Turn off</button>'; }
+    if (PUSH.sub) { t.textContent = S.admin ? 'On for this app: every change in ' + ($('couple').textContent || 'this event') + ', every few minutes. Quiet 23:00–07:00.' : 'On: you’ll hear when a guest is added or answers the RSVP. Quiet 23:00–07:00.'; a.innerHTML = '<button type="button" data-p="test">Send a test</button><button type="button" data-p="off">Turn off</button>'; }
     else if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) { t.textContent = IS_IOS && !isStandalone() ? 'Add this page to your home screen (Share › Add to Home Screen), open it from there, and turn them on.' : 'This browser can’t get notifications.'; a.innerHTML = ''; }
     else if (Notification.permission === 'denied') { t.textContent = 'Blocked. Allow notifications for this app in the phone’s Settings.'; a.innerHTML = ''; }
-    else { t.textContent = 'Get this event’s updates on this app, with its own red number.'; a.innerHTML = '<button type="button" class="on" data-p="on">Turn on</button>'; }
+    else { t.textContent = S.admin ? 'Get this event’s updates on this app, with its own red number.' : 'Hear when a guest is added or answers the RSVP.'; a.innerHTML = '<button type="button" class="on" data-p="on">Turn on</button>'; }
     a.onclick = function (e) {
       var b = e.target.closest('[data-p]'); if (!b) return; var k = b.dataset.p; b.disabled = true;
       if (k === 'on') {
@@ -2968,16 +3058,39 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
           return (PUSH.reg ? Promise.resolve(PUSH.reg) : navigator.serviceWorker.register('/sw.js', { scope: '/' })).then(function () { return navigator.serviceWorker.ready; })
             .then(function (reg) { PUSH.reg = reg; return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64u(VAPID) }); })
             .then(function (sub) { PUSH.sub = sub; return api('pushSubscribe', { sub: sub.toJSON(), slug: EVENT, device: IS_IOS ? 'iPhone' : 'Device' }); })
-            .then(function () { pushDraw(box); toast('Notifications are on for this event. Sending a test…'); return KAI.sb.functions.invoke('push-send', { body: { test: true, endpoint: PUSH.sub.endpoint } }); });
+            .then(function () { pushDraw(box); toast('Notifications are on for this event. Sending a test…'); return KAI.sb.functions.invoke('push-send', { body: { test: true, endpoint: PUSH.sub.endpoint, slug: EVENT } }); });
         }).catch(function () { toast('Couldn’t turn on notifications. Try again.', null, null, true); pushDraw(box); });
       } else if (k === 'test') {
-        KAI.sb.functions.invoke('push-send', { body: { test: true, endpoint: PUSH.sub.endpoint } }).then(function (r) { var ok = r.data && r.data.sent; toast(ok ? 'Test sent. It should arrive in a few seconds.' : 'The test didn’t go out. Turn notifications off and on again.', null, null, !ok); b.disabled = false; });
+        KAI.sb.functions.invoke('push-send', { body: { test: true, endpoint: PUSH.sub.endpoint, slug: EVENT } }).then(function (r) { var ok = r.data && r.data.sent; toast(ok ? 'Test sent. It should arrive in a few seconds.' : 'The test didn’t go out. Turn notifications off and on again.', null, null, !ok); b.disabled = false; });
       } else if (k === 'off') {
-        var sub = PUSH.sub; api('pushUnsubscribe', { endpoint: sub.endpoint }).catch(function () {}).then(function () { return sub.unsubscribe(); })
+        var sub = PUSH.sub; api('pushUnsubscribe', { endpoint: sub.endpoint, slug: EVENT }).catch(function () {}).then(function () { return sub.unsubscribe(); })
           .then(function () { PUSH.sub = null; pushDraw(box); toast('Notifications are off for this event.'); });
       }
     };
   }
+  var PTR_REFRESH = function () { if (SC.dirty || SC.saving || $('app').hidden) return; return load(false); };
+  // Pull down at the top of the page to refresh (phones and the home-screen app).
+  (function () {
+    var y0 = null, dy = 0, busy = false, tip = document.createElement('div');
+    tip.className = 'ptr'; tip.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></svg>';
+    document.body.appendChild(tip);
+    var st = document.createElement('style');
+    st.textContent = '.ptr{position:fixed;left:50%;top:-44px;z-index:400;width:36px;height:36px;margin-left:-18px;border-radius:50%;background:#fff;color:#4A3B6B;box-shadow:0 4px 14px -4px rgba(0,0,0,.3);display:grid;place-items:center;transition:opacity .15s;opacity:0;pointer-events:none}.ptr.go svg{animation:ptrspin .8s linear infinite}@keyframes ptrspin{to{transform:rotate(360deg)}}';
+    document.head.appendChild(st);
+    var blocked = function (t) { return window.innerWidth >= 760 || (t && t.closest && t.closest('textarea, input, select, [role="dialog"], .sheet, #pushsheet, #br-allv, .dlg')); };
+    document.addEventListener('touchstart', function (e) { y0 = !busy && window.scrollY <= 0 && e.touches.length === 1 && !blocked(e.target) ? e.touches[0].clientY : null; dy = 0; }, { passive: true });
+    document.addEventListener('touchmove', function (e) {
+      if (y0 == null) return; dy = e.touches[0].clientY - y0;
+      if (dy <= 0 || window.scrollY > 0) { tip.style.opacity = 0; return; }
+      var d = Math.min(dy, 120); tip.style.opacity = Math.min(1, d / 70); tip.style.transform = 'translateY(' + (d * 0.8) + 'px) rotate(' + (d * 3) + 'deg)';
+    }, { passive: true });
+    document.addEventListener('touchend', function () {
+      if (y0 == null) return; y0 = null;
+      if (dy < 70) { tip.style.opacity = 0; return; }
+      busy = true; tip.classList.add('go'); tip.style.transform = 'translateY(80px)';
+      Promise.resolve(PTR_REFRESH()).catch(function () {}).then(function () { busy = false; tip.classList.remove('go'); tip.style.opacity = 0; });
+    }, { passive: true });
+  })();
   var LIVE = { ver: null, wait: false };
   function ping() {
     liveJoin();
@@ -3123,6 +3236,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     box.querySelectorAll('[data-gobrief]').forEach(function (b) { b.onclick = function () { schedFlush(); showSect('brief'); }; });
     if ($('sc-reds')) $('sc-reds').onclick = function () { var el = box.querySelector('.sc-row.red, .sc-nl.red, .sc-notes li.red'); if (el) { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); el.animate([{ background: '#F7E1E1' }, { background: 'transparent' }], 1400); } };
     if (admin) schedBind();
+    scCommentsBind(box);
   }
   // The ceremony row links to the ceremony brief (with the number of open questions).
   function scBriefLink(r) {
@@ -3134,7 +3248,42 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     return '<div class="sc-row' + (r.red ? ' red' : '') + (r.kind === 'sunset' ? ' sunrow' : '') + '"><div class="sc-t">' + esc(r.time) + (r.until ? '<small>until ' + esc(r.until) + '</small>' : '') + '</div><div class="sc-w">' +
       '<div class="sc-what" dir="auto">' + esc(r.what) + '</div>' +
       ([r.where, r.who].filter(Boolean).length ? '<div class="sc-sub" dir="auto">' + esc([r.where, r.who].filter(Boolean).join(' · ')) + '</div>' : '') +
-      (r.notes.length ? '<ul class="sc-notes">' + r.notes.map(function (n) { return '<li dir="auto"' + (n.red ? ' class="red"' : '') + '>' + esc(n.text) + '</li>'; }).join('') + '</ul>' : '') + scBriefLink(r) + '</div></div>';
+      (r.notes.length ? '<ul class="sc-notes">' + r.notes.map(function (n) { return '<li dir="auto"' + (n.red ? ' class="red"' : '') + '>' + esc(n.text) + '</li>'; }).join('') + '</ul>' : '') + scBriefLink(r) + scComments(r) + '</div></div>';
+  }
+  // Comments on a row: the couple writes one ("Can we move this to 16:00?"), Noam gets a notification and marks it done.
+  function scComments(r) {
+    var list = r.comments || [], admin = S.admin, rid = esc(r.id || '');
+    if (!r.id) return '';
+    var h = list.map(function (c) {
+      return '<div class="sc-cm' + (c.done ? ' done' : '') + '"><span class="cm-ic" aria-hidden="true">💬</span><span class="cm-t" dir="auto">' + esc(c.text) + '</span><span class="cm-m">' + esc(c.admin ? 'Noam' : c.by) + ' · ' + esc(c.at) + (c.done ? ' · ✓ Done' : '') + '</span>' +
+        (admin && !c.admin ? '<button type="button" class="sc-link" data-cmdone="' + rid + ':' + esc(c.id) + ':' + (c.done ? '0' : '1') + '">' + (c.done ? 'Reopen' : 'Mark done') + '</button>' : '') + '</div>';
+    }).join('');
+    if (admin && !list.length) return '';
+    return '<div class="sc-cms">' + h + '<button type="button" class="sc-link cm-add" data-cmadd="' + rid + '">' + (admin ? '+ Reply' : '+ Comment') + '</button></div>';
+  }
+  function scCommentsBind(box) {
+    var send = function (act, data) {
+      saving('busy');
+      return api(act, data).then(function (res) {
+        saving('ok');
+        (res.schedule || []).forEach(function (n) { SC.rows.forEach(function (r) { if (r.id === n.id) r.comments = n.comments || []; }); });
+        schedRender();
+      }).catch(function (e) { saving('err'); toast(e.server ? e.message : 'Couldn’t send. Check your connection.', null, null, true); });
+    };
+    // Don't let the press focus the row (that opens its hidden fields and moves the button away before the click).
+    box.querySelectorAll('[data-cmadd], [data-cmdone]').forEach(function (b) { b.addEventListener('mousedown', function (e) { e.preventDefault(); }); });
+    box.querySelectorAll('[data-cmadd]').forEach(function (b) {
+      b.onclick = function () {
+        var f = document.createElement('div'); f.className = 'cm-form';
+        f.innerHTML = '<textarea rows="2" dir="auto" placeholder="' + (S.admin ? 'Your reply' : 'Your comment for Noam') + '" aria-label="Comment"></textarea><span><button type="button" class="btn primary">Send</button><button type="button" class="btn">Cancel</button></span>';
+        b.replaceWith(f); var ta = f.querySelector('textarea'); ta.focus();
+        f.querySelectorAll('button')[1].onclick = function () { schedRender(); };
+        f.querySelectorAll('button')[0].onclick = function () { var t = ta.value.trim(); if (!t) { ta.focus(); return; } this.disabled = true; send('scheduleComment', { row: b.dataset.cmadd, text: t }).then(function () { if (!S.admin) toast('Sent. Noam will see it.'); }); };
+      };
+    });
+    box.querySelectorAll('[data-cmdone]').forEach(function (b) {
+      b.onclick = function () { var p = b.dataset.cmdone.split(':'); b.disabled = true; send('scheduleCommentDone', { row: p[0], id: p[1], done: p[2] === '1' }); };
+    });
   }
   function scRowEdit(i) {
     var r = SC.rows[i];
@@ -3152,7 +3301,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
           btn('data-scneye="' + i + ':' + j + '"', false, n.hidden ? SC_I.eyeOff : SC_I.eye, n.hidden ? 'Show to the couple' : 'Hide from the couple') +
           '<button type="button" class="sc-ab del" data-scndel="' + i + ':' + j + '" title="Delete line" aria-label="Delete line">' + SC_I.bin + '</button></span></div>';
       }).join('') +
-      '<button type="button" class="sc-addline opt" data-scnadd="' + i + '">+ Add a detail</button>' + scBriefLink(r) + '</div>' +
+      '<button type="button" class="sc-addline opt" data-scnadd="' + i + '">+ Add a detail</button>' + scBriefLink(r) + scComments(r) + '</div>' +
       '<div class="sc-acts">' + btn('data-scred="' + i + '"', r.red, r.red ? SC_I.flagOn : SC_I.flag, r.red ? 'Remove the red mark' : 'Mark in red') +
       btn('data-sceye="' + i + '"', false, r.couple ? SC_I.eye : SC_I.eyeOff, r.couple ? 'Hide from the couple' : 'Show to the couple') +
       '<button type="button" class="sc-ab del" data-scdel="' + i + '" title="Delete" aria-label="Delete">' + SC_I.bin + '</button></div></div>';
@@ -3448,6 +3597,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   }
 
   function brEditRender() {
+    $('brief').dir = brLang() === 'he' ? 'rtl' : 'ltr';
     var D = BR.data;
     var h = '<div class="br-h"><h1>עריכת השאלות</h1><span class="br-saved" id="br-saved"></span><span class="grow"></span><button type="button" class="btn" id="br-tpl" title="השאלון הזה יהיה ההתחלה של כל חתונה חדשה">שמור כשאלון קבוע</button><button type="button" class="btn primary" id="br-done">סיום</button></div>' +
       '<p class="sc-hint" style="margin:0">משנים ניסוח, סוג תשובה, מוחקים או מוסיפים. השינויים כאן הם לאירוע הזה בלבד. תשובות שכבר נכתבו נשמרות.</p>';
