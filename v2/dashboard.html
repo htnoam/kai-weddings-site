@@ -47,6 +47,8 @@
 .wdlg{max-width:620px}.wbar{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13.5px;color:var(--soft)}.wbar select{height:32px;border:1px solid var(--line);border-radius:4px;padding:0 8px;font:inherit;background:#fff}
 #w-frame{width:100%;height:min(62vh,640px);border:1px solid var(--hair);border-radius:6px;background:#FBF7EE}
 .wsent{color:var(--ok)}.wwait{color:var(--warn)}.wbad{color:var(--bad)}
+.bellw{position:relative;display:inline-flex}#bell.on{border-color:var(--ink);color:var(--ink)}
+.bellpop{position:absolute;right:0;top:calc(100% + 6px);width:290px;background:#fff;border:1px solid var(--hair);border-radius:8px;box-shadow:0 10px 28px rgba(0,0,0,.14);padding:14px;z-index:60;font-size:14px;line-height:1.5}.bellpop[hidden]{display:none}.bellpop p{margin:6px 0 10px;color:var(--soft)}.bp-a{display:flex;gap:8px;flex-wrap:wrap}
 #form .act{padding:12px 24px;border-top:1px solid var(--hair);background:var(--soft-surface)}
 .signout{border:none;background:none;color:var(--ink);font-weight:600;cursor:pointer;font-size:13.5px}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -186,6 +188,8 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
       <button type="button" class="btn" id="gh-change" hidden>GitHub key</button>
       <a class="btn" href="https://supabase.com/dashboard/project/icqwbbmscoednenpielh/editor" target="_blank" rel="noopener" title="All the data (Supabase › Table Editor)">Database ↗</a>
       <a class="btn" href="https://drive.google.com/drive/folders/13ypmv22Z6dFjkhl0mlGy0E6JA3miz56I" target="_blank" rel="noopener" title="Nightly backups in Google Drive">Backups ↗</a>
+      <span class="bellw"><button type="button" class="btn" id="bell" title="Notifications on this phone">🔔</button>
+        <div class="bellpop" id="bellpop" hidden><b id="bp-t">Notifications</b><p id="bp-p"></p><div class="bp-a" id="bp-a"></div></div></span>
       <button type="button" class="signout" id="signout">Sign out</button>
       <button type="button" class="btn" id="refresh">Refresh</button>
       <button type="button" class="btn primary" id="new">+ New Event</button>
@@ -607,6 +611,48 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     welOpen({ couple: c, date: toIso($('n-date').value) || '', venue: $('n-venue').value.trim(), country: $('n-country').value.trim(), slug: slugify(c) || 'event' }, $('n-email').value.trim(), $('n-wlang').value, false);
   });
   $('w-lang').addEventListener('change', function () { if (!WEL.send) $('n-wlang').value = this.value; });
+  // ---------- notifications on Noam's phone (home-screen app, web push): every change by guests or couples, every few minutes, quiet 23:00–07:00 ----------
+  var VAPID = 'BPm31rG3v_Ppqv_2BZ12o6dKZxbiCxnfKk6uqNP3CavBqJPb_z0CNo3xOKGgh38Xyby4KO0c2csbqBrrdm0Gims';
+  var PUSH = { reg: null, sub: null };
+  var standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  var iOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  function b64u(s) { s = s.replace(/-/g, '+').replace(/_/g, '/'); s += '==='.slice((s.length + 3) % 4); var r = atob(s), a = new Uint8Array(r.length); for (var i = 0; i < r.length; i++) a[i] = r.charCodeAt(i); return a; }
+  function bellDraw() {
+    $('bell').classList.toggle('on', !!PUSH.sub); $('bell').textContent = PUSH.sub ? '🔔 On' : '🔔';
+    var p = $('bp-p'), a = $('bp-a');
+    if (PUSH.sub) { $('bp-t').textContent = 'Notifications are on'; p.textContent = 'On this device: every change by guests and couples, every few minutes. Quiet 23:00–07:00.'; a.innerHTML = '<button type="button" class="btn sm" data-bp="test">Send a test</button><button type="button" class="btn sm" data-bp="off">Turn off</button>'; }
+    else if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) {
+      $('bp-t').textContent = 'Notifications'; a.innerHTML = '';
+      p.textContent = iOS && !standalone ? 'On iPhone, open KAI Events from its icon on your home screen (Safari › Share › Add to Home Screen), then tap 🔔 there.' : 'This browser can’t get notifications.';
+    } else if (Notification.permission === 'denied') { $('bp-t').textContent = 'Notifications are blocked'; p.textContent = 'Allow them for KAI Events in the phone’s Settings › Notifications, then try again.'; a.innerHTML = ''; }
+    else { $('bp-t').textContent = 'Notifications'; p.textContent = 'Get a notification on this device when guests or couples change something.'; a.innerHTML = '<button type="button" class="btn sm primary" data-bp="on">Turn on</button>'; }
+  }
+  function pushInit() {
+    if ('clearAppBadge' in navigator) navigator.clearAppBadge().catch(function () {});
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) { bellDraw(); return; }
+    navigator.serviceWorker.register('/sw.js', { scope: '/' }).then(function (reg) { PUSH.reg = reg; return reg.pushManager.getSubscription(); })
+      .then(function (sub) { PUSH.sub = sub; bellDraw(); if (sub) api('pushSeen', { endpoint: sub.endpoint }).catch(function () {}); }).catch(function () { bellDraw(); });
+  }
+  $('bell').addEventListener('click', function (e) { e.stopPropagation(); bellDraw(); $('bellpop').hidden = !$('bellpop').hidden; });
+  document.addEventListener('click', function (e) { if (!e.target.closest('.bellw')) $('bellpop').hidden = true; });
+  $('bp-a').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-bp]'); if (!b) return; var k = b.dataset.bp; b.disabled = true;
+    if (k === 'on') {
+      Notification.requestPermission().then(function (perm) {
+        if (perm !== 'granted') { bellDraw(); return; }
+        return (PUSH.reg ? Promise.resolve(PUSH.reg) : navigator.serviceWorker.register('/sw.js', { scope: '/' })).then(function (reg) { PUSH.reg = reg; return navigator.serviceWorker.ready; })
+          .then(function (reg) { return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64u(VAPID) }); })
+          .then(function (sub) { PUSH.sub = sub; return api('pushSubscribe', { sub: sub.toJSON(), device: (iOS ? 'iPhone' : navigator.platform || 'Device') }); })
+          .then(function () { bellDraw(); toast('Notifications are on. Sending a test…'); return KAI.sb.functions.invoke('push-send', { body: { test: true } }); });
+      }).catch(function () { toast('Couldn’t turn on notifications. Try again.', true); bellDraw(); });
+    } else if (k === 'test') {
+      KAI.sb.functions.invoke('push-send', { body: { test: true } }).then(function (r) { toast(r.data && r.data.sent ? 'Test sent. It should arrive in a few seconds.' : 'The test didn’t go out. Turn notifications off and on again.', !(r.data && r.data.sent)); b.disabled = false; });
+    } else if (k === 'off') {
+      var sub = PUSH.sub; api('pushUnsubscribe', { endpoint: sub.endpoint }).catch(function () {}).then(function () { return sub.unsubscribe(); })
+        .then(function () { PUSH.sub = null; bellDraw(); toast('Notifications are off on this device.'); });
+    }
+  });
+  pushInit();
   // RSVP form on / off per event (off: the /rsvp link says the form isn't open).
   function rsvpForm(ev, on) {
     toast('Saving…');

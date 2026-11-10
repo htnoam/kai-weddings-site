@@ -2888,6 +2888,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   var LIVE = { ver: null, wait: false };
   function ping() {
     liveJoin();
+    // Opening a guest list clears the red number on Noam's home-screen icon.
+    if (!LIVE.seen && S.admin) { LIVE.seen = true; if ('clearAppBadge' in navigator) navigator.clearAppBadge().catch(function () {}); api('pushSeen', {}).catch(function () {}); }
     if (document.visibilityState !== 'visible' || LIVE.wait || $('app').hidden) return;
     LIVE.wait = true;
     api('ping', { name: S.who }).then(function (res) {
