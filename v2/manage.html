@@ -1233,6 +1233,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       $('refresh').hidden = false;
       document.title = 'Guest List – ' + (res.wedding.couple || 'Wedding');
       setAppManifest(res.wedding.couple || 'Guest List'); showInstallBar();
+      if (res.admin) adminUrl(res.wedding.couple || 'Guest List');
       $('gate').hidden = true; $('app').hidden = false; $('fab').classList.add('show');
       render();
   }
@@ -2911,6 +2912,19 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
     navigator.serviceWorker.register('/sw.js', { scope: '/' }).then(function (reg) { PUSH.reg = reg; return reg.pushManager.getSubscription(); })
       .then(function (sub) { PUSH.sub = sub; if (sub) api('pushSeen', { endpoint: sub.endpoint }).catch(function () {}); }).catch(function () {});
+  }
+  // Noam on a link without his code (e.g. /amit-or/portal): put the code in the address, so "Add to Home Screen" makes an app
+  // that always opens as Noam (not as the couple).
+  var ADMIN_URL_DONE = false;
+  function adminUrl(name) {
+    if (ADMIN_URL_DONE) return; ADMIN_URL_DONE = true;
+    var parts = location.pathname.split('/').filter(Boolean);
+    if (parts[0] === 'v2' || parts[2]) return;
+    api('adminCode', {}).then(function (r) {
+      if (!r.code) return;
+      try { history.replaceState(null, '', '/' + EVENT + '/portal/' + encodeURIComponent(r.code) + location.search + location.hash); } catch (x) { return; }
+      setAppManifest(name);
+    }).catch(function () {});
   }
   // Phones: the avatar is hidden, so ⋯ › 🔔 Notifications opens the same box in a small sheet.
   function openPushSheet() {

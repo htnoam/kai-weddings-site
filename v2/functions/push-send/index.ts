@@ -8,7 +8,7 @@ const json = (o: unknown, s = 200) => new Response(JSON.stringify(o), { status: 
 
 Deno.serve(async (req: Request) => {
   const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false } });
-  const { data: cfg } = await db.from("kai_config").select("k, v").in("k", ["vapid_public", "vapid_private", "push_cron_key"]);
+  const { data: cfg } = await db.from("kai_config").select("k, v").in("k", ["vapid_public", "vapid_private", "push_cron_key", "admin_code"]);
   const C: Record<string, string> = {}; (cfg || []).forEach((r: { k: string; v: string }) => { C[r.k] = String(r.v); });
   const body = await req.json().catch(() => ({}));
   const cors = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info", "Access-Control-Allow-Methods": "POST, OPTIONS" };
@@ -66,7 +66,7 @@ async function run(db: any, C: Record<string, string>, test: boolean, onlyEmail:
     let alive = true;
     for (const g of mine) {
       const slug = g.slug === "*" ? s.slug : g.slug;
-      const payload = JSON.stringify({ title: g.title, body: g.body, badge, tag: slug || "kai", url: slug ? "/" + slug + "/portal" : "/admin" });
+      const payload = JSON.stringify({ title: g.title, body: g.body, badge, tag: slug || "kai", url: (slug ? "/" + slug + "/portal" : "/admin") + (C.admin_code ? "/" + C.admin_code : "") });
       try {
         await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, payload, { TTL: 86400, urgency: "normal" });
         sent++;

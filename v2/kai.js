@@ -97,10 +97,12 @@
   var coupleTried = false, adminTried = false;
   function ready() {
     return first.then(function () {
-      if (session) return;
       var parts = location.pathname.split('/').filter(Boolean), v2 = parts[0] === 'v2', slug = ((v2 ? parts[1] : parts[0]) || '').toLowerCase();
       // Noam's own links (/admin/<code>, /<event>/portal/<code>) sign him in straight away, no email (admin-enter).
+      // The code wins over an older sign-in on this device (e.g. a home-screen app that was opened once as the couple).
       var code = v2 ? '' : parts[0] === 'admin' ? (parts[1] || '') : parts[1] === 'portal' ? (parts[2] || '') : '';
+      var adminMail = ''; try { adminMail = localStorage.getItem('kai-admin-email') || ''; } catch (x) {}
+      if (session && !(code && !adminTried && (session.user && session.user.email) !== adminMail)) return;
       if (code && !adminTried) {
         adminTried = true;
         return fetch(URL + '/functions/v1/admin-enter', { method: 'POST', headers: { apikey: ANON, Authorization: 'Bearer ' + ANON, 'Content-Type': 'application/json' }, body: JSON.stringify({ code: code }) })
@@ -108,7 +110,7 @@
           .then(function (res) {
             if (!res.ok || !res.token_hash) return ready();
             return sb.auth.verifyOtp({ token_hash: res.token_hash, type: 'magiclink' }).then(function (v) {
-              if (!v.error && v.data && v.data.session) { session = v.data.session; hideLogin(); done(); return; }
+              if (!v.error && v.data && v.data.session) { session = v.data.session; try { localStorage.setItem('kai-admin-email', session.user.email); } catch (x) {} hideLogin(); done(); return; }
               return ready();
             });
           }).catch(function () { return ready(); });
