@@ -30,8 +30,22 @@ Deno.serve(async (req: Request) => {
     const r = await run(db, C, true, email, String(body.endpoint || ""));
     return new Response(JSON.stringify(r), { headers: { ...cors, "Content-Type": "application/json" } });
   }
+  if (body.alert) return json(await alert(db, C, String(body.alert).slice(0, 400)));
   return json(await run(db, C, !!body.test, ""));
 });
+
+// The morning health check (pg_cron, kai_health) found something that stopped working: tell Noam's phones.
+// deno-lint-ignore no-explicit-any
+async function alert(db: any, C: Record<string, string>, text: string) {
+  webpush.setVapidDetails("mailto:htnoam@gmail.com", C.vapid_public, C.vapid_private);
+  const { data: subs } = await db.from("push_subs").select("*").eq("audience", "admin");
+  let sent = 0;
+  for (const s of subs || []) {
+    const payload = JSON.stringify({ title: "KAI · something needs a look ⚠️", body: text, tag: "kai-health", url: "/admin" + (C.admin_code ? "/" + C.admin_code : "") });
+    try { await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, payload, { TTL: 86400, urgency: "high" }); sent++; } catch (_e) { /* a dead phone is cleaned up by the regular run */ }
+  }
+  return { ok: true, sent };
+}
 
 // deno-lint-ignore no-explicit-any
 async function run(db: any, C: Record<string, string>, test: boolean, onlyEmail: string, onlyEndpoint = "") {

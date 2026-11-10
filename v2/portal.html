@@ -118,6 +118,9 @@ button.btn:disabled { opacity: .6; }
 .hc-x { flex: none; width: 28px; height: 28px; border: none; background: none; color: var(--soft); font-size: 14px; padding: 0; }
 .ios-help ol { margin: 0; padding-inline-start: 22px; display: flex; flex-direction: column; gap: 8px; font-size: 15px; line-height: 1.5; }
 .ios-help .hc-btn { align-self: flex-start; }
+.venue { align-self: center; display: inline-flex; align-items: center; gap: 5px; justify-content: center; margin-top: 4px; color: inherit; font-size: 14px; text-decoration: underline; text-underline-offset: 3px; }
+.venue[hidden], .countdown[hidden] { display: none; }
+.countdown { margin-top: 10px; align-self: center; display: inline-block; padding: 4px 14px; border-radius: 999px; background: #F1EFEA; font-size: 14px; font-weight: 600; }
 </style>
 </head>
 <body>
@@ -126,6 +129,8 @@ button.btn:disabled { opacity: .6; }
     <div class="lang langsw" role="group" aria-label="Language"><button type="button" data-lang="he" aria-pressed="true">עברית</button><button type="button" data-lang="en" aria-pressed="false">English</button></div>
     <div class="couple" id="couple">&nbsp;</div>
     <div class="when" id="when"></div>
+    <a class="venue" id="venue" hidden target="_blank" rel="noopener"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span id="venue-t"></span></a>
+    <div class="countdown" id="countdown" hidden></div>
     <div id="hi-wrap" hidden>
       <div class="hello" style="margin-top:12px" id="hello"></div>
       <div class="who"><span id="who-phone" dir="ltr"></span> · <button type="button" class="linkbtn" id="logout" data-t="logout"></button></div>
@@ -298,7 +303,13 @@ button.btn:disabled { opacity: .6; }
     if (INFO) {
       $('couple').textContent = INFO.couple || '';
       var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(INFO.date || '');
-      $('when').textContent = [m ? m[3] + ' . ' + m[2] + ' . ' + m[1] : '', INFO.place].filter(Boolean).join(' · ');
+      $('when').textContent = m ? m[3] + ' . ' + m[2] + ' . ' + m[1] : '';
+      // Countdown, and the venue as a map link.
+      var days = m ? Math.round((new Date(+m[1], +m[2] - 1, +m[3]) - new Date(new Date().toDateString())) / 864e5) : -1;
+      var cd = days > 1 ? (L === 'he' ? 'עוד ' + days + ' ימים' : days + ' days to go') : days === 1 ? (L === 'he' ? 'מחר!' : 'Tomorrow!') : days === 0 ? (L === 'he' ? 'היום!' : 'Today!') : '';
+      $('countdown').textContent = cd; $('countdown').hidden = !cd;
+      var mp = INFO['Venue Map'] || (INFO.place ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(INFO.place) : '');
+      $('venue').hidden = !INFO.place; $('venue').href = mp || '#'; $('venue-t').textContent = INFO.place || '';
       document.title = (INFO.couple ? INFO.couple + ' – ' : '') + (L === 'he' ? 'האזור האישי' : 'Guest area');
     }
     if (P) renderFamily();

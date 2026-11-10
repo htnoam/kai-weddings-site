@@ -386,6 +386,23 @@ th[data-k] > button[data-sort] { padding-right: 26px; }
 .vt-n { display: inline-block; min-width: 18px; padding: 0 5px; margin-left: 4px; border-radius: 999px; background: var(--warn); color: #FFFFFF; font-size: 11px; line-height: 17px; text-align: center; }
 td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .dup { margin-left: 4px; padding: 0 6px; border-radius: 3px; background: #FBEDED; color: var(--bad); font-size: 11px; font-weight: 600; white-space: nowrap; }
+.rm-next { display: flex; flex-direction: column; gap: 8px; margin: 4px 0 10px; }
+.rm-prog { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--muted); }
+.rm-prog .bar { flex: 1; height: 6px; border-radius: 3px; background: var(--soft-surface); overflow: hidden; }
+.rm-prog .bar i { display: block; height: 100%; background: var(--ok); }
+.rm-nx { justify-content: center; height: 42px; font-size: 15px; }
+.rm-all { color: var(--ok); font-weight: 600; }
+.onb { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; }
+.onb[hidden] { display: none; }
+.onb-h { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.onb-h span { color: var(--soft); font-size: 13px; }
+.onb ol { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 14px; }
+.onb li { display: flex; align-items: center; gap: 8px; }
+.onb li.ok { color: var(--soft); text-decoration: line-through; }
+.onb .tick { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--line); display: grid; place-items: center; font-size: 11px; color: #fff; }
+.onb .linkbtn { font-size: 14px; color: var(--ink); text-decoration: none; font-weight: 600; padding: 2px 0; }
+.onb-h .linkbtn { font-size: 12.5px; color: var(--soft); font-weight: 400; text-decoration: underline; }
+.onb li.ok .tick { background: var(--ok); border-color: var(--ok); }
 .dup.mz { background: #FBF3E2; color: #8A5A12; }
 .mob, .mob-ic, .sumline { display: none; }
 .fbadge { position: absolute; top: -6px; right: -6px; min-width: 17px; height: 17px; padding: 0 4px; border-radius: 999px; background: var(--ink); color: #FFFFFF; font-size: 10.5px; font-weight: 700; line-height: 17px; text-align: center; }
@@ -814,6 +831,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   <div class="gate" id="gate">Loading your guest list…</div>
 
   <div id="app" hidden style="display:flex;flex-direction:column;gap:18px">
+    <section class="onb" id="onb" hidden aria-label="Getting started"></section>
 
     <section class="toolbar" aria-label="Actions">
       <button type="button" class="btn primary desk" id="add"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Add Guest</button>
@@ -1426,8 +1444,34 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     }).join('') + '<button type="button" class="vt' + (S.missing ? ' on' : '') + '" data-missing="1" title="Confirmed guests with missing details, and possible duplicates">Missing info' + (nMiss ? ' <span class="vt-n">' + nMiss + '</span>' : '') + '</button>' +
       '<button type="button" class="vt add" data-newview="1">+ New View</button>';
     $('columns').textContent = S.missing ? 'What to check' : curView() ? 'Edit View' : 'Columns';
-    renderTable(list); renderCards(list); renderPanel(); paintEditors(); paintSel();
+    renderTable(list); renderCards(list); renderPanel(); paintEditors(); paintSel(); renderOnb();
   }
+  // The couple's first steps (until everything is done, or they hide it). Saved on this device.
+  function renderOnb() {
+    var box = $('onb'); if (!box) return;
+    var hid = false; try { hid = localStorage.getItem('kai-onb-' + EVENT) === 'x'; } catch (e) {}
+    if (S.admin || S.trash || hid) { box.hidden = true; return; }
+    var seen = function (k) { try { return !!localStorage.getItem('kai-onb-' + k + '-' + EVENT); } catch (e) { return false; } };
+    if (typeof BR === 'undefined' || !BR || typeof SC === 'undefined' || !SC || typeof PUSH === 'undefined' || !PUSH) return;
+    var bc = BR.on ? brCounts() : null;
+    var steps = [{ k: 'guests', t: 'Add your guests', done: live().filter(function (g) { return !g.couple; }).length >= 5, go: 'add' }];
+    if (bc) steps.push({ k: 'brief', t: 'Answer the ceremony questions' + (bc[1] - bc[0] ? ' (' + (bc[1] - bc[0]) + ' left)' : ''), done: bc[0] >= bc[1], go: 'brief' });
+    if (SC.on) steps.push({ k: 'sched', t: 'Go over the schedule', done: seen('sched'), go: 'sched' });
+    steps.push({ k: 'push', t: 'Get a notification when guests answer', done: !!PUSH.sub, go: 'push' });
+    var n = steps.filter(function (x) { return x.done; }).length;
+    if (n === steps.length) { box.hidden = true; return; }
+    box.hidden = false;
+    box.innerHTML = '<div class="onb-h"><b>Getting started</b><span>' + n + ' of ' + steps.length + ' done</span><span class="grow"></span><button type="button" class="linkbtn" data-onb="x">Hide</button></div><ol>' +
+      steps.map(function (x) { return '<li class="' + (x.done ? 'ok' : '') + '"><span class="tick" aria-hidden="true">' + (x.done ? '✓' : '') + '</span>' + (x.done ? '<span>' + esc(x.t) + '</span>' : '<button type="button" class="linkbtn" data-onb="' + x.go + '">' + esc(x.t) + ' →</button>') + '</li>'; }).join('') + '</ol>';
+  }
+  $('onb').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-onb]'); if (!b) return; var k = b.dataset.onb;
+    if (k === 'x') { try { localStorage.setItem('kai-onb-' + EVENT, 'x'); } catch (x) {} renderOnb(); }
+    else if (k === 'add') openAdd(null);
+    else if (k === 'brief') showSect('brief');
+    else if (k === 'sched') showSect('sched');
+    else if (k === 'push') openPushSheet();
+  });
 
   function cellHtml(g, c) {
     var v = g[c.k];
@@ -2903,26 +2947,40 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function openRemind() {
     pick('WhatsApp reminders',
       '<p class="imp-p">Guests who haven’t answered yet, one message per phone number. Tap Send: WhatsApp opens with the message ready, and you press Send there.</p>' +
+      '<div class="rm-next" id="rm-next">' + remindNext() + '</div>' +
       '<div class="rm-list" id="rm-list">' + remindRows() + '</div>' +
       '<details class="rm-edit"><summary>Edit the message</summary><textarea id="rm-text" rows="5" dir="auto">' + esc(remindTemplate()) + '</textarea>' +
       '<p class="imp-p" style="font-size:12.5px">{name} = first names · {couple} = couple · {link} = RSVP link. Saved for this event.</p></details>',
       function () {});
     $('pick-ok').textContent = 'Done';
     var ta = $('rm-text'), saved = remindTemplate();
-    ta.addEventListener('input', function () { S.reminderText = ta.value.trim() || ''; $('rm-list').innerHTML = remindRows(); });
+    ta.addEventListener('input', function () { S.reminderText = ta.value.trim() || ''; $('rm-list').innerHTML = remindRows(); $('rm-next').innerHTML = remindNext(); });
+    RM_OPEN = Date.now();
     ta.addEventListener('change', function () {
       if (ta.value.trim() === saved) return; saved = ta.value.trim();
       saving('busy'); api('reminderText', { text: saved }).then(function () { saving('ok'); }).catch(function () { saving('err'); });
     });
+    $('rm-next').addEventListener('click', function (e) { var a = e.target.closest('[data-remind]'); if (a) remindSent(a); });
     $('rm-list').addEventListener('click', function (e) {
-      var a = e.target.closest('[data-remind]'); if (!a) return;
+      var a = e.target.closest('[data-remind]'); if (a) remindSent(a);
+    });
+  }
+  // One by one: "Send to the next" opens WhatsApp for the next guest who wasn't reminded since this window opened.
+  var RM_OPEN = 0;
+  function remindNext() {
+    var list = remindList(), done = list.filter(function (r) { return r.sent >= RM_OPEN; }).length, next = list.filter(function (r) { return r.sent < RM_OPEN; })[0];
+    if (!list.length) return '';
+    return '<div class="rm-prog"><span>Sent <b>' + done + '</b> of ' + list.length + '</span><span class="bar"><i style="width:' + Math.round(done / list.length * 100) + '%"></i></span></div>' +
+      (next ? '<a class="btn primary rm-nx" data-remind="' + esc(next.phone) + '" href="https://wa.me/' + next.phone.replace(/\D/g, '') + '?text=' + encodeURIComponent(remindText(next)) + '" target="_blank" rel="noopener">Send to ' + esc(joinNames(next.guests.map(function (g) { return g.first; }))) + ' →</a>'
+        : '<span class="rm-all">✓ Everyone got a reminder.</span>');
+  }
+  function remindSent(a) {
       var phone = a.dataset.remind, r = remindList().filter(function (x) { return x.phone === phone; })[0];
       S.reminders[phone] = Date.now();
-      setTimeout(function () { $('rm-list').innerHTML = remindRows(); }, 300);
+      setTimeout(function () { $('rm-list').innerHTML = remindRows(); $('rm-next').innerHTML = remindNext(); }, 300);
       api('remind', { phone: phone, names: r ? r.guests.map(function (g) { return g.first + ' ' + g.last; }).join(', ') : '' })
         .then(function (res) { S.reminders = res.reminders || S.reminders; })
         .catch(function () { toast('Couldn’t record the reminder. The message still opened.', null, null, true); });
-    });
   }
   $('remind').addEventListener('click', openRemind);
   document.addEventListener('click', function () { if (!moreMenu.hidden) { moreMenu.hidden = true; $('more').setAttribute('aria-expanded', 'false'); } var wp = document.querySelector('.whopop'); if (wp) wp.hidden = true; });
@@ -3044,6 +3102,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     sh.hidden = false; pushDraw(sh.querySelector('.pushbox'));
   }
   function pushDraw(box) {
+    renderOnb();
     box = box || document.querySelector('.whopop .pushbox'); if (!box) return;
     var t = box.querySelector('.pushtxt'), a = box.querySelector('.pusha');
     if (PUSH.sub) { t.textContent = S.admin ? 'On for this app: every change in ' + ($('couple').textContent || 'this event') + ', every few minutes. Quiet 23:00–07:00.' : 'On: you’ll hear when a guest is added or answers the RSVP. Quiet 23:00–07:00.'; a.innerHTML = '<button type="button" data-p="test">Send a test</button><button type="button" data-p="off">Turn off</button>'; }
@@ -3183,7 +3242,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     $('sched').hidden = name !== 'sched'; $('brief').hidden = name !== 'brief';
     ['guests', 'sched', 'brief'].forEach(function (k) { $('s-' + k).classList.toggle('on', name === k); });
     try { history.replaceState(null, '', name === 'sched' ? '#schedule' : name === 'brief' ? '#questions' : location.pathname + location.search); } catch (e) {}
-    if (name === 'sched') schedRender();
+    if (name === 'sched') { schedRender(); try { localStorage.setItem('kai-onb-sched-' + EVENT, '1'); } catch (e) {} }
     if (name === 'brief') { BR.edit = false; briefRender(); }
   }
   $('s-guests').addEventListener('click', function () { showSect('guests'); });

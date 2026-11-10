@@ -528,8 +528,8 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
       if (c.total) bits.push(Math.round(100 * ((c.Confirmed || 0) + (c.Declined || 0)) / c.total) + '% answered');
       var miss = [];
       if (!ev.date) miss.push('date'); if (!ev.sunset) miss.push('sunset'); if (!ev.email) miss.push('client email');
-      if (ev.email && !ev.welcome) miss.push('welcome email'); if (ev.qOpen) miss.push(ev.qOpen + ' open questions');
-      if (ev.notes) miss.push(ev.notes + ' couple notes');
+      if (ev.email && !ev.welcome) miss.push('welcome email'); if (ev.qOpen) miss.push(ev.qOpen + ' ceremony questions open');
+      if (ev.notes) miss.push(ev.notes + (ev.notes === 1 ? ' couple comment' : ' couple comments'));
       return bits.length || miss.length ? '<div class="needs">' + esc(bits.join(' · ')) + (miss.length && ev.status !== 'Ended' ? '<span class="nmiss">' + (bits.length ? ' · ' : '') + 'Missing: ' + esc(miss.join(', ')) + '</span>' : '') + '</div>' : '';
     };
     // Links: tap to copy, or the green WhatsApp button to send it with a ready line.
