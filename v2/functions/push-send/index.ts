@@ -20,14 +20,14 @@ Deno.serve(async (req: Request) => {
     const email = (u?.user?.email || "").toLowerCase();
     const { data: adm } = email ? await db.from("admins").select("email").eq("email", email).limit(1) : { data: [] };
     if (!adm || !adm.length || !body.test) return new Response(JSON.stringify({ ok: false, error: "Not allowed." }), { status: 401, headers: { ...cors, "Content-Type": "application/json" } });
-    const r = await run(db, C, true, email);
+    const r = await run(db, C, true, email, String(body.endpoint || ""));
     return new Response(JSON.stringify(r), { headers: { ...cors, "Content-Type": "application/json" } });
   }
   return json(await run(db, C, !!body.test, ""));
 });
 
 // deno-lint-ignore no-explicit-any
-async function run(db: any, C: Record<string, string>, test: boolean, onlyEmail: string) {
+async function run(db: any, C: Record<string, string>, test: boolean, onlyEmail: string, onlyEndpoint = "") {
   const body = { test };
 
   const hour = +new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Jerusalem", hour: "2-digit", hourCycle: "h23" }).format(new Date());
@@ -35,13 +35,14 @@ async function run(db: any, C: Record<string, string>, test: boolean, onlyEmail:
 
   webpush.setVapidDetails("mailto:htnoam@gmail.com", C.vapid_public, C.vapid_private);
   const { data: all } = await db.from("push_subs").select("*");
-  const subs = (all || []).filter((s: { email: string }) => !onlyEmail || s.email === onlyEmail);
+  // A device's home-screen app is either the dashboard (slug '' = every event) or one event (its slug: only that event, its own red number).
+  const subs = (all || []).filter((s: { email: string; endpoint: string }) => (!onlyEmail || s.email === onlyEmail) && (!onlyEndpoint || s.endpoint === onlyEndpoint));
   if (!subs.length) return { ok: true, subs: 0 };
 
   let groups: { slug: string; title: string; body: string; n: number }[] = [];
   let ids: number[] = [];
   if (body.test) {
-    groups = [{ slug: "", title: "KAI Events", body: "Notifications are on ✅ You’ll get guest updates here.", n: 0 }];
+    groups = [{ slug: "*", title: "KAI Events", body: "Notifications are on ✅ You’ll get guest updates here.", n: 0 }];
   } else {
     const { data: rows } = await db.from("notify_queue").select("id, event_id, txt").is("sent_at", null).order("id").limit(500);
     if (!rows || !rows.length) return { ok: true, sent: 0 };
@@ -57,13 +58,15 @@ async function run(db: any, C: Record<string, string>, test: boolean, onlyEmail:
     }
   }
 
-  const total = groups.reduce((a, g) => a + g.n, 0);
   let sent = 0; const errs: string[] = [];
   for (const s of subs) {
-    const badge = (s.unseen || 0) + total;
+    const mine = groups.filter((g) => g.slug === "*" || !s.slug || g.slug === s.slug);
+    if (!mine.length) continue;
+    const badge = (s.unseen || 0) + mine.reduce((a, g) => a + g.n, 0);
     let alive = true;
-    for (const g of groups) {
-      const payload = JSON.stringify({ title: g.title, body: g.body, badge, tag: g.slug || "kai", url: g.slug ? "/" + g.slug + "/portal" : "/admin" });
+    for (const g of mine) {
+      const slug = g.slug === "*" ? s.slug : g.slug;
+      const payload = JSON.stringify({ title: g.title, body: g.body, badge, tag: slug || "kai", url: slug ? "/" + slug + "/portal" : "/admin" });
       try {
         await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, payload, { TTL: 86400, urgency: "normal" });
         sent++;

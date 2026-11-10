@@ -724,6 +724,11 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   .whopop[hidden] { display: none; }
   .whopop .whomail { color: var(--soft); font-size: 12.5px; }
   .whopop .signout { align-self: flex-start; margin-top: 6px; }
+  .pushbox { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); white-space: normal; width: 250px; }
+  .pushbox .pushtxt { color: var(--soft); font-size: 12.5px; line-height: 1.4; }
+  .pushbox .pusha { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pushbox .pusha button { border: 1px solid var(--line); background: var(--surface); border-radius: 4px; padding: 4px 10px; font: inherit; font-size: 13px; cursor: pointer; }
+  .pushbox .pusha button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
   #app:not([hidden]) { gap: 10px !important; }
   #f-age, #f-group, #groupby, #columns, #remind { display: none !important; }
   #viewbtn { margin-inline-start: auto; }
@@ -1210,9 +1215,13 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       $('couple').textContent = res.wedding.couple || 'Guest List';
       $('when').textContent = [fmtDate(res.wedding.date), res.wedding.place].filter(Boolean).join(' · ');
       $('who').innerHTML = '<button type="button" class="avatar" aria-haspopup="true" title="Signed in as ' + esc(res.who) + '">' + esc(String(res.who || '?').trim().charAt(0).toUpperCase()) + '</button>' +
-        '<span class="whopop" hidden>Signed in as <b>' + esc(res.who) + '</b><span class="whomail">' + esc(KAI.email()) + '</span><button type="button" class="signout">Sign out</button></span>';
+        '<span class="whopop" hidden>Signed in as <b>' + esc(res.who) + '</b><span class="whomail">' + esc(KAI.email()) + '</span>' +
+        (res.admin ? '<span class="pushbox"><b>🔔 Notifications for this event</b><span class="pushtxt"></span><span class="pusha"></span></span>' : '') +
+        '<button type="button" class="signout">Sign out</button></span>';
       $('who').querySelector('.signout').onclick = function () { try { localStorage.removeItem(CK_LIST()); } catch (e) {} KAI.signOut(); };
-      $('who').querySelector('.avatar').onclick = function (ev) { ev.stopPropagation(); var pp = $('who').querySelector('.whopop'); pp.hidden = !pp.hidden; };
+      $('who').querySelector('.avatar').onclick = function (ev) { ev.stopPropagation(); var pp = $('who').querySelector('.whopop'); pp.hidden = !pp.hidden; if (!pp.hidden) pushDraw(); };
+      $('who').querySelector('.whopop').onclick = function (ev) { ev.stopPropagation(); };
+      if (res.admin) pushInit();
       $('addcol').hidden = true;
       $('refresh').hidden = false;
       document.title = 'Guest List – ' + (res.wedding.couple || 'Wedding');
@@ -2741,7 +2750,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function canInstall() { return !isStandalone() && (IS_IOS || !!installEvt); }
   function setAppManifest(name) {
     $('apptitle').setAttribute('content', name);
-    var m = { name: name + ' – Guest List', short_name: name, start_url: location.href, scope: location.origin + '/', display: 'standalone',
+    var m = { id: '/' + EVENT + '/portal', name: name + ' – Guest List', short_name: name, start_url: location.href, scope: location.origin + '/', display: 'standalone',
       background_color: '#F4F2EE', theme_color: '#FFFFFF',
       icons: [{ src: location.origin + '/app/icons/kai-192.png', sizes: '192x192', type: 'image/png' },
         { src: location.origin + '/app/icons/kai-512.png', sizes: '512x512', type: 'image/png' },
@@ -2885,11 +2894,44 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       if (by) toast(by + ' updated ' + changed.length + (changed.length === 1 ? ' guest' : ' guests'));
     });
   }
+  // ---------- notifications for this event (its own home-screen app: only this event's updates, its own red number) ----------
+  var VAPID = 'BPm31rG3v_Ppqv_2BZ12o6dKZxbiCxnfKk6uqNP3CavBqJPb_z0CNo3xOKGgh38Xyby4KO0c2csbqBrrdm0Gims';
+  var PUSH = { reg: null, sub: null };
+  function b64u(x) { x = x.replace(/-/g, '+').replace(/_/g, '/'); x += '==='.slice((x.length + 3) % 4); var r = atob(x), a = new Uint8Array(r.length); for (var i = 0; i < r.length; i++) a[i] = r.charCodeAt(i); return a; }
+  function pushInit() {
+    if ('clearAppBadge' in navigator) navigator.clearAppBadge().catch(function () {});
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+    navigator.serviceWorker.register('/sw.js', { scope: '/' }).then(function (reg) { PUSH.reg = reg; return reg.pushManager.getSubscription(); })
+      .then(function (sub) { PUSH.sub = sub; if (sub) api('pushSeen', { endpoint: sub.endpoint }).catch(function () {}); }).catch(function () {});
+  }
+  function pushDraw() {
+    var box = document.querySelector('.pushbox'); if (!box) return;
+    var t = box.querySelector('.pushtxt'), a = box.querySelector('.pusha');
+    if (PUSH.sub) { t.textContent = 'On for this app: every change in ' + ($('couple').textContent || 'this event') + ', every few minutes. Quiet 23:00–07:00.'; a.innerHTML = '<button type="button" data-p="test">Send a test</button><button type="button" data-p="off">Turn off</button>'; }
+    else if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) { t.textContent = IS_IOS && !isStandalone() ? 'Add this page to your home screen (Share › Add to Home Screen), open it from there, and turn them on.' : 'This browser can’t get notifications.'; a.innerHTML = ''; }
+    else if (Notification.permission === 'denied') { t.textContent = 'Blocked. Allow notifications for this app in the phone’s Settings.'; a.innerHTML = ''; }
+    else { t.textContent = 'Get this event’s updates on this app, with its own red number.'; a.innerHTML = '<button type="button" class="on" data-p="on">Turn on</button>'; }
+    a.onclick = function (e) {
+      var b = e.target.closest('[data-p]'); if (!b) return; var k = b.dataset.p; b.disabled = true;
+      if (k === 'on') {
+        Notification.requestPermission().then(function (perm) {
+          if (perm !== 'granted') { pushDraw(); return; }
+          return (PUSH.reg ? Promise.resolve(PUSH.reg) : navigator.serviceWorker.register('/sw.js', { scope: '/' })).then(function () { return navigator.serviceWorker.ready; })
+            .then(function (reg) { PUSH.reg = reg; return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64u(VAPID) }); })
+            .then(function (sub) { PUSH.sub = sub; return api('pushSubscribe', { sub: sub.toJSON(), slug: EVENT, device: IS_IOS ? 'iPhone' : 'Device' }); })
+            .then(function () { pushDraw(); toast('Notifications are on for this event. Sending a test…'); return KAI.sb.functions.invoke('push-send', { body: { test: true, endpoint: PUSH.sub.endpoint } }); });
+        }).catch(function () { toast('Couldn’t turn on notifications. Try again.', null, null, true); pushDraw(); });
+      } else if (k === 'test') {
+        KAI.sb.functions.invoke('push-send', { body: { test: true, endpoint: PUSH.sub.endpoint } }).then(function (r) { var ok = r.data && r.data.sent; toast(ok ? 'Test sent. It should arrive in a few seconds.' : 'The test didn’t go out. Turn notifications off and on again.', null, null, !ok); b.disabled = false; });
+      } else if (k === 'off') {
+        var sub = PUSH.sub; api('pushUnsubscribe', { endpoint: sub.endpoint }).catch(function () {}).then(function () { return sub.unsubscribe(); })
+          .then(function () { PUSH.sub = null; pushDraw(); toast('Notifications are off for this event.'); });
+      }
+    };
+  }
   var LIVE = { ver: null, wait: false };
   function ping() {
     liveJoin();
-    // Opening a guest list clears the red number on Noam's home-screen icon.
-    if (!LIVE.seen && S.admin) { LIVE.seen = true; if ('clearAppBadge' in navigator) navigator.clearAppBadge().catch(function () {}); api('pushSeen', {}).catch(function () {}); }
     if (document.visibilityState !== 'visible' || LIVE.wait || $('app').hidden) return;
     LIVE.wait = true;
     api('ping', { name: S.who }).then(function (res) {

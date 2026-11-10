@@ -12,3 +12,7 @@ create table if not exists public.push_subs (endpoint text primary key, p256dh t
 create table if not exists public.notify_queue (id bigserial primary key, event_id uuid references public.events(id) on delete cascade,
   at timestamptz not null default now(), who text not null default '', txt text not null, sent_at timestamptz);
 -- Function bodies: see Supabase (kai_notify_from_log, kai_api, kai_act_plan edited in place).
+-- 10 Nov (later): one home-screen app per event. push_subs.slug ('' = the dashboard app, every event; '<slug>' = that event's app:
+-- only its updates and its own red number). pushSubscribe takes slug; pushSeen {endpoint} clears only that app's number.
+-- The guest list (admin) has "🔔 Notifications for this event" in the avatar menu; each page's manifest has its own id.
+alter table public.push_subs add column if not exists slug text not null default '';

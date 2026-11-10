@@ -14,7 +14,7 @@
 <script>
   // Saved to the home screen: KAI logo, named "KAI Events", opens this same link.
   (function () {
-    var m = { name: 'KAI Events', short_name: 'KAI Events', start_url: location.href, scope: location.origin + '/', display: 'standalone', background_color: '#F4F2EE', theme_color: '#FFFFFF',
+    var m = { id: '/admin', name: 'KAI Events', short_name: 'KAI Events', start_url: location.href, scope: location.origin + '/', display: 'standalone', background_color: '#F4F2EE', theme_color: '#FFFFFF',
       icons: [{ src: location.origin + '/app/icons/kai-192.png', sizes: '192x192', type: 'image/png' }, { src: location.origin + '/app/icons/kai-512.png', sizes: '512x512', type: 'image/png' },
         { src: location.origin + '/app/icons/kai-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }] };
     var l = document.createElement('link'); l.rel = 'manifest'; l.href = 'data:application/manifest+json,' + encodeURIComponent(JSON.stringify(m)); document.head.appendChild(l);
@@ -620,7 +620,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
   function bellDraw() {
     $('bell').classList.toggle('on', !!PUSH.sub); $('bell').textContent = PUSH.sub ? '🔔 On' : '🔔';
     var p = $('bp-p'), a = $('bp-a');
-    if (PUSH.sub) { $('bp-t').textContent = 'Notifications are on'; p.textContent = 'On this device: every change by guests and couples, every few minutes. Quiet 23:00–07:00.'; a.innerHTML = '<button type="button" class="btn sm" data-bp="test">Send a test</button><button type="button" class="btn sm" data-bp="off">Turn off</button>'; }
+    if (PUSH.sub) { $('bp-t').textContent = 'Notifications are on'; p.textContent = 'On for this app: every change in every event, every few minutes. Quiet 23:00–07:00. (Each event’s own app can have its own.)'; a.innerHTML = '<button type="button" class="btn sm" data-bp="test">Send a test</button><button type="button" class="btn sm" data-bp="off">Turn off</button>'; }
     else if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) {
       $('bp-t').textContent = 'Notifications'; a.innerHTML = '';
       p.textContent = iOS && !standalone ? 'On iPhone, open KAI Events from its icon on your home screen (Safari › Share › Add to Home Screen), then tap 🔔 there.' : 'This browser can’t get notifications.';
@@ -643,10 +643,10 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
         return (PUSH.reg ? Promise.resolve(PUSH.reg) : navigator.serviceWorker.register('/sw.js', { scope: '/' })).then(function (reg) { PUSH.reg = reg; return navigator.serviceWorker.ready; })
           .then(function (reg) { return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64u(VAPID) }); })
           .then(function (sub) { PUSH.sub = sub; return api('pushSubscribe', { sub: sub.toJSON(), device: (iOS ? 'iPhone' : navigator.platform || 'Device') }); })
-          .then(function () { bellDraw(); toast('Notifications are on. Sending a test…'); return KAI.sb.functions.invoke('push-send', { body: { test: true } }); });
+          .then(function () { bellDraw(); toast('Notifications are on. Sending a test…'); return KAI.sb.functions.invoke('push-send', { body: { test: true, endpoint: PUSH.sub.endpoint } }); });
       }).catch(function () { toast('Couldn’t turn on notifications. Try again.', true); bellDraw(); });
     } else if (k === 'test') {
-      KAI.sb.functions.invoke('push-send', { body: { test: true } }).then(function (r) { toast(r.data && r.data.sent ? 'Test sent. It should arrive in a few seconds.' : 'The test didn’t go out. Turn notifications off and on again.', !(r.data && r.data.sent)); b.disabled = false; });
+      KAI.sb.functions.invoke('push-send', { body: { test: true, endpoint: PUSH.sub.endpoint } }).then(function (r) { toast(r.data && r.data.sent ? 'Test sent. It should arrive in a few seconds.' : 'The test didn’t go out. Turn notifications off and on again.', !(r.data && r.data.sent)); b.disabled = false; });
     } else if (k === 'off') {
       var sub = PUSH.sub; api('pushUnsubscribe', { endpoint: sub.endpoint }).catch(function () {}).then(function () { return sub.unsubscribe(); })
         .then(function () { PUSH.sub = null; bellDraw(); toast('Notifications are off on this device.'); });
