@@ -12,7 +12,19 @@
 <meta name="apple-mobile-web-app-title" id="apptitle" content="KAI">
 <meta name="theme-color" content="#FFFFFF">
 <title>Guest List</title>
-<style>.signout{border:none;background:none;padding:0;color:var(--ink);font:inherit;font-weight:600;cursor:pointer}.signout:hover{text-decoration:underline}</style>
+<style>.signout{border:none;background:none;padding:0;color:var(--ink);font:inherit;font-weight:600;cursor:pointer}.signout:hover{text-decoration:underline}  /* notifications box (avatar menu on computers, ⋯ › 🔔 sheet on phones) */
+  .pushbox { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); white-space: normal; width: 250px; }
+  .pushbox .pushtxt { color: var(--soft); font-size: 12.5px; line-height: 1.4; }
+  .pushbox .pusha { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pushbox .pusha button { border: 1px solid var(--line); background: var(--surface); border-radius: 4px; padding: 4px 10px; font: inherit; font-size: 13px; cursor: pointer; }
+  .pushbox .pusha button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  #pushsheet { position: fixed; inset: 0; z-index: 300; background: rgba(20,20,30,.35); display: flex; align-items: flex-end; justify-content: center; }
+  #pushsheet[hidden] { display: none; }
+  #pushsheet .ps-in { background: var(--surface); width: 100%; max-width: 480px; border-radius: 14px 14px 0 0; padding: 18px 18px calc(18px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 12px; font-size: 15px; }
+  #pushsheet .pushbox { width: auto; margin: 0; padding: 0; border: none; }
+  #pushsheet .pushbox .pusha button { padding: 9px 16px; font-size: 15px; }
+  #pushsheet .ps-close { align-self: flex-end; border: none; background: none; color: var(--ink); font: inherit; font-weight: 600; padding: 6px; }
+</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Cormorant+Garamond:wght@600&display=swap">
 <style>
@@ -724,11 +736,6 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   .whopop[hidden] { display: none; }
   .whopop .whomail { color: var(--soft); font-size: 12.5px; }
   .whopop .signout { align-self: flex-start; margin-top: 6px; }
-  .pushbox { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); white-space: normal; width: 250px; }
-  .pushbox .pushtxt { color: var(--soft); font-size: 12.5px; line-height: 1.4; }
-  .pushbox .pusha { display: flex; gap: 6px; flex-wrap: wrap; }
-  .pushbox .pusha button { border: 1px solid var(--line); background: var(--surface); border-radius: 4px; padding: 4px 10px; font: inherit; font-size: 13px; cursor: pointer; }
-  .pushbox .pusha button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
   #app:not([hidden]) { gap: 10px !important; }
   #f-age, #f-group, #groupby, #columns, #remind { display: none !important; }
   #viewbtn { margin-inline-start: auto; }
@@ -2608,7 +2615,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       '<button type="button" role="menuitem" data-mm="remind">WhatsApp reminders (' + remindList().length + ')</button>' +
       '<button type="button" role="menuitem" data-mm="trash">Deleted guests (' + (S.delCount || 0) + ')</button>' +
       (canInstall() ? '<button type="button" role="menuitem" data-mm="install">Save to home screen</button>' : '') +
-      (S.admin ? '<div class="mm-sep"></div><button type="button" role="menuitem" data-mm="addcol">+ Add Column</button>' : '');
+      (S.admin ? '<div class="mm-sep"></div><button type="button" role="menuitem" data-mm="push">🔔 Notifications</button><button type="button" role="menuitem" data-mm="addcol">+ Add Column</button>' : '');
     var r = this.getBoundingClientRect();
     moreMenu.hidden = false;
     moreMenu.style.top = (r.bottom + 4) + 'px';
@@ -2637,6 +2644,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     else if (a === 'addcol') openAddCol();
     else if (a === 'remind') openRemind();
     else if (a === 'install') openInstall();
+    else if (a === 'push') openPushSheet();
   });
   $('sumline').addEventListener('click', function () {
     var open = this.getAttribute('aria-expanded') !== 'true';
@@ -2904,8 +2912,19 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     navigator.serviceWorker.register('/sw.js', { scope: '/' }).then(function (reg) { PUSH.reg = reg; return reg.pushManager.getSubscription(); })
       .then(function (sub) { PUSH.sub = sub; if (sub) api('pushSeen', { endpoint: sub.endpoint }).catch(function () {}); }).catch(function () {});
   }
-  function pushDraw() {
-    var box = document.querySelector('.pushbox'); if (!box) return;
+  // Phones: the avatar is hidden, so ⋯ › 🔔 Notifications opens the same box in a small sheet.
+  function openPushSheet() {
+    var sh = document.getElementById('pushsheet');
+    if (!sh) {
+      sh = document.createElement('div'); sh.id = 'pushsheet';
+      sh.innerHTML = '<div class="ps-in"><span class="pushbox"><b>🔔 Notifications for this event</b><span class="pushtxt"></span><span class="pusha"></span></span><button type="button" class="ps-close">Close</button></div>';
+      document.body.appendChild(sh);
+      sh.addEventListener('click', function (e) { e.stopPropagation(); if (e.target === sh || e.target.closest('.ps-close')) sh.hidden = true; });
+    }
+    sh.hidden = false; pushDraw(sh.querySelector('.pushbox'));
+  }
+  function pushDraw(box) {
+    box = box || document.querySelector('.whopop .pushbox'); if (!box) return;
     var t = box.querySelector('.pushtxt'), a = box.querySelector('.pusha');
     if (PUSH.sub) { t.textContent = 'On for this app: every change in ' + ($('couple').textContent || 'this event') + ', every few minutes. Quiet 23:00–07:00.'; a.innerHTML = '<button type="button" data-p="test">Send a test</button><button type="button" data-p="off">Turn off</button>'; }
     else if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) { t.textContent = IS_IOS && !isStandalone() ? 'Add this page to your home screen (Share › Add to Home Screen), open it from there, and turn them on.' : 'This browser can’t get notifications.'; a.innerHTML = ''; }
@@ -2915,17 +2934,17 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       var b = e.target.closest('[data-p]'); if (!b) return; var k = b.dataset.p; b.disabled = true;
       if (k === 'on') {
         Notification.requestPermission().then(function (perm) {
-          if (perm !== 'granted') { pushDraw(); return; }
+          if (perm !== 'granted') { pushDraw(box); return; }
           return (PUSH.reg ? Promise.resolve(PUSH.reg) : navigator.serviceWorker.register('/sw.js', { scope: '/' })).then(function () { return navigator.serviceWorker.ready; })
             .then(function (reg) { PUSH.reg = reg; return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64u(VAPID) }); })
             .then(function (sub) { PUSH.sub = sub; return api('pushSubscribe', { sub: sub.toJSON(), slug: EVENT, device: IS_IOS ? 'iPhone' : 'Device' }); })
-            .then(function () { pushDraw(); toast('Notifications are on for this event. Sending a test…'); return KAI.sb.functions.invoke('push-send', { body: { test: true, endpoint: PUSH.sub.endpoint } }); });
-        }).catch(function () { toast('Couldn’t turn on notifications. Try again.', null, null, true); pushDraw(); });
+            .then(function () { pushDraw(box); toast('Notifications are on for this event. Sending a test…'); return KAI.sb.functions.invoke('push-send', { body: { test: true, endpoint: PUSH.sub.endpoint } }); });
+        }).catch(function () { toast('Couldn’t turn on notifications. Try again.', null, null, true); pushDraw(box); });
       } else if (k === 'test') {
         KAI.sb.functions.invoke('push-send', { body: { test: true, endpoint: PUSH.sub.endpoint } }).then(function (r) { var ok = r.data && r.data.sent; toast(ok ? 'Test sent. It should arrive in a few seconds.' : 'The test didn’t go out. Turn notifications off and on again.', null, null, !ok); b.disabled = false; });
       } else if (k === 'off') {
         var sub = PUSH.sub; api('pushUnsubscribe', { endpoint: sub.endpoint }).catch(function () {}).then(function () { return sub.unsubscribe(); })
-          .then(function () { PUSH.sub = null; pushDraw(); toast('Notifications are off for this event.'); });
+          .then(function () { PUSH.sub = null; pushDraw(box); toast('Notifications are off for this event.'); });
       }
     };
   }
