@@ -23,7 +23,7 @@
     if (box) { if (msg) box.querySelector('.err').textContent = msg; return; }
     var st = document.createElement('style'); st.textContent = CSS; document.head.appendChild(st);
     box = document.createElement('div'); box.id = 'kai-login';
-    box.innerHTML = '<form class="kl" novalidate><h1>KAI Events</h1><p>Sign in with your email. We’ll send you a link; open it on this device.</p>' +
+    box.innerHTML = '<form class="kl" novalidate><h1>KAI Event Planners</h1><p>Sign in with your email. We’ll send you a link; open it on this device.</p>' +
       '<input type="email" placeholder="Your email" autocomplete="email" required aria-label="Email"><button type="submit">Send me a sign-in link</button>' +
       '<div class="err" role="alert">' + (msg || '') + '</div><button type="button" class="lnk kcode">KAI team? Sign in with your code</button></form>';
     document.body.appendChild(box);
@@ -84,7 +84,7 @@
     pairCall({ op: 'confirm', pair: p }, session.access_token).then(function (r) {
       var d = document.createElement('div'); d.id = 'kai-login';
       if (!document.getElementById('kai-login-css')) { var st = document.createElement('style'); st.id = 'kai-login-css'; st.textContent = CSS; document.head.appendChild(st); }
-      d.innerHTML = '<div class="kl"><h1>' + (r.ok ? 'You’re signed in' : 'Almost there') + '</h1><p>' + (r.ok ? 'Go back to the KAI Events app on your home screen. It’s signing in now.' : (r.error || 'Try again from the app.')) + '</p><button type="button">Stay here instead</button></div>';
+      d.innerHTML = '<div class="kl"><h1>' + (r.ok ? 'You’re signed in' : 'Almost there') + '</h1><p>' + (r.ok ? 'Go back to the app on your home screen. It’s signing in now.' : (r.error || 'Try again from the app.')) + '</p><button type="button">Stay here instead</button></div>';
       document.body.appendChild(d); d.querySelector('button').onclick = function () { d.remove(); };
     });
   }
@@ -121,7 +121,7 @@
       }
       var t = new URLSearchParams(location.search).get('t');
       // After the move the couple keeps the old link /<event>/portal (no code); Noam's own link and /admin sign in by email.
-      if (t == null && !v2 && parts[1] === 'portal' && parts[2] !== 'htnoam23') t = '';
+      if (t == null && !v2 && parts[1] === 'portal' && !code) t = '';
       if (t == null || coupleTried) return wait();
       coupleTried = true;
       return fetch(URL + '/functions/v1/couple-enter', { method: 'POST', headers: { apikey: ANON, Authorization: 'Bearer ' + ANON, 'Content-Type': 'application/json' }, body: JSON.stringify({ slug: slug, t: t, path: location.pathname }) })

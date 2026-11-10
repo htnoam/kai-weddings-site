@@ -42,7 +42,7 @@ async function run(db: any, C: Record<string, string>, test: boolean, onlyEmail:
   let groups: { slug: string; title: string; body: string; n: number }[] = [];
   let ids: number[] = [];
   if (body.test) {
-    groups = [{ slug: "*", title: "KAI Events", body: "Notifications are on ✅ You’ll get guest updates here.", n: 0 }];
+    groups = [{ slug: "*", title: "KAI Event Planners", body: "Notifications are on ✅ You’ll get guest updates here.", n: 0 }];
   } else {
     const { data: rows } = await db.from("notify_queue").select("id, event_id, txt").is("sent_at", null).order("id").limit(500);
     if (!rows || !rows.length) return { ok: true, sent: 0 };
@@ -52,7 +52,7 @@ async function run(db: any, C: Record<string, string>, test: boolean, onlyEmail:
     const ev: Record<string, { slug: string; couple: string }> = {}; (evs || []).forEach((e: { id: string; slug: string; couple: string }) => { ev[e.id] = e; });
     for (const id of evIds) {
       const lines = [...new Set(rows.filter((r: { event_id: string }) => r.event_id === id).map((r: { txt: string }) => r.txt))];
-      const e = ev[id] || { slug: "", couple: "KAI Events" };
+      const e = ev[id] || { slug: "", couple: "KAI Event Planners" };
       const shown = lines.slice(0, 3).join("\n") + (lines.length > 3 ? "\n+" + (lines.length - 3) + " more" : "");
       groups.push({ slug: e.slug, title: e.couple + (lines.length > 1 ? " · " + lines.length + " updates" : ""), body: shown, n: lines.length });
     }

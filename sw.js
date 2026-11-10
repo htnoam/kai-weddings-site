@@ -5,8 +5,8 @@ self.addEventListener('activate', function (e) { e.waitUntil(self.clients.claim(
 
 self.addEventListener('push', function (e) {
   var d = {};
-  try { d = e.data ? e.data.json() : {}; } catch (x) { d = { title: 'KAI Events', body: e.data ? e.data.text() : '' }; }
-  var jobs = [self.registration.showNotification(d.title || 'KAI Events', {
+  try { d = e.data ? e.data.json() : {}; } catch (x) { d = { title: 'KAI Event Planners', body: e.data ? e.data.text() : '' }; }
+  var jobs = [self.registration.showNotification(d.title || 'KAI Event Planners', {
     body: d.body || '', tag: d.tag || 'kai', renotify: true, icon: '/app/icons/kai-192.png', badge: '/app/icons/kai-192.png', data: { url: d.url || '/admin' }
   })];
   if (typeof d.badge === 'number' && self.navigator && self.navigator.setAppBadge) jobs.push(d.badge > 0 ? self.navigator.setAppBadge(d.badge) : self.navigator.clearAppBadge());

@@ -69,6 +69,7 @@ button:disabled { cursor: default; opacity: .55; }
 .me { display: flex; align-items: center; gap: 14px; font-size: 14px; color: var(--muted); }
 .save { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
 .save.ok { color: var(--ok); } .save.busy { color: var(--soft); } .save.err { color: var(--bad); }
+.save.ok.fresh { display: inline-flex !important; font-size: 13px !important; }
 
 .wrap { max-width: 1360px; margin: 0 auto; padding: 24px max(16px, env(safe-area-inset-right, 0px)) 96px max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 18px; }
 .gate { background: var(--surface); border: 1px solid var(--hair); border-radius: 8px; padding: 40px 20px; text-align: center; color: var(--muted); }
@@ -1171,8 +1172,12 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (state === 'busy') { S.pending++; el.className = 'save busy'; el.textContent = 'Saving…'; }
     else {
       S.pending = Math.max(0, S.pending - 1);
-      if (state === 'err') { el.className = 'save err'; el.textContent = 'Couldn’t save'; }
-      else if (!S.pending) { el.className = 'save ok'; el.innerHTML = '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>Saved'; }
+      if (state === 'err') { clearTimeout(saving.t); el.className = 'save err'; el.textContent = 'Not saved – check your connection'; }
+      else if (!S.pending) {
+        // "Saved" in words for 2.5 seconds after each change, then just the ✓ (computer) or nothing (phone).
+        el.className = 'save ok fresh'; el.innerHTML = '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>Saved';
+        clearTimeout(saving.t); saving.t = setTimeout(function () { el.classList.remove('fresh'); }, 2500);
+      }
     }
   }
   function toast(msg, actLabel, act, bad) {

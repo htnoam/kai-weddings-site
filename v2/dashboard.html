@@ -9,12 +9,12 @@
 <link rel="icon" type="image/png" href="/app/icons/kai-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="KAI Events">
+<meta name="apple-mobile-web-app-title" content="KAI Planners">
 <meta name="theme-color" content="#FFFFFF">
 <script>
-  // Saved to the home screen: KAI logo, named "KAI Events", opens this same link.
+  // Saved to the home screen: KAI logo, named "KAI Planners", opens this same link.
   function setManifest() {
-    var m = { id: '/admin', name: 'KAI Events', short_name: 'KAI Events', start_url: location.href, scope: location.origin + '/', display: 'standalone', background_color: '#F4F2EE', theme_color: '#FFFFFF',
+    var m = { id: '/admin', name: 'KAI Event Planners', short_name: 'KAI Planners', start_url: location.href, scope: location.origin + '/', display: 'standalone', background_color: '#F4F2EE', theme_color: '#FFFFFF',
       icons: [{ src: location.origin + '/app/icons/kai-192.png', sizes: '192x192', type: 'image/png' }, { src: location.origin + '/app/icons/kai-512.png', sizes: '512x512', type: 'image/png' },
         { src: location.origin + '/app/icons/kai-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }] };
     var l = document.getElementById('manifest'); if (!l) { l = document.createElement('link'); l.rel = 'manifest'; l.id = 'manifest'; document.head.appendChild(l); }
@@ -22,7 +22,7 @@
   }
   setManifest();
 </script>
-<title>KAI Events · New</title>
+<title>KAI Event Planners</title>
 <style>#gh-change,#ghbar,.v2-hide{display:none!important}.v2tag{font-size:12px;font-weight:700;color:#8A5A12;background:#F7EBD3;border-radius:999px;padding:2px 8px;margin-left:8px;vertical-align:middle;font-family:inherit}.top-in a.btn{display:inline-flex;align-items:center;text-decoration:none;color:inherit}.cpbox{border:1px solid #E6E4DF;border-radius:8px;background:#FBF7EE;padding:10px 12px 12px;margin-top:4px}.cph{font-weight:700;color:#8A5A12;font-size:14px}.cph span{font-weight:400;color:#8A8A90;font-size:12.5px;margin-left:6px}
 .cpr{display:grid;grid-template-columns:96px 1fr 1fr;gap:8px;margin-top:8px}.cpr select,.cpr input{height:38px;border:1px solid var(--line,#D6D4CE);border-radius:6px;padding:0 10px;font:inherit;background:#fff;min-width:0}
 .lnk{border:none;background:none;color:var(--ink,#2E3A9E);font-weight:600;cursor:pointer;padding:0;font:inherit;text-decoration:underline}
@@ -46,6 +46,7 @@
 #form .err{margin:0 0 12px}
 #form select,#form input{font-family:inherit}
 #form .nwrow{display:flex;align-items:center;gap:12px;margin-left:25px}#form .nwrow select{height:36px;border:1px solid var(--line);border-radius:4px;padding:0 10px;font:inherit;font-size:14.5px;background:#fff;width:150px}#form .nwrow[hidden]{display:none}
+.evsearch{margin:0 0 12px}.evsearch input{width:100%;max-width:360px;height:38px;border:1px solid var(--line);border-radius:8px;padding:0 12px;font:inherit;font-size:15px;background:#fff}
 .wdlg{max-width:620px}.wbar{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13.5px;color:var(--soft)}.wbar select{height:32px;border:1px solid var(--line);border-radius:4px;padding:0 8px;font:inherit;background:#fff}
 #w-frame{width:100%;height:min(62vh,640px);border:1px solid var(--hair);border-radius:6px;background:#FBF7EE}
 .wsent{color:var(--ok)}.wwait{color:var(--warn)}.wbad{color:var(--bad)}
@@ -192,7 +193,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
 <body>
 <header class="top">
   <div class="top-in">
-    <span class="brand">KAI Events<span class="v2tag">New system</span></span>
+    <span class="brand">KAI Event Planners<span class="v2tag">New system</span></span>
     <div class="tact" style="display:flex;gap:8px;align-items:center">
       <button type="button" class="btn" id="gh-change" hidden>GitHub key</button>
       <a href="https://supabase.com/dashboard/project/icqwbbmscoednenpielh/editor" target="_blank" rel="noopener" title="All the data (Supabase › Table Editor)" class="btn pc-only">Database ↗</a>
@@ -212,6 +213,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     <input id="gh-key" type="password" placeholder="Paste the GitHub key (github_pat_…)" autocomplete="off">
     <button type="button" class="btn sm primary" id="gh-save">Save key</button>
   </div>
+  <div class="evsearch" id="evsearch" hidden><input type="search" id="evq" placeholder="Search events (names, place, date)" autocomplete="off" aria-label="Search events"></div>
   <div class="gate" id="gate">Loading events…</div>
   <div class="tablewrap" id="list" hidden>
     <table>
@@ -482,6 +484,10 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     var active = EVENTS.filter(function (ev) { return ev.status !== 'Ended'; }).sort(byDate);
     var ended = EVENTS.filter(function (ev) { return ev.status === 'Ended'; }).sort(byDate);
     var shown = active.concat(SHOW_ENDED ? ended : []);
+    // Search: couple names, link name, place, date (any part, e.g. "cyprus", "2027", "05/").
+    $('evsearch').hidden = EVENTS.length < 2;
+    var q = ($('evq').value || '').trim().toLowerCase();
+    if (q) shown = EVENTS.filter(function (ev) { return [ev.couple, ev.slug, ev.place, fmtDate(ev.date), ev.email].join(' ').toLowerCase().indexOf(q) >= 0; }).sort(byDate);
     var toggle = ended.length ? '<button type="button" class="endtoggle" data-ended>' + (SHOW_ENDED ? 'Hide ended events' : 'Show ended events (' + ended.length + ')') + '</button>' : '';
     var when = function (ev) { return [fmtRange(ev.start, ev.end) && 'Dates ' + fmtRange(ev.start, ev.end), ev.sunset && 'Sunset ' + ev.sunset].filter(Boolean).join(' · '); };
     // Adults / children / babies are the confirmed guests broken down, so they sit under the Confirmed number.
@@ -641,8 +647,8 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     if (PUSH.sub) { $('bp-t').textContent = 'Notifications are on'; p.textContent = 'On for this app: every change in every event, every few minutes. Quiet 23:00–07:00. (Each event’s own app can have its own.)'; a.innerHTML = '<button type="button" class="btn sm" data-bp="test">Send a test</button><button type="button" class="btn sm" data-bp="off">Turn off</button>'; }
     else if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) {
       $('bp-t').textContent = 'Notifications'; a.innerHTML = '';
-      p.textContent = iOS && !standalone ? 'On iPhone, open KAI Events from its icon on your home screen (Safari › Share › Add to Home Screen), then tap 🔔 there.' : 'This browser can’t get notifications.';
-    } else if (Notification.permission === 'denied') { $('bp-t').textContent = 'Notifications are blocked'; p.textContent = 'Allow them for KAI Events in the phone’s Settings › Notifications, then try again.'; a.innerHTML = ''; }
+      p.textContent = iOS && !standalone ? 'On iPhone, open KAI Planners from its icon on your home screen (Safari › Share › Add to Home Screen), then tap 🔔 there.' : 'This browser can’t get notifications.';
+    } else if (Notification.permission === 'denied') { $('bp-t').textContent = 'Notifications are blocked'; p.textContent = 'Allow them for KAI Planners in the phone’s Settings › Notifications, then try again.'; a.innerHTML = ''; }
     else { $('bp-t').textContent = 'Notifications'; p.textContent = 'Get a notification on this device when guests or couples change something.'; a.innerHTML = '<button type="button" class="btn sm primary" data-bp="on">Turn on</button>'; }
   }
   function pushInit() {
@@ -671,6 +677,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     }
   });
   pushInit();
+  $('evq').addEventListener('input', function () { render(); });
   // Noam's links carry his code, so home-screen apps made from them always open as him (see kai.js / admin-enter).
   var ACODE = '';
   KAI.ready().then(function () { return api('adminCode', {}); }).then(function (r) {
