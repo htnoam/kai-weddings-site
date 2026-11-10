@@ -25,10 +25,14 @@
     box = document.createElement('div'); box.id = 'kai-login';
     box.innerHTML = '<form class="kl" novalidate><h1>KAI Events</h1><p>Sign in with your email. We’ll send you a link; open it on this device.</p>' +
       '<input type="email" placeholder="Your email" autocomplete="email" required aria-label="Email"><button type="submit">Send me a sign-in link</button>' +
-      '<div class="err" role="alert">' + (msg || '') + '</div></form>';
+      '<div class="err" role="alert">' + (msg || '') + '</div><button type="button" class="lnk kcode">KAI team? Sign in with your code</button></form>';
     document.body.appendChild(box);
     var f = box.querySelector('form'), inp = f.querySelector('input'), b = f.querySelector('button'), err = f.querySelector('.err');
     try { inp.value = localStorage.getItem('kai-v2-email') || ''; } catch (e) {}
+    f.querySelector('.kcode').onclick = function () {
+      var c = window.prompt('Your KAI code'); if (!c) return;
+      adminEnter(c).then(function (ok) { if (ok) { hideLogin(); location.reload(); } else err.textContent = 'That code isn’t right.'; });
+    };
     inp.focus();
     f.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -154,5 +158,19 @@
   function signOut() { return sb.auth.signOut().then(function () { location.reload(); }); }
   function email() { return (session && session.user && session.user.email) || ''; }
 
-  window.KAI = { api: api, ready: ready, signOut: signOut, email: email, sb: sb };
+  // Noam's code typed by hand (home-screen apps that opened without it): signs in as Noam on this device.
+  function adminEnter(code) {
+    return fetch(URL + '/functions/v1/admin-enter', { method: 'POST', headers: { apikey: ANON, Authorization: 'Bearer ' + ANON, 'Content-Type': 'application/json' }, body: JSON.stringify({ code: String(code || '').trim() }) })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res.ok || !res.token_hash) return false;
+        return sb.auth.verifyOtp({ token_hash: res.token_hash, type: 'magiclink' }).then(function (v) {
+          if (v.error || !v.data || !v.data.session) return false;
+          session = v.data.session; try { localStorage.setItem('kai-admin-email', session.user.email); } catch (x) {}
+          return true;
+        });
+      }).catch(function () { return false; });
+  }
+
+  window.KAI = { api: api, ready: ready, signOut: signOut, email: email, sb: sb, adminEnter: adminEnter };
 })();
