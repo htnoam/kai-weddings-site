@@ -36,20 +36,60 @@
       if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { err.textContent = 'Check the email address.'; return; }
       b.disabled = true; b.textContent = 'Sending…'; err.textContent = '';
       try { localStorage.setItem('kai-v2-email', em); } catch (x) {}
-      sb.auth.signInWithOtp({ email: em, options: { emailRedirectTo: location.origin + location.pathname, shouldCreateUser: true } }).then(function (r) {
+      // Home-screen app: the email link opens in Safari, so the app waits for Safari to confirm and then signs itself in (app-pair).
+      var pair = APP ? rid() : '';
+      (pair ? pairCall({ op: 'start', pair: pair, email: em }) : Promise.resolve({ ok: true })).then(function (st) {
+        if (!st.ok) throw new Error(st.error || 'Couldn’t send the link. Try again.');
+        return sb.auth.signInWithOtp({ email: em, options: { emailRedirectTo: location.origin + location.pathname + (pair ? '?pair=' + pair : ''), shouldCreateUser: true } });
+      }).then(function (r) {
         if (r.error) { b.disabled = false; b.textContent = 'Send me a sign-in link'; err.textContent = /rate|seconds/i.test(r.error.message) ? 'Too many links were sent. Wait a few minutes and try again.' : 'Couldn’t send the link: ' + r.error.message; return; }
-        f.innerHTML = '<h1>Check your email</h1><p>We sent a sign-in link to <b>' + em.replace(/[<>&"]/g, '') + '</b>. Open it on this device to continue. It can take a minute; check spam too.</p><button type="button" class="lnk">Use another email</button>';
-        f.querySelector('.lnk').onclick = function () { box.remove(); box = null; showLogin(); };
-      });
+        f.innerHTML = '<h1>Check your email</h1><p>We sent a sign-in link to <b>' + em.replace(/[<>&"]/g, '') + '</b>. ' +
+          (pair ? 'Tap the link (it opens in Safari), then come back here. You’ll be signed in by yourself.' : 'Open it on this device to continue.') + ' It can take a minute; check spam too.</p><div class="err" role="alert"></div><button type="button" class="lnk">Use another email</button>';
+        f.querySelector('.lnk').onclick = function () { POLL.stop = true; box.remove(); box = null; showLogin(); };
+        if (pair) pollPair(pair, f.querySelector('.err'));
+      }).catch(function (x) { b.disabled = false; b.textContent = 'Send me a sign-in link'; err.textContent = x.message; });
     });
   }
   function hideLogin() { if (box) { box.remove(); box = null; } }
 
+  // ---------- sign-in for the home-screen app ----------
+  var APP = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true, POLL = { stop: false };
+  function rid() { var a = new Uint8Array(24); crypto.getRandomValues(a); return Array.prototype.map.call(a, function (x) { return ('0' + x.toString(16)).slice(-2); }).join(''); }
+  function pairCall(body, token) {
+    return fetch(URL + '/functions/v1/app-pair', { method: 'POST', headers: { apikey: ANON, Authorization: 'Bearer ' + (token || ANON), 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json(); }).catch(function () { return { ok: false, error: 'Couldn’t reach the server. Check your connection.' }; });
+  }
+  function pollPair(pair, errEl) {
+    POLL.stop = false; var until = Date.now() + 15 * 60 * 1000;
+    (function tick() {
+      if (POLL.stop || session) return;
+      if (Date.now() > until) { errEl.textContent = 'The sign-in expired. Use another email to try again.'; return; }
+      if (document.visibilityState !== 'visible') { setTimeout(tick, 1500); return; }
+      pairCall({ op: 'claim', pair: pair }).then(function (r) {
+        if (r.ok && r.token_hash) return sb.auth.verifyOtp({ token_hash: r.token_hash, type: 'magiclink' }).then(function (v) { if (v.error) { errEl.textContent = 'Couldn’t sign you in. Try again.'; } });
+        if (!r.ok && r.error) { errEl.textContent = r.error; return; }
+        setTimeout(tick, 2500);
+      });
+    })();
+  }
+  // Safari, opened by the email link that the app asked for: confirm it, then send the person back to the app.
+  var PAIR = new URLSearchParams(location.search).get('pair');
+  if (PAIR) { try { history.replaceState(null, '', location.pathname + location.hash); } catch (x) {} }
+  function confirmPair() {
+    if (!PAIR || !session) return; var p = PAIR; PAIR = null;
+    pairCall({ op: 'confirm', pair: p }, session.access_token).then(function (r) {
+      var d = document.createElement('div'); d.id = 'kai-login';
+      if (!document.getElementById('kai-login-css')) { var st = document.createElement('style'); st.id = 'kai-login-css'; st.textContent = CSS; document.head.appendChild(st); }
+      d.innerHTML = '<div class="kl"><h1>' + (r.ok ? 'You’re signed in' : 'Almost there') + '</h1><p>' + (r.ok ? 'Go back to the KAI Events app on your home screen. It’s signing in now.' : (r.error || 'Try again from the app.')) + '</p><button type="button">Stay here instead</button></div>';
+      document.body.appendChild(d); d.querySelector('button').onclick = function () { d.remove(); };
+    });
+  }
+
   sb.auth.onAuthStateChange(function (ev, s) {
     session = s;
-    if (s) { hideLogin(); done(); }
+    if (s) { hideLogin(); done(); confirmPair(); }
   });
-  var first = sb.auth.getSession().then(function (r) { session = r.data.session; if (session) done(); });
+  var first = sb.auth.getSession().then(function (r) { session = r.data.session; if (session) { done(); confirmPair(); } });
 
   // Resolves once someone is signed in (shows the sign-in screen until then).
   // The couple's permanent link (?t=<token>) signs them in by itself: the server checks it and hands back a one-time sign-in link.
