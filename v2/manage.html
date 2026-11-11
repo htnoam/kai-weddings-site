@@ -2588,8 +2588,14 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   $('vtabs').addEventListener('click', function (e) {
     var b = e.target.closest('[data-view],[data-newview],[data-missing]'); if (!b) return;
     if (b.dataset.newview) { openView(null); return; }
-    if (b.dataset.missing) { if (!S.missing) { useView(''); S.missing = true; render(); } return; }
-    var name = b.dataset.view, now = Date.now();
+    var now = Date.now();
+    // Double-click on Missing info opens "What to check", like double-click on a view opens its editor.
+    if (b.dataset.missing) {
+      if (lastTab.name === '\u0000missing' && now - lastTab.t < 450) { lastTab.t = 0; $('columns').click(); return; }
+      lastTab = { name: '\u0000missing', t: now };
+      if (!S.missing) { useView(''); S.missing = true; render(); } return;
+    }
+    var name = b.dataset.view;
     if (name && lastTab.name === name && now - lastTab.t < 450) { lastTab.t = 0; if (curView()) openView(curView()); return; }
     lastTab = { name: name, t: now };
     if (name !== S.view || S.missing) useView(name);
