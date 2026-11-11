@@ -128,6 +128,10 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visib
 .comp input { height: 44px; padding: 0 12px; }
 .comp .seg { gap: 6px; }
 .comp .opt { min-height: 52px; }
+.kid-age { display: flex; flex-direction: column; gap: 8px; }
+.kid-age select { height: 48px; padding: 0 14px; border: 1px solid var(--line); border-radius: 2px; background: var(--field); font: 17px var(--sans); color: var(--text); }
+.t-sage .kid-age select { border-radius: 7px; }
+.comp .seg:has(> :nth-child(2):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .send { height: 54px; border: none; border-radius: 2px; background: var(--text); color: #fff; font: 500 17px var(--sans); letter-spacing: .04em; cursor: pointer; }
 .err { margin: -10px 0 0; font-size: 14px; color: #9B2C2C; }
 .thanks { align-items: center; text-align: center; gap: 12px; padding: 40px 24px; }
@@ -389,7 +393,7 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 8px; font: 500 14px '
       guests: 'מספר אורחים', incl: 'כולל אתכם', withYou: 'מי מגיע איתכם', guest: 'אורח', note: 'הערה לזוג', notePh: 'לא חובה',
       send: 'שליחת אישור הגעה', sending: 'שולחים…', thanksBig: 'תודה רבה!', edit: 'עריכת התשובה',
       portalTxt: 'באזור האישי שלכם תוכלו להוסיף פרטי טיסה ולמצוא את כל המידע על החתונה.', portalBtn: 'לאזור האישי',
-      errName: 'נא למלא שם פרטי ושם משפחה.', errHeb: 'נא לכתוב את השמות באנגלית.', errSend: 'משהו השתבש בשליחה. נסו שוב בעוד רגע.',
+      errName: 'נא למלא שם פרטי ושם משפחה.', errAge: 'נא לבחור את הגיל של כל ילד.', kidAge: 'גיל הילד', kidPick: 'בחרו גיל', under1: 'פחות משנה', kidTypes: [['adult', 'מבוגר', '18+'], ['child', 'ילד', 'עד 17']], errHeb: 'נא לכתוב את השמות באנגלית.', errSend: 'משהו השתבש בשליחה. נסו שוב בעוד רגע.',
       types: [['adult', 'מבוגר', ''], ['child', 'ילד', 'עד גיל 10'], ['baby', 'תינוק', 'עד גיל 2']], ageOf: 'גיל אורח', more: 'אורח נוסף', less: 'פחות אורחים',
       questions: 'שאלות? נועם סלח, מפיק האירוע,<br>ישמח לעזור.', fQ: 'שאלות?', fWho: 'נועם, מפיק האירוע', fIg: 'אינסטגרם', waBtn: 'הודעה לנועם בווטסאפ', insta: 'עקבו אחרינו באינסטגרם',
       intro: 'היי, יקרים ואהובים שלנו.\nיש סיבה שהגעתם עד לכאן!', ask: 'תצטרפו אלינו?', script: 'נתראה שם', kicker: 'החתונה של', cue: 'לאישור הגעה', thanks: 'התשובה שלכם נשמרה. מחכים לחגוג איתכם!',
@@ -403,7 +407,7 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 8px; font: 500 14px '
       guests: 'Number of guests', incl: 'Including you', withYou: 'Who’s coming with you', guest: 'Guest', note: 'A note for the couple', notePh: 'Optional',
       send: 'Send RSVP', sending: 'Sending…', thanksBig: 'Thank you!', edit: 'Edit your reply',
       portalTxt: 'In your guest area you can add your flight details and find everything about the wedding.', portalBtn: 'Go to your guest area',
-      errName: 'Please fill in your first and last name.', errHeb: 'Please write the names in English letters.', errSend: 'Something went wrong. Please try again in a moment.',
+      errName: 'Please fill in your first and last name.', errAge: 'Please choose the age of each child.', kidAge: 'Child’s age', kidPick: 'Choose age', under1: 'Under 1', kidTypes: [['adult', 'Adult', '18+'], ['child', 'Child', 'under 18']], errHeb: 'Please write the names in English letters.', errSend: 'Something went wrong. Please try again in a moment.',
       types: [['adult', 'Adult', ''], ['child', 'Child', 'up to 10'], ['baby', 'Baby', 'up to 2']], ageOf: 'Age of guest', more: 'Add a guest', less: 'Remove a guest',
       questions: 'Questions? Noam Salach, the event planner,<br>is happy to help.', fQ: 'Questions?', fWho: 'Noam, the event planner', fIg: 'Instagram', waBtn: 'Message Noam on WhatsApp', insta: 'Follow us on Instagram',
       intro: 'Hi, our dear and beloved ones.\nThere’s a reason you’re here!', ask: 'Will you join us?', script: 'See you there', kicker: 'The wedding of', cue: 'RSVP', thanks: 'Your reply is saved. We can’t wait to celebrate with you!',
@@ -493,9 +497,12 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 8px; font: 500 14px '
     document.querySelectorAll('.comp').forEach(function (el) {
       var n = el.dataset.n, d = compData[n] || {};
       d.first = el.querySelector('.cf').value; d.last = el.querySelector('.cl').value;
+      if (el.querySelector('.ck')) d.years = el.querySelector('.ck').value;
       compData[n] = d;
     });
   }
+  // Events with their own Age Groups (Settings › Age Groups) ask Adult / Child and the child's exact age; the server sorts children into the hotel's groups.
+  function kidMode() { return !!(CFG && CFG['Age Groups']); }
   function renderComp() {
     saveComp();
     var t = T[L], list = $('comp-list'); list.innerHTML = '';
@@ -509,11 +516,15 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 8px; font: 500 14px '
           '<div class="field"><label class="lbl" for="cl' + n + '">' + t.last + '</label><input class="cl" id="cl' + n + '" type="text" placeholder="Last name"></div>' +
         '</div>' +
         '<div class="seg" role="group" aria-label="' + t.ageOf + ' ' + n + '">' +
-          t.types.map(function (x) {
-            return '<button type="button" class="opt" data-t2="' + x[0] + '" aria-pressed="' + (d.type === x[0]) + '">' + x[1] + (x[2] ? '<small>' + x[2] + '</small>' : '') + '</button>';
+          (kidMode() ? t.kidTypes : t.types).map(function (x) {
+            return '<button type="button" class="opt" data-t2="' + x[0] + '" aria-pressed="' + (d.type === x[0]) + '">' + x[1] + (x[2] ? '<small' + (/^\d/.test(x[2]) ? ' dir="ltr"' : '') + '>' + x[2] + '</small>' : '') + '</button>';
           }).join('') +
-        '</div>';
+        '</div>' +
+        (kidMode() && d.type === 'child' ? '<label class="kid-age"><span class="lbl">' + t.kidAge + '</span><select class="ck">' +
+          ['<option value="">' + t.kidPick + '</option>', '<option value="0">' + t.under1 + '</option>'].concat(Array.from({ length: 17 }, function (_, i) { return '<option value="' + (i + 1) + '">' + (i + 1) + '</option>'; })).join('') +
+          '</select></label>' : '');
       card.querySelector('.cf').value = d.first; card.querySelector('.cl').value = d.last;
+      if (card.querySelector('.ck')) card.querySelector('.ck').value = d.years || '';
       list.appendChild(card);
     }
     $('comp-wrap').hidden = guests < 2;
@@ -530,6 +541,7 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 8px; font: 500 14px '
     var card = b.closest('.comp');
     compData[card.dataset.n].type = b.dataset.t2;
     card.querySelectorAll('.opt').forEach(function (x) { x.setAttribute('aria-pressed', x === b); });
+    if (kidMode()) renderComp();
   });
   $('attend').addEventListener('click', function (e) {
     var b = e.target.closest('.opt'); if (!b) return;
@@ -547,10 +559,13 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 8px; font: 500 14px '
     if (heb.length) { $('err').textContent = t.errHeb; $('err').hidden = false; heb[0].focus(); return; }
     $('err').hidden = true;
     saveComp();
+    if (kidMode() && attend !== 'no') for (var k = 2; k <= guests; k++) {
+      if ((compData[k] || {}).type === 'child' && !(compData[k].years || '')) { $('err').textContent = t.errAge; $('err').hidden = false; var sel = document.querySelector('.comp[data-n="' + k + '"] .ck'); if (sel) sel.focus(); return; }
+    }
     var companions = [];
     if (attend !== 'no') for (var n = 2; n <= guests; n++) {
       var c = compData[n] || {};
-      companions.push({ first: c.first || '', last: c.last || '', type: c.type || 'adult' });
+      companions.push({ first: c.first || '', last: c.last || '', type: c.type || 'adult', years: kidMode() && c.type === 'child' ? c.years || '' : '' });
     }
     var payload = { e: EVENT, first: $('first').value, last: $('last').value, phone: $('phone').value, attend: attend, note: $('note').value, companions: companions };
     var btn = this.querySelector('.send');

@@ -1069,6 +1069,15 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   var BASE = location.pathname.indexOf('/v2/') === 0 ? '/v2/' : '/';   // /v2/<event>/… or, after the move, the old /<event>/… links
   var KEY = '';
   var AGES = ['Adult', 'Child', 'Baby'];
+  // An event can have its own age groups (Settings › Age Groups, e.g. the hotel's Baby 0-4 / Child 5-12 / Teen 13-17); the server sends the list.
+  var AGE_HINT = { Child: 'Child (3–10)', Baby: 'Baby (0–2)' };
+  function setAges(list) {
+    if (!Array.isArray(list) || !list.length) return;
+    AGES.length = 0; list.forEach(function (a) { AGES.push(a); });
+    var custom = list.join() !== 'Adult,Child,Baby';
+    $('f-age').innerHTML = '<option value="">Age: All</option>' + AGES.map(function (a) { return '<option>' + a + '</option>'; }).join('');
+    $('a-age').innerHTML = AGES.map(function (a) { return '<option value="' + a + '">' + (custom ? a : AGE_HINT[a] || a) + '</option>'; }).join('');
+  }
   var STATUSES = ['Confirmed', 'Maybe', 'Declined'];   // Maybe = not answered yet, or answered maybe
   var COLS = [
     { k: 'no', label: 'Guest No.', fixed: true },
@@ -1356,6 +1365,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       bgLoad(res.budget, res.budgetSheet);
       schedLoad(res.schedule, res.wedding);
       setCustom(res.custom || []);
+      setAges(res.ages);
       applyLabels(res.labels || {});
       S.wedYear = (/(\d{4})/.exec(res.wedding.date || '') || [])[1] || '';
       var sc = normCols(res.cols); if (sc && !colsTimer) S.cols = sc;
@@ -1461,7 +1471,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function render() {
     var L = live();
     var c = function (st) { return L.filter(function (g) { return g.status === st; }).length; };
-    var AGEN = { Adult: 'Adults', Child: 'Children', Baby: 'Babies' };
+    var AGEN = { Adult: 'Adults', Teen: 'Teens', Child: 'Children', Baby: 'Babies' };
     var ages = function (st) { return AGES.map(function (a) { return { a: a, n: L.filter(function (g) { return g.status === st && g.age === a; }).length }; }); };
     var tip = function (st) { return ages(st).map(function (x) { return x.n + ' ' + AGEN[x.a]; }).join(' · '); };
     $('stats').innerHTML =
@@ -2670,7 +2680,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     sel.classList.toggle('on', sel.value !== ''); impPreview();
   });
   $('imp-inherit').addEventListener('change', impPreview);
-  function impAge(v) { v = v.toLowerCase(); return /baby|infant|toddler|תינוק/.test(v) ? 'Baby' : /child|kid|ילד|נער/.test(v) ? 'Child' : 'Adult'; }
+  function impAge(v) { v = v.toLowerCase(); return /baby|infant|toddler|תינוק/.test(v) ? 'Baby' : /teen|מתבגר|נער/.test(v) && AGES.indexOf('Teen') >= 0 ? 'Teen' : /child|kid|ילד|נער/.test(v) ? 'Child' : 'Adult'; }
   function impStatus(v) { v = v.toLowerCase(); return /^(confirmed|yes|coming|attending|מגיע|מגיעה|מגיעים|כן)/.test(v) ? 'Confirmed' : /^(declined|no|not|לא)/.test(v) ? 'Declined' : 'Maybe'; }
   function impBuild() {
     var mp = IMP.map, prev = null;
@@ -2746,7 +2756,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var box = function (label, value, cls) { return '<div class="box ' + (cls || '') + '"><div class="v">' + value + '</div><div class="k">' + esc(label) + '</div></div>'; };
     var summary = '<div class="boxes">' + box('Guests in this report', list.length, 'main') +
       STATUSES.filter(function (st) { return n(st); }).map(function (st) { return box(st, n(st), 's-' + st.toLowerCase()); }).join('') + '</div>' +
-      (n('Confirmed') ? '<p class="line"><b>Confirmed by age:</b> ' + AGES.map(function (a) { return n('Confirmed', a) + ' ' + { Adult: 'Adults', Child: 'Children', Baby: 'Babies' }[a]; }).join(' · ') + '</p>' : '');
+      (n('Confirmed') ? '<p class="line"><b>Confirmed by age:</b> ' + AGES.map(function (a) { return n('Confirmed', a) + ' ' + { Adult: 'Adults', Teen: 'Teens', Child: 'Children', Baby: 'Babies' }[a]; }).join(' · ') + '</p>' : '');
     // Extra summaries, depending on the columns in this view.
     var extra = '';
     cols.forEach(function (c) {
@@ -3139,7 +3149,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function sumData() {
     var C = live().filter(function (g) { return g.status === 'Confirmed'; }), out = [];
     var cnt = function (list, f) { var m = {}; list.forEach(function (g) { var v = f(g); if (v) m[v] = (m[v] || 0) + 1; }); return Object.keys(m).sort(function (a, b) { return m[b] - m[a]; }).map(function (k) { return [k, m[k]]; }); };
-    var AG = { Adult: 'Adults', Child: 'Children', Baby: 'Babies' };
+    var AG = { Adult: 'Adults', Teen: 'Teens', Child: 'Children', Baby: 'Babies' };
     out.push({ t: 'Confirmed', rows: [['Total', C.length]].concat(AGES.map(function (a) { return [AG[a], C.filter(function (g) { return g.age === a; }).length]; })) });
     var cust = COLS.filter(function (c) { return c.custom; });
     var menu = cust.filter(function (c) { return /menu|meal|dish|מנה|תפריט/i.test(c.label); })[0];
