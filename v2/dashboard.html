@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
 <link rel="apple-touch-icon" href="/app/icons/kai-180.png">
@@ -157,7 +157,10 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   .brand { white-space: nowrap; }
   .tact .signout { white-space: nowrap; }
   .wrap { padding: 10px 12px 32px; }
-  .f input, .f select, .f textarea, .ghbar input { font-size: 16px; }
+  /* 16px stops iPhone zooming into a field (which left the whole page too wide). */
+  input, select, textarea { font-size: 16px !important; }
+  .brand { font-size: 19px; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .tact { flex: none; }
   .overlay { padding: max(16px, env(safe-area-inset-top, 0px)) 12px 24px; }
 }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -169,6 +172,11 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .menu button:hover { background: var(--soft-surface); }
 .menu button.del { color: var(--bad); border-top: 1px solid var(--hair); border-radius: 0 0 4px 4px; }
 tr.ended td { color: var(--soft); background: var(--soft-surface); }
+/* The couple's name stays in view while the table scrolls sideways. */
+.tablewrap th:first-child, .tablewrap td:first-child { position: sticky; left: 0; z-index: 1; background: var(--surface); box-shadow: 1px 0 0 var(--line); }
+.tablewrap th:first-child { background: #F1EFEA; }
+.tablewrap tbody tr:hover td:first-child { background: #F8F7F3; }
+.tablewrap tr.ended td:first-child { background: var(--soft-surface); }
 .endtoggle { border: none; background: none; color: var(--muted); font-weight: 600; font-size: 13px; padding: 4px 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 .btn.danger { background: var(--bad); border-color: var(--bad); color: #FFFFFF; font-weight: 600; }
 .btn.danger:disabled { opacity: .45; }
