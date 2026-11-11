@@ -144,10 +144,19 @@ body.no-env .page .hero > * { animation: none !important; }
 .link-btn { background: none; border: none; color: var(--ink); text-decoration: underline; font: 15px var(--sans); cursor: pointer; min-height: 44px; }
 
 /* ---------- footer ---------- */
-footer { padding: 40px 12px 8px; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+footer { padding: 40px 0 8px; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
 footer p { margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1.5; color: var(--text); }
 .wa { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 22px; border: 1px solid var(--text); border-radius: 2px; color: var(--text); text-decoration: none; font: 500 12px var(--serif); letter-spacing: .24em; text-transform: uppercase; }
 .kai { font-family: var(--serif); font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); }
+/* questions: one row between two hairlines, the text on one side and the two buttons on the other */
+.f-row { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 18px 4px; border-top: 1px solid var(--gold, var(--line)); border-bottom: 1px solid var(--gold, var(--line)); }
+.f-who { display: flex; flex-direction: column; gap: 2px; text-align: start; }
+.f-who b { font: 400 18px 'Frank Ruhl Libre', var(--serif); color: var(--text); }
+.f-who span { font: 400 14px 'Frank Ruhl Libre', var(--serif); color: var(--muted); white-space: nowrap; }
+.f-btns { display: flex; gap: 10px; }
+.f-btn { display: flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 12px; border-radius: 7px; border: 1px solid var(--text); color: var(--text); font: 400 15px 'Frank Ruhl Libre', var(--serif); text-decoration: none; }
+.f-icon { width: 44px; padding: 0; }
+.t-sage .f-btn { background: #C8D5C7; border: 1px solid rgba(110,130,110,.22); color: #2C3B31; }
 
 @media (prefers-reduced-motion: reduce) {
   .env, .env-card, .env-flap, .env-seal, .env-screen { animation: none !important; transition-duration: .01s !important; transition-delay: 0s !important; }
@@ -352,12 +361,14 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 2px; font: 500 14px '
   </section>
 
   <footer>
-    <p data-t="questions"></p>
-    <a class="wa" href="https://wa.me/972528344374" target="_blank" rel="noopener">
-      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.6-5.2A8.5 8.5 0 1 1 21 11.5z"></path></svg>
-      <span data-t="waBtn"></span>
-    </a>
-    <a class="kai" href="https://instagram.com/kai_wedding_planners" target="_blank" rel="noopener" aria-label="KAI Event Planners on Instagram" style="display:flex;flex-direction:column;align-items:center;gap:8px;text-decoration:none;min-height:44px;justify-content:center"><span>Planned by KAI EVENT PLANNERS</span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg></a>
+    <div class="f-row">
+      <div class="f-who"><b data-t="fQ"></b><span data-t="fWho"></span></div>
+      <div class="f-btns">
+        <a class="f-btn" href="https://instagram.com/kai_wedding_planners" target="_blank" rel="noopener"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg><span data-t="fIg"></span></a>
+        <a class="f-btn f-icon" href="https://wa.me/972528344374" target="_blank" rel="noopener" aria-label="WhatsApp"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.6-5.2A8.5 8.5 0 1 1 21 11.5z"></path></svg></a>
+      </div>
+    </div>
+    <div class="kai">Planned by KAI Event Planners</div>
   </footer>
 </div>
 
@@ -380,7 +391,7 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 2px; font: 500 14px '
       portalTxt: 'באזור האישי שלכם תוכלו להוסיף פרטי טיסה ולמצוא את כל המידע על החתונה.', portalBtn: 'לאזור האישי',
       errName: 'נא למלא שם פרטי ושם משפחה.', errHeb: 'נא לכתוב את השמות באנגלית.', errSend: 'משהו השתבש בשליחה. נסו שוב בעוד רגע.',
       types: [['adult', 'מבוגר', ''], ['child', 'ילד', 'עד גיל 10'], ['baby', 'תינוק', 'עד גיל 2']], ageOf: 'גיל אורח', more: 'אורח נוסף', less: 'פחות אורחים',
-      questions: 'שאלות? נועם סלח, מפיק האירוע,<br>ישמח לעזור.', waBtn: 'הודעה לנועם בווטסאפ', insta: 'עקבו אחרינו באינסטגרם',
+      questions: 'שאלות? נועם סלח, מפיק האירוע,<br>ישמח לעזור.', fQ: 'שאלות?', fWho: 'נועם, מפיק האירוע', fIg: 'אינסטגרם', waBtn: 'הודעה לנועם בווטסאפ', insta: 'עקבו אחרינו באינסטגרם',
       intro: 'היי, יקרים ואהובים שלנו.\nיש סיבה שהגעתם עד לכאן!', ask: 'תצטרפו אלינו?', script: 'נתראה שם', kicker: 'החתונה של', cue: 'לאישור הגעה', thanks: 'התשובה שלכם נשמרה. מחכים לחגוג איתכם!',
       weddingDay: 'יום החתונה', locale: 'he-IL', missing: 'האירוע לא נמצא. בדקו את הלינק.', closed: 'טופס האישור עוד לא פתוח.',
       privacy: 'הפרטים שלכם נראים רק לזוג ולמתכנן החתונה.', selfWa: 'לשלוח לעצמי בוואטסאפ', youSaid: 'מה ענית:', coming: 'מגיעים', notComing: 'לא מגיעים', notSure: 'עוד לא בטוחים',
@@ -394,7 +405,7 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 2px; font: 500 14px '
       portalTxt: 'In your guest area you can add your flight details and find everything about the wedding.', portalBtn: 'Go to your guest area',
       errName: 'Please fill in your first and last name.', errHeb: 'Please write the names in English letters.', errSend: 'Something went wrong. Please try again in a moment.',
       types: [['adult', 'Adult', ''], ['child', 'Child', 'up to 10'], ['baby', 'Baby', 'up to 2']], ageOf: 'Age of guest', more: 'Add a guest', less: 'Remove a guest',
-      questions: 'Questions? Noam Salach, the event planner,<br>is happy to help.', waBtn: 'Message Noam on WhatsApp', insta: 'Follow us on Instagram',
+      questions: 'Questions? Noam Salach, the event planner,<br>is happy to help.', fQ: 'Questions?', fWho: 'Noam, the event planner', fIg: 'Instagram', waBtn: 'Message Noam on WhatsApp', insta: 'Follow us on Instagram',
       intro: 'Hi, our dear and beloved ones.\nThere’s a reason you’re here!', ask: 'Will you join us?', script: 'See you there', kicker: 'The wedding of', cue: 'RSVP', thanks: 'Your reply is saved. We can’t wait to celebrate with you!',
       weddingDay: 'Wedding day', locale: 'en-GB', missing: 'This event was not found. Please check the link.', closed: 'This RSVP form isn’t open yet.',
       privacy: 'Your details are seen only by the couple and the wedding planner.', selfWa: 'Send it to myself on WhatsApp', youSaid: 'Your reply:', coming: 'Coming', notComing: 'Not coming', notSure: 'Not sure yet',
