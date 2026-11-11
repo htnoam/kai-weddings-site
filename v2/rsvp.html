@@ -208,7 +208,9 @@ html[lang="en"] .t-sage .env-hello { font: 500 52px/1.1 'Cormorant Garamond', se
 /* her envelope, cut into layers: the paper inside, the card, the front, the flap (opens), the wax seal (lifts off) */
 .t-sage .env-back { border-radius: 3px; background: linear-gradient(180deg, #B9C8B6, #CBD8C8 40%); box-shadow: 0 14px 22px -12px rgba(60,70,50,.42); }
 .t-sage .env-card { background: #FBF9F4; box-shadow: 0 0 0 1px rgba(201,185,155,.5); }
-.t-sage .env-card b { font: 400 30px/1 'Frank Ruhl Libre', 'Cormorant Garamond', serif; color: #24402F; }
+.t-sage .env-card { padding-top: 6%; gap: 3px; overflow: hidden; }
+.t-sage .env-card img { display: block; width: 64%; margin-top: 7px; padding: 3px; background: #FFFFFF; box-shadow: 0 0 0 1px #D9D2C0, 0 4px 8px -4px rgba(50,60,45,.35); }
+.t-sage .env-card b { font: 400 26px/1 'Frank Ruhl Libre', 'Cormorant Garamond', serif; color: #24402F; }
 .t-sage .env-card i { font: 500 13px 'Cormorant Garamond', serif; letter-spacing: .14em; font-variant-numeric: lining-nums; color: #4A574D; }
 .t-sage .env-front { border-radius: 3px; background: url(/v2/themes/sage/env-front.webp) center / 100% 100% no-repeat; clip-path: none; }
 .t-sage .env-flap { height: 70.5%; }
@@ -449,6 +451,8 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 2px; font: 500 14px '
           '<svg viewBox="0 0 40 12" aria-hidden="true"><path d="M2 9C12 9 24 7 38 2" fill="none" stroke="currentColor" stroke-width="1"/><path d="M10 8.6c-1-2.4 1-4 3-4.4-.2 2.2-1.2 3.6-3 4.4zM18 7.6c-.6-2.6 1.4-3.8 3.4-4-.4 2.2-1.6 3.4-3.4 4zM26 5.6c-.2-2.4 1.8-3.4 3.6-3.4-.6 2-1.8 3-3.6 3.4zM14 9.2c2 1.6 4 1.2 5.2.2-2-1-3.6-1-5.2-.2zM22 8c2 1.4 3.8.8 5-.2-2-.8-3.4-.8-5 .2z" fill="currentColor"/></svg>';
         $('h-when').textContent = $('h-when').textContent.replace(/\s*([–.])\s*/g, '$1');
         var ci = document.querySelector('.env-card i'); if (ci) ci.textContent = $('h-when').textContent;
+        // the couple's photo peeks out of the envelope under the date
+        if (CFG['Hero Image']) document.querySelector('.env-card').insertAdjacentHTML('beforeend', '<img src="' + esc(CFG['Hero Image']) + '" alt="">');
       }
       $('hero').classList.toggle('mag', mag);
       if (mag) {
@@ -574,6 +578,9 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 2px; font: 500 14px '
 
   // A guest who already answered (and comes back to change it) skips the envelope.
   try { if (localStorage.getItem('kai-rsvp-done-' + EVENT)) { document.body.classList.add('no-env'); $('open-env').checked = true; } } catch (x) {}
+  try { history.scrollRestoration = 'manual'; } catch (x) {}
+  window.scrollTo(0, 0);
+  $('open-env').addEventListener('change', function () { window.scrollTo(0, 0); });
   apply();
   setTimeout(function () { document.body.classList.add('ready'); }, 2500);
   KAI_PUB({ action: 'rsvpInfo', e: EVENT })
