@@ -33,7 +33,7 @@ body { margin: 0; background: var(--linen); font-family: var(--sans); color: var
 .card { background: var(--card); border-radius: 4px; box-shadow: 0 1px 2px rgba(60,48,30,.10), 0 18px 28px -22px rgba(60,48,30,.45); padding: 18px 16px; display: flex; flex-direction: column; gap: 12px; }
 .head { text-align: center; padding: 22px 16px 18px; gap: 6px; }
 .couple { font: 400 40px/1 var(--display); color: var(--ink); }
-.when { font: 500 12.5px var(--sans); font-variant-numeric: lining-nums tabular-nums; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); direction: ltr; }
+.when { font: 500 13px var(--sans); font-variant-numeric: lining-nums tabular-nums; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); direction: ltr; }
 h2 { margin: 0; font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
 h2 .ic { width: 28px; height: 28px; border-radius: 999px; background: #F1EFEA; display: grid; place-items: center; font-size: 15px; }
 .sub { margin: -6px 0 0; font-size: 13.5px; color: var(--soft); line-height: 1.45; }
@@ -43,7 +43,7 @@ h2 .ic { width: 28px; height: 28px; border-radius: 999px; background: #F1EFEA; d
 .input.ph { color: #A5A5AB; }
 .btn { height: 52px; border: none; border-radius: 4px; background: var(--text); color: #FFF; font: 600 17px var(--sans); display: grid; place-items: center; }
 .btn.light { background: transparent; color: var(--ink); border: 1px dashed var(--line); height: 44px; font-size: 15px; font-weight: 600; }
-.note { font-size: 12.5px; color: var(--soft); text-align: center; line-height: 1.5; }
+.note { font-size: 13.5px; color: var(--soft); text-align: center; line-height: 1.5; }
 .member { border: 1px solid var(--hair); border-radius: 4px; background: var(--field); padding: 12px; display: flex; flex-direction: column; gap: 10px; }
 .mtop { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .mname { font-size: 16px; font-weight: 700; direction: ltr; }
@@ -63,7 +63,7 @@ h2 .ic { width: 28px; height: 28px; border-radius: 999px; background: #F1EFEA; d
 .dir { font-size: 13px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: .04em; }
 .stay { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .tile { background: #F6F4EF; border-radius: 4px; padding: 10px; text-align: center; }
-.tile .k { font-size: 12px; color: var(--soft); }
+.tile .k { font-size: 13.5px; color: var(--soft); }
 .tile .v { font-size: 20px; font-weight: 700; direction: ltr; }
 .who { font-size: 13px; color: var(--muted); text-align: center; }
 .sched { display: flex; flex-direction: column; gap: 10px; }
@@ -116,7 +116,7 @@ button.btn:disabled { opacity: .6; }
 .linkbtn { background: none; border: none; padding: 0; color: var(--ink); text-decoration: underline; font-size: 13px; }
 .f input { height: 44px; border: 1px solid var(--line); border-radius: 4px; background: var(--field); text-align: center; font-size: 15px; direction: ltr; width: 100%; min-width: 0; padding: 0 4px; }
 .chk input { width: 20px; height: 20px; accent-color: var(--ink); margin: 0; }
-.chk { min-height: 32px; }
+.chk { min-height: 44px; cursor: pointer; }
 .addform { border: 1px dashed var(--line); border-radius: 4px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
 .addform .two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .addform input { height: 44px; border: 1px solid var(--line); border-radius: 4px; padding: 0 10px; font-size: 15px; width: 100%; min-width: 0; direction: ltr; }
@@ -146,18 +146,18 @@ button.btn:disabled { opacity: .6; }
 .v5 p{margin:0;font-size:13.5px;color:var(--soft);line-height:1.6}.v5 p.s{font-size:12.5px}
 .v5g{display:grid;grid-template-columns:1fr 1px 1fr}.v5g>span{background:var(--hair)}
 .v5g div{display:flex;flex-direction:column;gap:2px}
-.v5g em{font-style:normal;font-size:12px;letter-spacing:.12em;color:var(--soft);margin-bottom:4px}
-.v5g b{font-family:'Cormorant Garamond',Georgia,serif;font-size:26px;font-weight:500;line-height:1.1;font-variant-numeric:lining-nums}
-.rtog{display:flex;align-items:center;justify-content:center;gap:6px;background:none;border:none;border-top:1px solid var(--hair);padding:12px 0 0;font-size:14.5px;font-weight:700;color:var(--ink);width:100%}
+.v5g em{font-style:normal;font-size:13px;letter-spacing:.12em;color:var(--soft);margin-bottom:4px}
+.v5g b{font-family:var(--sans);font-size:21px;font-weight:600;line-height:1.4;font-variant-numeric:tabular-nums;direction:ltr}
+.rtog{min-height:44px;display:flex;align-items:center;justify-content:center;gap:6px;background:none;border:none;border-top:1px solid var(--hair);padding:12px 0 0;font-size:14.5px;font-weight:700;color:var(--ink);width:100%}
 .rtog::after{content:"";width:7px;height:7px;border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(45deg) translateY(-2px)}
 .rtog.open::after{transform:rotate(-135deg) translateY(-2px)}
 .rec{display:flex;flex-direction:column}
 .rec-h{font-size:15px;font-weight:700;text-align:center;padding:8px 0;border-bottom:1px solid var(--line)}
 .rec-h small{font-weight:500;color:var(--soft);font-size:13px}
 .rf{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 2px;border-bottom:1px solid var(--hair)}
-.rf-a{display:flex;flex-direction:column;gap:2px;min-width:0}.rf-a b{font-size:14.5px;font-weight:600}.rf-a span{font-size:12.5px;color:var(--soft)}
+.rf-a{display:flex;flex-direction:column;gap:2px;min-width:0}.rf-a b{font-size:14.5px;font-weight:600}.rf-a span{font-size:13px;color:var(--soft)}
 .rf-t{font-size:16px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
-.rec-n{margin:0;font-size:12.5px;color:var(--soft);text-align:center}
+.rec-n{margin:0;font-size:13px;color:var(--soft);text-align:center}
 .blk{border:1px solid var(--hair);border-radius:6px;padding:12px;display:flex;flex-direction:column;gap:12px;background:#FFFDF9}
 .sec{font-size:13.5px;font-weight:700;color:var(--muted);margin-top:2px}
 .hr{height:1px;background:var(--hair);margin:2px 0}
@@ -166,8 +166,8 @@ button.btn:disabled { opacity: .6; }
 .leg{border-radius:8px;padding:0 12px 12px;display:flex;flex-direction:column;gap:12px;border:1px solid}
 .leg.go{background:#F1F3FC;border-color:#D5DAF3}.leg.back{background:#FBF7EE;border-color:#EADFC6}
 .lh{display:flex;align-items:center;gap:10px;margin:0 -12px;padding:10px 12px;border-radius:8px 8px 0 0;color:#fff}
-.go .lh{background:#2E3A9E}.back .lh{background:#A07E3A}
-.lh b{display:block;font-size:17px}.lh small{font-size:12.5px;opacity:.9}
+.go .lh{background:#2E3A9E}.back .lh{background:#856425}
+.lh b{display:block;font-size:17px}.lh small{font-size:13px;opacity:.95}
 .li{width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:16px}
 .go .li{transform:scaleX(-1) rotate(-30deg)}.back .li{transform:rotate(-30deg)}
 html[dir=ltr] .go .li{transform:rotate(-30deg)}html[dir=ltr] .back .li{transform:scaleX(-1) rotate(-30deg)}
@@ -176,13 +176,13 @@ html[dir=ltr] .go .li{transform:rotate(-30deg)}html[dir=ltr] .back .li{transform
 input.num{height:46px;border:1px solid var(--line);border-radius:6px;text-align:center;font-size:16px;direction:ltr;width:100%;min-width:0;padding:0 2px;text-transform:uppercase;background:var(--field)}
 input.num::placeholder{color:#9A9AA1;text-transform:none}
 .tbtn{position:relative;height:46px;border:1px solid var(--line);border-radius:6px;background:var(--field);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;direction:ltr;font-variant-numeric:tabular-nums;padding:0 2px}
-.tbtn .ph,.pv .ph{color:#9A9AA1;font-weight:400}
+.tbtn .ph,.pv .ph{color:#5E5E66;font-weight:400}
 .tbtn input{position:absolute;inset:0;opacity:0;width:100%;height:100%;font-size:16px}
 .pickrow{width:100%;height:50px;border:1px solid var(--line);border-radius:8px;background:var(--field);display:flex;align-items:center;justify-content:space-between;padding:0 14px}
 .go .pickrow{border-color:#B9C1EC}.back .pickrow{border-color:#DCCBA3}
 .pv{font-size:16px;font-weight:700}
 .chg{font-size:13.5px;font-weight:600;text-decoration:underline;text-underline-offset:3px}
-.go .chg{color:#2E3A9E}.back .chg{color:#A07E3A}
+.go .chg{color:#2E3A9E}.back .chg{color:#856425}
 .hint{font-size:13px;color:var(--ok);font-weight:600;margin-top:-4px}
 .warn{background:#FBF1DE;color:#7E5210;border-radius:6px;padding:9px 12px;font-size:13.5px;line-height:1.5}
 .wa-g{display:flex;align-items:center;justify-content:center;gap:8px;height:48px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none;background:#25D366;color:#fff}
@@ -200,7 +200,7 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
 .sumc div em{font-style:normal;font-weight:700;min-width:40px;color:var(--text)}
 .sumc div small{display:block;font-size:14px;color:var(--ok);font-weight:600}
 .missing{font-size:13.5px;color:#7E5210;background:#FBF1DE;border-radius:6px;padding:9px 12px;line-height:1.5}
-.hrow{display:flex;align-items:center;justify-content:space-between;gap:10px;background:none;border:none;padding:0;width:100%;text-align:start}
+.hrow{min-height:44px;margin:-6px 0;display:flex;align-items:center;justify-content:space-between;gap:10px;background:none;border:none;padding:0;width:100%;text-align:start}
 .hrow h2{flex:1}
 .hrow .chev{width:8px;height:8px;border:solid var(--muted);border-width:0 2px 2px 0;transform:rotate(45deg);margin-inline-end:6px}
 .hrow.open .chev{transform:rotate(-135deg) translate(-3px,-3px)}
@@ -220,7 +220,41 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
 .sh-t{flex:1;display:flex;flex-direction:column;gap:2px}.sh-t b{font-size:16px}.sh-t small{font-size:12.5px;color:var(--soft)}
 .sh-o em{font-style:normal;font-size:12px;font-weight:700;color:var(--ok);background:var(--ok-bg);border-radius:999px;padding:3px 8px;white-space:nowrap}
 .go .sh-o.on{border-color:#2E3A9E;box-shadow:0 0 0 1px #2E3A9E}.go .sh-o.on .sh-r{border-color:#2E3A9E}.go .sh-o.on .sh-r::after{content:"";width:10px;height:10px;border-radius:9px;background:#2E3A9E}
-.back .sh-o.on{border-color:#A07E3A;box-shadow:0 0 0 1px #A07E3A}.back .sh-o.on .sh-r{border-color:#A07E3A}.back .sh-o.on .sh-r::after{content:"";width:10px;height:10px;border-radius:9px;background:#A07E3A}
+.back .sh-o.on{border-color:#856425;box-shadow:0 0 0 1px #856425}.back .sh-o.on .sh-r{border-color:#856425}.back .sh-o.on .sh-r::after{content:"";width:10px;height:10px;border-radius:9px;background:#856425}
+
+/* collapsible cards: a header that closes the card, and a one-line summary row when it is closed */
+.hd{display:flex;align-items:center;gap:8px;background:none;border:none;padding:0;width:100%;text-align:start;min-height:44px;margin:-6px 0}
+.hd h2{flex:1}
+.chev2{width:8px;height:8px;border:solid var(--muted);border-width:0 2px 2px 0;transform:rotate(-135deg);margin:4px 6px 0;flex:none}
+.cbody{display:flex;flex-direction:column;gap:12px}
+.crow{display:none;align-items:center;gap:10px;background:none;border:none;padding:0;width:100%;text-align:start;min-height:44px}
+.card.closed>.hd,.card.closed>.cbody{display:none}
+.card.closed>.crow{display:flex}
+.crow .ci{width:28px;height:28px;border-radius:999px;background:#F1EFEA;display:grid;place-items:center;font-size:14px;flex:none}
+.card.done .crow .ci{background:var(--ok-bg);color:var(--ok)}
+.crow .t{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.crow .t b{font-size:16px}
+.crow .t>span{font-size:13.5px;color:var(--soft);line-height:1.5}
+.card.done .crow .t>span{color:var(--ok)}
+.crow .ed{font-size:13.5px;font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:3px;flex:none}
+.crow .chev{width:8px;height:8px;border:solid var(--muted);border-width:0 2px 2px 0;transform:rotate(45deg);margin:0 6px 4px;flex:none}
+.card.done .crow .chev,.card:not(.done) .crow .ed{display:none}
+.card:not(.closed) .closed-only{display:none}
+.step{font-size:13px;font-weight:700;color:var(--ink);background:#EEF0FB;border-radius:999px;padding:2px 9px;margin-inline-start:auto;white-space:nowrap}
+.step:empty{display:none}
+#recs:empty{display:none}
+.msaved{font-size:13.5px;font-weight:600;color:var(--ok);white-space:nowrap;margin-inline-start:auto}
+.hnote{font-size:13.5px;color:var(--soft);text-align:center;margin-top:4px;line-height:1.5}
+.hnote.ok{color:var(--ok);font-weight:600}
+/* flights: the save bar shows only when something changed, sticks to the bottom of the card, and sits on top of the phone keyboard */
+.fsave{position:sticky;bottom:0;margin:0 -16px -18px;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:var(--card);border-top:1px solid var(--line);border-radius:0 0 4px 4px;display:flex;align-items:center;gap:10px;box-shadow:0 -8px 14px -12px rgba(60,48,30,.35);z-index:3}
+.fsave span{flex:1;font-size:13.5px;color:var(--muted)}
+.fsave .btn{width:auto!important;padding:0 18px;height:44px;flex:none;font-size:16px}
+.fsave.kb{position:fixed;left:0;right:0;margin:0;bottom:auto;border-radius:0;z-index:40;padding:8px 14px}
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ok);color:#fff;border-radius:999px;padding:10px 18px;font-size:15px;font-weight:600;z-index:60;white-space:nowrap;box-shadow:0 6px 18px -8px rgba(0,0,0,.4)}
+.dlg-bg{position:fixed;inset:0;background:rgba(31,31,33,.45);z-index:55;display:grid;place-items:center;padding:16px}
+.dlg{background:var(--card);border-radius:8px;padding:20px;max-width:340px;width:100%;display:flex;flex-direction:column;gap:10px;text-align:center}
+.dlg b{font-size:17px}
 
 /* Phones: fields at 16px so the iPhone never zooms in (that left pages too wide). */
 @media (max-width:900px),(pointer:coarse){input:not([type=checkbox]):not([type=radio]),select,textarea{font-size:16px!important}}
@@ -238,6 +272,7 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
     <div class="countdown" id="countdown" hidden></div>
     <div id="hi-wrap" hidden>
       <div class="hello" style="margin-top:12px" id="hello"></div>
+      <div class="hnote" id="hnote"></div>
       <div class="who"><span id="who-phone" dir="ltr"></span> · <button type="button" class="linkbtn" id="logout" data-t="logout"></button></div>
     </div>
   </div>
@@ -263,7 +298,9 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
     </section>
     <section class="card" id="c-allok" hidden><div class="allok"><i>✓</i><span data-tt="allOk"></span></div></section>
     <section class="card" id="c-rsvp" hidden>
-      <h2><span class="ic">✓</span><span data-t="rsvpT"></span></h2>
+      <button type="button" class="hd" data-tg="rsvp"><h2><span class="ic">✉</span><span data-t="rsvpT"></span><span class="step" id="step1"></span></h2><span class="chev2"></span></button>
+      <button type="button" class="crow" data-tg="rsvp"><span class="ci" id="rsvp-ci"></span><span class="t"><b data-t="rsvpT"></b><span id="rsvp-sum"></span></span><span class="ed" data-tt="edit"></span><span class="chev"></span></button>
+      <div class="cbody">
       <p class="sub" data-t="rsvpSub"></p>
       <div id="members" style="display:flex;flex-direction:column;gap:10px"></div>
       <div class="addform" id="addform" hidden>
@@ -276,26 +313,34 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
       <p class="err" id="rsvp-err" hidden></p>
       <button type="button" class="btn" id="save-rsvp" data-t="save"></button>
       <div class="saved" id="rsvp-ok" hidden></div>
+      </div>
     </section>
 
     <section class="card" id="c-shut" hidden>
-      <h2><span class="ic">🚐</span><span id="shut-t"></span></h2>
+      <button type="button" class="hd" data-tg="shut"><h2><span class="ic">🚐</span><span id="shut-t"></span></h2><span class="chev2"></span></button>
+      <button type="button" class="crow" data-tg="shut"><span class="ci">🚐</span><span class="t"><b id="shut-t2"></b><span id="shut-sum"></span></span><span class="chev"></span></button>
+      <div class="cbody">
       <div class="v5" id="shut-tt"></div>
       <button type="button" class="rtog" id="rtog"></button>
       <div id="recs" style="display:flex;flex-direction:column;gap:12px"></div>
+      </div>
     </section>
 
     <section class="card" id="c-flights" hidden>
-      <h2><span class="ic">✈</span><span data-tt="flT"></span></h2>
+      <button type="button" class="hd" data-tg="fl"><h2><span class="ic">✈</span><span data-tt="flT"></span><span class="step" id="step2"></span></h2><span class="chev2"></span></button>
+      <button type="button" class="crow" data-tg="fl"><span class="ci" id="fl-ci"></span><span class="t"><b data-tt="flT"></b><span id="fl-sum"></span></span><span class="ed" data-tt="edit"></span><span class="chev"></span></button>
+      <a class="wa-g closed-only" id="self-wa2" target="_blank" rel="noopener" hidden data-tt="selfWa"></a>
+      <div class="cbody">
       <label class="chk" id="tr-same-wrap"><input type="checkbox" id="tr-same"><span data-tt="same"></span></label>
       <div id="blocks" style="display:flex;flex-direction:column;gap:14px"></div>
       <p class="err" id="fl-err" hidden></p>
-      <button type="button" class="btn" id="save-fl" data-tt="saveFl"></button>
       <div id="sum-wrap" hidden style="display:flex;flex-direction:column;gap:10px">
         <div class="saved" data-tt="saved"></div>
         <div id="sum" style="display:flex;flex-direction:column;gap:8px"></div>
         <div class="missing" id="fl-missing" hidden></div>
         <a class="wa-g" id="self-wa" target="_blank" rel="noopener" data-tt="selfWa"></a>
+      </div>
+      <div class="fsave" id="fsave" hidden><span data-tt="unsaved"></span><button type="button" class="btn" id="save-fl" data-tt="saveShort"></button></div>
       </div>
     </section>
 
@@ -313,14 +358,15 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
       </div>
     </section>
 
+    <section class="card" id="c-info" hidden>
+      <button type="button" class="hd" data-tg="info"><h2><span class="ic">📍</span><span data-t="infoT"></span></h2><span class="chev2"></span></button>
+      <button type="button" class="crow" data-tg="info"><span class="ci">📍</span><span class="t"><b data-t="infoT"></b><span data-tt="infoSub"></span></span><span class="chev"></span></button>
+      <div class="cbody"><div class="sched" id="info"></div></div>
+    </section>
+
     <section class="card" id="c-stay" hidden>
       <h2><span class="ic">🛏</span><span data-t="stayT"></span></h2>
       <div id="stay"></div>
-    </section>
-
-    <section class="card" id="c-info" hidden>
-      <h2><span class="ic">ℹ</span><span data-t="infoT"></span></h2>
-      <div class="sched" id="info"></div>
     </section>
     <!-- save to home screen: shown after logging in, until saved or dismissed -->
     <section class="card homecard" id="c-home" hidden>
@@ -340,6 +386,8 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
   <div class="kai">PLANNED BY KAI EVENT PLANNERS</div>
 </main>
 
+<div class="toast" id="toast" hidden></div>
+<div class="dlg-bg" id="dlg" hidden><div class="dlg"><b data-tt="unsavedT"></b><div class="note" data-tt="unsavedQ"></div><button type="button" class="btn" id="dlg-save" data-tt="saveShort"></button><button type="button" class="btn light" id="dlg-no" data-tt="noSave"></button></div></div>
 <div id="sheet-wrap" hidden><div id="sheet-bg"></div><div id="sheet" class="sheet"><div class="grab"></div><div class="sh-h" id="sh-t"></div><div id="sh-list"></div></div></div>
 
 <script src="/app/dtpick.js"></script>
@@ -357,7 +405,7 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
       area: 'האזור האישי שלכם', areaSub: 'כאן אפשר לעדכן את אישור ההגעה של כל המשפחה, ובהמשך גם פרטים נוספים לקראת האירוע.',
       phoneLbl: 'מספר הטלפון שאיתו אישרתם הגעה', enter: 'כניסה', stuck: 'לא מצליחים להיכנס? כתבו לנו באינסטגרם ונסדר את זה.',
       loading: 'טוען…', logout: 'יציאה', hello: 'היי, ', helloFam: 'היי, משפחת ',
-      rsvpT: 'אישור הגעה', rsvpSub: 'אפשר לעדכן כל אחד בנפרד.', yes: 'כן, מגיע/ה', no: 'לא', maybe: 'אולי',
+      rsvpT: 'אישור הגעה', rsvpSub: 'כל בחירה נשמרת מיד.', yes: 'כן, מגיע/ה', no: 'לא', maybe: 'אולי',
       ages: { Adult: 'מבוגר/ת', Child: 'ילד/ה · עד 10', Baby: 'תינוק/ת · עד 2' }, groupNames: { Adult: 'מבוגר/ת', Teen: 'מתבגר/ת', Child: 'ילד/ה', Baby: 'תינוק/ת' },
       addMember: '+ הוספת בן משפחה', newMember: 'בן משפחה חדש', first: 'First name', last: 'Last name', namesHint: 'נא לכתוב את השמות באנגלית',
       save: 'שמירה', saved: '✓ נשמר', flightsT: 'פרטי טיסה', flightsSub: 'כדי שנדע מתי לאסוף אתכם משדה התעופה.',
@@ -374,7 +422,7 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
       area: 'Your guest area', areaSub: 'Update your family’s RSVP here, and later more details ahead of the event.',
       phoneLbl: 'The phone number you RSVP’d with', enter: 'Enter', stuck: 'Can’t get in? Message us on Instagram and we’ll sort it out.',
       loading: 'Loading…', logout: 'Log out', hello: 'Hi, ', helloFam: 'Hi, ',
-      rsvpT: 'RSVP', rsvpSub: 'You can update each person separately.', yes: 'Coming', no: 'Not coming', maybe: 'Maybe',
+      rsvpT: 'RSVP', rsvpSub: 'Each choice saves right away.', yes: 'Coming', no: 'Not coming', maybe: 'Maybe',
       ages: { Adult: 'Adult', Child: 'Child · up to 10', Baby: 'Baby · up to 2' }, groupNames: { Adult: 'Adult', Teen: 'Teen', Child: 'Child', Baby: 'Baby' },
       addMember: '+ Add a family member', newMember: 'New family member', first: 'First name', last: 'Last name', namesHint: 'Please write the names in English letters',
       save: 'Save', saved: '✓ Saved', flightsT: 'Flights', flightsSub: 'So we know when to pick you up at the airport.',
@@ -480,12 +528,15 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
       return '<div class="member"><div class="mtop">' +
         (nm ? '<div class="two"><input data-nf="' + g.no + '" value="' + esc(nm.first) + '" placeholder="' + esc(t.first) + '" autocomplete="off"><input data-nl="' + g.no + '" value="' + esc(nm.last) + '" placeholder="' + esc(t.last) + '" autocomplete="off"></div>'
           : '<button type="button" class="mname fixname" data-fix="' + g.no + '" aria-label="' + esc(t.editName) + ': ' + esc(g.first + ' ' + g.last) + '">' + esc(g.first + ' ' + g.last) + '<span class="pen" aria-hidden="true">✎</span></button>') +
-        '<span class="age">' + esc((ageGroups(t).filter(function (a) { return a[0] === g.age; })[0] || [0, t.ages[g.age] || g.age])[1]) + '</span></div>' +
+        (SV[g.no] ? '<span class="msaved">' + esc(t.saved) + '</span>' : '') + '<span class="age">' + esc((ageGroups(t).filter(function (a) { return a[0] === g.age; })[0] || [0, t.ages[g.age] || g.age])[1]) + '</span></div>' +
         '<div class="seg">' + b('Confirmed', t.yes) + b('Declined', t.no, 'no') + b('Maybe', t.maybe) + '</div></div>';
     }).join('');
     if (P.show.flights) renderTravel(); else hideTravel();
     if (P.show.stay) renderStay();
     if (P.show.info) renderInfo();
+    // The save button is only for fixing a name or adding someone; the coming / not coming choices save by themselves.
+    $('save-rsvp').hidden = $('addform').hidden && !Object.keys(names).length;
+    refreshCards();
   }
   function renderStay() {
     var t = T[L], fam = P.family;
@@ -570,7 +621,7 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
       P = res; PHONE = (phone.replace(/[^\d+]/g, '').replace(/^00/, '+').replace(/^0/, '+972').replace(/^(5\d{8})$/, '+972$1'));
       if (PHONE.charAt(0) !== '+') PHONE = '+' + PHONE;
       try { localStorage.setItem(STORE, phone); } catch (e) {}
-      state = {}; TR = null;
+      state = {}; TR = null; SV = {}; flDirty = false; OPEN = null;
       $('loading').hidden = true; $('family').hidden = false; $('hi-wrap').hidden = false;
       apply(); showHome();
       // Came from "Save to home screen" on the thank-you card: show the save card (and the steps) right away.
@@ -586,7 +637,10 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
     var v = $('phone').value.trim(); if (!v) { $('login-err').textContent = T[L].errBad; $('login-err').hidden = false; return; }
     $('login-btn').disabled = true; enter(v, false).then(function () { $('login-btn').disabled = false; });
   });
-  $('logout').addEventListener('click', function () { try { localStorage.removeItem(STORE); } catch (e) {} $('phone').value = ''; showLogin(''); });
+  $('logout').addEventListener('click', function () {
+    var out = function () { try { localStorage.removeItem(STORE); } catch (e) {} $('phone').value = ''; flDirty = false; showLogin(''); };
+    if (flDirty) askSave(out); else out();
+  });
   document.querySelector('.lang').addEventListener('click', function (e) {
     var b = e.target.closest('[data-lang]'); if (!b || b.dataset.lang === L) return;
     L = b.dataset.lang; try { localStorage.setItem('kai-rsvp-lang', L); } catch (x) {} apply();
@@ -600,10 +654,18 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
     var fx = e.target.closest('[data-fix]');
     if (fx) { var g = P.family.filter(function (x) { return x.no === Number(fx.dataset.fix); })[0]; names[g.no] = { first: g.first, last: g.last }; renderFamily(); var inp = document.querySelector('[data-nf="' + g.no + '"]'); if (inp) inp.focus(); return; }
     var b = e.target.closest('[data-st]'); if (!b) return;
-    state[b.dataset.no] = b.dataset.st; $('rsvp-ok').hidden = true;
+    var no = Number(b.dataset.no), st = b.dataset.st; $('rsvp-ok').hidden = true; $('rsvp-err').hidden = true;
     b.parentNode.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b); });
+    // Saves right away (one at a time, in the order tapped), then shows "✓ Saved" next to that name.
+    rq = rq.then(function () { return api({ action: 'portalRsvp', phone: PHONE, members: [{ no: no, status: st }], add: [] }); }).then(function (res) {
+      if (!res.ok) throw new Error(res.error);
+      P = res; SV[no] = 1; delete state[no];
+      if (!flDirty && TR) { var k = { recOpen: TR.recOpen, hotelOpen: TR.hotelOpen, cin: TR.cin, cout: TR.cout, saved: TR.saved }; TR = null; buildTR(); Object.assign(TR, k); }
+      renderFamily(); checkDone();
+    }).catch(function (x) { $('rsvp-err').textContent = x && x.message === 'closed' ? T[L].errClosed : T[L].errNet; $('rsvp-err').hidden = false; renderFamily(); });
   });
-  $('add').addEventListener('click', function () { $('addform').hidden = false; this.hidden = true; $('a-first').focus(); });
+  var rq = Promise.resolve();
+  $('add').addEventListener('click', function () { $('addform').hidden = false; this.hidden = true; $('save-rsvp').hidden = false; $('a-first').focus(); });
   $('a-age').addEventListener('click', function (e) { var b = e.target.closest('[data-age]'); if (!b) return; newAge = b.dataset.age; this.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b); }); });
   $('save-rsvp').addEventListener('click', function () {
     var t = T[L], add = [];
@@ -645,7 +707,11 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
       taxi: 'מונית', self: 'הגעה עצמאית', selfB: 'עצמאי', taxiSub: 'הנהג שלנו · בתיאום ישיר ובתשלום לנהג', selfSub: 'רכב שכור או הסדר אחר', fromAirport: 'יוצאת משדה התעופה', fromHotel: 'יוצאת מהמלון', taxiBtn: 'הזמנת מונית בוואטסאפ',
       copyQ: 'טס עם מישהו שכבר מילא?', like: 'כמו ', done: 'סיום', notYet: 'עוד לא מולא',
       hotelT: 'רוצים להאריך את השהות?', hsub: 'החבילה כוללת לינה {a}–{b}. אפשר להגיע עד {n} ימים קודם או להישאר עד {n} ימים אחרי.', cost: 'הלילות הנוספים בעלות נוספת, והתשלום ישירות למלון. המלון יחזור אליכם עם מחיר ואישור.', mailBtn: 'שליחת בקשה למלון במייל', mailOff: 'בחרו תאריכים כדי לשלוח בקשה', mailOn: 'הבקשה תירשם גם אצלנו',
-      all: 'כולם', waHead: 'הסיכום שלי:', errFl: 'נא למלא שעה בפורמט HH:MM.' },
+      all: 'כולם', waHead: 'הסיכום שלי:', errFl: 'נא למלא שעה בפורמט HH:MM.',
+      edit: 'עריכה', step: 'שלב ', unsaved: 'יש שינויים שלא נשמרו', saveShort: 'שמירה', unsavedT: 'יש פרטים שלא נשמרו', unsavedQ: 'לשמור את פרטי הטיסות?', noSave: 'בלי לשמור',
+      flSaved: '✓ פרטי הטיסות נשמרו', doneToast: '🎉 סיימתם! הכול מוכן', infoSub: 'לוח זמנים, כתובות ומה להביא', rsvpAsk: 'מי מגיע לחתונה?', flAsk: 'מספר טיסה, תאריך ושעה',
+      coming: ' מגיעים', coming1: 'מגיע/ה', notComingL: 'לא מגיעים: ', noneComing: 'לא מגיעים', allFl: 'כל {n} הנוסעים מילאו טיסות',
+      twoLeft: 'שני דברים קטנים ואתם מסודרים: אישור הגעה ופרטי טיסה.', rsvpLeft: 'נשאר רק לאשר הגעה.', flLeft: 'נשאר רק למלא פרטי טיסה.' },
     en: { todoT: 'What is left to complete', allOk: 'All set, see you at the wedding!', rsvp: 'RSVP', flights: 'Flight details', shuttles: 'Shuttle, both ways', missingFor: 'Missing for: ',
       shutT: 'Recommended flights & shuttles', shutOnlyT: 'Recommended flights', shutIntro: 'There are organised shuttles between the airport and the hotel. We recommend booking flights that fit one of them.', shGo: 'SHUTTLES THERE', shBack: 'SHUTTLES BACK',
       hoursEach: 'About {h} hours each way', mayChange: 'Shuttle times may change',
@@ -658,7 +724,11 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
       taxi: 'Taxi', self: 'Own arrangement', selfB: 'Own arrangement', taxiSub: 'Our driver · arranged and paid directly', selfSub: 'Rental car or other', fromAirport: 'Leaves from the airport', fromHotel: 'Leaves from the hotel', taxiBtn: 'Book a taxi on WhatsApp',
       copyQ: 'Flying with someone who already filled in?', like: 'Same as ', done: 'Done', notYet: 'Not filled in yet',
       hotelT: 'Want to extend your stay?', hsub: 'Your package includes {a}–{b}. You can arrive up to {n} days earlier or stay up to {n} days later.', cost: 'Extra nights cost extra and are paid directly to the hotel. The hotel will reply with a price and confirmation.', mailBtn: 'Email the hotel a request', mailOff: 'Choose dates to send a request', mailOn: 'We will see the request too',
-      all: 'Everyone', waHead: 'My summary:', errFl: 'Please write times as HH:MM.' }
+      all: 'Everyone', waHead: 'My summary:', errFl: 'Please write times as HH:MM.',
+      edit: 'Edit', step: 'Step ', unsaved: 'You have unsaved changes', saveShort: 'Save', unsavedT: 'Some details are not saved', unsavedQ: 'Save your flight details?', noSave: 'Don’t save',
+      flSaved: '✓ Flight details saved', doneToast: '🎉 All done! You’re all set', infoSub: 'Schedule, addresses and what to bring', rsvpAsk: 'Who is coming to the wedding?', flAsk: 'Flight number, date and time',
+      coming: ' coming', coming1: 'Coming', notComingL: 'Not coming: ', noneComing: 'Not coming', allFl: 'All {n} travellers filled in their flights',
+      twoLeft: 'Two small things and you’re all set: RSVP and flight details.', rsvpLeft: 'Just your RSVP left.', flLeft: 'Just your flight details left.' }
   };
   function tt(k) { return TT[L][k]; }
   var TR = null;   // travel state, rebuilt from P.family after each login / save
@@ -777,10 +847,10 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
     return '<div class="blk">' +
       (others.length ? '<div class="sec">' + esc(tt('copyQ')) + '</div><div class="chips">' + others.map(function (o) { return '<button type="button" class="chip" data-copy="' + TR.groups.indexOf(o) + '" data-i="' + i + '">' + esc(tt('like') + nm(o.who[0])) + '</button>'; }).join('') + '</div><div class="hr"></div>' : '') +
       '<div class="leg go"><div class="lh"><span class="li">✈</span><span><b>' + esc(tt('go')) + '</b><small>' + esc(tt('goSub')) + '</small></span></div>' +
-      '<div class="ff3"><div class="f"><span class="lbl">' + esc(tt('flNo')) + '</span><input class="num" data-i="' + i + '" data-f="gF" value="' + esc(x.gF) + '" placeholder="LY541" autocapitalize="characters" autocomplete="off"></div>' + dateHtml(i, 'gD', x.gD) + timeHtml(i, 'gT', x.gT) + '</div>' +
+      '<div class="ff3"><div class="f"><span class="lbl">' + esc(tt('flNo')) + '</span><input class="num" data-i="' + i + '" data-f="gF" value="' + esc(x.gF) + '" placeholder="LY541" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="done" autocomplete="off"></div>' + dateHtml(i, 'gD', x.gD) + timeHtml(i, 'gT', x.gT) + '</div>' +
       pickHtml(C, i, 'g', x, sg) + '</div>' +
       '<div class="leg back"><div class="lh"><span class="li">✈</span><span><b>' + esc(tt('back')) + '</b><small>' + esc(tt('backSub')) + '</small></span></div>' +
-      '<div class="ff3"><div class="f"><span class="lbl">' + esc(tt('flNo')) + '</span><input class="num" data-i="' + i + '" data-f="bF" value="' + esc(x.bF) + '" placeholder="LY542" autocapitalize="characters" autocomplete="off"></div>' + dateHtml(i, 'bD', x.bD) + timeHtml(i, 'bT', x.bT) + '</div>' +
+      '<div class="ff3"><div class="f"><span class="lbl">' + esc(tt('flNo')) + '</span><input class="num" data-i="' + i + '" data-f="bF" value="' + esc(x.bF) + '" placeholder="LY542" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="done" autocomplete="off"></div>' + dateHtml(i, 'bD', x.bD) + timeHtml(i, 'bT', x.bT) + '</div>' +
       pickHtml(C, i, 'b', x, sb) + '</div>' +
       (!TR.same ? '<button type="button" class="btn2" data-close="' + i + '">' + esc(tt('done') + ' · ' + nm(x.who[0])) + '</button>' : '') +
     '</div>';
@@ -804,6 +874,7 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
     if (keep) { var el = $('blocks').querySelector(keep); if (el && !el.readOnly) { el.focus(); try { el.setSelectionRange(el.value.length, el.value.length); } catch (x) {} } }
   }
   function renderTodo(C) {
+    $('c-todo').hidden = true; $('c-allok').hidden = true; return;
     var fl = TR.groups.every(function (x) { return x.gF && x.gT && x.bF && x.bT; }), sh = TR.groups.every(function (x) { return x.gB && x.bB; });
     var rs = P.family.every(function (g) { return g.status !== 'Maybe'; });
     var all = rs && fl && (sh || !hasSh(C));
@@ -865,7 +936,7 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
   $('blocks').addEventListener('click', function (e) {
     var b;
     if ((b = e.target.closest('[data-sheet]'))) { var p = b.dataset.sheet.split('|'); openSheet(+p[0], p[1]); return; }
-    if ((b = e.target.closest('[data-copy]'))) { var src = TR.groups[+b.dataset.copy], dst = TR.groups[+b.dataset.i]; ['gF', 'gD', 'gT', 'gB', 'bF', 'bD', 'bT', 'bB', 'mG', 'mB'].forEach(function (f) { dst[f] = src[f]; }); renderBlocks(); return; }
+    if ((b = e.target.closest('[data-copy]'))) { var src = TR.groups[+b.dataset.copy], dst = TR.groups[+b.dataset.i]; ['gF', 'gD', 'gT', 'gB', 'bF', 'bD', 'bT', 'bB', 'mG', 'mB'].forEach(function (f) { dst[f] = src[f]; }); markDirty(); renderBlocks(); return; }
     if ((b = e.target.closest('[data-row]'))) { var i = +b.dataset.row; TR.open = TR.open === i ? -1 : i; renderBlocks(); var el = document.querySelector('.acc'); if (el) el.scrollIntoView({ block: 'start', behavior: 'smooth' }); return; }
     if ((b = e.target.closest('[data-close]'))) { TR.open = -1; renderBlocks(); }
   });
@@ -873,16 +944,19 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
     var el = e.target, f = el.dataset.f; if (!f) return;
     var x = TR.groups[+el.dataset.i];
     var yr = (C0().start || '').slice(0, 4);
-    x[f] = f.charAt(1) === 'F' ? el.value.toUpperCase().replace(/\s+/g, '') : f.charAt(1) === 'D' ? (iso(smartDate(el.value, yr)) || x[f]) : (/^\d{2}:\d{2}$/.test(smartTime(el.value)) ? smartTime(el.value) : '');
+    x[f] = f.charAt(1) === 'F' ? el.value.toUpperCase().replace(/[\s\-_.]+/g, '') : f.charAt(1) === 'D' ? (iso(smartDate(el.value, yr)) || x[f]) : (/^\d{2}:\d{2}$/.test(smartTime(el.value)) ? smartTime(el.value) : '');
     // A new date or time re-suggests the shuttle, unless the guest chose a taxi or their own way.
     if (f.charAt(1) !== 'F') { var k = f.charAt(0), m = 'm' + k.toUpperCase(); if (!(x[m] && (x[k + 'B'] === 'Taxi' || x[k + 'B'] === 'Own'))) x[m] = false; }
-    $('fl-err').hidden = true;
+    $('fl-err').hidden = true; markDirty();
     // The phone's calendar / time wheel can report a change while it is still open: redraw only once it closes.
     var ae = document.activeElement;
     if (ae && ae.classList && ae.classList.contains('dtp') && $('blocks').contains(ae)) { pending = true; return; }
     setTimeout(renderBlocks, 0);
   });
   var pending = false;
+  $('blocks').addEventListener('input', function (e) { if (e.target.dataset && e.target.dataset.f) markDirty(); });
+  // "Done" on the phone keyboard closes it.
+  $('blocks').addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.dataset && e.target.dataset.f) e.target.blur(); });
   // A computer: clicking a filled-in date or time selects it, so typing replaces it.
   document.addEventListener('focusin', function (e) {
     var el = e.target; if (!el || el.readOnly || (el.placeholder !== 'DD/MM/YYYY' && el.placeholder !== 'HH:MM')) return;
@@ -898,7 +972,7 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
     if (TR.same) TR.groups = [Object.assign({ nos: fam.map(function (g) { return g.no; }), who: fam }, copy.reduce(function (o, k) { o[k] = f[k]; return o; }, {}))];
     // Splitting starts everyone from the family's flights, so only the one who flies differently needs changing.
     else TR.groups = fam.map(function (g) { var x = { nos: [g.no], who: [g] }; copy.forEach(function (k) { x[k] = f[k]; }); return x; });
-    TR.open = -1; renderBlocks();
+    TR.open = -1; markDirty(); renderBlocks();
   });
   function openSheet(i, k) {
     var C = cfg(), x = TR.groups[i], s = sug(C, x, k);
@@ -910,7 +984,7 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
     $('sh-list').innerHTML = opts.map(function (o) {
       return '<button type="button" class="sh-o' + (x[k + 'B'] === o[0] ? ' on' : '') + '" data-v="' + esc(o[0]) + '"><span class="sh-r"></span><span class="sh-t"><b>' + esc(o[1]) + '</b><small>' + esc(o[2]) + '</small></span>' + (s === o[0] ? '<em>' + esc(tt('fitsTag')) + '</em>' : '') + '</button>';
     }).join('');
-    $('sh-list').onclick = function (e) { var b = e.target.closest('.sh-o'); if (!b) return; x[k + 'B'] = b.dataset.v; x['m' + k.toUpperCase()] = true; closeSheet(); renderBlocks(); };
+    $('sh-list').onclick = function (e) { var b = e.target.closest('.sh-o'); if (!b) return; x[k + 'B'] = b.dataset.v; x['m' + k.toUpperCase()] = true; closeSheet(); markDirty(); renderBlocks(); };
     $('sheet-wrap').hidden = false; requestAnimationFrame(function () { $('sheet-wrap').classList.add('in'); });
   }
   function closeSheet() { $('sheet-wrap').classList.remove('in'); setTimeout(function () { $('sheet-wrap').hidden = true; }, 200); }
@@ -925,22 +999,104 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
     $('mail').href = mailHref(C);
     api({ action: 'portalExtend', phone: PHONE, checkIn: dmy(TR.cin), checkOut: dmy(TR.cout) }).catch(function () {});
   });
-  $('save-fl').addEventListener('click', function () {
+  function saveFl() {
     var list = [];
     TR.groups.forEach(function (x) {
       x.nos.forEach(function (no) {
         list.push({ no: no, arrFlight: x.gF, arrDate: dmy(x.gD), arrTime: x.gT, arrBus: x.gB || '', depFlight: x.bF, depDate: dmy(x.bD), depTime: x.bT, depBus: x.bB || '' });
       });
     });
-    var btn = this; btn.disabled = true; $('fl-err').hidden = true;
-    api({ action: 'portalFlights', phone: PHONE, flights: list }).then(function (res) {
+    var btn = $('save-fl'); if (btn.disabled) return Promise.resolve(false);
+    btn.disabled = true; $('fl-err').hidden = true;
+    return api({ action: 'portalFlights', phone: PHONE, flights: list }).then(function (res) {
       if (!res.ok) throw new Error(res.error);
       var keep = { open: -1, recOpen: false, hotelOpen: TR.hotelOpen, cin: TR.cin, cout: TR.cout };
       P = res; TR = null; buildTR(); TR.saved = true; TR.recOpen = keep.recOpen; TR.hotelOpen = keep.hotelOpen; TR.cin = keep.cin; TR.cout = keep.cout;
-      renderFamily(); $('sum-wrap').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }).catch(function (x) { $('fl-err').textContent = x.message === 'closed' ? T[L].errClosed : x.message && x.message.indexOf('Write') === 0 ? tt('errFl') : T[L].errNet; $('fl-err').hidden = false; })
-      .then(function () { btn.disabled = false; });
+      flDirty = false; renderFamily();
+      if (!checkDone()) { toast(tt('flSaved')); if (!$('c-flights').classList.contains('closed')) $('sum-wrap').scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      return true;
+    }).catch(function (x) { $('fl-err').textContent = x.message === 'closed' ? T[L].errClosed : x.message && x.message.indexOf('Write') === 0 ? tt('errFl') : T[L].errNet; $('fl-err').hidden = false; return false; })
+      .then(function (ok) { btn.disabled = false; place(); return ok; });
+  }
+  var eat = 0;
+  $('save-fl').addEventListener('pointerdown', function (e) { e.preventDefault(); if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); eat = Date.now(); saveFl(); });
+  $('save-fl').addEventListener('click', function () { if (Date.now() - eat < 1500) return; saveFl(); });
+
+  // ---------- cards: open / closed, summaries, the line under the greeting ----------
+  var OPEN = null, SV = {}, flDirty = false, wasDone = false, celebrated = false;
+  var CARD = { rsvp: 'c-rsvp', shut: 'c-shut', fl: 'c-flights', info: 'c-info' };
+  function rsDone() { return !P.show.rsvp || P.family.every(function (g) { return g.status === 'Confirmed' || g.status === 'Declined'; }); }
+  function flDone() {
+    if (!P.show.flights || !coming().length) return true;
+    var sh = hasSh(cfg());
+    return coming().every(function (g) { return g.arrFlight && g.arrTime && g.depFlight && g.depTime && (!sh || (g.arrBus && g.depBus)); });
+  }
+  function allDone() { return rsDone() && flDone(); }
+  function refreshCards() {
+    if (!P) return;
+    document.querySelectorAll('[data-tt]').forEach(function (el) { el.textContent = tt(el.dataset.tt); });
+    var rd = rsDone(), fd = flDone(), ad = rd && fd, fam = P.family;
+    if (!OPEN) { wasDone = ad; celebrated = false; OPEN = { rsvp: !rd, fl: !fd, shut: true, info: ad }; }
+    Object.keys(CARD).forEach(function (k) { $(CARD[k]).classList.toggle('closed', !OPEN[k]); });
+    // RSVP
+    $('c-rsvp').classList.toggle('done', rd); $('rsvp-ci').textContent = rd ? '✓' : '✉';
+    var yes = fam.filter(function (g) { return g.status === 'Confirmed'; }).map(function (g) { return g.first; }), no = fam.filter(function (g) { return g.status === 'Declined'; }).map(function (g) { return g.first; });
+    $('rsvp-sum').textContent = !rd ? tt('rsvpAsk') : (yes.length ? (yes.length === 1 ? tt('coming1') + ' · ' : yes.length + tt('coming') + ' · ') + yes.join(', ') + (no.length ? ' · ' + tt('notComingL') + no.join(', ') : '') : tt('noneComing'));
+    // flights
+    $('c-flights').classList.toggle('done', fd); $('fl-ci').textContent = fd ? '✓' : '✈';
+    var each = coming().map(fromGuest), same = each.length && each.every(function (x) { return keyOf(x) === keyOf(each[0]); });
+    $('fl-sum').innerHTML = !fd ? esc(tt('flAsk')) : same ? legLine(each[0], 'g') + '<br>' + legLine(each[0], 'b') : esc(tt('allFl').replace('{n}', each.length));
+    $('self-wa2').hidden = !(TR && TR.saved && fd); if (!$('self-wa2').hidden) $('self-wa2').href = $('self-wa').href;
+    $('fsave').hidden = !flDirty; if (flDirty) $('sum-wrap').hidden = true;
+    // shuttles
+    var C = cfg();
+    $('shut-t2').textContent = $('shut-t').textContent;
+    $('shut-sum').textContent = hasSh(C) ? [C.goT.length ? tt('go') + ' ' + C.goT.join(', ') : '', C.backT.length ? tt('back') + ' ' + C.backT.join(', ') : ''].filter(Boolean).join(' · ') : tt('recShow');
+    // steps and the line under the greeting
+    var flOn = P.show.flights && !$('c-flights').hidden;
+    $('step1').textContent = ad || !flOn ? '' : tt('step') + '1'; $('step2').textContent = ad ? '' : tt('step') + '2';
+    $('hnote').classList.toggle('ok', ad);
+    $('hnote').textContent = ad ? '✓ ' + tt('allOk') : !rd && !fd ? tt('twoLeft') : !rd ? tt('rsvpLeft') : tt('flLeft');
+    place();
+  }
+  // The guest just finished everything: close RSVP and flights to their summaries and say so.
+  function checkDone() {
+    if (wasDone || celebrated || !allDone()) return false;
+    celebrated = true; OPEN.rsvp = false; OPEN.fl = false; refreshCards();
+    window.scrollTo({ top: 0, behavior: 'smooth' }); toast(tt('doneToast')); return true;
+  }
+  function toast(t) { var el = $('toast'); el.textContent = t; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(function () { el.hidden = true; }, 2200); }
+  function markDirty() { if (flDirty) return; flDirty = true; $('fsave').hidden = false; $('sum-wrap').hidden = true; place(); }
+  // Opening or closing a card keeps its top edge where it was, so the page does not jump.
+  document.getElementById('family').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-tg]'); if (!b) return;
+    var k = b.dataset.tg;
+    if (k === 'fl' && OPEN.fl && flDirty) { askSave(function () { OPEN.fl = false; refreshCards(); }); return; }
+    var card = $(CARD[k]), top = card.getBoundingClientRect().top;
+    OPEN[k] = !OPEN[k]; refreshCards();
+    var d = card.getBoundingClientRect().top - top; if (d) window.scrollBy(0, d);
+    var t = card.getBoundingClientRect().top; if (t < 8) window.scrollBy(0, t - 8);
   });
+  // Unsaved flight details: ask before closing the card or logging out; the browser asks before leaving the page.
+  var after = null;
+  function askSave(fn) { after = fn; $('dlg').hidden = false; }
+  $('dlg-save').addEventListener('click', function () { $('dlg').hidden = true; var fn = after; after = null; saveFl().then(function (ok) { if (ok && fn) fn(); }); });
+  $('dlg-no').addEventListener('click', function () {
+    $('dlg').hidden = true; var fn = after; after = null; flDirty = false;
+    var k = { recOpen: TR.recOpen, hotelOpen: TR.hotelOpen, cin: TR.cin, cout: TR.cout, saved: TR.saved }; TR = null; buildTR(); Object.assign(TR, k);
+    renderFamily(); if (fn) fn();
+  });
+  window.addEventListener('beforeunload', function (e) { if (flDirty) { e.preventDefault(); e.returnValue = ''; } });
+  // Phone keyboard open while typing a flight: the save bar sits right on top of the keyboard.
+  function place() {
+    var f = $('fsave'), vv = window.visualViewport, a = document.activeElement;
+    var typing = !f.hidden && a && a.matches && a.matches('#c-flights input.num') && !a.readOnly && vv && vv.height < window.innerHeight - 120;
+    f.classList.toggle('kb', !!typing);
+    f.style.top = typing ? (vv.offsetTop + vv.height - f.offsetHeight) + 'px' : '';
+  }
+  if (window.visualViewport) { visualViewport.addEventListener('resize', place); visualViewport.addEventListener('scroll', place); }
+  document.addEventListener('focusin', function () { setTimeout(place, 50); setTimeout(place, 400); });
+  document.addEventListener('focusout', function () { setTimeout(place, 60); });
 
   // ---------- start ----------
   apply();
