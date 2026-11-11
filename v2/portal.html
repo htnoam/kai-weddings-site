@@ -221,7 +221,7 @@ button.btn:disabled { opacity: .6; }
       phoneLbl: 'מספר הטלפון שאיתו אישרתם הגעה', enter: 'כניסה', stuck: 'לא מצליחים להיכנס? כתבו לנו באינסטגרם ונסדר את זה.',
       loading: 'טוען…', logout: 'יציאה', hello: 'היי, ', helloFam: 'היי, משפחת ',
       rsvpT: 'אישור הגעה', rsvpSub: 'אפשר לעדכן כל אחד בנפרד.', yes: 'כן, מגיע/ה', no: 'לא', maybe: 'אולי',
-      ages: { Adult: 'מבוגר/ת', Child: 'ילד/ה · עד 10', Baby: 'תינוק/ת · עד 2' },
+      ages: { Adult: 'מבוגר/ת', Child: 'ילד/ה · עד 10', Baby: 'תינוק/ת · עד 2' }, groupNames: { Adult: 'מבוגר/ת', Teen: 'מתבגר/ת', Child: 'ילד/ה', Baby: 'תינוק/ת' },
       addMember: '+ הוספת בן משפחה', newMember: 'בן משפחה חדש', first: 'First name', last: 'Last name', namesHint: 'נא לכתוב את השמות באנגלית',
       save: 'שמירה', saved: '✓ נשמר', flightsT: 'פרטי טיסה', flightsSub: 'כדי שנדע מתי לאסוף אתכם משדה התעופה.',
       same: 'כל המשפחה טסה באותן טיסות', there: 'הלוך · נחיתה', back: 'חזור · המראה', date: 'תאריך', time: 'שעה', flight: 'טיסה', saveFl: 'שמירת פרטי טיסה',
@@ -238,7 +238,7 @@ button.btn:disabled { opacity: .6; }
       phoneLbl: 'The phone number you RSVP’d with', enter: 'Enter', stuck: 'Can’t get in? Message us on Instagram and we’ll sort it out.',
       loading: 'Loading…', logout: 'Log out', hello: 'Hi, ', helloFam: 'Hi, ',
       rsvpT: 'RSVP', rsvpSub: 'You can update each person separately.', yes: 'Coming', no: 'Not coming', maybe: 'Maybe',
-      ages: { Adult: 'Adult', Child: 'Child · up to 10', Baby: 'Baby · up to 2' },
+      ages: { Adult: 'Adult', Child: 'Child · up to 10', Baby: 'Baby · up to 2' }, groupNames: { Adult: 'Adult', Teen: 'Teen', Child: 'Child', Baby: 'Baby' },
       addMember: '+ Add a family member', newMember: 'New family member', first: 'First name', last: 'Last name', namesHint: 'Please write the names in English letters',
       save: 'Save', saved: '✓ Saved', flightsT: 'Flights', flightsSub: 'So we know when to pick you up at the airport.',
       homeT: 'Save your guest area to your home screen', homeSub: 'Flights, stay and all the wedding details in one tap', homeBtn: 'Save',
@@ -252,6 +252,13 @@ button.btn:disabled { opacity: .6; }
     }
   };
   var L = 'he', chosen = false, INFO = null, P = null, PHONE = '', state = {}, newAge = 'Adult';
+  // The event's own age groups (Settings › Age Groups, e.g. "Baby 0-4, Child 5-12, Teen 13-17"), as [value, label] pairs; otherwise Adult / Child / Baby.
+  function ageGroups(t) {
+    var r = String((INFO && INFO['Age Groups']) || '').split(',').map(function (part) { var m = /^\s*([A-Za-z]+)\s+(\d+)\s*[-–]\s*(\d+)\s*$/.exec(part); return m && { name: m[1].charAt(0).toUpperCase() + m[1].slice(1).toLowerCase(), lo: +m[2], hi: +m[3] }; }).filter(Boolean)
+      .sort(function (a, b) { return b.lo - a.lo; });
+    if (!r.length) return ['Adult', 'Child', 'Baby'].map(function (a) { return [a, t.ages[a]]; });
+    return [['Adult', t.groupNames.Adult + ' · ' + (r[0].hi + 1) + '+\u200E']].concat(r.map(function (g) { return [g.name, (t.groupNames[g.name] || g.name) + ' · ' + g.lo + '–' + g.hi]; }));
+  }
   try { var q = new URLSearchParams(location.search).get('lang'); if (q === 'he' || q === 'en') { L = q; chosen = true; } else if (localStorage.getItem('kai-rsvp-lang')) { L = localStorage.getItem('kai-rsvp-lang'); chosen = true; } } catch (e) {}
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -313,7 +320,9 @@ button.btn:disabled { opacity: .6; }
       document.title = (INFO.couple ? INFO.couple + ' – ' : '') + (L === 'he' ? 'האזור האישי' : 'Guest area');
     }
     if (P) renderFamily();
-    $('a-age').innerHTML = ['Adult', 'Child', 'Baby'].map(function (a) { return '<button type="button" data-age="' + a + '" aria-pressed="' + (a === newAge) + '">' + esc(t.ages[a]) + '</button>'; }).join('');
+    var groups = ageGroups(t);
+    $('a-age').style.gridTemplateColumns = 'repeat(' + groups.length + ', 1fr)';
+    $('a-age').innerHTML = groups.map(function (a) { return '<button type="button" data-age="' + a[0] + '" aria-pressed="' + (a[0] === newAge) + '">' + esc(a[1]) + '</button>'; }).join('');
   }
 
   // ---------- family ----------
@@ -334,7 +343,7 @@ button.btn:disabled { opacity: .6; }
       return '<div class="member"><div class="mtop">' +
         (nm ? '<div class="two"><input data-nf="' + g.no + '" value="' + esc(nm.first) + '" placeholder="' + esc(t.first) + '" autocomplete="off"><input data-nl="' + g.no + '" value="' + esc(nm.last) + '" placeholder="' + esc(t.last) + '" autocomplete="off"></div>'
           : '<button type="button" class="mname fixname" data-fix="' + g.no + '" aria-label="' + esc(t.editName) + ': ' + esc(g.first + ' ' + g.last) + '">' + esc(g.first + ' ' + g.last) + '<span class="pen" aria-hidden="true">✎</span></button>') +
-        '<span class="age">' + esc(t.ages[g.age] || g.age) + '</span></div>' +
+        '<span class="age">' + esc((ageGroups(t).filter(function (a) { return a[0] === g.age; })[0] || [0, t.ages[g.age] || g.age])[1]) + '</span></div>' +
         '<div class="seg">' + b('Confirmed', t.yes) + b('Declined', t.no, 'no') + b('Maybe', t.maybe) + '</div></div>';
     }).join('');
     if (P.show.flights) renderFlights();

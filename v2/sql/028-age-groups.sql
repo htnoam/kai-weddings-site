@@ -7,3 +7,4 @@
 -- and its empty "Child Age" column removed.
 alter table public.guests drop constraint guests_age_check;
 alter table public.guests add constraint guests_age_check check (age = any (array['Adult', 'Teen', 'Child', 'Baby']));
+-- Also: kai_budget_sheets — adults exclude teens; "teens" sent only for events with a Teen group (Hub budgetSync writes it to Guests!B5).

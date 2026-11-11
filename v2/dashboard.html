@@ -521,7 +521,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     var toggle = ended.length ? '<button type="button" class="endtoggle" data-ended>' + (SHOW_ENDED ? 'Hide ended events' : 'Show ended events (' + ended.length + ')') + '</button>' : '';
     var when = function (ev) { return [fmtRange(ev.start, ev.end) && 'Dates ' + fmtRange(ev.start, ev.end), ev.sunset && 'Sunset ' + ev.sunset].filter(Boolean).join(' · '); };
     // Adults / children / babies are the confirmed guests broken down, so they sit under the Confirmed number.
-    var ages = function (c) { return c.Confirmed ? [c.adults + ' adults', c.children && c.children + (c.children === 1 ? ' child' : ' children'), c.babies && c.babies + (c.babies === 1 ? ' baby' : ' babies')].filter(Boolean).join(' · ') : ''; };
+    var ages = function (c) { return c.Confirmed ? [(c.adults - (c.teens || 0)) + ' adults', c.teens && c.teens + (c.teens === 1 ? ' teen' : ' teens'), c.children && c.children + (c.children === 1 ? ' child' : ' children'), c.babies && c.babies + (c.babies === 1 ? ' baby' : ' babies')].filter(Boolean).join(' · ') : ''; };
     // What this event still needs from Noam: days to go, % answered, missing details.
     var needs = function (ev) {
       var c = ev.counts || {}, bits = [];
