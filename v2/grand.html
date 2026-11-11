@@ -3,7 +3,7 @@
 <head>
 <script src="/v2/pub.js"></script>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>עמית & אור · קפריסין 2027</title>
 <meta name="description" content="עמית ואור מתחתנים בקפריסין. שלושה ימים של חגיגה, 27–29.05.2027, Atlantis Gardens.">
 <meta property="og:title" content="עמית & אור · מתחתנים בקפריסין">
@@ -672,6 +672,11 @@ body.revealed .hero-lines path{animation:draw 3.2s var(--sc-ease-out) .6s forwar
   .p-photo,.p-dust{transform:none!important}
   .env-seal::after{animation:none}
 }
+
+/* Phones: fields at 16px so the iPhone never zooms in (that left pages too wide). */
+@media (max-width:900px),(pointer:coarse){input:not([type=checkbox]):not([type=radio]),select,textarea{font-size:16px!important}}
+/* Phones: the page itself never scrolls sideways; wide tables keep their own scroll. */
+@media (max-width:759px){html{overflow-x:hidden}}
 </style>
 </head>
 <body class="locked">

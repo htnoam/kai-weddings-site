@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>Guest Portal</title>
 <link rel="apple-touch-icon" id="touchicon" href="/app/icons/kai-180.png">
@@ -221,6 +221,11 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
 .sh-o em{font-style:normal;font-size:12px;font-weight:700;color:var(--ok);background:var(--ok-bg);border-radius:999px;padding:3px 8px;white-space:nowrap}
 .go .sh-o.on{border-color:#2E3A9E;box-shadow:0 0 0 1px #2E3A9E}.go .sh-o.on .sh-r{border-color:#2E3A9E}.go .sh-o.on .sh-r::after{content:"";width:10px;height:10px;border-radius:9px;background:#2E3A9E}
 .back .sh-o.on{border-color:#A07E3A;box-shadow:0 0 0 1px #A07E3A}.back .sh-o.on .sh-r{border-color:#A07E3A}.back .sh-o.on .sh-r::after{content:"";width:10px;height:10px;border-radius:9px;background:#A07E3A}
+
+/* Phones: fields at 16px so the iPhone never zooms in (that left pages too wide). */
+@media (max-width:900px),(pointer:coarse){input:not([type=checkbox]):not([type=radio]),select,textarea{font-size:16px!important}}
+/* Phones: the page itself never scrolls sideways; wide tables keep their own scroll. */
+@media (max-width:759px){html{overflow-x:hidden}}
 </style>
 </head>
 <body>

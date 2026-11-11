@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
 <link rel="apple-touch-icon" href="/app/icons/kai-180.png">
@@ -24,6 +24,11 @@
   #pushsheet .pushbox { width: auto; margin: 0; padding: 0; border: none; }
   #pushsheet .pushbox .pusha button { padding: 9px 16px; font-size: 15px; }
   #pushsheet .ps-close { align-self: flex-end; border: none; background: none; color: var(--ink); font: inherit; font-weight: 600; padding: 6px; }
+
+/* Phones: fields at 16px so the iPhone never zooms in (that left pages too wide). */
+@media (max-width:900px),(pointer:coarse){input:not([type=checkbox]):not([type=radio]),select,textarea{font-size:16px!important}}
+/* Phones: the page itself never scrolls sideways; wide tables keep their own scroll. */
+@media (max-width:759px){html{overflow-x:hidden}}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Cormorant+Garamond:wght@600&display=swap">
