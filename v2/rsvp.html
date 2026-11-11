@@ -61,7 +61,7 @@ body:has(#open-env:not(:checked)) { overflow: hidden; }
 .env-flap { position: absolute; inset: 0 0 auto; height: 60%; z-index: 4; transform-origin: top; transform-style: preserve-3d; transition: transform .6s cubic-bezier(.4,0,.2,1), z-index 0s linear .3s; }
 .flap-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; clip-path: polygon(0 0, 100% 0, 50% 100%); }
 .flap-out { background: linear-gradient(180deg, #FFFFFF 30%, #E6E2DA); }
-.flap-in { background: #fff repeating-linear-gradient(-58deg, rgba(46,58,158,.55) 0 1px, transparent 1px 5px); transform: rotateX(180deg); }
+.flap-in { background: #fff repeating-linear-gradient(-58deg, rgba(46,58,158,.55) 0 1px, transparent 1px 5px); transform: rotateX(180deg); clip-path: polygon(50% 0, 0 100%, 100% 100%); }
 #open-env:checked ~ .env-screen .env-flap { transform: rotateX(180deg); z-index: 1; }
 .env-seal { position: absolute; left: 50%; top: 58%; z-index: 5; width: 58px; height: 58px; margin: -29px 0 0 -29px; border-radius: 48% 52% 50% 50% / 52% 48% 52% 48%; display: grid; place-items: center; background: radial-gradient(circle at 36% 30%, #5F6BD0, var(--ink) 55%, #1C2470); box-shadow: 0 3px 7px rgba(0,0,0,.3), inset 0 0 0 5px rgba(255,255,255,.08); color: #E6E9FB; font: 400 26px/1 var(--display); transition: opacity .25s, transform .25s; }
 .env-seal::before { content: ""; position: absolute; inset: 7px; border-radius: 50%; border: 1px solid rgba(230,233,251,.35); }
