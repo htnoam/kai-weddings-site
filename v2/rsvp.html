@@ -25,6 +25,7 @@
   color-scheme: light;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body { color: var(--text); font-family: var(--sans); font-variant-numeric: lining-nums; direction: rtl;
   background-color: var(--linen);
   background-image:
@@ -190,6 +191,52 @@ html[lang="he"] .hero.mag .caps.day { font: 400 16px 'Bellefair', serif; }
 .hero.mag .caps.where { order: 7; margin-top: 8px; font: 400 12px 'Cormorant Garamond', serif; letter-spacing: .3em; color: var(--muted); }
 .hero.mag .script { display: none; }
 .hero.mag .cue { order: 8; margin-top: 30px; display: flex; flex-direction: column; align-items: center; gap: 4px; font: 400 14px var(--sans); letter-spacing: .02em; color: #5C554D; text-decoration: none; }
+/* ---------- theme "Sage" (Settings › Theme = Sage) ---------- */
+body.t-sage { --linen: #F4EFE8; --card: #FAF7F2; --ink: #3F5D49; --text: #2C3F33; --muted: #5E6B60; --soft: #8C958C; --line: #D9DDD3; --hair: #E6E3DA; --gold: #C9B99B; --sage: #8FA48F; --mint: #CFDECF;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27220%27%20height%3D%27220%27%3E%3Cfilter%20id%3D%27n%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%27.9%27%20numOctaves%3D%272%27%20stitchTiles%3D%27stitch%27/%3E%3CfeColorMatrix%20values%3D%270%200%200%200%20.45%200%200%200%200%20.42%200%200%200%200%20.38%200%200%200%20.10%200%27/%3E%3C/filter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23n%29%27/%3E%3C/svg%3E"); }
+.t-sage .sheet, .t-sage .panel { border-radius: 18px; box-shadow: 0 0 0 1px rgba(201,185,155,.55), 0 24px 36px -28px rgba(60,70,50,.45); }
+.env-top, .env-tap { display: none; }
+.env-hit { opacity: 0; transition: opacity .35s; }
+body.ready .env-hit { opacity: 1; }
+.t-sage .env-hit { gap: 0; }
+.t-sage .env-top { display: flex; align-items: center; gap: 18px; font: 500 13px 'Cormorant Garamond', serif; letter-spacing: .34em; text-transform: uppercase; color: var(--text); direction: ltr; white-space: nowrap; }
+.t-sage .env-top::before, .t-sage .env-top::after, .t-sage .env-tap::before { content: ""; width: 44px; height: 1px; background: var(--gold); }
+.t-sage .env-hello { margin-top: 44px; font: 400 clamp(42px, 12.5vw, 54px)/1.1 'Frank Ruhl Libre', 'Cormorant Garamond', serif; color: var(--ink); }
+.t-sage .env { margin-top: 46px; }
+.t-sage .env-back { border-radius: 3px; background: #D5E2D4; box-shadow: 0 22px 30px -16px rgba(60,75,55,.45); }
+.t-sage .env-front { border-radius: 3px; background: linear-gradient(165deg, #E2EBE0, #D0DDCF); box-shadow: inset 0 0 0 7px #D9E4D7, inset 0 0 0 8px rgba(255,255,255,.55); }
+.t-sage .flap-out { background: linear-gradient(180deg, #DDE7DB 30%, #CCD9CB); }
+.t-sage .flap-in { background: #E6EDE3; }
+.t-sage .env-seal { width: 64px; height: 64px; margin: -32px 0 0 -32px; flex-direction: column; gap: 0; background: radial-gradient(circle at 36% 30%, #A9BAA4, #8A9E86 55%, #6E8169); color: #EEF2EA; font: 500 19px/1 'Cormorant Garamond', serif; letter-spacing: .02em; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 7px rgba(40,55,35,.35), inset 0 0 0 5px rgba(255,255,255,.08); }
+.t-sage .env-card b { font: 400 30px/1 'Frank Ruhl Libre', 'Cormorant Garamond', serif; color: var(--ink); }
+.t-sage .env-card i { font: 500 13px 'Cormorant Garamond', serif; letter-spacing: .12em; font-variant-numeric: lining-nums; color: var(--muted); }
+.t-sage .env-seal svg { width: 22px; height: 7px; margin-top: 3px; }
+.t-sage .env-seal::before { border-color: rgba(238,242,234,.4); }
+.t-sage .env-tap { display: flex; flex-direction: column; align-items: center; gap: 22px; margin-top: 54px; font: 400 17px 'Frank Ruhl Libre', serif; letter-spacing: .02em; color: var(--muted); transition: opacity .3s; }
+#open-env:checked ~ .env-screen .env-tap, #open-env:checked ~ .env-screen .env-top { opacity: 0; transition: opacity .3s; }
+.t-sage .hero.mag { position: relative; padding: 70px 26px 34px; }
+.t-sage .hero.mag::before { content: ""; position: absolute; top: 0; right: 0; width: 62%; aspect-ratio: 478 / 283; background: url(/v2/themes/sage/olive-top.webp) top right / contain no-repeat; pointer-events: none; }
+html[dir="ltr"] .t-sage .hero.mag::before { right: auto; left: 0; transform: scaleX(-1); }
+.t-sage .hero.mag::after { content: ""; position: absolute; left: 0; bottom: 0; width: 30%; aspect-ratio: 211 / 355; background: url(/v2/themes/sage/olive-bottom.webp) bottom left / contain no-repeat; pointer-events: none; }
+.t-sage .hero.mag .kicker { order: 1; font: 400 19px 'Frank Ruhl Libre', serif; letter-spacing: .14em; text-transform: none; color: var(--muted); }
+html[lang="en"] .t-sage .hero.mag .kicker { font: 500 12px 'Cormorant Garamond', serif; letter-spacing: .32em; text-transform: uppercase; }
+.t-sage .hero.mag .names { order: 2; margin-top: 4px; font: 400 clamp(44px, 14vw, 58px)/1.1 'Frank Ruhl Libre', 'Cormorant Garamond', serif; color: var(--ink); }
+html[lang="en"] .t-sage .hero.mag .names { font-family: 'Cormorant Garamond', serif; font-weight: 500; }
+.t-sage .hero.mag .names i { font: italic 300 1.05em 'Cormorant Garamond', serif; color: var(--sage); }
+.t-sage .hero.mag .rule { order: 3; width: 64px; margin-top: 16px; background: var(--gold); }
+.t-sage .hero.mag .sea { order: 4; width: 82%; margin: 26px auto 0; padding: 6px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(201,185,155,.6), 0 14px 22px -14px rgba(50,60,45,.5); }
+.t-sage .hero.mag .title, .t-sage .hero.mag .caps.day { display: none; }
+.t-sage .hero.mag .when { order: 5; margin-top: 24px; font: 500 clamp(24px, 8vw, 32px) 'Cormorant Garamond', serif; letter-spacing: .1em; color: var(--ink); font-variant-numeric: lining-nums; }
+.t-sage .hero.mag .caps.where { order: 6; margin-top: 6px; font: 500 13px 'Cormorant Garamond', serif; letter-spacing: .26em; color: var(--muted); }
+.t-sage .hero.mag .scene { display: block; order: 7; align-self: stretch; margin: 18px -26px 0; aspect-ratio: 906 / 272; background: url(/v2/themes/sage/landscape.webp) center / 100% 100% no-repeat; }
+.t-sage .hero.mag .script { display: flex; order: 8; align-items: center; gap: 16px; margin: 18px 0 0; font: italic 400 15px 'Cormorant Garamond', serif; letter-spacing: .28em; text-transform: uppercase; color: var(--muted); transform: none; direction: ltr; white-space: nowrap; }
+.t-sage .hero.mag .script::before, .t-sage .hero.mag .script::after { content: ""; width: 40px; height: 1px; background: var(--gold); }
+.t-sage .hero.mag .cue { order: 9; margin-top: 26px; flex-direction: row; min-height: 56px; padding: 0 60px; border-radius: 12px; background: var(--mint); color: var(--ink); font: 400 20px 'Frank Ruhl Libre', serif; letter-spacing: .04em; box-shadow: 0 1px 0 rgba(255,255,255,.6) inset; }
+.t-sage .hero.mag .cue svg { display: none; }
+.t-sage .opt[aria-pressed=true] { background: var(--ink); border-color: var(--ink); }
+.t-sage .send { border-radius: 12px; background: var(--ink); }
+.t-sage .opt, .t-sage .comp, .t-sage input[type=text], .t-sage input[type=tel], .t-sage textarea { border-radius: 10px; }
+.scene { display: none; }
 .missing { padding: 80px 24px; text-align: center; font: 18px var(--serif); color: var(--muted); }
 </style>
 </head>
@@ -202,14 +249,16 @@ html[lang="he"] .hero.mag .caps.day { font: 400 16px 'Bellefair', serif; }
 <input type="checkbox" id="open-env" class="env-toggle" aria-label="Open the invitation">
 <div class="env-screen">
   <label for="open-env" class="env-hit">
+    <span class="env-top" id="env-top"></span>
     <span class="env-hello" data-t="invited"></span>
     <span class="env" aria-hidden="true">
       <span class="env-back"></span>
       <span class="env-card"></span>
       <span class="env-front"></span>
       <span class="env-flap"><span class="flap-face flap-out"></span><span class="flap-face flap-in"></span></span>
-      <span class="env-seal"></span>
+      <span class="env-seal" id="env-seal"></span>
     </span>
+    <span class="env-tap" data-t="tapOpen"></span>
   </label>
 </div>
 
@@ -223,6 +272,7 @@ html[lang="he"] .hero.mag .caps.day { font: 400 16px 'Bellefair', serif; }
     <div class="kicker" id="h-kick"></div>
     <div class="names" id="h-names"></div>
     <span class="rule" aria-hidden="true"></span>
+    <span class="scene" aria-hidden="true"></span>
     <a class="cue" href="#rsvp"><span id="h-cue"></span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></a>
     <div class="sea" id="h-sea" hidden><img id="h-img" alt="" width="860" height="948"></div>
   </header>
@@ -306,7 +356,7 @@ html[lang="he"] .hero.mag .caps.day { font: 400 16px 'Bellefair', serif; }
   var $ = function (id) { return document.getElementById(id); };
   var T = {
     he: {
-      invited: 'אתם מוזמנים', title: 'אנחנו <em>מתחתנים</em>!', first: 'שם פרטי', last: 'שם משפחה', namesHint: 'נא למלא את השמות באנגלית',
+      invited: 'אתם מוזמנים', tapOpen: 'לחצו לפתיחת ההזמנה', title: 'אנחנו <em>מתחתנים</em>!', first: 'שם פרטי', last: 'שם משפחה', namesHint: 'נא למלא את השמות באנגלית',
       phone: 'טלפון (וואטסאפ)', attendQ: 'האם תגיעו?', yes: 'נגיע', no: 'לצערנו לא', maybe: 'עוד לא יודעים',
       guests: 'מספר אורחים', incl: 'כולל אתכם', withYou: 'מי מגיע איתכם', guest: 'אורח', note: 'הערה לזוג', notePh: 'לא חובה',
       send: 'שליחת אישור הגעה', sending: 'שולחים…', thanksBig: 'תודה רבה!', edit: 'עריכת התשובה',
@@ -320,7 +370,7 @@ html[lang="he"] .hero.mag .caps.day { font: 400 16px 'Bellefair', serif; }
       people: function (n) { return n === 1 ? 'אורח אחד' : n + ' אורחים'; }, change: 'לשינוי התשובה:'
     },
     en: {
-      invited: 'You’re invited', title: 'We’re <em>getting</em> married!', first: 'First name', last: 'Last name', namesHint: 'Please write the names in English letters',
+      invited: 'You’re invited', tapOpen: 'Tap to open the invitation', title: 'We’re <em>getting</em> married!', first: 'First name', last: 'Last name', namesHint: 'Please write the names in English letters',
       phone: 'Phone (WhatsApp)', attendQ: 'Will you come?', yes: 'We’ll be there', no: 'Sadly, no', maybe: 'Not sure yet',
       guests: 'Number of guests', incl: 'Including you', withYou: 'Who’s coming with you', guest: 'Guest', note: 'A note for the couple', notePh: 'Optional',
       send: 'Send RSVP', sending: 'Sending…', thanksBig: 'Thank you!', edit: 'Edit your reply',
@@ -378,6 +428,16 @@ html[lang="he"] .hero.mag .caps.day { font: 400 16px 'Bellefair', serif; }
       // The card that slides out of the envelope carries the names and the dates (it was blank before).
       document.querySelector('.env-card').innerHTML = '<b>' + esc(txt('Names', CFG.couple)) + '</b><i dir="ltr">' + esc($('h-when').textContent) + '</i>';
       var mag = /^magazine$/i.test(CFG['Hero Layout'] || '');
+      // Theme "Sage" (Shir & Ami's own design): ivory paper, mint envelope with a sage wax seal, olive branches and a watercolor landscape.
+      var sage = /^sage$/i.test(CFG.Theme || '');
+      document.body.classList.toggle('t-sage', sage);
+      if (sage) {
+        var en = CFG['Names EN'] || CFG.couple || '';
+        $('env-top').textContent = en;
+        $('env-seal').innerHTML = esc(en.split(/\s*&\s*|\s+and\s+/i).map(function (w) { return w.trim().charAt(0); }).filter(Boolean).join('&')) +
+          '<svg viewBox="0 0 40 12" aria-hidden="true"><path d="M2 9C12 9 24 7 38 2" fill="none" stroke="currentColor" stroke-width="1"/><path d="M10 8.6c-1-2.4 1-4 3-4.4-.2 2.2-1.2 3.6-3 4.4zM18 7.6c-.6-2.6 1.4-3.8 3.4-4-.4 2.2-1.6 3.4-3.4 4zM26 5.6c-.2-2.4 1.8-3.4 3.6-3.4-.6 2-1.8 3-3.6 3.4zM14 9.2c2 1.6 4 1.2 5.2.2-2-1-3.6-1-5.2-.2zM22 8c2 1.4 3.8.8 5-.2-2-.8-3.4-.8-5 .2z" fill="currentColor"/></svg>';
+        $('h-when').textContent = $('h-when').textContent.replace(/\s*([–.])\s*/g, '$1');
+      }
       $('hero').classList.toggle('mag', mag);
       if (mag) {
         $('h-kick').textContent = t.kicker; $('h-cue').textContent = t.cue;
@@ -503,6 +563,7 @@ html[lang="he"] .hero.mag .caps.day { font: 400 16px 'Bellefair', serif; }
   // A guest who already answered (and comes back to change it) skips the envelope.
   try { if (localStorage.getItem('kai-rsvp-done-' + EVENT)) { document.body.classList.add('no-env'); $('open-env').checked = true; } } catch (x) {}
   apply();
+  setTimeout(function () { document.body.classList.add('ready'); }, 2500);
   KAI_PUB({ action: 'rsvpInfo', e: EVENT })
     .then(function (res) {
       if (!res.ok) throw new Error(res.error);
@@ -513,8 +574,10 @@ html[lang="he"] .hero.mag .caps.day { font: 400 16px 'Bellefair', serif; }
       if (CFG['Hero Image']) { $('h-img').src = CFG['Hero Image']; $('h-img').alt = CFG.couple; $('h-sea').hidden = false; $('hero').classList.remove('no-photo'); }
       else $('hero').classList.add('no-photo');
       apply();
+      document.body.classList.add('ready');
     })
     .catch(function () {
+      document.body.classList.add('ready');
       document.querySelector('.page').innerHTML = '<div class="missing">' + T[L].missing + '</div>';
     });
 })();
