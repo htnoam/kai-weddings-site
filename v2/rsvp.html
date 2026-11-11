@@ -389,7 +389,7 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 8px; font: 500 14px '
       phone: 'טלפון (וואטסאפ)', attendQ: 'האם תגיעו?', yes: 'נגיע', no: 'לצערנו לא', maybe: 'עוד לא יודעים',
       guests: 'מספר אורחים', incl: 'כולל אתכם', withYou: 'מי מגיע איתכם', guest: 'אורח', note: 'הערה לזוג', notePh: 'לא חובה',
       send: 'שליחת אישור הגעה', sending: 'שולחים…', thanksBig: 'תודה רבה!', edit: 'עריכת התשובה',
-      portalTxt: 'באזור האישי שלכם תוכלו להוסיף פרטי טיסה ולמצוא את כל המידע על החתונה.', portalBtn: 'לאזור האישי',
+      portalTxt: 'באזור האישי שלכם תוכלו להוסיף פרטי טיסה ולמצוא את כל המידע על החתונה.', portalBtn: 'לאזור האישי', portalTxtRsvp: 'באזור האישי שלכם תוכלו לראות ולעדכן את התשובה שלכם בכל זמן.',
       errName: 'נא למלא שם פרטי ושם משפחה.', groupNames: { Adult: 'מבוגר', Teen: 'מתבגר', Child: 'ילד', Baby: 'תינוק' }, errHeb: 'נא לכתוב את השמות באנגלית.', errSend: 'משהו השתבש בשליחה. נסו שוב בעוד רגע.',
       types: [['adult', 'מבוגר', ''], ['child', 'ילד', 'עד גיל 10'], ['baby', 'תינוק', 'עד גיל 2']], ageOf: 'גיל אורח', more: 'אורח נוסף', less: 'פחות אורחים',
       questions: 'שאלות? נועם סלח, מפיק האירוע,<br>ישמח לעזור.', fQ: 'שאלות?', fWho: 'נועם, מפיק האירוע, ישמח לענות לכם', fIg: 'אינסטגרם', waBtn: 'הודעה לנועם בווטסאפ', insta: 'עקבו אחרינו באינסטגרם',
@@ -403,7 +403,7 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 8px; font: 500 14px '
       phone: 'Phone (WhatsApp)', attendQ: 'Will you come?', yes: 'We’ll be there', no: 'Sadly, no', maybe: 'Not sure yet',
       guests: 'Number of guests', incl: 'Including you', withYou: 'Who’s coming with you', guest: 'Guest', note: 'A note for the couple', notePh: 'Optional',
       send: 'Send RSVP', sending: 'Sending…', thanksBig: 'Thank you!', edit: 'Edit your reply',
-      portalTxt: 'In your guest area you can add your flight details and find everything about the wedding.', portalBtn: 'Go to your guest area',
+      portalTxt: 'In your guest area you can add your flight details and find everything about the wedding.', portalBtn: 'Go to your guest area', portalTxtRsvp: 'In your guest area you can see and update your reply at any time.',
       errName: 'Please fill in your first and last name.', groupNames: { Adult: 'Adult', Teen: 'Teen', Child: 'Child', Baby: 'Baby' }, errHeb: 'Please write the names in English letters.', errSend: 'Something went wrong. Please try again in a moment.',
       types: [['adult', 'Adult', ''], ['child', 'Child', 'up to 10'], ['baby', 'Baby', 'up to 2']], ageOf: 'Age of guest', more: 'Add a guest', less: 'Remove a guest',
       questions: 'Questions? Noam Salach, the event planner,<br>is happy to help.', fQ: 'Questions?', fWho: 'Noam, the event planner, is happy to help', fIg: 'Instagram', waBtn: 'Message Noam on WhatsApp', insta: 'Follow us on Instagram',
@@ -571,10 +571,11 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 8px; font: 500 14px '
     KAI_PUB(payload)
       .then(function (res) {
         if (!res.ok) throw new Error(res.error);
-        // Next step: the guest area (only if it has more than the RSVP), already signed in with this phone.
+        // Next step: the guest area, already signed in with this phone (Noam wants it on every thank-you card).
         var more = CFG && ['Portal Flights', 'Portal Stay', 'Portal Info'].some(function (k) { return CFG[k] === 'on'; });
-        $('to-portal').hidden = !more || attend === 'no';
-        if (more) {
+        $('to-portal').hidden = attend === 'no';
+        $('to-portal').querySelector('p').textContent = more ? t.portalTxt : t.portalTxtRsvp;
+        {
           $('portal-go').href = BASE + EVENT + '/guests' + (L === 'en' ? '?lang=en' : '');
           if (payload.phone) try { localStorage.setItem('kai-portal-' + EVENT, payload.phone); } catch (x) {}
         }
