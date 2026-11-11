@@ -305,8 +305,8 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
         <p class="sub" style="margin:0" id="hsub"></p>
         <div class="cost">⚠︎ <span data-tt="cost"></span></div>
         <div class="two2">
-          <div class="f"><span class="lbl" data-t="cin"></span><label class="tbtn"><span id="h-cin-v"></span><input type="date" id="h-cin"></label></div>
-          <div class="f"><span class="lbl" data-t="cout"></span><label class="tbtn"><span id="h-cout-v"></span><input type="date" id="h-cout"></label></div>
+          <div class="f"><span class="lbl" data-t="cin"></span><input class="num" id="h-cin" placeholder="DD/MM/YYYY" inputmode="numeric" autocomplete="off"></div>
+          <div class="f"><span class="lbl" data-t="cout"></span><input class="num" id="h-cout" placeholder="DD/MM/YYYY" inputmode="numeric" autocomplete="off"></div>
         </div>
         <a class="mailbtn off" id="mail">✉ <span data-tt="mailBtn"></span></a>
         <div class="note" id="mail-note"></div>
@@ -677,6 +677,7 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
       recGo: recs(s['Flights Go']), recBack: recs(s['Flights Back']), taxi: String(s['Taxi Phone'] || '').replace(/[^\d]/g, ''), taxiName: s['Taxi Name'] || '',
       hotel: String(s['Hotel Email'] || '').trim(), ext: isNaN(ext) ? 0 : ext, start: s.start || '', end: s.end || '' };
   }
+  function C0() { return cfg(); }
   function hasSh(C) { return C.goT.length || C.backT.length; }
   // Recommendation: land at least an hour before the shuttle; the shuttle reaches the airport (travel time) 2 hours before take-off.
   function sug(C, g, k) {
@@ -760,25 +761,26 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
       ((s === 'none' && !x[k + 'B'] && hasSh(C)) ? '<div class="warn">' + esc(k === 'g' ? tt('noneGo') : tt('noneBack')) + '</div>' : '') +
       (x[k + 'B'] === 'Taxi' && C.taxi ? '<a class="wa-g" target="_blank" rel="noopener" href="' + esc(taxiLink(C, x, k)) + '">' + WA_IC + ' ' + esc(tt('taxiBtn')) + '</a>' : '');
   }
-  function dateHtml(i, f, v, lo, hi) {
-    return '<div class="f"><span class="lbl">' + esc(tt('date')) + '</span><label class="tbtn">' + (v ? esc(dmy(v)) : '<span class="ph">dd/mm/yyyy</span>') + '<input type="date" data-i="' + i + '" data-f="' + f + '" value="' + esc(v) + '"' + (lo ? ' min="' + lo + '"' : '') + (hi ? ' max="' + hi + '"' : '') + '></label></div>';
+  // Plain fields: on phones the date / time picker script opens the phone's calendar or time wheel; on a computer you type
+  // (1409 → 14/09/2027, 930 → 09:30, slashes come by themselves).
+  function dateHtml(i, f, v) {
+    return '<div class="f"><span class="lbl">' + esc(tt('date')) + '</span><input class="num" data-i="' + i + '" data-f="' + f + '" value="' + esc(dmy(v)) + '" placeholder="DD/MM/YYYY" inputmode="numeric" autocomplete="off"></div>';
   }
   function timeHtml(i, f, v) {
-    return '<div class="f"><span class="lbl">' + esc(tt('time')) + '</span><label class="tbtn">' + (v ? esc(v) : '<span class="ph">--:--</span>') + '<input type="time" data-i="' + i + '" data-f="' + f + '" value="' + esc(v) + '"></label></div>';
+    return '<div class="f"><span class="lbl">' + esc(tt('time')) + '</span><input class="num" data-i="' + i + '" data-f="' + f + '" value="' + esc(v) + '" placeholder="HH:MM" inputmode="numeric" autocomplete="off"></div>';
   }
   function form(C, x, i) {
     var sg = sug(C, x, 'g'), sb = sug(C, x, 'b');
     if (!x.mG && hasSh(C)) x.gB = sg && sg !== 'none' ? sg : '';
     if (!x.mB && hasSh(C)) x.bB = sb && sb !== 'none' ? sb : '';
     var others = TR.same ? [] : TR.groups.filter(function (o, j) { return j !== i && isDone(o); });
-    var lo = C.ext && C.start ? addDays(C.start, -C.ext) : '', hi = C.ext && C.end ? addDays(C.end, C.ext) : '';
     return '<div class="blk">' +
       (others.length ? '<div class="sec">' + esc(tt('copyQ')) + '</div><div class="chips">' + others.map(function (o) { return '<button type="button" class="chip" data-copy="' + TR.groups.indexOf(o) + '" data-i="' + i + '">' + esc(tt('like') + nm(o.who[0])) + '</button>'; }).join('') + '</div><div class="hr"></div>' : '') +
       '<div class="leg go"><div class="lh"><span class="li">✈</span><span><b>' + esc(tt('go')) + '</b><small>' + esc(tt('goSub')) + '</small></span></div>' +
-      '<div class="ff3"><div class="f"><span class="lbl">' + esc(tt('flNo')) + '</span><input class="num" data-i="' + i + '" data-f="gF" value="' + esc(x.gF) + '" placeholder="LY541" autocapitalize="characters" autocomplete="off"></div>' + dateHtml(i, 'gD', x.gD, lo, C.start) + timeHtml(i, 'gT', x.gT) + '</div>' +
+      '<div class="ff3"><div class="f"><span class="lbl">' + esc(tt('flNo')) + '</span><input class="num" data-i="' + i + '" data-f="gF" value="' + esc(x.gF) + '" placeholder="LY541" autocapitalize="characters" autocomplete="off"></div>' + dateHtml(i, 'gD', x.gD) + timeHtml(i, 'gT', x.gT) + '</div>' +
       pickHtml(C, i, 'g', x, sg) + '</div>' +
       '<div class="leg back"><div class="lh"><span class="li">✈</span><span><b>' + esc(tt('back')) + '</b><small>' + esc(tt('backSub')) + '</small></span></div>' +
-      '<div class="ff3"><div class="f"><span class="lbl">' + esc(tt('flNo')) + '</span><input class="num" data-i="' + i + '" data-f="bF" value="' + esc(x.bF) + '" placeholder="LY542" autocapitalize="characters" autocomplete="off"></div>' + dateHtml(i, 'bD', x.bD, C.end, hi) + timeHtml(i, 'bT', x.bT) + '</div>' +
+      '<div class="ff3"><div class="f"><span class="lbl">' + esc(tt('flNo')) + '</span><input class="num" data-i="' + i + '" data-f="bF" value="' + esc(x.bF) + '" placeholder="LY542" autocapitalize="characters" autocomplete="off"></div>' + dateHtml(i, 'bD', x.bD) + timeHtml(i, 'bT', x.bT) + '</div>' +
       pickHtml(C, i, 'b', x, sb) + '</div>' +
       (!TR.same ? '<button type="button" class="btn2" data-close="' + i + '">' + esc(tt('done') + ' · ' + nm(x.who[0])) + '</button>' : '') +
     '</div>';
@@ -788,7 +790,8 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
   function renderBlocks() {
     if (busy) return; busy = true;
     // Typing in a field and then tapping elsewhere fires "change" while we redraw: take the value first, then redraw once.
-    var ae = document.activeElement; if (ae && $('blocks').contains(ae) && ae.blur) ae.blur();
+    var ae = document.activeElement, keep = ae && $('blocks').contains(ae) && ae.dataset && ae.dataset.f ? '[data-i="' + ae.dataset.i + '"][data-f="' + ae.dataset.f + '"]' : '';
+    if (ae && $('blocks').contains(ae) && ae.blur) ae.blur();
     var C = cfg();
     $('tr-same-wrap').hidden = coming().length < 2; $('tr-same').checked = TR.same;
     $('blocks').innerHTML = TR.same ? form(C, TR.groups[0], 0) : TR.groups.map(function (x, i) {
@@ -797,6 +800,8 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
       return i === TR.open ? '<div class="acc">' + row + form(C, x, i) + '</div>' : row;
     }).join('');
     renderTodo(C); busy = false;
+    // Typing in one field and then tapping the next: the next one keeps the focus after the redraw.
+    if (keep) { var el = $('blocks').querySelector(keep); if (el && !el.readOnly) { el.focus(); try { el.setSelectionRange(el.value.length, el.value.length); } catch (x) {} } }
   }
   function renderTodo(C) {
     var fl = TR.groups.every(function (x) { return x.gF && x.gT && x.bF && x.bT; }), sh = TR.groups.every(function (x) { return x.gB && x.bB; });
@@ -811,15 +816,17 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
     $('c-hotel').hidden = !(C.hotel && C.start && C.end); if ($('c-hotel').hidden) return;
     $('hrow').classList.toggle('open', TR.hotelOpen); $('hbody').hidden = !TR.hotelOpen;
     $('hsub').innerHTML = esc(tt('hsub')).replace('{a}', bd(dmy(C.start))).replace('{b}', bd(dmy(C.end))).replace(/\{n\}/g, String(C.ext || 0));
-    var cin = $('h-cin'), cout = $('h-cout');
-    cin.min = C.ext ? addDays(C.start, -C.ext) : C.start; cin.max = C.start; cout.min = C.end; cout.max = C.ext ? addDays(C.end, C.ext) : C.end;
-    if (!cin.value) cin.value = C.start; if (!cout.value) cout.value = C.end;
-    $('h-cin-v').textContent = dmy(cin.value); $('h-cout-v').textContent = dmy(cout.value);
-    var ext = cin.value !== C.start || cout.value !== C.end;
+    // Kept inside the allowed days: check-in from (start − n) to start, check-out from end to (end + n).
+    var clamp = function (v, lo, hi) { return !v ? '' : v < lo ? lo : v > hi ? hi : v; };
+    if (!TR.cin) TR.cin = C.start; if (!TR.cout) TR.cout = C.end;
+    TR.cin = clamp(TR.cin, C.ext ? addDays(C.start, -C.ext) : C.start, C.start); TR.cout = clamp(TR.cout, C.end, C.ext ? addDays(C.end, C.ext) : C.end);
+    if (document.activeElement !== $('h-cin')) $('h-cin').value = dmy(TR.cin);
+    if (document.activeElement !== $('h-cout')) $('h-cout').value = dmy(TR.cout);
+    var ext = TR.cin !== C.start || TR.cout !== C.end;
     $('mail').classList.toggle('off', !ext); $('mail-note').textContent = ext ? tt('mailOn') : tt('mailOff');
   }
   function mailHref(C) {
-    var fam = coming(), cin = dmy($('h-cin').value), cout = dmy($('h-cout').value);
+    var fam = coming(), cin = dmy(TR.cin), cout = dmy(TR.cout);
     var body = 'Hello,\n\nWe are guests at the wedding of ' + ((INFO && INFO.couple) || '') + ' (KAI Event Planners).\n' +
       'We would like to extend our stay at our own expense:\n\nGuest names: ' + fam.map(function (g) { return g.first + ' ' + g.last; }).join(', ') +
       '\nCheck-in: ' + cin + '\nCheck-out: ' + cout + '\nGuests: ' + pax(fam) + '\nPhone: ' + PHONE + '\n\nPlease send us the price and confirmation.\nThank you!';
@@ -865,10 +872,25 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
   $('blocks').addEventListener('change', function (e) {
     var el = e.target, f = el.dataset.f; if (!f) return;
     var x = TR.groups[+el.dataset.i];
-    x[f] = f.charAt(1) === 'F' ? el.value.toUpperCase().replace(/\s+/g, '') : el.value;
+    var yr = (C0().start || '').slice(0, 4);
+    x[f] = f.charAt(1) === 'F' ? el.value.toUpperCase().replace(/\s+/g, '') : f.charAt(1) === 'D' ? (iso(smartDate(el.value, yr)) || x[f]) : (/^\d{2}:\d{2}$/.test(smartTime(el.value)) ? smartTime(el.value) : '');
     // A new date or time re-suggests the shuttle, unless the guest chose a taxi or their own way.
     if (f.charAt(1) !== 'F') { var k = f.charAt(0), m = 'm' + k.toUpperCase(); if (!(x[m] && (x[k + 'B'] === 'Taxi' || x[k + 'B'] === 'Own'))) x[m] = false; }
-    $('fl-err').hidden = true; renderBlocks();
+    $('fl-err').hidden = true;
+    // The phone's calendar / time wheel can report a change while it is still open: redraw only once it closes.
+    var ae = document.activeElement;
+    if (ae && ae.classList && ae.classList.contains('dtp') && $('blocks').contains(ae)) { pending = true; return; }
+    setTimeout(renderBlocks, 0);
+  });
+  var pending = false;
+  // A computer: clicking a filled-in date or time selects it, so typing replaces it.
+  document.addEventListener('focusin', function (e) {
+    var el = e.target; if (!el || el.readOnly || (el.placeholder !== 'DD/MM/YYYY' && el.placeholder !== 'HH:MM')) return;
+    setTimeout(function () { try { el.select(); } catch (x) {} }, 0);
+  });
+  $('blocks').addEventListener('focusout', function (e) {
+    if (!pending || !e.target.classList || !e.target.classList.contains('dtp')) return;
+    pending = false; setTimeout(renderBlocks, 0);
   });
   $('tr-same').addEventListener('change', function () {
     var f = TR.groups[0], fam = coming(), copy = ['gF', 'gD', 'gT', 'gB', 'bF', 'bD', 'bT', 'bB', 'mG', 'mB'];
@@ -895,12 +917,13 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
   $('sheet-bg').addEventListener('click', closeSheet);
   $('rtog').addEventListener('click', function () { TR.recOpen = !TR.recOpen; renderShuttles(cfg()); });
   $('hrow').addEventListener('click', function () { TR.hotelOpen = !TR.hotelOpen; renderHotel(cfg()); });
-  $('h-cin').addEventListener('change', function () { renderHotel(cfg()); });
-  $('h-cout').addEventListener('change', function () { renderHotel(cfg()); });
+  ['cin', 'cout'].forEach(function (k) {
+    $('h-' + k).addEventListener('change', function () { var C = cfg(); TR[k] = iso(smartDate(this.value, (C.start || '').slice(0, 4))) || TR[k]; renderHotel(C); });
+  });
   $('mail').addEventListener('click', function (e) {
     var C = cfg(); if ($('mail').classList.contains('off')) { e.preventDefault(); return; }
     $('mail').href = mailHref(C);
-    api({ action: 'portalExtend', phone: PHONE, checkIn: dmy($('h-cin').value), checkOut: dmy($('h-cout').value) }).catch(function () {});
+    api({ action: 'portalExtend', phone: PHONE, checkIn: dmy(TR.cin), checkOut: dmy(TR.cout) }).catch(function () {});
   });
   $('save-fl').addEventListener('click', function () {
     var list = [];
@@ -912,8 +935,8 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
     var btn = this; btn.disabled = true; $('fl-err').hidden = true;
     api({ action: 'portalFlights', phone: PHONE, flights: list }).then(function (res) {
       if (!res.ok) throw new Error(res.error);
-      var keep = { open: -1, recOpen: false, hotelOpen: TR.hotelOpen };
-      P = res; TR = null; buildTR(); TR.saved = true; TR.recOpen = keep.recOpen; TR.hotelOpen = keep.hotelOpen;
+      var keep = { open: -1, recOpen: false, hotelOpen: TR.hotelOpen, cin: TR.cin, cout: TR.cout };
+      P = res; TR = null; buildTR(); TR.saved = true; TR.recOpen = keep.recOpen; TR.hotelOpen = keep.hotelOpen; TR.cin = keep.cin; TR.cout = keep.cout;
       renderFamily(); $('sum-wrap').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }).catch(function (x) { $('fl-err').textContent = x.message === 'closed' ? T[L].errClosed : x.message && x.message.indexOf('Write') === 0 ? tt('errFl') : T[L].errNet; $('fl-err').hidden = false; })
       .then(function () { btn.disabled = false; });
