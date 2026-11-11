@@ -357,6 +357,19 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
       <label class="f">Event info · English<textarea data-k="Info EN" rows="4" placeholder="One line per item. A schedule line: 14/09 | Welcome evening | 19:30 · Pool bar"></textarea></label>
       <label class="f he">מידע על האירוע · עברית<textarea data-k="Info HE" rows="4" placeholder="שורה לכל פריט. שורת לוח זמנים: 14/09 | ערב קבלת פנים | 19:30 · בר הבריכה"></textarea></label>
     </div>
+    <div class="sec">Travel · guest area (shows with "Flight details"; each part only when filled in)</div>
+    <div class="cols2">
+      <label class="f">Shuttles there · times from the airport<input data-k="Shuttles Go" placeholder="09:00, 11:00"></label>
+      <label class="f">Shuttles back · times from the hotel<input data-k="Shuttles Back" placeholder="11:00, 15:00"></label>
+      <label class="f">Drive time, hours (each way)<input data-k="Travel Hours" placeholder="3" inputmode="decimal"></label>
+      <label class="f">Extra nights allowed, days before / after<input data-k="Extend Days" placeholder="3" inputmode="numeric"></label>
+      <label class="f">Recommended flights there · one per line<textarea data-k="Flights Go" rows="3" placeholder="Aegean | A3 929 | 05:00 | 07:10"></textarea></label>
+      <label class="f">Recommended flights back · one per line<textarea data-k="Flights Back" rows="3" placeholder="EL AL | LY 548 | 23:55 | 01:55"></textarea></label>
+      <label class="f">Taxi driver · name<input data-k="Taxi Name" placeholder="Apostolis"></label>
+      <label class="f">Taxi driver · WhatsApp<input data-k="Taxi Phone" placeholder="+30 698 732 7500" inputmode="tel"></label>
+      <label class="f">Hotel email (stay extension requests)<input data-k="Hotel Email" type="email" placeholder="reservations@hotel.com"></label>
+    </div>
+    <p class="hint" style="margin:0">Shuttle days are the event's start date (there) and end date (back). Flight line: airline | flight no. | take-off | landing.</p>
     <p class="err" id="e-err" hidden></p>
     <div class="act">
       <a class="btn" id="e-view" target="_blank" rel="noopener">Open the form</a>

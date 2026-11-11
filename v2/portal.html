@@ -134,6 +134,93 @@ button.btn:disabled { opacity: .6; }
 .venue { align-self: center; display: inline-flex; align-items: center; gap: 5px; justify-content: center; margin-top: 4px; color: inherit; font-size: 14px; text-decoration: underline; text-underline-offset: 3px; }
 .venue[hidden], .countdown[hidden] { display: none; }
 .countdown { margin-top: 10px; align-self: center; display: inline-block; padding: 4px 14px; border-radius: 999px; background: #F1EFEA; font-size: 14px; font-weight: 600; }
+/* travel: shuttles, recommended flights, flights form, taxi, stay extension (settings per event) */
+.todo{display:flex;flex-direction:column;gap:6px}
+.todo div{display:flex;align-items:flex-start;gap:8px;font-size:14.5px;line-height:1.4}
+.todo i{font-style:normal;width:22px;height:22px;border-radius:999px;display:grid;place-items:center;font-size:12px;flex:none}
+.todo .y i{background:var(--ok-bg);color:var(--ok)}.todo .n i{background:#F1EFEA;color:var(--soft)}
+.todo small{display:block;font-size:12.5px;color:var(--soft)}
+.allok{display:flex;align-items:center;justify-content:center;gap:8px;padding:4px;font-size:15px;font-weight:700;color:var(--ok)}
+.allok i{font-style:normal;width:24px;height:24px;border-radius:999px;background:var(--ok-bg);display:grid;place-items:center;font-size:13px}
+.v5{text-align:center;display:flex;flex-direction:column;gap:12px;padding:2px 0}
+.v5 p{margin:0;font-size:13.5px;color:var(--soft);line-height:1.6}.v5 p.s{font-size:12.5px}
+.v5g{display:grid;grid-template-columns:1fr 1px 1fr}.v5g>span{background:var(--hair)}
+.v5g div{display:flex;flex-direction:column;gap:2px}
+.v5g em{font-style:normal;font-size:12px;letter-spacing:.12em;color:var(--soft);margin-bottom:4px}
+.v5g b{font-family:'Cormorant Garamond',Georgia,serif;font-size:26px;font-weight:500;line-height:1.1;font-variant-numeric:lining-nums}
+.rtog{display:flex;align-items:center;justify-content:center;gap:6px;background:none;border:none;border-top:1px solid var(--hair);padding:12px 0 0;font-size:14.5px;font-weight:700;color:var(--ink);width:100%}
+.rtog::after{content:"";width:7px;height:7px;border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(45deg) translateY(-2px)}
+.rtog.open::after{transform:rotate(-135deg) translateY(-2px)}
+.rec{display:flex;flex-direction:column}
+.rec-h{font-size:15px;font-weight:700;text-align:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.rec-h small{font-weight:500;color:var(--soft);font-size:13px}
+.rf{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 2px;border-bottom:1px solid var(--hair)}
+.rf-a{display:flex;flex-direction:column;gap:2px;min-width:0}.rf-a b{font-size:14.5px;font-weight:600}.rf-a span{font-size:12.5px;color:var(--soft)}
+.rf-t{font-size:16px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.rec-n{margin:0;font-size:12.5px;color:var(--soft);text-align:center}
+.blk{border:1px solid var(--hair);border-radius:6px;padding:12px;display:flex;flex-direction:column;gap:12px;background:#FFFDF9}
+.sec{font-size:13.5px;font-weight:700;color:var(--muted);margin-top:2px}
+.hr{height:1px;background:var(--hair);margin:2px 0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--field);border-radius:999px;padding:7px 13px;font-size:14px}
+.leg{border-radius:8px;padding:0 12px 12px;display:flex;flex-direction:column;gap:12px;border:1px solid}
+.leg.go{background:#F1F3FC;border-color:#D5DAF3}.leg.back{background:#FBF7EE;border-color:#EADFC6}
+.lh{display:flex;align-items:center;gap:10px;margin:0 -12px;padding:10px 12px;border-radius:8px 8px 0 0;color:#fff}
+.go .lh{background:#2E3A9E}.back .lh{background:#A07E3A}
+.lh b{display:block;font-size:17px}.lh small{font-size:12.5px;opacity:.9}
+.li{width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:16px}
+.go .li{transform:scaleX(-1) rotate(-30deg)}.back .li{transform:rotate(-30deg)}
+html[dir=ltr] .go .li{transform:rotate(-30deg)}html[dir=ltr] .back .li{transform:scaleX(-1) rotate(-30deg)}
+.ff3{display:grid;grid-template-columns:1fr 1.15fr .8fr;gap:6px}
+.ff3 .f .lbl{font-size:12.5px}
+input.num{height:46px;border:1px solid var(--line);border-radius:6px;text-align:center;font-size:16px;direction:ltr;width:100%;min-width:0;padding:0 2px;text-transform:uppercase;background:var(--field)}
+input.num::placeholder{color:#9A9AA1;text-transform:none}
+.tbtn{position:relative;height:46px;border:1px solid var(--line);border-radius:6px;background:var(--field);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;direction:ltr;font-variant-numeric:tabular-nums;padding:0 2px}
+.tbtn .ph,.pv .ph{color:#9A9AA1;font-weight:400}
+.tbtn input{position:absolute;inset:0;opacity:0;width:100%;height:100%;font-size:16px}
+.pickrow{width:100%;height:50px;border:1px solid var(--line);border-radius:8px;background:var(--field);display:flex;align-items:center;justify-content:space-between;padding:0 14px}
+.go .pickrow{border-color:#B9C1EC}.back .pickrow{border-color:#DCCBA3}
+.pv{font-size:16px;font-weight:700}
+.chg{font-size:13.5px;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.go .chg{color:#2E3A9E}.back .chg{color:#A07E3A}
+.hint{font-size:13px;color:var(--ok);font-weight:600;margin-top:-4px}
+.warn{background:#FBF1DE;color:#7E5210;border-radius:6px;padding:9px 12px;font-size:13.5px;line-height:1.5}
+.wa-g{display:flex;align-items:center;justify-content:center;gap:8px;height:48px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none;background:#25D366;color:#fff}
+.row{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:6px;padding:12px;background:var(--field);width:100%;text-align:start}
+.row .nm{font-size:16px;font-weight:700;min-width:44px}
+.row .st{flex:1;font-size:13px;color:var(--soft);line-height:1.5}.row .st.ok{color:var(--ok)}
+.row .pl{width:28px;height:28px;border-radius:999px;border:1px solid var(--line);display:grid;place-items:center;font-size:18px;color:var(--ink);flex:none}
+.row.done .pl{background:var(--ok-bg);border-color:var(--ok-bg);color:var(--ok);font-size:14px}
+.acc{border:1.5px solid var(--ink);border-radius:8px;overflow:hidden}
+.acc .row{border:none;border-radius:0;background:#F3F4FB}.acc .blk{border:none;border-radius:0}
+.btn2{height:46px;border:1px solid var(--line);border-radius:6px;background:var(--field);font-size:15px;font-weight:600}
+.sumc{border:1px solid #CFE0C9;background:#F5FAF3;border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.sumc b{font-size:15px}
+.sumc div{font-size:14px;color:var(--muted);display:flex;gap:8px;line-height:1.5}
+.sumc div em{font-style:normal;font-weight:700;min-width:40px;color:var(--text)}
+.sumc div small{display:block;font-size:14px;color:var(--ok);font-weight:600}
+.missing{font-size:13.5px;color:#7E5210;background:#FBF1DE;border-radius:6px;padding:9px 12px;line-height:1.5}
+.hrow{display:flex;align-items:center;justify-content:space-between;gap:10px;background:none;border:none;padding:0;width:100%;text-align:start}
+.hrow h2{flex:1}
+.hrow .chev{width:8px;height:8px;border:solid var(--muted);border-width:0 2px 2px 0;transform:rotate(45deg);margin-inline-end:6px}
+.hrow.open .chev{transform:rotate(-135deg) translate(-3px,-3px)}
+.cost{display:flex;gap:8px;align-items:flex-start;background:#FBF1DE;color:#7E5210;border-radius:6px;padding:10px 12px;font-size:13.5px;line-height:1.5;font-weight:600}
+.two2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mailbtn{display:flex;align-items:center;justify-content:center;gap:8px;height:48px;border:1px solid var(--text);border-radius:6px;font-size:15px;font-weight:600;color:var(--text);text-decoration:none;background:var(--field)}
+.mailbtn.off{opacity:.4}
+#sheet-wrap{position:fixed;inset:0;z-index:50}
+#sheet-bg{position:absolute;inset:0;background:rgba(20,20,30,.35);opacity:0;transition:opacity .2s}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;background:var(--card);border-radius:18px 18px 0 0;padding:8px 16px calc(18px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .22s ease-out}
+#sheet-wrap.in #sheet-bg{opacity:1}#sheet-wrap.in .sheet{transform:none}
+.grab{width:38px;height:4px;border-radius:9px;background:#D6D4CE;margin:0 auto 12px}
+.sh-h{font-size:17px;font-weight:700;margin-bottom:10px}
+#sh-list{display:flex;flex-direction:column;gap:8px}
+.sh-o{display:flex;align-items:center;gap:12px;width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--field);text-align:start}
+.sh-r{width:20px;height:20px;border-radius:999px;border:2px solid var(--line);flex:none;display:grid;place-items:center}
+.sh-t{flex:1;display:flex;flex-direction:column;gap:2px}.sh-t b{font-size:16px}.sh-t small{font-size:12.5px;color:var(--soft)}
+.sh-o em{font-style:normal;font-size:12px;font-weight:700;color:var(--ok);background:var(--ok-bg);border-radius:999px;padding:3px 8px;white-space:nowrap}
+.go .sh-o.on{border-color:#2E3A9E;box-shadow:0 0 0 1px #2E3A9E}.go .sh-o.on .sh-r{border-color:#2E3A9E}.go .sh-o.on .sh-r::after{content:"";width:10px;height:10px;border-radius:9px;background:#2E3A9E}
+.back .sh-o.on{border-color:#A07E3A;box-shadow:0 0 0 1px #A07E3A}.back .sh-o.on .sh-r{border-color:#A07E3A}.back .sh-o.on .sh-r::after{content:"";width:10px;height:10px;border-radius:9px;background:#A07E3A}
 </style>
 </head>
 <body>
@@ -165,6 +252,11 @@ button.btn:disabled { opacity: .6; }
 
   <!-- the family -->
   <div id="family" hidden style="display:flex;flex-direction:column;gap:14px">
+    <section class="card" id="c-todo" hidden>
+      <h2><span class="ic">☑</span><span data-tt="todoT"></span></h2>
+      <div class="todo" id="todo"></div>
+    </section>
+    <section class="card" id="c-allok" hidden><div class="allok"><i>✓</i><span data-tt="allOk"></span></div></section>
     <section class="card" id="c-rsvp" hidden>
       <h2><span class="ic">✓</span><span data-t="rsvpT"></span></h2>
       <p class="sub" data-t="rsvpSub"></p>
@@ -181,14 +273,39 @@ button.btn:disabled { opacity: .6; }
       <div class="saved" id="rsvp-ok" hidden></div>
     </section>
 
+    <section class="card" id="c-shut" hidden>
+      <h2><span class="ic">🚐</span><span id="shut-t"></span></h2>
+      <div class="v5" id="shut-tt"></div>
+      <button type="button" class="rtog" id="rtog"></button>
+      <div id="recs" style="display:flex;flex-direction:column;gap:12px"></div>
+    </section>
+
     <section class="card" id="c-flights" hidden>
-      <h2><span class="ic">✈</span><span data-t="flightsT"></span></h2>
-      <p class="sub" data-t="flightsSub"></p>
-      <label class="chk" id="same-wrap"><input type="checkbox" id="same"><span data-t="same"></span></label>
-      <div id="flights" style="display:flex;flex-direction:column;gap:12px"></div>
+      <h2><span class="ic">✈</span><span data-tt="flT"></span></h2>
+      <label class="chk" id="tr-same-wrap"><input type="checkbox" id="tr-same"><span data-tt="same"></span></label>
+      <div id="blocks" style="display:flex;flex-direction:column;gap:14px"></div>
       <p class="err" id="fl-err" hidden></p>
-      <button type="button" class="btn" id="save-fl" data-t="saveFl"></button>
-      <div class="saved" id="fl-ok" hidden></div>
+      <button type="button" class="btn" id="save-fl" data-tt="saveFl"></button>
+      <div id="sum-wrap" hidden style="display:flex;flex-direction:column;gap:10px">
+        <div class="saved" data-tt="saved"></div>
+        <div id="sum" style="display:flex;flex-direction:column;gap:8px"></div>
+        <div class="missing" id="fl-missing" hidden></div>
+        <a class="wa-g" id="self-wa" target="_blank" rel="noopener" data-tt="selfWa"></a>
+      </div>
+    </section>
+
+    <section class="card" id="c-hotel" hidden>
+      <button type="button" class="hrow" id="hrow"><h2><span class="ic">🛏</span><span data-tt="hotelT"></span></h2><span class="chev"></span></button>
+      <div id="hbody" hidden style="display:flex;flex-direction:column;gap:12px">
+        <p class="sub" style="margin:0" id="hsub"></p>
+        <div class="cost">⚠︎ <span data-tt="cost"></span></div>
+        <div class="two2">
+          <div class="f"><span class="lbl" data-t="cin"></span><label class="tbtn"><span id="h-cin-v"></span><input type="date" id="h-cin"></label></div>
+          <div class="f"><span class="lbl" data-t="cout"></span><label class="tbtn"><span id="h-cout-v"></span><input type="date" id="h-cout"></label></div>
+        </div>
+        <a class="mailbtn off" id="mail">✉ <span data-tt="mailBtn"></span></a>
+        <div class="note" id="mail-note"></div>
+      </div>
     </section>
 
     <section class="card" id="c-stay" hidden>
@@ -217,6 +334,8 @@ button.btn:disabled { opacity: .6; }
   <a class="wa" href="https://ig.me/m/kai_wedding_planners" target="_blank" rel="noopener" style="color:inherit;text-decoration:none"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg> <span data-t="wa"></span></a>
   <div class="kai">PLANNED BY KAI EVENT PLANNERS</div>
 </main>
+
+<div id="sheet-wrap" hidden><div id="sheet-bg"></div><div id="sheet" class="sheet"><div class="grab"></div><div class="sh-h" id="sh-t"></div><div id="sh-list"></div></div></div>
 
 <script src="/app/dtpick.js"></script>
 <script src="/v2/pub.js"></script>
@@ -359,30 +478,9 @@ button.btn:disabled { opacity: .6; }
         '<span class="age">' + esc((ageGroups(t).filter(function (a) { return a[0] === g.age; })[0] || [0, t.ages[g.age] || g.age])[1]) + '</span></div>' +
         '<div class="seg">' + b('Confirmed', t.yes) + b('Declined', t.no, 'no') + b('Maybe', t.maybe) + '</div></div>';
     }).join('');
-    if (P.show.flights) renderFlights();
+    if (P.show.flights) renderTravel(); else hideTravel();
     if (P.show.stay) renderStay();
     if (P.show.info) renderInfo();
-  }
-  var FL = ['arrDate', 'arrTime', 'arrFlight', 'depDate', 'depTime', 'depFlight'];
-  function flightBlock(prefix, g, title) {
-    var t = T[L], v = function (k) { return esc(g ? g[k] : ''); };
-    var row = function (dir) {
-      var d = dir === 'arr' ? 'arr' : 'dep';
-      return '<div class="dir">' + (dir === 'arr' ? t.there : t.back) + '</div><div class="flight">' +
-        '<label class="f"><span class="lbl">' + t.date + '</span><input data-fl="' + prefix + '" data-k="' + d + 'Date" inputmode="numeric" placeholder="DD/MM/YYYY" value="' + v(d + 'Date') + '"></label>' +
-        '<label class="f"><span class="lbl">' + t.time + '</span><input data-fl="' + prefix + '" data-k="' + d + 'Time" inputmode="numeric" placeholder="HH:MM" value="' + v(d + 'Time') + '"></label>' +
-        '<label class="f"><span class="lbl">' + t.flight + '</span><input data-fl="' + prefix + '" data-k="' + d + 'Flight" placeholder="LY 501" value="' + v(d + 'Flight') + '" autocapitalize="characters"></label></div>';
-    };
-    return '<div class="member">' + (title ? '<div class="who2">' + esc(title) + '</div>' : '') + row('arr') + row('dep') + '</div>';
-  }
-  function renderFlights() {
-    var fam = P.family.filter(function (g) { return g.status !== 'Declined'; });
-    var key = function (g) { return FL.map(function (k) { return g[k]; }).join('|'); };
-    if (renderFlights.same === undefined) renderFlights.same = fam.every(function (g) { return key(g) === key(fam[0]); });
-    $('same').checked = renderFlights.same; $('same-wrap').hidden = fam.length < 2;
-    $('flights').innerHTML = renderFlights.same || fam.length < 2
-      ? flightBlock('all', fam[0], '')
-      : fam.map(function (g) { return flightBlock(String(g.no), g, g.first + ' ' + g.last); }).join('');
   }
   function renderStay() {
     var t = T[L], fam = P.family;
@@ -467,7 +565,7 @@ button.btn:disabled { opacity: .6; }
       P = res; PHONE = (phone.replace(/[^\d+]/g, '').replace(/^00/, '+').replace(/^0/, '+972').replace(/^(5\d{8})$/, '+972$1'));
       if (PHONE.charAt(0) !== '+') PHONE = '+' + PHONE;
       try { localStorage.setItem(STORE, phone); } catch (e) {}
-      state = {}; renderFlights.same = undefined;
+      state = {}; TR = null;
       $('loading').hidden = true; $('family').hidden = false; $('hi-wrap').hidden = false;
       apply(); showHome();
       // Came from "Save to home screen" on the thank-you card: show the save card (and the steps) right away.
@@ -525,30 +623,294 @@ button.btn:disabled { opacity: .6; }
     }).catch(function (x) { $('rsvp-err').textContent = x.message === 'closed' ? t.errClosed : t.errNet; $('rsvp-err').hidden = false; })
       .then(function () { btn.disabled = false; });
   });
-  $('same').addEventListener('change', function () {
-    var cur = collectFlights(); renderFlights.same = this.checked; renderFlights();
-    if (cur.length) document.querySelectorAll('[data-fl]').forEach(function (el) { el.value = cur[0][el.dataset.k] || ''; });
-  });
-  function collectFlights() {
-    var by = {};
-    document.querySelectorAll('[data-fl]').forEach(function (el) {
-      var p = el.dataset.fl, k = el.dataset.k, v = el.value.trim();
-      v = /Date$/.test(k) ? normDate(v) : /Time$/.test(k) ? normTime(v) : v.toUpperCase();
-      (by[p] = by[p] || {})[k] = v;
-    });
-    var fam = P.family.filter(function (g) { return g.status !== 'Declined'; });
-    if (by.all) return fam.map(function (g) { return Object.assign({ no: g.no }, by.all); });
-    return Object.keys(by).map(function (no) { return Object.assign({ no: Number(no) }, by[no]); });
+  // ---------- travel: shuttles, recommended flights, the family's flights, taxi, stay extension ----------
+  // Everything comes from the event's settings (Edit event): Shuttles Go / Shuttles Back ("09:00, 11:00"), Travel Hours,
+  // Flights Go / Flights Back (one per line: "Aegean | A3 929 | 05:00 | 07:10"), Taxi Name / Taxi Phone, Hotel Email, Extend Days.
+  // Shuttle days are the event's Start Date (there) and End Date (back). A section shows only when its settings are filled in.
+  var TT = {
+    he: { todoT: 'מה נשאר לכם להשלים', allOk: 'הכול מוכן, נתראה בחתונה!', rsvp: 'אישור הגעה', flights: 'פרטי טיסה', shuttles: 'בחירת הסעה הלוך וחזור', missingFor: 'חסר עבור: ',
+      shutT: 'טיסות והסעות מומלצות', shutOnlyT: 'טיסות מומלצות', shutIntro: 'יש הסעות מסודרות בין שדה התעופה למלון. מומלץ לסגור טיסות שמתאימות לאחת מהן.', shGo: 'הסעות הלוך', shBack: 'הסעות חזור',
+      hoursEach: 'כ-{h} שעות נסיעה לכל כיוון', mayChange: 'ייתכנו שינויים בשעות ההסעות',
+      recShow: 'הצגת טיסות מומלצות', recHide: 'הסתרת טיסות מומלצות', recGo: 'טיסות מומלצות · הלוך', recBack: 'טיסות מומלצות · חזור', direct: 'ישירה', shuttle: 'הסעה', night: 'נוחתת בלילה', recNote: 'המלצה בלבד · ההזמנה עצמאית · שעות לפי שעון מקומי',
+      flT: 'הטיסות שלכם', same: 'כולם טסים יחד', saveFl: 'שמירת פרטי הטיסות', saved: '✓ נשמר', selfWa: 'שליחת הסיכום לעצמי בוואטסאפ', missingSave: 'נשמר חלקית. עוד חסרים פרטים עבור: ', canReturn: 'אפשר לחזור ולהשלים בכל זמן.',
+      go: 'הלוך', goSub: 'טיסה ליעד · נחיתה', back: 'חזור', backSub: 'טיסה הביתה · המראה', flNo: 'מספר טיסה', date: 'תאריך', time: 'שעה', toHotel: 'איך מגיעים למלון?', toAirport: 'איך מגיעים לשדה התעופה?',
+      pick: 'בחרו איך מגיעים', change: 'שינוי', choose: 'בחירה', fits: 'מומלץ לטיסה שלכם: ', fitsTag: 'מתאים לטיסה',
+      noneGo: 'הטיסה לא מתאימה לאף הסעה. אפשר להזמין מונית או לבחור הגעה עצמאית.', noneBack: 'הטיסה לא מתאימה לאף הסעה. אפשר להזמין מונית או לבחור עצמאי.',
+      badGo: 'שימו לב: ההסעה הזו יוצאת לפני שאתם נוחתים, או מיד אחרי. מומלץ לבחור הסעה מאוחרת יותר.', badBack: 'שימו לב: ההסעה הזו מגיעה לשדה מאוחר מדי לטיסה שלכם. מומלץ לבחור הסעה מוקדמת יותר.', badDay: 'ההסעות פועלות רק ב-',
+      taxi: 'מונית', self: 'הגעה עצמאית', selfB: 'עצמאי', taxiSub: 'הנהג שלנו · בתיאום ישיר ובתשלום לנהג', selfSub: 'רכב שכור או הסדר אחר', fromAirport: 'יוצאת משדה התעופה', fromHotel: 'יוצאת מהמלון', taxiBtn: 'הזמנת מונית בוואטסאפ',
+      copyQ: 'טס עם מישהו שכבר מילא?', like: 'כמו ', done: 'סיום', notYet: 'עוד לא מולא',
+      hotelT: 'רוצים להאריך את השהות?', hsub: 'החבילה כוללת לינה {a}–{b}. אפשר להגיע עד {n} ימים קודם או להישאר עד {n} ימים אחרי.', cost: 'הלילות הנוספים בעלות נוספת, והתשלום ישירות למלון. המלון יחזור אליכם עם מחיר ואישור.', mailBtn: 'שליחת בקשה למלון במייל', mailOff: 'בחרו תאריכים כדי לשלוח בקשה', mailOn: 'הבקשה תירשם גם אצלנו',
+      all: 'כולם', waHead: 'הסיכום שלי:', errFl: 'נא למלא שעה בפורמט HH:MM.' },
+    en: { todoT: 'What is left to complete', allOk: 'All set, see you at the wedding!', rsvp: 'RSVP', flights: 'Flight details', shuttles: 'Shuttle, both ways', missingFor: 'Missing for: ',
+      shutT: 'Recommended flights & shuttles', shutOnlyT: 'Recommended flights', shutIntro: 'There are organised shuttles between the airport and the hotel. We recommend booking flights that fit one of them.', shGo: 'SHUTTLES THERE', shBack: 'SHUTTLES BACK',
+      hoursEach: 'About {h} hours each way', mayChange: 'Shuttle times may change',
+      recShow: 'Show recommended flights', recHide: 'Hide recommended flights', recGo: 'Recommended flights · There', recBack: 'Recommended flights · Back', direct: 'Direct', shuttle: 'Shuttle', night: 'lands overnight', recNote: 'Recommendations only · Book on your own · Local times',
+      flT: 'Your flights', same: 'Everyone flies together', saveFl: 'Save flight details', saved: '✓ Saved', selfWa: 'Send the summary to myself on WhatsApp', missingSave: 'Partly saved. Still missing details for: ', canReturn: 'You can come back and complete it anytime.',
+      go: 'There', goSub: 'Flight there · landing', back: 'Back', backSub: 'Flight home · take-off', flNo: 'Flight no.', date: 'Date', time: 'Time', toHotel: 'How are you getting to the hotel?', toAirport: 'How are you getting to the airport?',
+      pick: 'Choose how you are getting there', change: 'Change', choose: 'Choose', fits: 'Recommended for your flight: ', fitsTag: 'Fits your flight',
+      noneGo: 'Your flight does not fit any shuttle. You can book a taxi or arrange your own transport.', noneBack: 'Your flight does not fit any shuttle. You can book a taxi or arrange your own transport.',
+      badGo: 'Note: this shuttle leaves before, or right after, you land. We recommend a later shuttle.', badBack: 'Note: this shuttle reaches the airport too late for your flight. We recommend an earlier shuttle.', badDay: 'Shuttles run only on ',
+      taxi: 'Taxi', self: 'Own arrangement', selfB: 'Own arrangement', taxiSub: 'Our driver · arranged and paid directly', selfSub: 'Rental car or other', fromAirport: 'Leaves from the airport', fromHotel: 'Leaves from the hotel', taxiBtn: 'Book a taxi on WhatsApp',
+      copyQ: 'Flying with someone who already filled in?', like: 'Same as ', done: 'Done', notYet: 'Not filled in yet',
+      hotelT: 'Want to extend your stay?', hsub: 'Your package includes {a}–{b}. You can arrive up to {n} days earlier or stay up to {n} days later.', cost: 'Extra nights cost extra and are paid directly to the hotel. The hotel will reply with a price and confirmation.', mailBtn: 'Email the hotel a request', mailOff: 'Choose dates to send a request', mailOn: 'We will see the request too',
+      all: 'Everyone', waHead: 'My summary:', errFl: 'Please write times as HH:MM.' }
+  };
+  function tt(k) { return TT[L][k]; }
+  var TR = null;   // travel state, rebuilt from P.family after each login / save
+  var GF = ['F', 'D', 'T', 'B'];
+  function iso(dmy) { var m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(dmy || ''); return m ? m[3] + '-' + m[2] + '-' + m[1] : ''; }
+  function dmy(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ''); return m ? m[3] + '/' + m[2] + '/' + m[1] : ''; }
+  function dm(iso) { return dmy(iso).slice(0, 5); }
+  function addDays(iso, n) { if (!iso) return ''; var d = new Date(iso + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); }
+  function bd(s) { return '<bdi>' + esc(s) + '</bdi>'; }
+  function mins(s) { var m = /^(\d{1,2}):(\d{2})$/.exec(String(s || '')); return m ? +m[1] * 60 + +m[2] : null; }
+  function cfg() {
+    var s = INFO || {}, times = function (v) { return String(v || '').split(/[,\s]+/).map(function (x) { return smartTime(x); }).filter(function (x) { return /^\d{2}:\d{2}$/.test(x); }).sort(); };
+    var recs = function (v) { return String(v || '').split('\n').map(function (l) { var p = l.split('|').map(function (x) { return x.trim(); }); return p.length >= 4 && p[0] ? { air: p[0], no: p[1], dep: smartTime(p[2]), arr: smartTime(p[3]), night: /night|לילה|\+1/i.test(p.slice(4).join(' ')) || mins(smartTime(p[3])) < mins(smartTime(p[2])) } : null; }).filter(Boolean); };
+    var ext = parseInt(s['Extend Days'], 10);
+    return { goT: times(s['Shuttles Go']), backT: times(s['Shuttles Back']), hours: parseFloat(s['Travel Hours']) || 0,
+      recGo: recs(s['Flights Go']), recBack: recs(s['Flights Back']), taxi: String(s['Taxi Phone'] || '').replace(/[^\d]/g, ''), taxiName: s['Taxi Name'] || '',
+      hotel: String(s['Hotel Email'] || '').trim(), ext: isNaN(ext) ? 0 : ext, start: s.start || '', end: s.end || '' };
   }
+  function hasSh(C) { return C.goT.length || C.backT.length; }
+  // Recommendation: land at least an hour before the shuttle; the shuttle reaches the airport (travel time) 2 hours before take-off.
+  function sug(C, g, k) {
+    var t = mins(g[k + 'T']), list = k === 'g' ? C.goT : C.backT; if (t == null || !list.length) return null;
+    if (g[k + 'D'] !== (k === 'g' ? C.start : C.end)) return 'none';
+    var i, travel = C.hours * 60;
+    if (k === 'g') { for (i = 0; i < list.length; i++) if (t <= mins(list[i]) - 60) return list[i]; }
+    else { for (i = list.length - 1; i >= 0; i--) if (t >= mins(list[i]) + travel + 120) return list[i]; }
+    return 'none';
+  }
+  function badFit(C, g, k) {
+    var v = g[k + 'B']; if (!v || !/^\d{2}:\d{2}$/.test(v)) return '';
+    var day = k === 'g' ? C.start : C.end;
+    if (day && g[k + 'D'] && g[k + 'D'] !== day) return tt('badDay') + dmy(day);
+    var t = mins(g[k + 'T']); if (t == null) return '';
+    if (k === 'g' && t > mins(v) - 45) return tt('badGo');
+    if (k === 'b' && t < mins(v) + C.hours * 60 + 90) return tt('badBack');
+    return '';
+  }
+  function label(k, v) { if (!v) return ''; if (v === 'Taxi') return tt('taxi'); if (v === 'Own') return k === 'g' ? tt('self') : tt('selfB'); return tt('shuttle') + ' ' + v; }
+  function coming() { return P.family.filter(function (g) { return g.status !== 'Declined'; }); }
+  function fromGuest(g) { return { nos: [g.no], who: [g], gF: g.arrFlight || '', gD: iso(g.arrDate), gT: g.arrTime || '', gB: g.arrBus || '', bF: g.depFlight || '', bD: iso(g.depDate), bT: g.depTime || '', bB: g.depBus || '' }; }
+  function keyOf(x) { return ['gF', 'gD', 'gT', 'gB', 'bF', 'bD', 'bT', 'bB'].map(function (k) { return x[k]; }).join('|'); }
+  function buildTR() {
+    var C = cfg(), fam = coming(), each = fam.map(fromGuest);
+    var same = fam.length < 2 || each.every(function (x) { return keyOf(x) === keyOf(each[0]); });
+    var groups = same ? [Object.assign(each[0] || fromGuest({ no: 0 }), { nos: fam.map(function (g) { return g.no; }), who: fam })] : each;
+    groups.forEach(function (x) { if (!x.gD) x.gD = C.start; if (!x.bD) x.bD = C.end; x.mG = !!x.gB; x.mB = !!x.bB; });
+    TR = { same: same, groups: groups, open: -1, recOpen: !groups.every(function (x) { return x.gF; }), hotelOpen: false, saved: false };
+  }
+  function legDone(x, k) { return !!(x[k + 'F'] && x[k + 'T'] && (x[k + 'B'] || !hasSh(cfg()))); }
+  function isDone(x) { return legDone(x, 'g') && legDone(x, 'b'); }
+  function nm(g) { return g.first; }
+  function missing() { var out = []; TR.groups.forEach(function (x) { if (!isDone(x)) x.who.forEach(function (g) { out.push(nm(g)); }); }); return out; }
+  function pax(who) {
+    var kids = who.filter(function (g) { return g.age && g.age !== 'Adult'; }).length;
+    return who.length + ' (' + (who.length - kids) + ' adults' + (kids ? ', ' + kids + ' children' : '') + ')';
+  }
+  function taxiLink(C, x, k) {
+    var go = k === 'g', place = (INFO && INFO.place) || 'the hotel';
+    var msg = 'Hi' + (C.taxiName ? ' ' + C.taxiName : '') + ', this is ' + x.who.map(function (g) { return g.first + ' ' + g.last; }).join(', ') + ', guests at ' + ((INFO && INFO.couple) || 'the') + ' wedding (KAI Event Planners).\n' +
+      (go ? 'We need a taxi from the airport to the hotel (' + place + ').\nFlight ' + x.gF + ', landing ' + dmy(x.gD) + ' at ' + x.gT
+          : 'We need a taxi from the hotel (' + place + ') to the airport.\nFlight ' + x.bF + ', departing ' + dmy(x.bD) + ' at ' + x.bT) +
+      '\nPassengers: ' + pax(x.who) + '\nDo we need child seats? Yes / No\nThank you!';
+    return 'https://wa.me/' + C.taxi + '?text=' + encodeURIComponent(msg);
+  }
+  function arrow(a, b) { return L === 'he' ? bd(a) + ' ← ' + bd(b) : bd(a) + ' → ' + bd(b); }
+  var WA_IC = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/></svg>';
+
+  function renderShuttles(C) {
+    var sh = hasSh(C), rec = C.recGo.length || C.recBack.length;
+    $('c-shut').hidden = !(sh || rec); if ($('c-shut').hidden) return;
+    $('shut-t').textContent = sh ? tt('shutT') : tt('shutOnlyT');
+    var col = function (head, list) { return '<div><em>' + esc(head) + '</em>' + list.map(function (x) { return '<b>' + esc(x) + '</b>'; }).join('') + '</div>'; };
+    $('shut-tt').hidden = !sh;
+    if (sh) {
+      $('shut-tt').innerHTML = '<p>' + esc(tt('shutIntro')) + '</p><div class="v5g">' + col(tt('shGo'), C.goT) + '<span></span>' + col(tt('shBack'), C.backT) + '</div>' +
+        '<p class="s">' + esc([C.hours ? tt('hoursEach').replace('{h}', C.hours) : '', tt('mayChange')].filter(Boolean).join(' · ')) + '</p>';
+    }
+    $('rtog').hidden = !rec;
+    $('rtog').textContent = TR.recOpen ? tt('recHide') : tt('recShow'); $('rtog').classList.toggle('open', TR.recOpen);
+    if (!rec || !TR.recOpen) { $('recs').innerHTML = ''; return; }
+    var fit = function (k, r) {
+      var x = { gD: C.start, gT: r.arr, bD: C.end, bT: r.dep }, s = sug(C, x, k);
+      return s && s !== 'none' ? ' · ' + tt('shuttle') + ' ' + s : '';
+    };
+    var block = function (k, list, head, day) {
+      if (!list.length) return '';
+      return '<div class="rec"><div class="rec-h">' + esc(head) + (day ? ' <small>· ' + bd(dmy(day)) + '</small>' : '') + '</div>' + list.map(function (r) {
+        return '<div class="rf"><div class="rf-a"><b>' + esc(r.air) + (r.no ? ' · ' + bd(r.no) : '') + '</b><span>' + esc(tt('direct')) + esc(fit(k, r)) + (r.night ? ' · ' + esc(tt('night')) : '') + '</span></div><div class="rf-t">' + arrow(r.dep, r.arr) + '</div></div>';
+      }).join('') + '</div>';
+    };
+    $('recs').innerHTML = block('g', C.recGo, tt('recGo'), C.start) + block('b', C.recBack, tt('recBack'), C.end) + '<p class="rec-n">' + esc(tt('recNote')) + '</p>';
+  }
+  function pickHtml(C, i, k, x, s) {
+    if (!hasSh(C) && !C.taxi) return '';
+    var bad = badFit(C, x, k);
+    return '<div class="sec">' + esc(k === 'g' ? tt('toHotel') : tt('toAirport')) + '</div>' +
+      '<button type="button" class="pickrow" data-sheet="' + i + '|' + k + '"><span class="pv">' + (x[k + 'B'] ? esc(label(k, x[k + 'B'])) : '<span class="ph">' + esc(tt('pick')) + '</span>') + '</span><span class="chg">' + esc(x[k + 'B'] ? tt('change') : tt('choose')) + '</span></button>' +
+      (bad ? '<div class="warn">' + esc(bad) + '</div>' : (s && s !== 'none' && x[k + 'B'] === s ? '<div class="hint">✓ ' + esc(tt('fits') + label(k, s)) + '</div>' : '')) +
+      ((s === 'none' && !x[k + 'B'] && hasSh(C)) ? '<div class="warn">' + esc(k === 'g' ? tt('noneGo') : tt('noneBack')) + '</div>' : '') +
+      (x[k + 'B'] === 'Taxi' && C.taxi ? '<a class="wa-g" target="_blank" rel="noopener" href="' + esc(taxiLink(C, x, k)) + '">' + WA_IC + ' ' + esc(tt('taxiBtn')) + '</a>' : '');
+  }
+  function dateHtml(i, f, v, lo, hi) {
+    return '<div class="f"><span class="lbl">' + esc(tt('date')) + '</span><label class="tbtn">' + (v ? esc(dmy(v)) : '<span class="ph">dd/mm/yyyy</span>') + '<input type="date" data-i="' + i + '" data-f="' + f + '" value="' + esc(v) + '"' + (lo ? ' min="' + lo + '"' : '') + (hi ? ' max="' + hi + '"' : '') + '></label></div>';
+  }
+  function timeHtml(i, f, v) {
+    return '<div class="f"><span class="lbl">' + esc(tt('time')) + '</span><label class="tbtn">' + (v ? esc(v) : '<span class="ph">--:--</span>') + '<input type="time" data-i="' + i + '" data-f="' + f + '" value="' + esc(v) + '"></label></div>';
+  }
+  function form(C, x, i) {
+    var sg = sug(C, x, 'g'), sb = sug(C, x, 'b');
+    if (!x.mG && hasSh(C)) x.gB = sg && sg !== 'none' ? sg : '';
+    if (!x.mB && hasSh(C)) x.bB = sb && sb !== 'none' ? sb : '';
+    var others = TR.same ? [] : TR.groups.filter(function (o, j) { return j !== i && isDone(o); });
+    var lo = C.ext && C.start ? addDays(C.start, -C.ext) : '', hi = C.ext && C.end ? addDays(C.end, C.ext) : '';
+    return '<div class="blk">' +
+      (others.length ? '<div class="sec">' + esc(tt('copyQ')) + '</div><div class="chips">' + others.map(function (o) { return '<button type="button" class="chip" data-copy="' + TR.groups.indexOf(o) + '" data-i="' + i + '">' + esc(tt('like') + nm(o.who[0])) + '</button>'; }).join('') + '</div><div class="hr"></div>' : '') +
+      '<div class="leg go"><div class="lh"><span class="li">✈</span><span><b>' + esc(tt('go')) + '</b><small>' + esc(tt('goSub')) + '</small></span></div>' +
+      '<div class="ff3"><div class="f"><span class="lbl">' + esc(tt('flNo')) + '</span><input class="num" data-i="' + i + '" data-f="gF" value="' + esc(x.gF) + '" placeholder="LY541" autocapitalize="characters" autocomplete="off"></div>' + dateHtml(i, 'gD', x.gD, lo, C.start) + timeHtml(i, 'gT', x.gT) + '</div>' +
+      pickHtml(C, i, 'g', x, sg) + '</div>' +
+      '<div class="leg back"><div class="lh"><span class="li">✈</span><span><b>' + esc(tt('back')) + '</b><small>' + esc(tt('backSub')) + '</small></span></div>' +
+      '<div class="ff3"><div class="f"><span class="lbl">' + esc(tt('flNo')) + '</span><input class="num" data-i="' + i + '" data-f="bF" value="' + esc(x.bF) + '" placeholder="LY542" autocapitalize="characters" autocomplete="off"></div>' + dateHtml(i, 'bD', x.bD, C.end, hi) + timeHtml(i, 'bT', x.bT) + '</div>' +
+      pickHtml(C, i, 'b', x, sb) + '</div>' +
+      (!TR.same ? '<button type="button" class="btn2" data-close="' + i + '">' + esc(tt('done') + ' · ' + nm(x.who[0])) + '</button>' : '') +
+    '</div>';
+  }
+  function legLine(x, k) { return esc(k === 'g' ? tt('go') : tt('back')) + ' ' + bd(dm(x[k + 'D'])) + ' ' + bd(x[k + 'T']) + (x[k + 'B'] ? ', ' + esc(label(k, x[k + 'B'])) : ''); }
+  var busy = false;
+  function renderBlocks() {
+    if (busy) return; busy = true;
+    // Typing in a field and then tapping elsewhere fires "change" while we redraw: take the value first, then redraw once.
+    var ae = document.activeElement; if (ae && $('blocks').contains(ae) && ae.blur) ae.blur();
+    var C = cfg();
+    $('tr-same-wrap').hidden = coming().length < 2; $('tr-same').checked = TR.same;
+    $('blocks').innerHTML = TR.same ? form(C, TR.groups[0], 0) : TR.groups.map(function (x, i) {
+      var st = isDone(x) ? '<span class="st ok">' + legLine(x, 'g') + '<br>' + legLine(x, 'b') + '</span>' : '<span class="st">' + esc(tt('notYet')) + '</span>';
+      var row = '<button type="button" class="row' + (isDone(x) ? ' done' : '') + '" data-row="' + i + '"><span class="nm">' + esc(nm(x.who[0])) + '</span>' + st + '<span class="pl">' + (i === TR.open ? '−' : isDone(x) ? '✓' : '+') + '</span></button>';
+      return i === TR.open ? '<div class="acc">' + row + form(C, x, i) + '</div>' : row;
+    }).join('');
+    renderTodo(C); busy = false;
+  }
+  function renderTodo(C) {
+    var fl = TR.groups.every(function (x) { return x.gF && x.gT && x.bF && x.bT; }), sh = TR.groups.every(function (x) { return x.gB && x.bB; });
+    var rs = P.family.every(function (g) { return g.status !== 'Maybe'; });
+    var all = rs && fl && (sh || !hasSh(C));
+    $('c-todo').hidden = all; $('c-allok').hidden = !all;
+    var miss = missing(), mt = (!TR.same && miss.length && miss.length < coming().length) ? '<small>' + esc(tt('missingFor') + miss.join(', ')) + '</small>' : '';
+    var line = function (ok, txt) { return '<div class="' + (ok ? 'y' : 'n') + '"><i>' + (ok ? '✓' : '•') + '</i><span>' + esc(txt) + (ok ? '' : mt) + '</span></div>'; };
+    $('todo').innerHTML = (P.show.rsvp ? line(rs, tt('rsvp')).replace(mt, '') : '') + line(fl, tt('flights')) + (hasSh(C) ? line(sh, tt('shuttles')) : '');
+  }
+  function renderHotel(C) {
+    $('c-hotel').hidden = !(C.hotel && C.start && C.end); if ($('c-hotel').hidden) return;
+    $('hrow').classList.toggle('open', TR.hotelOpen); $('hbody').hidden = !TR.hotelOpen;
+    $('hsub').innerHTML = esc(tt('hsub')).replace('{a}', bd(dmy(C.start))).replace('{b}', bd(dmy(C.end))).replace(/\{n\}/g, String(C.ext || 0));
+    var cin = $('h-cin'), cout = $('h-cout');
+    cin.min = C.ext ? addDays(C.start, -C.ext) : C.start; cin.max = C.start; cout.min = C.end; cout.max = C.ext ? addDays(C.end, C.ext) : C.end;
+    if (!cin.value) cin.value = C.start; if (!cout.value) cout.value = C.end;
+    $('h-cin-v').textContent = dmy(cin.value); $('h-cout-v').textContent = dmy(cout.value);
+    var ext = cin.value !== C.start || cout.value !== C.end;
+    $('mail').classList.toggle('off', !ext); $('mail-note').textContent = ext ? tt('mailOn') : tt('mailOff');
+  }
+  function mailHref(C) {
+    var fam = coming(), cin = dmy($('h-cin').value), cout = dmy($('h-cout').value);
+    var body = 'Hello,\n\nWe are guests at the wedding of ' + ((INFO && INFO.couple) || '') + ' (KAI Event Planners).\n' +
+      'We would like to extend our stay at our own expense:\n\nGuest names: ' + fam.map(function (g) { return g.first + ' ' + g.last; }).join(', ') +
+      '\nCheck-in: ' + cin + '\nCheck-out: ' + cout + '\nGuests: ' + pax(fam) + '\nPhone: ' + PHONE + '\n\nPlease send us the price and confirmation.\nThank you!';
+    return 'mailto:' + C.hotel + '?subject=' + encodeURIComponent('Stay extension – ' + ((INFO && INFO.couple) || '') + ' wedding') + '&body=' + encodeURIComponent(body);
+  }
+  function renderSummary() {
+    var cards = [], lines = [];
+    TR.groups.forEach(function (x) {
+      if (!legDone(x, 'g') && !legDone(x, 'b')) return;
+      var who = TR.same ? tt('all') : x.who.map(nm).join(', ');
+      var c = '<div class="sumc"><b>' + esc(who) + '</b>';
+      ['g', 'b'].forEach(function (k) {
+        if (!legDone(x, k)) return;
+        c += '<div><em>' + esc(k === 'g' ? tt('go') : tt('back')) + '</em><span>' + bd(x[k + 'F']) + ' · ' + bd(dmy(x[k + 'D'])) + ' · ' + bd(x[k + 'T']) + (x[k + 'B'] ? '<small>' + esc(label(k, x[k + 'B'])) + '</small>' : '') + '</span></div>';
+        lines.push(who + ' – ' + (k === 'g' ? tt('go') : tt('back')) + ': ' + x[k + 'F'] + ', ' + dmy(x[k + 'D']) + ' ' + x[k + 'T'] + (x[k + 'B'] ? ', ' + label(k, x[k + 'B']) : ''));
+      });
+      cards.push(c + '</div>');
+    });
+    $('sum').innerHTML = cards.join('');
+    var miss = missing();
+    $('fl-missing').hidden = !miss.length; $('fl-missing').textContent = tt('missingSave') + miss.join(', ') + '. ' + tt('canReturn');
+    $('self-wa').hidden = !cards.length;
+    $('self-wa').href = 'https://wa.me/?text=' + encodeURIComponent(((INFO && INFO.couple) ? INFO.couple + ' – ' : '') + tt('waHead') + '\n' + lines.join('\n') + '\n' + location.origin + BASE + EVENT + '/guests');
+  }
+  function renderTravel() {
+    if (!TR) buildTR();
+    var C = cfg();
+    document.querySelectorAll('[data-tt]').forEach(function (el) { el.textContent = tt(el.dataset.tt); });
+    $('c-allok').hidden = true; $('c-todo').hidden = true;
+    if (!coming().length) { $('c-flights').hidden = true; hideTravel(); return; }
+    renderShuttles(C); renderBlocks(); renderHotel(C);
+    $('sum-wrap').hidden = !TR.saved; if (TR.saved) renderSummary();
+  }
+  function hideTravel() { ['c-todo', 'c-allok', 'c-shut', 'c-hotel'].forEach(function (id) { $(id).hidden = true; }); }
+
+  $('blocks').addEventListener('click', function (e) {
+    var b;
+    if ((b = e.target.closest('[data-sheet]'))) { var p = b.dataset.sheet.split('|'); openSheet(+p[0], p[1]); return; }
+    if ((b = e.target.closest('[data-copy]'))) { var src = TR.groups[+b.dataset.copy], dst = TR.groups[+b.dataset.i]; ['gF', 'gD', 'gT', 'gB', 'bF', 'bD', 'bT', 'bB', 'mG', 'mB'].forEach(function (f) { dst[f] = src[f]; }); renderBlocks(); return; }
+    if ((b = e.target.closest('[data-row]'))) { var i = +b.dataset.row; TR.open = TR.open === i ? -1 : i; renderBlocks(); var el = document.querySelector('.acc'); if (el) el.scrollIntoView({ block: 'start', behavior: 'smooth' }); return; }
+    if ((b = e.target.closest('[data-close]'))) { TR.open = -1; renderBlocks(); }
+  });
+  $('blocks').addEventListener('change', function (e) {
+    var el = e.target, f = el.dataset.f; if (!f) return;
+    var x = TR.groups[+el.dataset.i];
+    x[f] = f.charAt(1) === 'F' ? el.value.toUpperCase().replace(/\s+/g, '') : el.value;
+    // A new date or time re-suggests the shuttle, unless the guest chose a taxi or their own way.
+    if (f.charAt(1) !== 'F') { var k = f.charAt(0), m = 'm' + k.toUpperCase(); if (!(x[m] && (x[k + 'B'] === 'Taxi' || x[k + 'B'] === 'Own'))) x[m] = false; }
+    $('fl-err').hidden = true; renderBlocks();
+  });
+  $('tr-same').addEventListener('change', function () {
+    var f = TR.groups[0], fam = coming(), copy = ['gF', 'gD', 'gT', 'gB', 'bF', 'bD', 'bT', 'bB', 'mG', 'mB'];
+    TR.same = this.checked;
+    if (TR.same) TR.groups = [Object.assign({ nos: fam.map(function (g) { return g.no; }), who: fam }, copy.reduce(function (o, k) { o[k] = f[k]; return o; }, {}))];
+    // Splitting starts everyone from the family's flights, so only the one who flies differently needs changing.
+    else TR.groups = fam.map(function (g) { var x = { nos: [g.no], who: [g] }; copy.forEach(function (k) { x[k] = f[k]; }); return x; });
+    TR.open = -1; renderBlocks();
+  });
+  function openSheet(i, k) {
+    var C = cfg(), x = TR.groups[i], s = sug(C, x, k);
+    var opts = (k === 'g' ? C.goT : C.backT).map(function (v) { return [v, tt('shuttle') + ' ' + v, k === 'g' ? tt('fromAirport') : tt('fromHotel')]; });
+    if (C.taxi) opts.push(['Taxi', tt('taxi'), tt('taxiSub')]);
+    opts.push(['Own', k === 'g' ? tt('self') : tt('selfB'), tt('selfSub')]);
+    $('sh-t').textContent = k === 'g' ? tt('toHotel') : tt('toAirport');
+    $('sheet').className = 'sheet ' + (k === 'g' ? 'go' : 'back');
+    $('sh-list').innerHTML = opts.map(function (o) {
+      return '<button type="button" class="sh-o' + (x[k + 'B'] === o[0] ? ' on' : '') + '" data-v="' + esc(o[0]) + '"><span class="sh-r"></span><span class="sh-t"><b>' + esc(o[1]) + '</b><small>' + esc(o[2]) + '</small></span>' + (s === o[0] ? '<em>' + esc(tt('fitsTag')) + '</em>' : '') + '</button>';
+    }).join('');
+    $('sh-list').onclick = function (e) { var b = e.target.closest('.sh-o'); if (!b) return; x[k + 'B'] = b.dataset.v; x['m' + k.toUpperCase()] = true; closeSheet(); renderBlocks(); };
+    $('sheet-wrap').hidden = false; requestAnimationFrame(function () { $('sheet-wrap').classList.add('in'); });
+  }
+  function closeSheet() { $('sheet-wrap').classList.remove('in'); setTimeout(function () { $('sheet-wrap').hidden = true; }, 200); }
+  $('sheet-bg').addEventListener('click', closeSheet);
+  $('rtog').addEventListener('click', function () { TR.recOpen = !TR.recOpen; renderShuttles(cfg()); });
+  $('hrow').addEventListener('click', function () { TR.hotelOpen = !TR.hotelOpen; renderHotel(cfg()); });
+  $('h-cin').addEventListener('change', function () { renderHotel(cfg()); });
+  $('h-cout').addEventListener('change', function () { renderHotel(cfg()); });
+  $('mail').addEventListener('click', function (e) {
+    var C = cfg(); if ($('mail').classList.contains('off')) { e.preventDefault(); return; }
+    $('mail').href = mailHref(C);
+    api({ action: 'portalExtend', phone: PHONE, checkIn: dmy($('h-cin').value), checkOut: dmy($('h-cout').value) }).catch(function () {});
+  });
   $('save-fl').addEventListener('click', function () {
-    var t = T[L], list = collectFlights();
-    var bad = list.some(function (f) { return ['arrDate', 'depDate'].some(function (k) { return f[k] && !/^\d{2}\/\d{2}\/\d{4}$/.test(f[k]); }) || ['arrTime', 'depTime'].some(function (k) { return f[k] && !/^([01]\d|2[0-3]):[0-5]\d$/.test(f[k]); }); });
-    if (bad) { $('fl-err').textContent = t.errDate; $('fl-err').hidden = false; return; }
+    var list = [];
+    TR.groups.forEach(function (x) {
+      x.nos.forEach(function (no) {
+        list.push({ no: no, arrFlight: x.gF, arrDate: dmy(x.gD), arrTime: x.gT, arrBus: x.gB || '', depFlight: x.bF, depDate: dmy(x.bD), depTime: x.bT, depBus: x.bB || '' });
+      });
+    });
     var btn = this; btn.disabled = true; $('fl-err').hidden = true;
     api({ action: 'portalFlights', phone: PHONE, flights: list }).then(function (res) {
       if (!res.ok) throw new Error(res.error);
-      P = res; renderFamily(); $('fl-ok').textContent = t.saved; $('fl-ok').hidden = false;
-    }).catch(function (x) { $('fl-err').textContent = x.message === 'closed' ? t.errClosed : x.message && x.message.indexOf('Write') === 0 ? t.errDate : t.errNet; $('fl-err').hidden = false; })
+      var keep = { open: -1, recOpen: false, hotelOpen: TR.hotelOpen };
+      P = res; TR = null; buildTR(); TR.saved = true; TR.recOpen = keep.recOpen; TR.hotelOpen = keep.hotelOpen;
+      renderFamily(); $('sum-wrap').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }).catch(function (x) { $('fl-err').textContent = x.message === 'closed' ? T[L].errClosed : x.message && x.message.indexOf('Write') === 0 ? tt('errFl') : T[L].errNet; $('fl-err').hidden = false; })
       .then(function () { btn.disabled = false; });
   });
 
