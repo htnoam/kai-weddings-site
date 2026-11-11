@@ -76,7 +76,15 @@ body:has(#open-env:not(:checked)) { overflow: hidden; }
 .hero .caps.day { margin-top: 12px; font-size: 12px; white-space: nowrap; }
 .hero .caps.where { margin-top: 6px; font-size: 12px; }
 .script { margin-top: 74px; font-family: var(--display); font-size: 34px; line-height: 1; color: var(--ink); transform: rotate(-3deg); }
-.sea { position: relative; z-index: 0; width: calc(100% + 56px); margin: -100px -28px 0; }
+.sea { position: relative; z-index: 0; width: calc(100% + 56px); margin: -40px -28px 0; }
+/* Hebrew: no wide letter spacing or capitals (they break Hebrew letters apart); the script line sits in the white fade, above the photo's faces. */
+html[lang="he"] .title { letter-spacing: .02em; }
+html[lang="he"] .title em { margin: 0 .08em 0 0; }
+html[lang="he"] .caps { letter-spacing: .03em; font-size: 15px; }
+html[lang="he"] .hero .caps.day { font-size: 15px; }
+html[lang="he"] .hero .caps.where { letter-spacing: .2em; font-size: 12px; }
+html[lang="he"] .script { margin-top: 40px; font-size: 38px; transform: rotate(-2deg); }
+.hero .script { margin-bottom: 4px; }
 .sea img { display: block; width: 100%; height: auto; mix-blend-mode: multiply;
   -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,.25) 12%, rgba(0,0,0,.75) 22%, #000 30%);
           mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,.25) 12%, rgba(0,0,0,.75) 22%, #000 30%); }
@@ -316,6 +324,20 @@ html[dir=ltr] input[type=tel] { text-align: left; }
     return (a && a.trim()) || (b && b.trim()) || def || '';
   }
 
+  // The stay as one short line, like the printed invitations: "15 – 17 . 07 . 2027" (or "30 . 06 – 02 . 07 . 2027" across months).
+  // A line Noam typed is kept, but two plain dates in it ("15.7.2027 - 17.7.2027") are written the same short way.
+  function datesLine(typed, start, end) {
+    var p = function (s) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || '') || /^(\d{1,2})[.\/](\d{1,2})[.\/](\d{4})$/.exec(s || ''); if (!m) return null; return m[1].length === 4 ? { d: m[3], m: m[2], y: m[1] } : { d: ('0' + m[1]).slice(-2), m: ('0' + m[2]).slice(-2), y: m[3] }; };
+    var two = /^\s*(\d{1,2}[.\/]\d{1,2}[.\/]\d{4})\s*[-–—]\s*(\d{1,2}[.\/]\d{1,2}[.\/]\d{4})\s*$/.exec(typed || '');
+    var a, b;
+    if (typed && !two) return typed;
+    if (two) { a = p(two[1]); b = p(two[2]); } else { a = p(start); b = p(end); }
+    if (!a || !b) return typed || '';
+    if (a.y === b.y && a.m === b.m) return a.d === b.d ? a.d + ' . ' + a.m + ' . ' + a.y : a.d + ' – ' + b.d + ' . ' + a.m + ' . ' + a.y;
+    if (a.y === b.y) return a.d + ' . ' + a.m + ' – ' + b.d + ' . ' + b.m + ' . ' + a.y;
+    return a.d + ' . ' + a.m + ' . ' + a.y + ' – ' + b.d + ' . ' + b.m + ' . ' + b.y;
+  }
+
   function apply() {
     var t = T[L];
     document.documentElement.lang = L; document.documentElement.dir = L === 'he' ? 'rtl' : 'ltr';
@@ -325,7 +347,7 @@ html[dir=ltr] input[type=tel] { text-align: left; }
     $('h-title').innerHTML = t.title;
     if (CFG) {
       var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(CFG.date || ''), d = m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : null;
-      $('h-when').textContent = CFG['Dates Line'] || (m ? m[3] + ' . ' + m[2] + ' . ' + m[1] : '');
+      $('h-when').textContent = datesLine(CFG['Dates Line'], CFG.start, CFG.end) || (m ? m[3] + ' . ' + m[2] + ' . ' + m[1] : '');
       $('h-day').textContent = d ? t.weddingDay + ' · ' + d.toLocaleDateString(t.locale, { weekday: 'long', day: 'numeric', month: 'long' }) : '';
       $('h-where').textContent = CFG.place || '';
       $('h-script').textContent = txt('Script', t.script);
