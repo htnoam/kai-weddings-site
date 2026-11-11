@@ -476,6 +476,7 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 8px; font: 500 14px '
         $('h-names').innerHTML = esc(txt('Names', CFG.couple)).replace(/ (&amp;|and|ו) /, ' <i>&amp;</i> ');
       }
       $('intro').innerHTML = lines(txt('Intro', t.intro));
+      document.querySelector('.env-hello').textContent = txt('Invited', t.invited);
       $('ask').textContent = txt('Ask', t.ask);
       var hTitle = txt('Hosting Title'), hChips = txt('Hosting Chips'), hText = txt('Hosting Text'), hNote = txt('Hosting Note');
       $('hosting').hidden = !(hTitle || hChips || hText || hNote);
