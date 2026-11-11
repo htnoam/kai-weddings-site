@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>You’re invited</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Bellefair&family=Ephesis&family=Gveret+Levin&family=Frank+Ruhl+Libre:wght@400;500;700&family=Assistant:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Bellefair&family=Ephesis&family=Gveret+Levin&family=Frank+Ruhl+Libre:wght@300;400;500;700&family=Assistant:wght@400;500;600&display=swap">
 <style>
 /* Linen table, one white card laid on it. Spaced serif caps + a loose script (Hebrew falls through to Gveret Levin / Frank Ruhl),
    near-black type, cobalt only where the sea is: the photo washes up into the card from the bottom. */
@@ -214,24 +214,25 @@ body.ready .env-hit { opacity: 1; }
 .t-sage .env-seal::before { border-color: rgba(238,242,234,.4); }
 .t-sage .env-tap { display: flex; flex-direction: column; align-items: center; gap: 22px; margin-top: 54px; font: 400 17px 'Frank Ruhl Libre', serif; letter-spacing: .02em; color: var(--muted); transition: opacity .3s; }
 #open-env:checked ~ .env-screen .env-tap, #open-env:checked ~ .env-screen .env-top { opacity: 0; transition: opacity .3s; }
-.t-sage .hero.mag { position: relative; padding: 70px 26px 34px; }
-.t-sage .hero.mag::before { content: ""; position: absolute; top: 0; right: 0; width: 62%; aspect-ratio: 478 / 283; background: url(/v2/themes/sage/olive-top.webp) top right / contain no-repeat; pointer-events: none; }
+.t-sage .hero.sheet { border-radius: 14px; }
+.t-sage .hero.mag { position: relative; padding: 52px 22px 48px; }
+.t-sage .hero.mag::before { content: ""; position: absolute; top: 0; right: 0; width: 54%; aspect-ratio: 478 / 283; background: url(/v2/themes/sage/olive-top.webp) top right / contain no-repeat; pointer-events: none; }
 html[dir="ltr"] .t-sage .hero.mag::before { right: auto; left: 0; transform: scaleX(-1); }
-.t-sage .hero.mag::after { content: ""; position: absolute; left: 0; bottom: 0; width: 30%; aspect-ratio: 211 / 355; background: url(/v2/themes/sage/olive-bottom.webp) bottom left / contain no-repeat; pointer-events: none; }
-.t-sage .hero.mag .kicker { order: 1; font: 400 19px 'Frank Ruhl Libre', serif; letter-spacing: .14em; text-transform: none; color: var(--muted); }
+.t-sage .hero.mag::after { content: ""; position: absolute; left: 0; bottom: 0; width: 29%; aspect-ratio: 211 / 355; background: url(/v2/themes/sage/olive-bottom.webp) bottom left / contain no-repeat; pointer-events: none; }
+html .t-sage .hero.mag .kicker { order: 1; font: 400 17px 'Frank Ruhl Libre', serif; letter-spacing: .28em; text-transform: none; color: #4E5C52; }
 html[lang="en"] .t-sage .hero.mag .kicker { font: 500 12px 'Cormorant Garamond', serif; letter-spacing: .32em; text-transform: uppercase; }
-.t-sage .hero.mag .names { order: 2; margin-top: 4px; font: 400 clamp(44px, 14vw, 58px)/1.1 'Frank Ruhl Libre', 'Cormorant Garamond', serif; color: var(--ink); }
-html[lang="en"] .t-sage .hero.mag .names { font-family: 'Cormorant Garamond', serif; font-weight: 500; }
-.t-sage .hero.mag .names i { font: italic 300 1.05em 'Cormorant Garamond', serif; color: var(--sage); }
-.t-sage .hero.mag .rule { order: 3; width: 64px; margin-top: 16px; background: var(--gold); }
-.t-sage .hero.mag .sea { order: 4; width: 82%; margin: 26px auto 0; padding: 6px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(201,185,155,.6), 0 14px 22px -14px rgba(50,60,45,.5); }
+.t-sage .hero.mag .names { order: 2; margin-top: 0; font: 300 52px/1.05 'Frank Ruhl Libre', 'Cormorant Garamond', serif; color: #24402F; }
+html[lang="en"] .t-sage .hero.mag .names { font-family: 'Cormorant Garamond', serif; font-weight: 600; }
+.t-sage .hero.mag .names i { font: normal 400 1.08em 'Cormorant Garamond', serif; color: #8FA593; margin: 0 .12em; }
+.t-sage .hero.mag .rule { order: 3; width: 57px; margin-top: 0; background: #C9BFA5; }
+.t-sage .hero.mag .sea { order: 4; width: 61%; margin: 17px auto 0; padding: 3px; background: #FBF9F4; box-shadow: 0 0 0 1px #D9D2C0, 0 6px 12px -6px rgba(50,60,45,.35); }
 .t-sage .hero.mag .title, .t-sage .hero.mag .caps.day { display: none; }
-.t-sage .hero.mag .when { order: 5; margin-top: 24px; font: 500 clamp(24px, 8vw, 32px) 'Cormorant Garamond', serif; letter-spacing: .1em; color: var(--ink); font-variant-numeric: lining-nums; }
-.t-sage .hero.mag .caps.where { order: 6; margin-top: 6px; font: 500 13px 'Cormorant Garamond', serif; letter-spacing: .26em; color: var(--muted); }
-.t-sage .hero.mag .scene { display: block; order: 7; align-self: stretch; margin: 18px -26px 0; aspect-ratio: 906 / 272; background: url(/v2/themes/sage/landscape.webp) center / 100% 100% no-repeat; }
-.t-sage .hero.mag .script { display: flex; order: 8; align-items: center; gap: 16px; margin: 18px 0 0; font: italic 400 15px 'Cormorant Garamond', serif; letter-spacing: .28em; text-transform: uppercase; color: var(--muted); transform: none; direction: ltr; white-space: nowrap; }
-.t-sage .hero.mag .script::before, .t-sage .hero.mag .script::after { content: ""; width: 40px; height: 1px; background: var(--gold); }
-.t-sage .hero.mag .cue { order: 9; margin-top: 26px; flex-direction: row; min-height: 56px; padding: 0 60px; border-radius: 12px; background: var(--mint); color: var(--ink); font: 400 20px 'Frank Ruhl Libre', serif; letter-spacing: .04em; box-shadow: 0 1px 0 rgba(255,255,255,.6) inset; }
+.t-sage .hero.mag .when { order: 5; margin-top: 8px; font: 500 29px 'Cormorant Garamond', serif; letter-spacing: .19em; color: #2C3B31; font-variant-numeric: lining-nums; }
+html .t-sage .hero.mag .caps.where { order: 6; margin-top: 2px; font: 500 14px 'Cormorant Garamond', serif; letter-spacing: .22em; color: #4A574D; }
+.t-sage .hero.mag .scene { display: block; order: 7; align-self: stretch; margin: 4px -22px 0; aspect-ratio: 4 / 1; background: url(/v2/themes/sage/landscape.webp) center bottom / cover no-repeat; }
+.t-sage .hero.mag .script { display: flex; order: 8; align-items: center; gap: 14px; margin: 10px 0 0; font: italic 500 14px 'Cormorant Garamond', serif; letter-spacing: .2em; text-transform: uppercase; color: #3E4B41; transform: none; direction: ltr; white-space: nowrap; }
+.t-sage .hero.mag .script::before, .t-sage .hero.mag .script::after { content: ""; width: 28px; height: 1px; background: #C9BFA5; }
+.t-sage .hero.mag .cue { order: 9; margin-top: 24px; flex-direction: row; justify-content: center; width: 58%; min-height: 41px; padding: 0; border-radius: 7px; background: #C8D5C7; border: 1px solid rgba(110,130,110,.22); color: #2C3B31; font: 300 21px 'Frank Ruhl Libre', serif; letter-spacing: .05em; }
 .t-sage .hero.mag .cue svg { display: none; }
 .t-sage .opt[aria-pressed=true] { background: var(--ink); border-color: var(--ink); }
 .t-sage .send { border-radius: 12px; background: var(--ink); }
@@ -440,7 +441,7 @@ html[lang="en"] .t-sage .hero.mag .names { font-family: 'Cormorant Garamond', se
       }
       $('hero').classList.toggle('mag', mag);
       if (mag) {
-        $('h-kick').textContent = t.kicker; $('h-cue').textContent = t.cue;
+        $('h-kick').textContent = t.kicker; $('h-cue').textContent = sage && L === 'he' ? 'אישור הגעה' : t.cue;
         $('h-names').innerHTML = esc(txt('Names', CFG.couple)).replace(/ (&amp;|and|ו) /, ' <i>&amp;</i> ');
       }
       $('intro').innerHTML = lines(txt('Intro', t.intro));
