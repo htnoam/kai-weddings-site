@@ -375,6 +375,8 @@ html[lang="he"] .hero.mag .caps.day { font: 400 16px 'Bellefair', serif; }
       $('h-day').textContent = d ? t.weddingDay + ' · ' + d.toLocaleDateString(t.locale, { weekday: 'long', day: 'numeric', month: 'long' }) : '';
       $('h-where').textContent = CFG.place || '';
       $('h-script').textContent = txt('Script', t.script);
+      // The card that slides out of the envelope carries the names and the dates (it was blank before).
+      document.querySelector('.env-card').innerHTML = '<b>' + esc(txt('Names', CFG.couple)) + '</b><i dir="ltr">' + esc($('h-when').textContent) + '</i>';
       var mag = /^magazine$/i.test(CFG['Hero Layout'] || '');
       $('hero').classList.toggle('mag', mag);
       if (mag) {
