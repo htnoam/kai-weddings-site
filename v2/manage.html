@@ -455,6 +455,13 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .bg-ro .ok { color: var(--ok); }
 .bg-ro .due.soon { color: #8A4B00; font-weight: 700; } .bg-ro .due.late { color: #A1271B; font-weight: 700; }
 .bg-cat.ro .bg-ch b { font-size: 15px; }
+.bg-src { color: var(--soft); font-size: 14px; }
+.bg-chip { display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border-radius: 999px; font-size: 13px; font-weight: 600; }
+.bg-chip.ok { background: #E6F2E3; color: #2F6B2F; }
+.bg-top a.btn { text-decoration: none; display: inline-flex; align-items: center; }
+.bg-frame { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; height: calc(100vh - 210px); min-height: 520px; }
+.bg-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+.bg-prev { background: #FBF3E2; border: 1px solid #EAD9B5; color: #8A5A12; border-radius: 8px; padding: 8px 14px; font-weight: 600; font-size: 14px; }
 .bg-foot { margin: 0; font-size: 12.5px; color: var(--soft); }
 @media (max-width: 760px) {
   .bg-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1346,7 +1353,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       S.reminders = res.reminders || {}; S.reminderText = res.reminderText || ''; S.lang = res.lang || 'he';
       S.changes = res.changes || [];
       briefLoad(res.brief);
-      bgLoad(res.budget);
+      bgLoad(res.budget, res.budgetSheet);
       schedLoad(res.schedule, res.wedding);
       setCustom(res.custom || []);
       applyLabels(res.labels || {});
@@ -3376,11 +3383,15 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var t = new Date(new Date().toDateString());
     return d < t ? 'late' : d - t <= 14 * 864e5 ? 'soon' : '';
   }
-  function bgLoad(b) {
-    BG.on = !!b && typeof b === 'object'; $('s-budget').hidden = !BG.on;
+  function bgLoad(b, sheet) {
+    BG.on = !!b && typeof b === 'object'; $('s-budget').hidden = !BG.on; BG.sheet = sheet || '';
     if (!BG.on) { if (SECT === 'budget') showSect('guests'); return; }
-    if (BG.dirty || BG.saving || $('budget').contains(document.activeElement) && /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return;   // don't wipe what Noam is typing
-    BG.data = bgNorm(b);
+    if (BG.dirty || BG.saving || $('budget').contains(document.activeElement) && /INPUT|SELECT|TEXTAREA|IFRAME/.test(document.activeElement.tagName)) return;   // don't wipe what Noam is typing
+    // The sheet is open inside the page: never redraw it (that would reload it under Noam's hands) – only refresh the status.
+    if (b.source === 'sheet' && SECT === 'budget' && !BG.preview && $('budget').querySelector('iframe') && BG.data && BG.data.source === 'sheet') {
+      BG.data = b; var chip = $('budget').querySelector('.bg-chip.ok'); if (chip) chip.textContent = '✓ The couple’s page updated ' + bgAgo(b.synced); return;
+    }
+    BG.data = b.source === 'sheet' ? b : bgNorm(b);
     if (location.hash === '#budget' && SECT === 'guests') showSect('budget');
     else if (SECT === 'budget') bgRender();
   }
@@ -3400,6 +3411,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   }
   function bgRender() {
     var box = $('budget'); if (!BG.data) { box.innerHTML = ''; return; }
+    if (BG.data.source === 'sheet') { box.innerHTML = bgSheetHtml(); return; }
     var K = bgCalc(), admin = S.admin, h = '';
     h += '<div class="bg-top"><h1>Budget</h1><span class="grow"></span>' +
       '<button type="button" class="btn" data-bga="csv">Download (Excel)</button>' +
@@ -3466,6 +3478,69 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
         }).join('') + '</section>';
     }).join('');
   }
+  // ----- Budget kept in Noam's Google Sheet: he edits the sheet right here; the couple sees a clean copy the Hub sends every few minutes -----
+  function bgSheetCalc() {
+    var D = BG.data, today = new Date(new Date().toDateString()), K = { total: 0, paid: 0, next: null, late: 0 };
+    (D.cats || []).forEach(function (c) { c._t = 0; c._p = 0; (c.lines || []).forEach(function (l) {
+      K.total += bgNum(l.total); K.paid += bgNum(l.paid); c._t += bgNum(l.total); c._p += bgNum(l.paid);
+      var d = bgDate(l.due), left = bgNum(l.left);
+      if (d && left > 0.005) {
+        if (d < today) K.late += left;
+        else if (!K.next || d < K.next.d) K.next = { d: d, due: l.due, what: l.item, amount: left };
+        else if (+d === +K.next.d) { K.next.amount += left; K.next.what = 'several payments'; }
+      }
+    }); });
+    K.left = K.total - K.paid; K.guests = bgNum(D.guests); return K;
+  }
+  function bgAgo(iso) {
+    var t = Date.parse(iso || ''); if (!t) return 'not yet';
+    var m = Math.round((Date.now() - t) / 60000);
+    return m < 1 ? 'just now' : m < 60 ? m + ' min ago' : m < 1440 ? Math.round(m / 60) + ' h ago' : new Date(t).toLocaleDateString('en-GB');
+  }
+  function bgSheetCards(K) {
+    var pct = K.total ? Math.round(100 * K.paid / K.total) : 0;
+    return '<div class="bg-cards">' +
+      '<div class="bg-card"><span>Total</span><b>' + bgEur(K.total) + '</b><small>' + (K.guests ? bgEur(K.total / K.guests) + ' per guest · ' + K.guests + ' guests' : '&nbsp;') + '</small></div>' +
+      '<div class="bg-card"><span>Paid</span><b class="ok">' + bgEur(K.paid) + '</b><span class="bar"><i style="width:' + pct + '%"></i></span></div>' +
+      '<div class="bg-card"><span>Left to pay</span><b>' + bgEur(K.left) + '</b><small>' + pct + '% paid</small></div>' +
+      '<div class="bg-card next' + (K.late ? ' late' : '') + '">' + bgNextHtml(K) + '</div></div>';
+  }
+  function bgSheetCouple(K) {
+    return (BG.data.cats || []).map(function (c, ci) {
+      if (!(c.lines || []).length) return '';
+      return '<section class="bg-cat ro" style="--gc:' + BG_COL[ci % BG_COL.length] + '"><div class="bg-ch"><b>' + esc(c.name) + '</b><span class="grow"></span><span class="bg-cs">' + bgEur(c._t) + '</span></div>' +
+        c.lines.map(function (l) {
+          var q = bgNum(l.qty), n = bgNum(l.nights), unit = bgNum(l.unit), left = bgNum(l.left);
+          var calc = unit && (q !== 1 || n) ? q + ' × ' + bgEur(unit) + (n ? ' × ' + n + (n === 1 ? ' night' : ' nights') : '') : '';
+          var dk = bgDueKind(l, left);
+          return '<div class="bg-ro"><div class="a"><b>' + esc(l.item) + '</b>' + (calc ? '<small>' + esc(calc) + '</small>' : '') + '</div>' +
+            '<div class="b"><b>' + bgEur(bgNum(l.total)) + '</b><span class="ok">' + (bgNum(l.paid) ? 'Paid ' + bgEur(bgNum(l.paid)) : 'Not paid yet') + '</span>' +
+            (left > 0.005 && l.due ? '<span class="due ' + dk + '">' + esc(l.due) + ' · ' + bgEur(left) + '</span>' : '') + '</div></div>';
+        }).join('') + '</section>';
+    }).join('') || '<div class="bg-empty">The budget isn’t ready yet.</div>';
+  }
+  function bgSheetHtml() {
+    var K = bgSheetCalc(), admin = S.admin && BG.sheet, url = 'https://docs.google.com/spreadsheets/d/' + encodeURIComponent(BG.sheet) + '/edit';
+    var h = '<div class="bg-top"><h1>Budget</h1>' + (admin ? '<span class="bg-src">your Google Sheet</span>' : '') + '<span class="grow"></span>';
+    if (admin) {
+      h += '<span class="bg-chip ok">✓ The couple’s page updated ' + esc(bgAgo(BG.data.synced)) + '</span>' +
+        '<button type="button" class="btn" data-bgs="preview" aria-pressed="' + !!BG.preview + '">' + (BG.preview ? '← Back to the sheet' : 'See what the couple sees') + '</button>' +
+        '<a class="btn primary" href="' + url + '" target="_blank" rel="noopener">Open in Google Sheets ↗</a>';
+    }
+    h += '</div>';
+    if (admin && !BG.preview) {
+      return h + '<div class="bg-frame"><iframe title="Budget sheet" src="' + url + '" allow="clipboard-read; clipboard-write"></iframe></div>' +
+        '<p class="bg-foot">You edit the sheet right here (or in Google Sheets – it’s the same file). The couple’s page is rebuilt from it every 5 minutes, without your notes. ' +
+        'If the sheet asks you to sign in, or won’t let you type here, use <b>Open in Google Sheets</b>. Guest numbers: switch on in the sheet’s Guests tab (B14).</p>';
+    }
+    h += (admin ? '<div class="bg-prev">This is what the couple sees.</div>' : '') + bgSheetCards(K) + bgSheetCouple(K) +
+      '<p class="bg-foot">Prepared by KAI Event Planners' + (BG.data.synced ? ' · updated ' + esc(bgAgo(BG.data.synced)) : '') + '.</p>';
+    return h;
+  }
+  $('budget').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-bgs="preview"]'); if (!b) return;
+    BG.preview = !BG.preview; bgRender();
+  });
   // Update every computed number without redrawing (keeps the cursor where Noam is typing).
   function bgRecalc() {
     var K = bgCalc(), set = function (id, t) { var el = $(id); if (el) el.textContent = t; };

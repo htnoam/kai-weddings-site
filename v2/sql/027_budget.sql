@@ -18,3 +18,9 @@ $f$;
 update public.events set settings = settings || '{"Budget":"on"}'::jsonb,
   budget = coalesce(budget, '{"nights":2,"buffer":10,"cats":[{"id":"acc","name":"Accommodation","lines":[]},{"id":"ven","name":"Venue fees","lines":[]},{"id":"fnb","name":"Food & drinks","lines":[]},{"id":"sup","name":"Suppliers","lines":[]},{"id":"pln","name":"Planning team","lines":[]}]}'::jsonb)
   where slug = 'noam-adva';
+
+-- 11/11/2026 later: the budget lives in Noam's Google Sheet (settings "Budget Sheet" = the sheet id).
+-- kai_budget_sheets(p_key)            → for the Hub: events with a budget sheet + confirmed adults / children / babies.
+-- kai_budget_from_sheet(p_key, slug, budget) → the Hub's clean copy of the Budget tab (source 'sheet'); bumps ver only when it changed.
+-- kai_api 'list' also returns budgetSheet (Noam only). Hub: budgetSync() every 5 minutes (setupBudgetTrigger).
+-- noam-adva: settings "Budget Sheet" = 1uDdvkcpIWe2YxcCcPXrScLVbymxaukKYR5gBW8e5Sig.
