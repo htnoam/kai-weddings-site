@@ -392,6 +392,74 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .rm-prog .bar i { display: block; height: 100%; background: var(--ok); }
 .rm-nx { justify-content: center; height: 42px; font-size: 15px; }
 .rm-all { color: var(--ok); font-weight: 600; }
+.bg { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 1400px; margin: 4px auto 0; }
+.bg-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.bg-top h1 { margin: 0; font-size: 22px; }
+.bg-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.bg-card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.bg-card > span:first-child { font-size: 12.5px; color: var(--soft); font-weight: 600; }
+.bg-card b { font-size: 24px; font-variant-numeric: tabular-nums; }
+.bg-card b.ok { color: var(--ok); }
+.bg-card small { font-size: 12.5px; color: var(--soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bg-card .bar { height: 6px; border-radius: 3px; background: var(--soft-surface); overflow: hidden; margin-top: 6px; }
+.bg-card .bar i { display: block; height: 100%; background: var(--ok); }
+.bg-card.next { background: #FBF3E2; border-color: #EAD9B5; }
+.bg-card.next > span:first-child { color: #8A5A12; }
+.bg-card.next.late { background: #FAD7D4; border-color: #F0B4AE; }
+.bg-card.next.late > span:first-child, .bg-card.next.late b { color: #A1271B; }
+.bg-guests { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 14px; color: var(--muted); }
+.bg-guests .sep { width: 1px; height: 18px; background: var(--line); margin: 0 8px; }
+.bg-guests label { display: inline-flex; align-items: center; gap: 6px; margin-right: 10px; }
+.bg-guests input { width: 52px; height: 30px; border: 1px solid var(--line); border-radius: 4px; padding: 0 6px; font: inherit; background: #FFF8DC; }
+.bg-empty { background: var(--surface); border: 1px dashed var(--line); border-radius: 8px; padding: 12px 16px; font-size: 14px; }
+.bg-cat { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.bg-ch { display: flex; align-items: center; gap: 14px; padding: 8px 12px; background: var(--gc); color: #fff; flex-wrap: wrap; }
+.bg-ch .bg-cn { background: transparent; border: 1px solid transparent; color: #fff; font: inherit; font-weight: 700; font-size: 15px; padding: 4px 6px; border-radius: 4px; min-width: 160px; }
+.bg-ch .bg-cn:hover, .bg-ch .bg-cn:focus { border-color: rgba(255,255,255,.6); outline: none; }
+.bg-cs { font-size: 13px; opacity: .92; white-space: nowrap; }
+.bg-cs b { font-variant-numeric: tabular-nums; margin-left: 4px; }
+.bg-x { border: none; background: none; color: inherit; font-size: 18px; line-height: 1; width: 30px; height: 30px; border-radius: 4px; cursor: pointer; opacity: .6; }
+.bg-x:hover { opacity: 1; background: rgba(0,0,0,.08); }
+.bg-tw { overflow-x: auto; }
+.bg-t { border-collapse: collapse; table-layout: fixed; width: 100%; min-width: 1360px; font-size: 13.5px; }
+.bg-t th { text-align: left; font-size: 11.5px; text-transform: uppercase; letter-spacing: .03em; color: var(--soft); font-weight: 700; padding: 7px 8px; background: #FAF9F6; border-bottom: 1px solid var(--line); }
+.bg-t td { padding: 3px 4px; border-bottom: 1px solid var(--row-line); vertical-align: middle; }
+.bg-t .r { text-align: right; }
+.bg-t .c { text-align: center; }
+.bg-t td.r { padding-right: 10px; font-variant-numeric: tabular-nums; }
+.bg-t td.tot { font-weight: 700; }
+.bg-t input[type="text"], .bg-t select { width: 100%; box-sizing: border-box; height: 32px; border: 1px solid transparent; border-radius: 4px; padding: 0 6px; font: inherit; background: #FFF8DC; color: var(--ink); }
+.bg-t input[type="text"]:hover, .bg-t select:hover { border-color: var(--line); }
+.bg-t input[type="text"]:focus, .bg-t select:focus { border-color: var(--accent); outline: none; background: #fff; }
+.bg-t input.r { text-align: right; }
+.bg-t input.due.soon { background: #FDE8CC; color: #8A4B00; font-weight: 700; }
+.bg-t input.due.late { background: #FAD7D4; color: #A1271B; font-weight: 700; }
+.bg-q { display: flex; gap: 4px; align-items: center; }
+.bg-q input { flex: 0 0 52px; }
+.bg-q .lk { flex: 0 0 52px; text-align: right; padding-right: 6px; color: #1F3A9E; background: #E8EEFC; border-radius: 4px; height: 32px; line-height: 32px; box-sizing: border-box; }
+.bg-q select { flex: 1; min-width: 0; font-size: 12px; background: #F4F2EE !important; }
+.bg-t select.st-0 { background: #F1F3F4; } .bg-t select.st-1 { background: #E8EEFC; color: #1F3A9E; font-weight: 600; }
+.bg-t select.st-2 { background: #FEF0C7; color: #7A4E00; font-weight: 600; } .bg-t select.st-3 { background: #DCF1DF; color: #1E6B34; font-weight: 600; }
+.bg-paid { white-space: nowrap; border: none; background: #E8EEFC; color: var(--ok); font: inherit; font-weight: 600; border-radius: 4px; height: 30px; padding: 0 8px; cursor: pointer; font-variant-numeric: tabular-nums; }
+.bg-pays td { background: #FAF9F6; }
+.bg-pl { display: flex; flex-direction: column; gap: 6px; padding: 8px 4px 10px; }
+.bg-pr { display: flex; gap: 6px; align-items: center; }
+.bg-pr input { height: 32px; border: 1px solid var(--line); border-radius: 4px; padding: 0 8px; font: inherit; background: #FFF8DC; }
+.bg-pr input[data-bpf="date"] { width: 120px; } .bg-pr input[data-bpf="amount"] { width: 110px; } .bg-pr input[data-bpf="note"] { width: 300px; }
+.bg-pl .hint { color: var(--soft); font-size: 12.5px; }
+.bg-add { border: none; background: none; color: var(--accent); font: inherit; font-weight: 600; padding: 10px 14px; cursor: pointer; }
+.bg-ro { display: flex; justify-content: space-between; gap: 14px; padding: 10px 16px; border-top: 1px solid var(--row-line); }
+.bg-ro .a, .bg-ro .b { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.bg-ro .b { align-items: flex-end; text-align: right; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.bg-ro span, .bg-ro small { font-size: 13px; color: var(--muted); }
+.bg-ro .ok { color: var(--ok); }
+.bg-ro .due.soon { color: #8A4B00; font-weight: 700; } .bg-ro .due.late { color: #A1271B; font-weight: 700; }
+.bg-cat.ro .bg-ch b { font-size: 15px; }
+.bg-foot { margin: 0; font-size: 12.5px; color: var(--soft); }
+@media (max-width: 760px) {
+  .bg-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bg-card b { font-size: 20px; }
+}
 .onb { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; }
 .onb[hidden] { display: none; }
 .onb-h { display: flex; align-items: center; gap: 10px; font-size: 14px; }
@@ -648,7 +716,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
 @media (hover: none) { .sc-acts { opacity: 1; } .sc-mini { display: none; } .sc-nl:focus-within .sc-mini { display: flex; opacity: 1; } }
 @media (max-width: 759px) {
   .sect { order: 5; width: 100%; }
-  .sect button { flex: 1; justify-content: center; height: 32px; }
+  .sect button { flex: 1 1 0; min-width: 0; justify-content: center; height: 32px; padding: 0 6px; gap: 4px; font-size: 12.5px; }
+  .sect svg { flex-shrink: 0; }
   .sc-row, .sc-row.ed { grid-template-columns: minmax(0, 1fr) auto; padding: 10px 14px; }
   .sc-t, .sc-row.ed .sc-t { flex-direction: row; display: flex; gap: 8px; align-items: baseline; grid-column: 1 / -1; }
   .sc-t small { display: inline; }
@@ -815,6 +884,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       <button type="button" id="s-guests" class="on"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.3-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 4.8a3.3 3.3 0 0 1 0 6.4M18 14.8c2 .6 3.2 2.3 3.5 5.2"/></svg>Guests</button>
       <button type="button" id="s-sched"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4M7.5 14h3M7.5 17h6"/></svg>Schedule</button>
       <button type="button" id="s-brief" hidden><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 5h9a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h1"/><path d="M8 11h8M8 15h5"/></svg>Questions <span class="bn" id="s-brief-n" hidden></span></button>
+      <button type="button" id="s-budget" hidden><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg>Budget</button>
     </nav>
     <button type="button" class="sumline" id="sumline" aria-expanded="false" aria-controls="stats"></button>
     <section class="stats" id="stats" aria-label="Summary"></section>
@@ -888,6 +958,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   </div>
   <div class="sc" id="sched" hidden></div>
   <div class="br" id="brief" hidden dir="rtl"></div>
+  <div class="bg" id="budget" hidden></div>
 </main>
 
 <button type="button" class="fab" id="fab" aria-label="Add Guest"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg><span class="lbl">Add Guest</span></button>
@@ -1275,6 +1346,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       S.reminders = res.reminders || {}; S.reminderText = res.reminderText || ''; S.lang = res.lang || 'he';
       S.changes = res.changes || [];
       briefLoad(res.brief);
+      bgLoad(res.budget);
       schedLoad(res.schedule, res.wedding);
       setCustom(res.custom || []);
       applyLabels(res.labels || {});
@@ -3225,8 +3297,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   };
 
   function schedLoad(list, wedding) {
-    SC.on = Array.isArray(list); SC.wedding = wedding || {}; $('sect').hidden = !SC.on;
-    if (!SC.on) { showSect('guests'); return; }
+    SC.on = Array.isArray(list); SC.wedding = wedding || {}; $('sect').hidden = !SC.on && !BG.on; $('s-sched').hidden = !SC.on;
+    if (!SC.on) { if (SECT === 'sched' || SECT === 'brief' || (SECT === 'budget' && !BG.on)) showSect('guests'); return; }
     if (SC.dirty || SC.saving || ($('sched').contains(document.activeElement) && document.activeElement.tagName !== 'BUTTON')) return;   // don't wipe what Noam is typing
     SC.rows = list; scSort();
     var want = location.hash === '#schedule' ? 'sched' : location.hash === '#questions' && BR.on ? 'brief' : '';
@@ -3237,17 +3309,268 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   var SECT = 'guests';
   function showSect(name) {
     if (SECT === 'sched' && name !== 'sched') schedFlush();
+    if (SECT === 'budget' && name !== 'budget') bgFlush();
     SECT = name;
     document.body.classList.toggle('in-sched', name !== 'guests');
-    $('sched').hidden = name !== 'sched'; $('brief').hidden = name !== 'brief';
-    ['guests', 'sched', 'brief'].forEach(function (k) { $('s-' + k).classList.toggle('on', name === k); });
-    try { history.replaceState(null, '', name === 'sched' ? '#schedule' : name === 'brief' ? '#questions' : location.pathname + location.search); } catch (e) {}
+    $('sched').hidden = name !== 'sched'; $('brief').hidden = name !== 'brief'; $('budget').hidden = name !== 'budget';
+    ['guests', 'sched', 'brief', 'budget'].forEach(function (k) { $('s-' + k).classList.toggle('on', name === k); });
+    try { history.replaceState(null, '', name === 'sched' ? '#schedule' : name === 'brief' ? '#questions' : name === 'budget' ? '#budget' : location.pathname + location.search); } catch (e) {}
+    if (name === 'budget') bgRender();
     if (name === 'sched') { schedRender(); try { localStorage.setItem('kai-onb-sched-' + EVENT, '1'); } catch (e) {} }
     if (name === 'brief') { BR.edit = false; briefRender(); }
   }
   $('s-guests').addEventListener('click', function () { showSect('guests'); });
   $('s-sched').addEventListener('click', function () { showSect('sched'); });
   $('s-brief').addEventListener('click', function () { showSect('brief'); });
+  $('s-budget').addEventListener('click', function () { showSect('budget'); });
+  // ---------- Budget (only for events where Noam turned it on) ----------
+  // Noam edits; the couple sees it read-only, without his notes. Quantities can follow the confirmed guests.
+  var BG = { on: false, data: null, open: {}, timer: null, dirty: false, saving: false };
+  var BG_ST = ['Quote', 'Approved', 'Deposit paid', 'Fully paid'];
+  var BG_LINK = [['', 'Typed'], ['adults', 'Adults'], ['kids', 'Children'], ['babies', 'Babies'], ['adkids', 'Adults + children'], ['all', 'All guests']];
+  var BG_COL = ['#3B5BA9', '#6A4C93', '#2E7D6B', '#B5651D', '#5F6368', '#8A3B5B', '#2D6E8E'];
+  function bgId() { return Math.random().toString(36).slice(2, 10); }
+  function bgNum(v) { var n = parseFloat(String(v == null ? '' : v).replace(/[^\d.\-]/g, '')); return isFinite(n) ? n : 0; }
+  function bgEur(n) { return (n < 0 ? '-€' : '€') + Math.round(Math.abs(n)).toLocaleString('en-US'); }
+  function bgDate(s) { var m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(String(s || '').trim()); return m ? new Date(+m[3], m[2] - 1, +m[1]) : null; }
+  function bgCounts() {
+    var c = { adults: 0, kids: 0, babies: 0 };
+    live().forEach(function (g) { if (g.status !== 'Confirmed') return; if (g.age === 'Child') c.kids++; else if (g.age === 'Baby') c.babies++; else c.adults++; });
+    c.adkids = c.adults + c.kids; c.all = c.adkids + c.babies; return c;
+  }
+  function bgNights() { return Math.max(1, Math.round(bgNum(BG.data.nights)) || 1); }
+  function bgQty(l, C) { return l.link ? (C[l.link] || 0) : bgNum(l.qty); }
+  function bgTotal(l, C) { return bgNum(l.unit) * bgQty(l, C) * (l.nightsOn ? bgNights() : 1); }
+  function bgPaid(l) { return (l.pays || []).reduce(function (a, p) { return a + bgNum(p.amount); }, 0); }
+  function bgNorm(b) {
+    b = b && typeof b === 'object' ? b : {};
+    var cats = Array.isArray(b.cats) ? b.cats : [];
+    return { nights: b.nights == null ? 1 : b.nights, buffer: b.buffer == null ? 10 : b.buffer,
+      cats: cats.map(function (c) { return { id: c.id || bgId(), name: c.name || 'Group', lines: (Array.isArray(c.lines) ? c.lines : []).map(function (l) {
+        return { id: l.id || bgId(), vendor: l.vendor || '', item: l.item || '', unit: l.unit == null ? '' : l.unit, qty: l.qty == null ? '' : l.qty, link: l.link || '', nightsOn: !!l.nightsOn,
+          due: l.due || '', status: l.status || 'Quote', note: l.note || '', pays: Array.isArray(l.pays) ? l.pays : [] };
+      }) }; }) };
+  }
+  // All the numbers in one pass.
+  function bgCalc() {
+    var C = bgCounts(), today = new Date(new Date().toDateString()), out = { C: C, total: 0, paid: 0, cats: [], next: null, late: 0, soon: 0 };
+    BG.data.cats.forEach(function (c) {
+      var ct = { total: 0, paid: 0, lines: [] };
+      c.lines.forEach(function (l) {
+        var t = bgTotal(l, C), p = bgPaid(l), left = t - p, d = bgDate(l.due);
+        ct.lines.push({ qty: bgQty(l, C), total: t, paid: p, left: left });
+        ct.total += t; ct.paid += p;
+        if (d && left > 0.005) {
+          if (d < today) out.late += left;
+          else { if (!out.next || d < out.next.d) out.next = { d: d, due: l.due, what: l.vendor || l.item, amount: left }; else if (+d === +out.next.d) { out.next.amount += left; out.next.what = 'several payments'; } }
+          if (d >= today && d - today <= 14 * 864e5) out.soon += left;
+        }
+      });
+      out.cats.push(ct); out.total += ct.total; out.paid += ct.paid;
+    });
+    out.left = out.total - out.paid; out.buffer = out.total * bgNum(BG.data.buffer) / 100;
+    return out;
+  }
+  function bgDueKind(l, left) {
+    var d = bgDate(l.due); if (!d || left <= 0.005) return '';
+    var t = new Date(new Date().toDateString());
+    return d < t ? 'late' : d - t <= 14 * 864e5 ? 'soon' : '';
+  }
+  function bgLoad(b) {
+    BG.on = !!b && typeof b === 'object'; $('s-budget').hidden = !BG.on;
+    if (!BG.on) { if (SECT === 'budget') showSect('guests'); return; }
+    if (BG.dirty || BG.saving || $('budget').contains(document.activeElement) && /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return;   // don't wipe what Noam is typing
+    BG.data = bgNorm(b);
+    if (location.hash === '#budget' && SECT === 'guests') showSect('budget');
+    else if (SECT === 'budget') bgRender();
+  }
+  function bgCards(K) {
+    var pct = K.total ? Math.round(100 * K.paid / K.total) : 0;
+    return '<div class="bg-cards">' +
+      '<div class="bg-card"><span>Total</span><b id="bg-k-total">' + bgEur(K.total) + '</b><small id="bg-k-per">' + (K.C.all ? bgEur(K.total / K.C.all) + ' per guest' : '&nbsp;') + '</small></div>' +
+      '<div class="bg-card"><span>Paid</span><b class="ok" id="bg-k-paid">' + bgEur(K.paid) + '</b><span class="bar"><i id="bg-k-bar" style="width:' + pct + '%"></i></span></div>' +
+      '<div class="bg-card"><span>Left to pay</span><b id="bg-k-left">' + bgEur(K.left) + '</b><small id="bg-k-buf">' + (bgNum(BG.data.buffer) ? '+ ' + bgEur(K.buffer) + ' safety buffer (' + bgNum(BG.data.buffer) + '%)' : '&nbsp;') + '</small></div>' +
+      '<div class="bg-card next' + (K.late ? ' late' : '') + '" id="bg-k-next">' + bgNextHtml(K) + '</div></div>';
+  }
+  function bgNextHtml(K) {
+    if (K.late) return '<span>Late</span><b>' + bgEur(K.late) + '</b><small>a payment date has passed</small>';
+    if (!K.next) return '<span>Next payment</span><b>–</b><small>no dates yet</small>';
+    var days = Math.round((K.next.d - new Date(new Date().toDateString())) / 864e5);
+    return '<span>Next payment · ' + (days === 0 ? 'today' : 'in ' + days + (days === 1 ? ' day' : ' days')) + '</span><b>' + bgEur(K.next.amount) + '</b><small>' + esc(K.next.due + ' · ' + K.next.what) + '</small>';
+  }
+  function bgRender() {
+    var box = $('budget'); if (!BG.data) { box.innerHTML = ''; return; }
+    var K = bgCalc(), admin = S.admin, h = '';
+    h += '<div class="bg-top"><h1>Budget</h1><span class="grow"></span>' +
+      '<button type="button" class="btn" data-bga="csv">Download (Excel)</button>' +
+      (admin ? '<button type="button" class="btn" data-bga="addcat">+ Group</button>' : '') + '</div>';
+    h += bgCards(K);
+    var C = K.C;
+    h += '<div class="bg-guests"><span>Confirmed guests:</span><b>' + C.adults + '</b> adults · <b>' + C.kids + '</b> children · <b>' + C.babies + '</b> babies' +
+      (admin ? '<span class="sep"></span><label>Nights <input type="text" inputmode="numeric" data-bgg="nights" value="' + esc(BG.data.nights) + '"></label>' +
+        '<label>Safety buffer <input type="text" inputmode="numeric" data-bgg="buffer" value="' + esc(BG.data.buffer) + '">%</label>'
+        : ' · ' + bgNights() + (bgNights() === 1 ? ' night' : ' nights')) + '</div>';
+    if (admin && !BG.data.cats.some(function (c) { return c.lines.length; })) h += '<div class="bg-empty">No lines yet. Add them under each group, or <button type="button" class="linkbtn" data-bga="example">start from an example</button> (Shir &amp; Ami’s lines and prices – change or delete anything).</div>';
+    h += admin ? bgAdminHtml(K) : bgCoupleHtml(K);
+    h += '<p class="bg-foot">' + (admin ? 'Quantities set to Adults / Children / Babies follow the confirmed guests by themselves. The couple sees this page without your notes, and can’t change anything.' : 'Prepared by KAI Event Planners. Updates by itself as guests confirm.') + '</p>';
+    box.innerHTML = h;
+  }
+  function bgAdminHtml(K) {
+    var h = '';
+    BG.data.cats.forEach(function (c, ci) {
+      var ct = K.cats[ci], col = BG_COL[ci % BG_COL.length];
+      h += '<section class="bg-cat" style="--gc:' + col + '"><div class="bg-ch"><input type="text" class="bg-cn" data-bgc="' + ci + '" data-bf="name" value="' + esc(c.name) + '" aria-label="Group name">' +
+        '<span class="grow"></span><span class="bg-cs">Total <b id="bg-c-t-' + ci + '">' + bgEur(ct.total) + '</b></span><span class="bg-cs">Paid <b id="bg-c-p-' + ci + '">' + bgEur(ct.paid) + '</b></span><span class="bg-cs">Left <b id="bg-c-l-' + ci + '">' + bgEur(ct.total - ct.paid) + '</b></span>' +
+        '<button type="button" class="bg-x" data-bga="delcat" data-bgc="' + ci + '" aria-label="Delete group" title="Delete group">×</button></div>' +
+        '<div class="bg-tw"><table class="bg-t"><colgroup><col style="width:150px"><col style="width:210px"><col style="width:84px"><col style="width:150px"><col style="width:58px"><col style="width:92px"><col style="width:96px"><col style="width:92px"><col style="width:108px"><col style="width:126px"><col style="width:170px"><col style="width:36px"></colgroup>' +
+        '<thead><tr><th>Vendor</th><th>What</th><th class="r">Unit €</th><th class="r">Qty</th><th>Nights</th><th class="r">Total</th><th class="r">Paid</th><th class="r">Left</th><th>Due</th><th>Status</th><th>Notes (only you)</th><th></th></tr></thead><tbody>';
+      c.lines.forEach(function (l, li) {
+        var lt = ct.lines[li], k = ci + '-' + li, open = !!BG.open[l.id], dk = bgDueKind(l, lt.left);
+        h += '<tr data-bgc="' + ci + '" data-bgl="' + li + '">' +
+          '<td><input type="text" data-bf="vendor" value="' + esc(l.vendor) + '" aria-label="Vendor"></td>' +
+          '<td><input type="text" data-bf="item" value="' + esc(l.item) + '" aria-label="What"></td>' +
+          '<td><input type="text" inputmode="decimal" class="r" data-bf="unit" value="' + esc(l.unit) + '" aria-label="Unit price"></td>' +
+          '<td><span class="bg-q">' + (l.link ? '<b class="lk" id="bg-q-' + k + '" title="Follows the confirmed guests">' + lt.qty + '</b>' : '<input type="text" inputmode="decimal" class="r" data-bf="qty" value="' + esc(l.qty) + '" aria-label="Quantity">') +
+            '<select data-bf="link" aria-label="Quantity from">' + BG_LINK.map(function (o) { return '<option value="' + o[0] + '"' + (l.link === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></span></td>' +
+          '<td class="c"><input type="checkbox" data-bf="nightsOn"' + (l.nightsOn ? ' checked' : '') + ' aria-label="Times the nights"></td>' +
+          '<td class="r tot" id="bg-t-' + k + '">' + bgEur(lt.total) + '</td>' +
+          '<td class="r"><button type="button" class="bg-paid" data-bga="pays" aria-expanded="' + open + '"><span id="bg-p-' + k + '">' + (lt.paid ? bgEur(lt.paid) : '+ pay') + '</span> ' + (open ? '▴' : '▾') + '</button></td>' +
+          '<td class="r" id="bg-l-' + k + '">' + bgEur(lt.left) + '</td>' +
+          '<td><input type="text" class="due ' + dk + '" data-bf="due" value="' + esc(l.due) + '" placeholder="dd/mm/yyyy" aria-label="Due date"></td>' +
+          '<td><select class="st st-' + BG_ST.indexOf(l.status) + '" data-bf="status" aria-label="Status">' + BG_ST.map(function (s) { return '<option' + (l.status === s ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select></td>' +
+          '<td><input type="text" data-bf="note" value="' + esc(l.note) + '" aria-label="Note" dir="auto"></td>' +
+          '<td><button type="button" class="bg-x" data-bga="delline" aria-label="Delete line" title="Delete line">×</button></td></tr>';
+        if (open) {
+          h += '<tr class="bg-pays" data-bgc="' + ci + '" data-bgl="' + li + '"><td></td><td colspan="11"><div class="bg-pl"><b>Payments</b>' +
+            l.pays.map(function (p, pi) {
+              return '<div class="bg-pr" data-bgp="' + pi + '"><input type="text" data-bpf="date" value="' + esc(p.date) + '" placeholder="dd/mm/yyyy" aria-label="Payment date">' +
+                '<input type="text" inputmode="decimal" class="r" data-bpf="amount" value="' + esc(p.amount) + '" placeholder="Amount €" aria-label="Amount">' +
+                '<input type="text" data-bpf="note" value="' + esc(p.note) + '" placeholder="Note (deposit, transfer…)" aria-label="Payment note" dir="auto">' +
+                '<button type="button" class="bg-x" data-bga="delpay" aria-label="Delete payment">×</button></div>';
+            }).join('') +
+            '<div><button type="button" class="btn" data-bga="addpay">+ Add payment</button>' + (lt.left > 0.005 && l.pays.length === 0 ? ' <span class="hint">Tip: type the amount when the couple pays a deposit.</span>' : '') + '</div></div></td></tr>';
+        }
+      });
+      h += '</tbody></table></div><button type="button" class="bg-add" data-bga="addline" data-bgc="' + ci + '">+ Add line</button></section>';
+    });
+    return h;
+  }
+  function bgCoupleHtml(K) {
+    return BG.data.cats.map(function (c, ci) {
+      var ct = K.cats[ci]; if (!c.lines.length) return '';
+      return '<section class="bg-cat ro" style="--gc:' + BG_COL[ci % BG_COL.length] + '"><div class="bg-ch"><b>' + esc(c.name) + '</b><span class="grow"></span><span class="bg-cs">' + bgEur(ct.total) + '</span></div>' +
+        c.lines.map(function (l, li) {
+          var lt = ct.lines[li], q = lt.qty, calc = (q !== 1 || l.nightsOn ? q + ' × ' + bgEur(bgNum(l.unit)) + (l.nightsOn ? ' × ' + bgNights() + ' nights' : '') : ''), dk = bgDueKind(l, lt.left);
+          return '<div class="bg-ro"><div class="a"><b>' + esc(l.vendor || l.item) + '</b>' + (l.vendor && l.item ? '<span>' + esc(l.item) + '</span>' : '') + (calc ? '<small>' + esc(calc) + '</small>' : '') + '</div>' +
+            '<div class="b"><b>' + bgEur(lt.total) + '</b><span class="ok">' + (lt.paid ? 'Paid ' + bgEur(lt.paid) : 'Not paid yet') + '</span>' + (lt.left > 0.005 && l.due ? '<span class="due ' + dk + '">' + esc(l.due) + ' · ' + bgEur(lt.left) + '</span>' : '') + '</div></div>';
+        }).join('') + '</section>';
+    }).join('');
+  }
+  // Update every computed number without redrawing (keeps the cursor where Noam is typing).
+  function bgRecalc() {
+    var K = bgCalc(), set = function (id, t) { var el = $(id); if (el) el.textContent = t; };
+    set('bg-k-total', bgEur(K.total)); set('bg-k-paid', bgEur(K.paid)); set('bg-k-left', bgEur(K.left));
+    set('bg-k-per', K.C.all ? bgEur(K.total / K.C.all) + ' per guest' : '');
+    set('bg-k-buf', bgNum(BG.data.buffer) ? '+ ' + bgEur(K.buffer) + ' safety buffer (' + bgNum(BG.data.buffer) + '%)' : '');
+    if ($('bg-k-bar')) $('bg-k-bar').style.width = (K.total ? Math.round(100 * K.paid / K.total) : 0) + '%';
+    if ($('bg-k-next')) { $('bg-k-next').innerHTML = bgNextHtml(K); $('bg-k-next').classList.toggle('late', !!K.late); }
+    BG.data.cats.forEach(function (c, ci) {
+      var ct = K.cats[ci];
+      set('bg-c-t-' + ci, bgEur(ct.total)); set('bg-c-p-' + ci, bgEur(ct.paid)); set('bg-c-l-' + ci, bgEur(ct.total - ct.paid));
+      c.lines.forEach(function (l, li) {
+        var lt = ct.lines[li], k = ci + '-' + li;
+        set('bg-t-' + k, bgEur(lt.total)); set('bg-l-' + k, bgEur(lt.left)); set('bg-p-' + k, lt.paid ? bgEur(lt.paid) : '+ pay'); set('bg-q-' + k, lt.qty);
+      });
+    });
+  }
+  function bgChanged(now) { BG.dirty = true; clearTimeout(BG.timer); BG.timer = setTimeout(bgFlush, now ? 0 : 900); }
+  function bgFlush() {
+    clearTimeout(BG.timer); if (!BG.dirty || BG.saving || !BG.data) return;
+    BG.dirty = false; BG.saving = true; saving('busy');
+    api('saveBudget', { budget: BG.data }).then(function () {
+      BG.saving = false; saving('ok'); if (BG.dirty) bgFlush();
+    }).catch(function (e) { BG.saving = false; BG.dirty = true; saving('err'); toast(e.server ? e.message : 'Couldn’t save the budget. Check your connection.', null, null, true); });
+  }
+  function bgLineAt(el) { var tr = el.closest('[data-bgl]'); return tr ? BG.data.cats[+tr.dataset.bgc].lines[+tr.dataset.bgl] : null; }
+  $('budget').addEventListener('input', function (e) {
+    var t = e.target; if (!S.admin || !BG.data) return;
+    if (t.dataset.bgg) { BG.data[t.dataset.bgg] = t.value.trim(); bgRecalc(); bgChanged(); return; }
+    if (t.dataset.bf === 'name') { BG.data.cats[+t.dataset.bgc].name = t.value; bgChanged(); return; }
+    var l = bgLineAt(t); if (!l) return;
+    if (t.dataset.bpf) { var p = l.pays[+t.closest('[data-bgp]').dataset.bgp]; p[t.dataset.bpf] = t.value; bgRecalc(); bgChanged(); return; }
+    if (t.dataset.bf && t.type !== 'checkbox' && t.tagName !== 'SELECT') {
+      l[t.dataset.bf] = t.value; bgRecalc(); bgChanged();
+      if (t.dataset.bf === 'due') { var tr = t.closest('tr'), lt = bgCalc().cats[+tr.dataset.bgc].lines[+tr.dataset.bgl]; t.className = 'due ' + bgDueKind(l, lt.left); }
+    }
+  });
+  $('budget').addEventListener('change', function (e) {
+    var t = e.target; if (!S.admin || !BG.data) return;
+    var l = bgLineAt(t); if (!l) return;
+    if (t.dataset.bf === 'nightsOn') { l.nightsOn = t.checked; bgRecalc(); bgChanged(); }
+    else if (t.dataset.bf === 'status') { l.status = t.value; t.className = 'st st-' + BG_ST.indexOf(l.status); bgChanged(); }
+    else if (t.dataset.bf === 'link') { if (!t.value && l.link) l.qty = bgQty(l, bgCounts()); l.link = t.value; bgChanged(); bgRender(); }
+  });
+  $('budget').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-bga]'); if (!b || !BG.data) return;
+    var a = b.dataset.bga;
+    if (a === 'csv') { bgCsv(); return; }
+    if (!S.admin) return;
+    var l = bgLineAt(b), tr = b.closest('[data-bgl]'), ci = tr ? +tr.dataset.bgc : +b.dataset.bgc;
+    if (a === 'addcat') { BG.data.cats.push({ id: bgId(), name: 'New group', lines: [] }); bgChanged(true); bgRender(); var ins = $('budget').querySelectorAll('.bg-cn'); ins[ins.length - 1].select(); return; }
+    if (a === 'delcat') {
+      var cat = BG.data.cats[ci];
+      if (cat.lines.length && !confirmDel('Delete the group “' + cat.name + '” and its ' + cat.lines.length + ' lines?')) return;
+      BG.data.cats.splice(ci, 1); bgChanged(true); bgRender(); return;
+    }
+    if (a === 'addline') {
+      BG.data.cats[ci].lines.push({ id: bgId(), vendor: '', item: '', unit: '', qty: 1, link: '', nightsOn: false, due: '', status: 'Quote', note: '', pays: [] });
+      bgChanged(); bgRender();
+      var rows = $('budget').querySelectorAll('tr[data-bgc="' + ci + '"]:not(.bg-pays) [data-bf="vendor"]'); if (rows.length) rows[rows.length - 1].focus();
+      return;
+    }
+    if (a === 'example') { bgExample(); bgChanged(true); bgRender(); return; }
+    if (!l) return;
+    if (a === 'delline') { if ((l.item || l.vendor || bgPaid(l)) && !confirmDel('Delete “' + (l.item || l.vendor) + '”?')) return; BG.data.cats[ci].lines.splice(+tr.dataset.bgl, 1); bgChanged(true); bgRender(); return; }
+    if (a === 'pays') { BG.open[l.id] = !BG.open[l.id]; bgRender(); return; }
+    if (a === 'addpay') {
+      var d = new Date(); l.pays.push({ id: bgId(), date: ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + '/' + d.getFullYear(), amount: '', note: '' });
+      bgChanged(); bgRender();
+      var am = $('budget').querySelectorAll('tr.bg-pays[data-bgc="' + ci + '"][data-bgl="' + tr.dataset.bgl + '"] [data-bpf="amount"]'); if (am.length) am[am.length - 1].focus();
+      return;
+    }
+    if (a === 'delpay') { l.pays.splice(+b.closest('[data-bgp]').dataset.bgp, 1); bgChanged(true); bgRender(); }
+  });
+  function confirmDel(msg) { return window.confirm(msg); }
+  function bgCsv() {
+    var K = bgCalc(), q = function (v) { v = String(v == null ? '' : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+    var rows = [['Group', 'Vendor', 'What', 'Unit €', 'Qty', 'Nights', 'Total €', 'Paid €', 'Left €', 'Due', 'Status'].concat(S.admin ? ['Notes'] : [])];
+    BG.data.cats.forEach(function (c, ci) { c.lines.forEach(function (l, li) {
+      var lt = K.cats[ci].lines[li];
+      rows.push([c.name, l.vendor, l.item, bgNum(l.unit), lt.qty, l.nightsOn ? bgNights() : '', Math.round(lt.total * 100) / 100, Math.round(lt.paid * 100) / 100, Math.round(lt.left * 100) / 100, l.due, l.status].concat(S.admin ? [l.note] : []));
+    }); });
+    rows.push(['Total', '', '', '', '', '', Math.round(K.total * 100) / 100, Math.round(K.paid * 100) / 100, Math.round(K.left * 100) / 100]);
+    var blob = new Blob(['﻿' + rows.map(function (r) { return r.map(q).join(','); }).join('\n')], { type: 'text/csv;charset=utf-8' });
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = ($('couple').textContent || 'Budget') + ' – budget.csv'; document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+  // A starting point: the lines and prices from Shir & Ami's sheet (Noam changes or deletes anything).
+  function bgExample() {
+    var L = function (vendor, item, unit, qty, link, nightsOn) { return { id: bgId(), vendor: vendor, item: item, unit: unit, qty: qty, link: link || '', nightsOn: !!nightsOn, due: '', status: 'Quote', note: '', pays: [] }; };
+    var want = {
+      'Accommodation': [L('Hotel', 'Rooms for 2 guests', 395, 44, '', true), L('Hotel', 'Extra adult per room', 108, 56, '', true), L('Hotel', 'Extra child per room (3–12)', 45, 0, 'kids', true), L('Hotel', 'Babies (0–2)', 0, 0, 'babies', true)],
+      'Venue fees': [L('Hotel', 'Wedding banquet', 2600, 1), L('Hotel', 'After party venue', 1500, 1)],
+      'Food & drinks': [L('Hotel', 'Welcome drinks – adults', 24, 0, 'adults'), L('Hotel', 'Welcome drinks – children', 10, 0, 'kids'), L('Hotel', 'Canapés – adults', 16, 0, 'adults'), L('Hotel', 'Canapés – children (half price)', 8, 0, 'kids'),
+        L('Hotel', 'Dinner buffet – adults', 85, 0, 'adults'), L('Hotel', 'Dinner buffet – children (half price)', 42.5, 0, 'kids'), L('Hotel', 'Dinner drinks – adults', 70, 0, 'adults'), L('Hotel', 'Dinner drinks – children', 12.5, 0, 'kids'),
+        L('Hotel', 'After party snacks', 25, 100), L('Hotel', 'After party minimum drinks', 1500, 1)],
+      'Suppliers': [L('', 'String lights', 1500, 1), L('', 'Dance floor', 1500, 1), L('', 'DJ + sound and light', 1000, 1), L('', 'Photographer', 1200, 1), L('', 'Flowers & décor', 3000, 1), L('', 'Transportation', 2500, 1)],
+      'Planning team': [L('KAI Event Planners', 'Planning fee', 10000, 1), L('KAI Event Planners', 'Production team', 2000, 1)]
+    };
+    Object.keys(want).forEach(function (name) {
+      var c = BG.data.cats.filter(function (x) { return x.name === name; })[0];
+      if (!c) { c = { id: bgId(), name: name, lines: [] }; BG.data.cats.push(c); }
+      c.lines = c.lines.concat(want[name]);
+    });
+  }
 
   // ----- saving: the whole list, a moment after the last change -----
   function schedChanged(now) { SC.dirty = true; clearTimeout(SC.timer); SC.timer = setTimeout(schedFlush, now ? 0 : 900); }
