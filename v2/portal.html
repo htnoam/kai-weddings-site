@@ -228,7 +228,7 @@ button.btn:disabled { opacity: .6; }
       stayT: 'מלון ושולחן', room: 'חדר', table: 'שולחן', cin: 'צ׳ק־אין', cout: 'צ׳ק־אאוט', notComing: 'לא מגיע/ה', infoT: 'מידע על האירוע',
       wa: 'לשאלות - כתבו לנו באינסטגרם', insta: 'עקבו אחרינו באינסטגרם', editName: 'תיקון שם',
       homeT: 'שמרו את האזור האישי במסך הבית', homeSub: 'טיסות, לינה וכל המידע על החתונה בלחיצה אחת', homeBtn: 'שמירה',
-      homeStep1: 'לחצו על כפתור השיתוף בספארי', homeStep2: 'גללו ובחרו "הוספה למסך הבית"', homeStep3: 'לחצו "הוסף"', homeOk: 'הבנתי',
+      homeAndroid: 'בתפריט של הדפדפן (⋮) בחרו "הוספה למסך הבית" או "התקנת אפליקציה".', homeStep1: 'לחצו על כפתור השיתוף בספארי', homeStep2: 'גללו ובחרו "הוספה למסך הבית"', homeStep3: 'לחצו "הוסף"', homeOk: 'הבנתי',
       errNone: 'לא מצאנו את המספר הזה ברשימת האורחים. בדקו שזה המספר שאיתו אישרתם הגעה, או כתבו לנו.',
       errBad: 'מספר הטלפון לא נראה תקין.', errNet: 'משהו השתבש. נסו שוב בעוד רגע.', errClosed: 'העדכון סגור כרגע. כתבו לנו אם צריך לשנות משהו.',
       errNames: 'נא למלא שם פרטי ושם משפחה באנגלית.', errDate: 'תאריך בפורמט DD/MM/YYYY ושעה בפורמט HH:MM.', missing: 'האירוע לא נמצא. בדקו את הלינק.'
@@ -242,7 +242,7 @@ button.btn:disabled { opacity: .6; }
       addMember: '+ Add a family member', newMember: 'New family member', first: 'First name', last: 'Last name', namesHint: 'Please write the names in English letters',
       save: 'Save', saved: '✓ Saved', flightsT: 'Flights', flightsSub: 'So we know when to pick you up at the airport.',
       homeT: 'Save your guest area to your home screen', homeSub: 'Flights, stay and all the wedding details in one tap', homeBtn: 'Save',
-      homeStep1: 'Tap the Share button in Safari', homeStep2: 'Scroll down and tap “Add to Home Screen”', homeStep3: 'Tap “Add”', homeOk: 'Got it',
+      homeAndroid: 'In your browser menu (⋮), tap “Add to Home screen” or “Install app”.', homeStep1: 'Tap the Share button in Safari', homeStep2: 'Scroll down and tap “Add to Home Screen”', homeStep3: 'Tap “Add”', homeOk: 'Got it',
       same: 'The whole family is on the same flights', there: 'Arrival · landing', back: 'Departure · take-off', date: 'Date', time: 'Time', flight: 'Flight', saveFl: 'Save flight details',
       stayT: 'Hotel & table', room: 'Room', table: 'Table', cin: 'Check-in', cout: 'Check-out', notComing: 'not coming', infoT: 'Event info',
       wa: 'Questions? Message us on Instagram', insta: 'Follow us on Instagram', editName: 'Fix name',
@@ -426,8 +426,15 @@ button.btn:disabled { opacity: .6; }
   window.addEventListener('appinstalled', function () { installEvt = null; $('c-home').hidden = true; });
   $('home-go').addEventListener('click', function () {
     if (installEvt) { installEvt.prompt(); installEvt.userChoice.then(function () { installEvt = null; showHome(); }); return; }
-    $('home-help').hidden = false; $('home-help').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    showHelp(); $('home-help').scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
+  // iPhone: the Safari steps; other phones: the browser menu
+  function showHelp() {
+    $('home-help').querySelector('ol').hidden = !IS_IOS;
+    var a = $('home-help').querySelector('.and'); if (!a) { a = document.createElement('p'); a.className = 'and'; a.style.margin = '6px 0 10px'; $('home-help').querySelector('ol').after(a); }
+    a.textContent = T[L].homeAndroid; a.hidden = IS_IOS;
+    $('home-help').hidden = false;
+  }
   $('home-help-x').addEventListener('click', function () { $('home-help').hidden = true; });
   $('home-x').addEventListener('click', function () { try { localStorage.setItem('kai-home-x-' + EVENT, '1'); } catch (e) {} $('c-home').hidden = true; $('home-help').hidden = true; });
 
@@ -449,6 +456,12 @@ button.btn:disabled { opacity: .6; }
       state = {}; renderFlights.same = undefined;
       $('loading').hidden = true; $('family').hidden = false; $('hi-wrap').hidden = false;
       apply(); showHome();
+      // Came from "Save to home screen" on the thank-you card: show the save card (and the steps) right away.
+      if (/[?&]home=1/.test(location.search) && !standalone()) {
+        $('c-home').hidden = false;
+        if (IS_IOS || !installEvt) showHelp();
+        setTimeout(function () { ($('home-help').hidden ? $('c-home') : $('home-help')).scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 300);
+      }
     }).catch(function () { showLogin(T[L].errNet); });
   }
   $('login').addEventListener('submit', function (e) {
