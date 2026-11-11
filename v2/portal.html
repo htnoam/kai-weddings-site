@@ -10,7 +10,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" id="apptitle" content="KAI">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Ephesis&family=Gveret+Levin&family=Assistant:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Ephesis&family=Gveret+Levin&family=Assistant:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@400;500&display=swap">
 <style>
 
 /* Guest portal: log in with a phone number, see and update the family on that number. Same look as the RSVP form. */
@@ -85,6 +85,19 @@ h2 .ic { width: 28px; height: 28px; border-radius: 999px; background: #F1EFEA; d
 .kai { text-align: center; font: 500 11px var(--serif); letter-spacing: .3em; color: var(--muted); padding-top: 4px; direction: ltr; }
 
 [hidden] { display: none !important; }
+/* theme "Sage" (Settings › Theme = Sage, Shir & Ami): the same ivory, green and mint as their invitation */
+body.t-sage { --linen: #F4EFE8; --card: #FAF7F2; --ink: #3F5D49; --text: #2C3B31; --muted: #5E6B60; --soft: #8C958C; --line: #D9DDD3; --hair: #E6E3DA; }
+.t-sage .card { border-radius: 14px; box-shadow: 0 0 0 1px rgba(201,185,155,.55), 0 18px 28px -24px rgba(60,70,50,.45); }
+.t-sage .couple { font: 400 36px/1.1 'Cormorant Garamond', 'Frank Ruhl Libre', serif; color: #24402F; }
+.t-sage .hello, .t-sage h2 { font-family: 'Frank Ruhl Libre', var(--serif); font-weight: 500; color: #24402F; }
+.t-sage .btn, .t-sage .hc-btn, .t-sage .seg button[aria-pressed=true], .t-sage .seg span.on { background: #C8D5C7; border: 1px solid rgba(110,130,110,.22); color: #2C3B31; }
+.t-sage .btn, .t-sage .hc-btn { border-radius: 7px; font-family: 'Frank Ruhl Libre', var(--serif); font-weight: 400; }
+.t-sage .btn.light { background: transparent; border: 1px dashed #C9BFA5; color: #3F5D49; }
+.t-sage .seg button, .t-sage .seg span, .t-sage .member, .t-sage .input, .t-sage .f .v, .t-sage .member .two input { border-radius: 7px; }
+.t-sage .seg span.no.on { background: #E9D9D5; border-color: #D9C2BC; color: #7A2E25; }
+.t-sage .wa { border-radius: 7px; border-color: rgba(110,130,110,.35); background: #C8D5C7; color: #2C3B31; }
+.t-sage .chk i { background: #3F5D49; }
+.t-sage .age, .t-sage h2 .ic, .t-sage .tile { background: #EEF2EC; }
 button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
 :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
@@ -257,7 +270,7 @@ button.btn:disabled { opacity: .6; }
     var r = String((INFO && INFO['Age Groups']) || '').split(',').map(function (part) { var m = /^\s*([A-Za-z]+)\s+(\d+)\s*[-–]\s*(\d+)\s*$/.exec(part); return m && { name: m[1].charAt(0).toUpperCase() + m[1].slice(1).toLowerCase(), lo: +m[2], hi: +m[3] }; }).filter(Boolean)
       .sort(function (a, b) { return b.lo - a.lo; });
     if (!r.length) return ['Adult', 'Child', 'Baby'].map(function (a) { return [a, t.ages[a]]; });
-    return [['Adult', t.groupNames.Adult + ' · ' + (r[0].hi + 1) + '+\u200E']].concat(r.map(function (g) { return [g.name, (t.groupNames[g.name] || g.name) + ' · ' + g.lo + '–' + g.hi]; }));
+    return [['Adult', t.groupNames.Adult + ' · \u2066' + (r[0].hi + 1) + '+\u2069']].concat(r.map(function (g) { return [g.name, (t.groupNames[g.name] || g.name) + ' · \u2066' + g.lo + '–' + g.hi + '\u2069']; }));
   }
   try { var q = new URLSearchParams(location.search).get('lang'); if (q === 'he' || q === 'en') { L = q; chosen = true; } else if (localStorage.getItem('kai-rsvp-lang')) { L = localStorage.getItem('kai-rsvp-lang'); chosen = true; } } catch (e) {}
 
@@ -410,6 +423,7 @@ button.btn:disabled { opacity: .6; }
   }
   function setApp() {
     var name = INFO && INFO.couple || 'KAI';
+    document.body.classList.toggle('t-sage', /^sage$/i.test(INFO && INFO.Theme || ''));
     $('apptitle').setAttribute('content', name); $('touchicon').href = photo(180); $('home-img').src = photo(180);
     var m = { name: name, short_name: name, start_url: location.origin + BASE + EVENT + '/guests', scope: location.origin + '/', display: 'standalone',
       background_color: '#E9E3D8', theme_color: '#E9E3D8',

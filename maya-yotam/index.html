@@ -125,6 +125,9 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visib
 .thanks p { margin: 0; font-family: var(--sans); font-size: 17px; line-height: 1.6; }
 .to-portal { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-top: 6px; padding-top: 14px; border-top: 1px solid rgba(0,0,0,.08); }
 .to-portal .send { display: grid; place-items: center; text-decoration: none; }
+.keep { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.keep-btn { display: flex; align-items: center; justify-content: center; gap: 7px; min-height: 44px; padding: 0 10px; border: 1px solid var(--line); border-radius: 2px; background: var(--field); color: var(--text); font: 14px var(--sans); text-decoration: none; text-align: center; }
+.keep-ig { width: 100%; margin-top: 2px; }
 .link-btn { background: none; border: none; color: var(--ink); text-decoration: underline; font: 15px var(--sans); cursor: pointer; min-height: 44px; }
 
 /* ---------- footer ---------- */
@@ -219,7 +222,12 @@ footer p { margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1
     <div class="to-portal" id="to-portal" hidden>
       <p>באזור האישי שלכם תוכלו להוסיף פרטי טיסה ולמצוא את כל המידע על החתונה.</p>
       <a class="send" href="/maya-yotam/guests">לאזור האישי</a>
+      <div class="keep">
+        <a class="keep-btn" id="self-wa" href="#" target="_blank" rel="noopener"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.6-5.2A8.5 8.5 0 1 1 21 11.5z"/></svg><span>שליחה בוואטסאפ</span></a>
+        <a class="keep-btn" href="/maya-yotam/guests?home=1"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M12 8v6M9 11h6"/></svg><span>שמירה במסך הבית</span></a>
+      </div>
     </div>
+    <a class="keep-btn keep-ig" href="https://instagram.com/kai_wedding_planners" target="_blank" rel="noopener"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg><span>עקבו אחרינו באינסטגרם</span></a>
     <button type="button" class="link-btn" id="edit">עריכת התשובה</button>
   </section>
   <footer dir="ltr" lang="en">
@@ -307,9 +315,10 @@ footer p { margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1
       .then(function (res) {
         if (!res.ok) throw new Error(res.error);
         partyId = res.partyId;
-        // Next step: the guest area, signed in with this phone. Shown only once flights, stay or info are turned on.
-        $('to-portal').hidden = !PORTAL_MORE || attend === 'no';
-        if (PORTAL_MORE && payload.phone) try { localStorage.setItem('kai-portal-maya-yotam', payload.phone); } catch (x) {}
+        // Next step: the guest area, signed in with this phone (always shown after a yes / maybe), plus ways to keep the link.
+        $('to-portal').hidden = attend === 'no';
+        if (payload.phone) try { localStorage.setItem('kai-portal-maya-yotam', payload.phone); } catch (x) {}
+        $('self-wa').href = 'https://wa.me/?text=' + encodeURIComponent('החתונה של מאיה ויותם – האזור האישי שלי:\n' + location.origin + '/maya-yotam/guests');
         $('rsvp').hidden = true; $('thanks').hidden = false;
         $('thanks').scrollIntoView({ behavior: 'smooth', block: 'center' });
       })
