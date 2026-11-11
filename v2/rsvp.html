@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>You’re invited</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Ephesis&family=Gveret+Levin&family=Frank+Ruhl+Libre:wght@400;500&family=Assistant:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Ephesis&family=Gveret+Levin&family=Frank+Ruhl+Libre:wght@400;500;700&family=Assistant:wght@400;500;600&display=swap">
 <style>
 /* Linen table, one white card laid on it. Spaced serif caps + a loose script (Hebrew falls through to Gveret Levin / Frank Ruhl),
    near-black type, cobalt only where the sea is: the photo washes up into the card from the bottom. */
@@ -170,6 +170,23 @@ html[dir=ltr] input[type=tel] { text-align: left; }
 .hosting .h-note { margin: 0; font-size: 13px; line-height: 1.5; color: var(--soft); text-wrap: balance; }
 .hero .caps.day { white-space: normal; text-wrap: balance; }
 .names-hint { margin: -12px 0 0; font-size: 13px; color: var(--soft); }
+/* "Magazine" first page (event setting Hero Layout = Magazine): the whole photo on top, uncropped, then the names and the details under it. */
+.kicker, .names, .rule, .cue { display: none; }
+.hero.mag { transform: none; padding: 0 26px 30px; }
+.hero.mag .sea { order: -1; width: calc(100% + 52px); margin: 0 -26px 26px; }
+.hero.mag .sea img { mix-blend-mode: normal; -webkit-mask-image: none; mask-image: none; }
+.hero.mag.no-photo { padding-top: 46px; }
+.hero.mag .kicker { display: block; order: 1; font: 600 12px var(--sans); letter-spacing: .08em; color: #8A8176; }
+.hero.mag .names { display: block; order: 2; margin-top: 6px; font: 700 clamp(44px, 14.5vw, 58px)/1.1 'Frank Ruhl Libre', var(--serif); color: var(--text); }
+.hero.mag .names i { font: italic 400 .9em 'Cormorant Garamond', serif; color: var(--ink); margin: 0 .08em; }
+.hero.mag .title { order: 3; margin-top: 10px; font-family: var(--display); font-size: 36px; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--ink); transform: rotate(-2deg); white-space: normal; }
+.hero.mag .title em { font-size: 1em; margin: 0; vertical-align: 0; }
+.hero.mag .rule { display: block; order: 4; width: 48px; height: 1px; margin-top: 22px; background: var(--line, #CFC8BC); }
+.hero.mag .when { order: 5; margin-top: 20px; font-weight: 600; font-size: clamp(20px, 6.6vw, 26px); letter-spacing: .1em; }
+.hero.mag .caps.day { order: 6; margin-top: 8px; font: 16px var(--serif); letter-spacing: 0; text-transform: none; }
+.hero.mag .caps.where { order: 7; margin-top: 8px; font: 13px var(--serif); letter-spacing: .26em; }
+.hero.mag .script { display: none; }
+.hero.mag .cue { order: 8; margin-top: 30px; display: flex; flex-direction: column; align-items: center; gap: 4px; font: 14px var(--sans); color: #5C554D; text-decoration: none; }
 .missing { padding: 80px 24px; text-align: center; font: 18px var(--serif); color: var(--muted); }
 </style>
 </head>
@@ -200,6 +217,10 @@ html[dir=ltr] input[type=tel] { text-align: left; }
     <div class="caps day" id="h-day"></div>
     <div class="caps where" id="h-where"></div>
     <div class="script" id="h-script"></div>
+    <div class="kicker" id="h-kick"></div>
+    <div class="names" id="h-names"></div>
+    <span class="rule" aria-hidden="true"></span>
+    <a class="cue" href="#rsvp"><span id="h-cue"></span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></a>
     <div class="sea" id="h-sea" hidden><img id="h-img" alt="" width="860" height="948"></div>
   </header>
 
@@ -290,7 +311,7 @@ html[dir=ltr] input[type=tel] { text-align: left; }
       errName: 'נא למלא שם פרטי ושם משפחה.', errHeb: 'נא לכתוב את השמות באנגלית.', errSend: 'משהו השתבש בשליחה. נסו שוב בעוד רגע.',
       types: [['adult', 'מבוגר', ''], ['child', 'ילד', 'עד גיל 10'], ['baby', 'תינוק', 'עד גיל 2']], ageOf: 'גיל אורח', more: 'אורח נוסף', less: 'פחות אורחים',
       questions: 'שאלות? נועם סלח, מפיק האירוע,<br>ישמח לעזור.', waBtn: 'הודעה לנועם בווטסאפ', insta: 'עקבו אחרינו באינסטגרם',
-      intro: 'היי, יקרים ואהובים שלנו.\nיש סיבה שהגעתם עד לכאן!', ask: 'תצטרפו אלינו?', script: 'נתראה שם', thanks: 'התשובה שלכם נשמרה. מחכים לחגוג איתכם!',
+      intro: 'היי, יקרים ואהובים שלנו.\nיש סיבה שהגעתם עד לכאן!', ask: 'תצטרפו אלינו?', script: 'נתראה שם', kicker: 'החתונה של', cue: 'לאישור הגעה', thanks: 'התשובה שלכם נשמרה. מחכים לחגוג איתכם!',
       weddingDay: 'יום החתונה', locale: 'he-IL', missing: 'האירוע לא נמצא. בדקו את הלינק.', closed: 'טופס האישור עוד לא פתוח.',
       privacy: 'הפרטים שלכם נראים רק לזוג ולמתכנן החתונה.', selfWa: 'לשלוח לעצמי בוואטסאפ', youSaid: 'מה ענית:', coming: 'מגיעים', notComing: 'לא מגיעים', notSure: 'עוד לא בטוחים',
       people: function (n) { return n === 1 ? 'אורח אחד' : n + ' אורחים'; }, change: 'לשינוי התשובה:'
@@ -304,7 +325,7 @@ html[dir=ltr] input[type=tel] { text-align: left; }
       errName: 'Please fill in your first and last name.', errHeb: 'Please write the names in English letters.', errSend: 'Something went wrong. Please try again in a moment.',
       types: [['adult', 'Adult', ''], ['child', 'Child', 'up to 10'], ['baby', 'Baby', 'up to 2']], ageOf: 'Age of guest', more: 'Add a guest', less: 'Remove a guest',
       questions: 'Questions? Noam Salach, the event planner,<br>is happy to help.', waBtn: 'Message Noam on WhatsApp', insta: 'Follow us on Instagram',
-      intro: 'Hi, our dear and beloved ones.\nThere’s a reason you’re here!', ask: 'Will you join us?', script: 'See you there', thanks: 'Your reply is saved. We can’t wait to celebrate with you!',
+      intro: 'Hi, our dear and beloved ones.\nThere’s a reason you’re here!', ask: 'Will you join us?', script: 'See you there', kicker: 'The wedding of', cue: 'RSVP', thanks: 'Your reply is saved. We can’t wait to celebrate with you!',
       weddingDay: 'Wedding day', locale: 'en-GB', missing: 'This event was not found. Please check the link.', closed: 'This RSVP form isn’t open yet.',
       privacy: 'Your details are seen only by the couple and the wedding planner.', selfWa: 'Send it to myself on WhatsApp', youSaid: 'Your reply:', coming: 'Coming', notComing: 'Not coming', notSure: 'Not sure yet',
       people: function (n) { return n === 1 ? '1 guest' : n + ' guests'; }, change: 'To change your reply:'
@@ -351,6 +372,12 @@ html[dir=ltr] input[type=tel] { text-align: left; }
       $('h-day').textContent = d ? t.weddingDay + ' · ' + d.toLocaleDateString(t.locale, { weekday: 'long', day: 'numeric', month: 'long' }) : '';
       $('h-where').textContent = CFG.place || '';
       $('h-script').textContent = txt('Script', t.script);
+      var mag = /^magazine$/i.test(CFG['Hero Layout'] || '');
+      $('hero').classList.toggle('mag', mag);
+      if (mag) {
+        $('h-kick').textContent = t.kicker; $('h-cue').textContent = t.cue;
+        $('h-names').innerHTML = esc(txt('Names', CFG.couple)).replace(/ (&amp;|and|ו) /, ' <i>&amp;</i> ');
+      }
       $('intro').innerHTML = lines(txt('Intro', t.intro));
       $('ask').textContent = txt('Ask', t.ask);
       var hTitle = txt('Hosting Title'), hChips = txt('Hosting Chips'), hText = txt('Hosting Text'), hNote = txt('Hosting Note');
