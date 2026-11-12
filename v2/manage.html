@@ -6,6 +6,7 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
 <link rel="apple-touch-icon" href="/app/icons/kai-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/app/icons/kai-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -1391,7 +1392,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       pushInit();
       $('addcol').hidden = true;
       $('refresh').hidden = false;
-      document.title = 'Guest List – ' + (res.wedding.couple || 'Wedding');
+      document.title = res.wedding.couple || 'Guest List';
       setAppManifest(res.wedding.couple || 'Guest List'); showInstallBar();
       if (res.admin) adminUrl(res.wedding.couple || 'Guest List');
       $('gate').hidden = true; $('app').hidden = false; $('fab').classList.add('show');
