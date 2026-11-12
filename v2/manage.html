@@ -167,6 +167,57 @@ input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--ink); marg
   .panel { position: fixed; inset: 0; z-index: 30; max-height: none; border-radius: 0; border: none; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(24px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
 }
 
+/* Phones: a guest's details as cards that open and close (sticky top with name, call / WhatsApp and status) */
+.panel.pm { padding-top: 0; gap: 10px; background: var(--bg); }
+.panel.pm > * { flex-shrink: 0; }
+.pm .pm-hd { position: sticky; top: 0; z-index: 2; margin: 0 -16px; padding: max(12px, env(safe-area-inset-top, 0px)) 16px 10px; background: var(--surface); border-bottom: 1px solid var(--hair); display: flex; flex-direction: column; gap: 10px; }
+.pm .pm-top { display: flex; align-items: center; gap: 10px; }
+.pm .pm-top .name { flex: 1; min-width: 0; font-size: 21px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pm .pm-top .name small { font-size: 13px; color: var(--soft); font-weight: 500; }
+.pm .pm-saved { font-size: 13px; font-weight: 600; color: var(--ok); opacity: 0; transition: opacity .25s; white-space: nowrap; }
+.pm .pm-saved.on { opacity: 1; }
+.pm .x { border-radius: 999px; }
+.pm-quick { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pm-qa { height: 40px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); display: flex; align-items: center; justify-content: center; gap: 7px; font-weight: 600; font-size: 14.5px; text-decoration: none; color: var(--text); }
+.pm-qa.pm-wa { color: #1A7F43; border-color: #BFE3CC; background: #F2FBF5; }
+.pm-st { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.pm-st button { min-height: 44px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); font-weight: 600; font-size: 14.5px; }
+.pm-st button.on.c { background: var(--ok); border-color: var(--ok); color: #fff; }
+.pm-st button.on.m { background: #B07A1C; border-color: #B07A1C; color: #fff; }
+.pm-st button.on.d { background: var(--bad); border-color: var(--bad); color: #fff; }
+.pm-card { background: var(--surface); border: 1px solid var(--hair); border-radius: 10px; }
+.pm-ch { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 56px; padding: 10px 14px; background: none; border: none; text-align: left; }
+.pm-ch .ic { width: 30px; height: 30px; border-radius: 999px; background: #F1EFEA; display: grid; place-items: center; font-size: 15px; flex: none; }
+.pm-ch .t { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.pm-ch .t b { font-size: 16px; }
+.pm-ch .t span { font-size: 13.5px; color: var(--soft); line-height: 1.45; overflow-wrap: anywhere; }
+.pm-ch .t span.ok { color: var(--ok); }
+.pm-ch .t span.miss { color: var(--warn); font-weight: 600; }
+.pm-ch .chev { width: 8px; height: 8px; border: solid var(--muted); border-width: 0 2px 2px 0; transform: rotate(45deg); margin: 0 4px 4px; flex: none; }
+.pm-card.open .pm-ch .chev { transform: rotate(-135deg); margin-top: 6px; }
+.pm-card.open .pm-ch .t span { display: none; }
+.pm-cb { display: none; padding: 0 14px 14px; flex-direction: column; gap: 12px; }
+.pm-card.open .pm-cb { display: flex; }
+.pm .f input, .pm .f select, .pm .f textarea { height: 46px; border-radius: 8px; font-size: 16px; }
+.pm .f textarea { height: auto; min-height: 80px; }
+.pm-seg { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 6px; }
+.pm-seg button { min-height: 42px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); font-size: 14px; padding: 0 2px; }
+.pm-seg button.on { background: var(--ink); border-color: var(--ink); color: #fff; font-weight: 600; }
+.pm-leg { border-radius: 10px; border: 1px solid; padding: 0 12px 12px; display: flex; flex-direction: column; gap: 10px; }
+.pm-leg.go { background: #F1F3FC; border-color: #D5DAF3; }
+.pm-leg.back { background: #FBF7EE; border-color: #EADFC6; }
+.pm-leg .lh { margin: 0 -12px; padding: 8px 12px; border-radius: 9px 9px 0 0; color: #fff; font-weight: 700; font-size: 15px; }
+.pm-leg.go .lh { background: #2E3A9E; }
+.pm-leg.back .lh { background: #856425; }
+.pm-leg .r3 { display: grid; grid-template-columns: 1fr 1.3fr .9fr; gap: 8px; }
+.pm-leg .f input { height: 44px; text-align: center; padding: 0 4px; }
+.pm-leg .f input::placeholder { font-size: 13px; }
+.pm-leg .bl { font-size: 13px; font-weight: 600; color: var(--muted); }
+.pm-leg.go .pm-seg button.on { background: #2E3A9E; border-color: #2E3A9E; }
+.pm-leg.back .pm-seg button.on { background: #856425; border-color: #856425; }
+.pm .hist { border-top: none; padding-top: 0; }
+.pm .pm-del { height: 44px; border-radius: 8px; border: 1px solid #E3C7C7; background: var(--surface); color: var(--bad); font-weight: 600; width: 100%; }
+
 .fab { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(20px, calc(env(safe-area-inset-bottom, 0px) + 12px)); height: 52px; padding: 0 20px; border: none; border-radius: 999px; background: var(--ink); color: #FFFFFF; font-size: 16px; font-weight: 600; display: none; align-items: center; gap: 8px; box-shadow: 0 10px 24px -8px rgba(46,58,158,.6); z-index: 10; }
 
 .menu { position: fixed; z-index: 50; min-width: 240px; background: #FFFFFF; border: 1px solid var(--hair); border-radius: 8px; box-shadow: 0 16px 40px -12px rgba(0,0,0,.35); padding: 6px; display: flex; flex-direction: column; }
@@ -290,6 +341,29 @@ td .btn[data-restore] { height: 24px !important; margin: 0 !important; padding: 
 .dh { cursor: grab; color: var(--soft); font-size: 16px; line-height: 1; padding: 4px 2px; touch-action: none; user-select: none; }
 .dh.off { visibility: hidden; }
 .colrow.dragging, .vc.dragging { background: #F1EFEA; border-radius: 6px; }
+/* Columns window: fits the screen, grouped, two across; only the list scrolls */
+.dialog.colsdlg { max-width: 600px; max-height: calc(100vh - 72px); max-height: calc(100dvh - 72px); padding: 20px 20px 16px; gap: 10px; }
+.colsdlg #pick-body { overflow-y: auto; overflow-x: hidden; min-height: 0; flex: 1 1 auto; margin: 0 -20px; padding: 0 20px; }
+.colsdlg h2 { display: flex; align-items: baseline; gap: 10px; }
+.colsdlg h2 .cnt { margin-left: auto; font-size: 13.5px; font-weight: 500; color: var(--soft); }
+.ctools { position: sticky; top: 0; z-index: 2; background: #FFFFFF; display: flex; gap: 8px; align-items: center; padding: 4px 3px 8px; border-bottom: 1px solid var(--row-line); }
+.ctools input { flex: 1; min-width: 0; height: 36px; border: 1px solid var(--line); border-radius: 6px; padding: 0 10px; font-size: 14.5px; }
+.clink { background: none; border: none; color: var(--ink); font-weight: 600; font-size: 13.5px; padding: 4px; }
+.cgrp { margin-top: 10px; }
+.cgh { display: flex; align-items: center; gap: 8px; padding: 2px 4px; }
+.cgh b { flex: 1; font-size: 12.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--soft); }
+.cgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 10px; }
+.cgrid .colrow { gap: 6px; padding: 0 4px; height: 36px; border-radius: 6px; min-width: 0; }
+.cgrid .colrow:hover { background: var(--soft-surface, #FAF9F6); }
+.cgrid .colrow label { font-size: 14.5px; gap: 8px; min-width: 0; }
+.cgrid .colrow label span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cgrid .colrow label input { flex: none; }
+.cgrid .colrow button { width: 24px; height: 24px; font-size: 12px; padding: 0; display: none; flex: none; }
+.cgrid .colrow:hover button:not(:disabled), .cgrid .colrow:focus-within button:not(:disabled) { display: inline-block; }
+.cgrid .colrow .dh { font-size: 14px; }
+.cgrid .colrow.off label { color: var(--soft); }
+.cnone { padding: 18px 4px; color: var(--soft); text-align: center; }
+@media (max-width: 560px) { .cgrid { grid-template-columns: minmax(0, 1fr); } .cgrid .colrow button:not(:disabled) { display: inline-block; } }
 th .rz { position: absolute; top: 0; right: -4px; width: 8px; height: 100%; cursor: col-resize; z-index: 4; }
 th .rz:hover, th .rz.on { background: linear-gradient(to right, transparent 3px, var(--ink) 3px, var(--ink) 5px, transparent 5px); }
 /* View tabs on the left, "Showing X of Y" (or the selection bar) on the right, in one row. */
@@ -1377,6 +1451,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       setAges(res.ages);
       applyLabels(res.labels || {});
       S.wedYear = (/(\d{4})/.exec(res.wedding.date || '') || [])[1] || '';
+      S.shuttlesGo = res.wedding.shuttlesGo || ''; S.shuttlesBack = res.wedding.shuttlesBack || '';
       var sc = normCols(res.cols); if (sc && !colsTimer) S.cols = sc;
       if (!curView()) S.view = '';
       if (!keepView && curView()) applyViewState(curView());
@@ -1734,6 +1809,9 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (!g || g.deleted) { p.hidden = true; return; }
     if (p.dataset.no === String(g.no) && !p.hidden && p.contains(document.activeElement) && document.activeElement.tagName !== 'BUTTON') return;
     p.dataset.no = g.no; p.hidden = false;
+    var phoneUI = window.matchMedia('(max-width: 759px)').matches;
+    p.classList.toggle('pm', phoneUI);
+    if (phoneUI) { renderPanelPhone(p, g); return; }
     var same = live().filter(function (x) { return x.phone && x.phone === g.phone && x.no !== g.no; });
     p.innerHTML =
       '<div class="hd"><div><div class="meta">Guest No. ' + g.no + (g.group ? ' · ' + esc(g.group) : '') + '</div><div class="name">' + esc(g.first + ' ' + g.last) + '</div></div>' +
@@ -1763,6 +1841,73 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     }).catch(function () { var h = $('p-hist'); if (h) h.textContent = 'Couldn’t load activity.'; });
   }
 
+  // ---------- guest details on phones: cards that open and close ----------
+  var PO = { no: null };
+  function flDone(g) { return !!(g.arrFlight && g.arrTime && g.depFlight && g.depTime); }
+  function busOpts(list, cur) {
+    var o = String(list || '').split(/[,;\s]+/).filter(function (x) { return /^\d{1,2}:\d{2}$/.test(x); }).concat(['Taxi', 'Own']);
+    if (cur && o.indexOf(cur) < 0) o.splice(o.length - 2, 0, cur);
+    return o;
+  }
+  function busTxt(v) { return v === 'Taxi' ? 'Taxi' : v === 'Own' ? 'Own way' : /^\d{1,2}:\d{2}$/.test(v || '') ? 'Shuttle ' + v : (v || ''); }
+  function renderPanelPhone(p, g) {
+    if (PO.no !== g.no) PO = { no: g.no, det: false, fl: !flDone(g), hotel: false, more: false, hist: false };
+    var same = live().filter(function (x) { return x.phone && x.phone === g.phone && x.no !== g.no; });
+    var inp = function (k, label, o) { o = o || {}; return '<label class="f">' + esc(label) + '<input data-pf="' + k + '" value="' + esc(o.val != null ? o.val : (g[k] || '')) + '"' + (o.ph ? ' placeholder="' + o.ph + '"' : '') + (o.tel ? ' type="tel" inputmode="tel"' : '') + (o.list ? ' list="' + o.list + '"' : '') + '></label>'; };
+    var card = function (k, ic, title, sum, cls, body) {
+      return '<section class="pm-card' + (PO[k] ? ' open' : '') + '"><button type="button" class="pm-ch" data-pt="' + k + '"><span class="ic">' + ic + '</span><span class="t"><b>' + esc(title) + '</b><span class="' + (cls || '') + '">' + sum + '</span></span><span class="chev"></span></button><div class="pm-cb">' + body + '</div></section>';
+    };
+    var leg = function (pre, t, sub, list) {
+      var dt = pre + 'Date', tm = pre + 'Time', fl = pre + 'Flight', bs = pre + 'Bus';
+      return '<div class="pm-leg ' + (pre === 'arr' ? 'go' : 'back') + '"><div class="lh">' + t + '</div><div class="r3">' +
+        inp(fl, 'Flight', { ph: 'LY541' }) + inp(dt, 'Date', { ph: 'DD/MM/YYYY' }) + inp(tm, 'Time', { ph: 'HH:MM' }) + '</div>' +
+        '<div class="bl">' + sub + '</div><div class="pm-seg">' + busOpts(list, g[bs]).map(function (o) { return '<button type="button" data-pbus="' + bs + '" data-v="' + esc(o) + '"' + (g[bs] === o ? ' class="on"' : '') + '>' + esc(o) + '</button>'; }).join('') + '</div></div>';
+    };
+    var custom = COLS.filter(function (c) { return c.custom; });
+    var fd = flDone(g), hotel = g.room || g.table || g.checkIn || g.checkOut;
+    var flSum = fd ? esc('There ' + String(g.arrDate || '').slice(0, 5) + ' ' + g.arrTime + ' · ' + g.arrFlight + (g.arrBus ? ' · ' + busTxt(g.arrBus) : '')) + '<br>' + esc('Back ' + String(g.depDate || '').slice(0, 5) + ' ' + g.depTime + ' · ' + g.depFlight + (g.depBus ? ' · ' + busTxt(g.depBus) : ''))
+      : 'Missing: ' + [!(g.arrFlight && g.arrTime) ? 'flight there' : '', !(g.depFlight && g.depTime) ? 'flight back' : ''].filter(Boolean).join(' and ');
+    p.innerHTML =
+      '<div class="pm-hd"><div class="pm-top"><div class="name">' + esc(g.first + ' ' + g.last) + ' <small>#' + g.no + '</small></div><span class="pm-saved' + (Date.now() - (S.savedAt || 0) < 1800 ? ' on' : '') + '">✓ Saved</span><button type="button" class="x" id="p-close" aria-label="Close guest details">×</button></div>' +
+      (g.phone ? '<div class="pm-quick"><a class="pm-qa" href="tel:' + esc(g.phone) + '">📞 Call</a><a class="pm-qa pm-wa" href="' + waLink(g.phone) + '" target="_blank" rel="noopener">💬 WhatsApp</a></div>' : '') +
+      '<div class="pm-st">' + [['Confirmed', 'c'], ['Maybe', 'm'], ['Declined', 'd']].map(function (x) { return '<button type="button" data-pst="' + x[0] + '" class="' + x[1] + (g.status === x[0] ? ' on' : '') + '">' + x[0] + '</button>'; }).join('') + '</div></div>' +
+      card('det', '👤', 'Details', esc([prettyPhone(g.phone), g.age, g.group, g.notes].filter(Boolean).join(' · ')), '',
+        '<div class="two">' + inp('first', 'First Name') + inp('last', 'Last Name') + '</div>' +
+        inp('phone', 'Phone (family)', { tel: 1, val: prettyPhone(g.phone) }) + inp('phone2', 'Own Phone', { tel: 1, ph: 'Optional', val: g.phone2 ? prettyPhone(g.phone2) : '' }) +
+        '<div class="f">Age Group<div class="pm-seg">' + AGES.map(function (a) { return '<button type="button" data-page="' + a + '"' + (g.age === a ? ' class="on"' : '') + '>' + a + '</button>'; }).join('') + '</div></div>' +
+        inp('group', 'Guest Group', { list: 'groups' }) + '<label class="f">Notes<textarea data-pf="notes" rows="3">' + esc(g.notes) + '</textarea></label>' +
+        (same.length ? '<div class="same">Same phone as:' + same.map(function (x) { return '<button type="button" data-open="' + x.no + '">' + esc(x.first + ' ' + x.last) + '</button>'; }).join('') + '</div>' : '') +
+        '<button type="button" class="btn" data-family="' + g.no + '">Add family member</button>') +
+      card('fl', '✈', 'Flights', flSum, fd ? 'ok' : 'miss', leg('arr', 'There · landing', 'Airport → hotel', S.shuttlesGo) + leg('dep', 'Back · take-off', 'Hotel → airport', S.shuttlesBack)) +
+      card('hotel', '🛏', 'Hotel & table', hotel ? esc('Room ' + (g.room || '—') + ' · Table ' + (g.table || '—') + (g.checkIn || g.checkOut ? ' · ' + String(g.checkIn || '').slice(0, 5) + '–' + String(g.checkOut || '').slice(0, 5) : '')) : 'Not assigned yet', '',
+        '<div class="two">' + inp('checkIn', 'Check In', { ph: 'DD/MM/YYYY' }) + inp('checkOut', 'Check Out', { ph: 'DD/MM/YYYY' }) + '</div><div class="two">' + inp('room', 'Room #') + inp('table', 'Table #') + '</div>') +
+      (custom.length ? card('more', '☰', 'More', esc(custom.map(function (c) { return g[c.k] ? c.label + ': ' + g[c.k] : ''; }).filter(Boolean).join(' · ') || custom.map(function (c) { return c.label; }).join(' · ')), '',
+        custom.map(function (c) {
+          if (c.type === 'select') return '<label class="f">' + esc(c.label) + '<select data-pf="' + c.k + '">' + c.opts.map(function (o) { return '<option value="' + esc(o) + '"' + (o === (g[c.k] || '') ? ' selected' : '') + '>' + esc(o || '—') + '</option>'; }).join('') + '</select></label>';
+          return inp(c.k, c.label, { ph: c.type === 'date' ? 'DD/MM/YYYY' : c.type === 'time' ? 'HH:MM' : '' });
+        }).join('')) : '') +
+      card('hist', '🕘', 'History', esc('Last updated: ' + (g.updated || '—')), '', '<div class="hist"><div id="p-hist" class="meta">Loading…</div></div>') +
+      '<button type="button" class="pm-del" data-delete="' + g.no + '">Delete guest</button>';
+    $('p-close').onclick = function () { S.open = null; render(); };
+    var no = g.no;
+    api('history', { no: no }).then(function (res) {
+      var h = $('p-hist'); if (!h || S.open !== no) return;
+      h.className = ''; h.innerHTML = res.items.length ? res.items.map(function (it) {
+        return '<div class="it">' + esc(it.action + (it.details ? ': ' + it.details : '')) + '<span>' + esc(it.by + ' · ' + it.when) + '</span></div>';
+      }).join('') : '<div class="meta">No changes yet.</div>';
+    }).catch(function () { var h = $('p-hist'); if (h) h.textContent = 'Couldn’t load activity.'; });
+    if (Date.now() - (S.savedAt || 0) < 1800) setTimeout(function () { var e = p.querySelector('.pm-saved'); if (e) e.classList.remove('on'); }, 1800 - (Date.now() - S.savedAt));
+  }
+  $('panel').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-pt],[data-pst],[data-page],[data-pbus]'); if (!b || S.open == null) return;
+    if (b.dataset.pt) { PO[b.dataset.pt] = !PO[b.dataset.pt]; b.closest('.pm-card').classList.toggle('open', !!PO[b.dataset.pt]); return; }
+    var f = {};
+    if (b.dataset.pst) f.status = b.dataset.pst;
+    else if (b.dataset.page) f.age = b.dataset.page;
+    else f[b.dataset.pbus] = byNo(S.open)[b.dataset.pbus] === b.dataset.v ? '' : b.dataset.v;   // tap the chosen one again to clear it
+    update(S.open, f);
+  });
+
   $('panel').addEventListener('change', function (e) {
     var el = e.target.closest('[data-pf]'); if (!el || S.open == null) return;
     var f = {}; f[el.dataset.pf] = el.value; update(S.open, f);
@@ -1786,7 +1931,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (errs.length) { toast(errs[0], null, null, true); S.open === no && ($('panel').dataset.no = ''); render(); return; }
     var before = Object.assign({}, g); Object.assign(g, changed); render();
     saving('busy');
-    api('update', { no: no, fields: changed }).then(function (res) { Object.assign(g, res.guest); saving('ok'); if (S.open === no) { $('panel').dataset.no = ''; } render(); })
+    api('update', { no: no, fields: changed }).then(function (res) { Object.assign(g, res.guest); saving('ok'); S.savedAt = Date.now(); if (S.open === no) { $('panel').dataset.no = ''; } render(); })
       .catch(function (e) { Object.assign(g, before); saving('err'); toast(e.server ? e.message : 'Couldn’t save. Check your connection and try again.', null, null, true); $('panel').dataset.no = ''; render(); });
   }
   function bulk(nos, fields) {
@@ -2494,41 +2639,86 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       return;
     }
     if (curView()) { openView(curView()); return; }
+    var q = '';
     function body() {
-      return S.cols.order.map(function (k, i) {
-        var c = COLS.filter(function (x) { return x.k === k; })[0];
-        var pinned = PIN.indexOf(k) > -1;
-        return '<div class="colrow" data-ck="' + k + '"' + (pinned ? ' data-pin="1"' : '') + '><span class="dh' + (pinned ? ' off' : '') + '" title="Drag to move" aria-hidden="true">⠿</span><label><input type="checkbox" data-col="' + k + '"' + (S.cols.hidden.indexOf(k) < 0 ? ' checked' : '') + (c.fixed || PIN.indexOf(k) > -1 ? ' disabled' : '') + '>' + esc(c.label) + '</label>' +
-          '<button type="button" data-up="' + i + '" aria-label="Move ' + esc(c.label) + ' up"' + (i === 0 ? ' disabled' : '') + '>↑</button>' +
-          '<button type="button" data-down="' + i + '" aria-label="Move ' + esc(c.label) + ' down"' + (i === S.cols.order.length - 1 ? ' disabled' : '') + '>↓</button></div>';
-      }).join('') + '<p class="meta" style="margin:8px 0 0;font-size:13px;color:var(--soft)">Drag ⠿ to change the order. The order and hidden columns are saved for this event on every computer. No data is deleted.</p>';
+      var h = '';
+      colGroups().forEach(function (gr, gi) {
+        var keys = gr.keys.filter(function (k) { return !q || colOf(k).label.toLowerCase().indexOf(q) > -1; });
+        if (!keys.length) return;
+        var free = keys.filter(function (k) { return !locked(k); }), anyOn = free.some(function (k) { return S.cols.hidden.indexOf(k) < 0; });
+        h += '<div class="cgrp"><div class="cgh"><b>' + esc(gr.t) + '</b>' + (free.length ? '<button type="button" class="clink" data-gall="' + gi + '" data-v="' + (anyOn ? 'hide' : 'show') + '">' + (anyOn ? 'Hide all' : 'Show all') + '</button>' : '') + '</div><div class="cgrid">' +
+          keys.map(function (k, i) {
+            var c = colOf(k), lk = locked(k), on = S.cols.hidden.indexOf(k) < 0, pinned = PIN.indexOf(k) > -1;
+            return '<div class="colrow' + (on ? '' : ' off') + '" data-ck="' + k + '"' + (pinned ? ' data-pin="1"' : '') + '><span class="dh' + (pinned || q ? ' off' : '') + '" title="Drag to move" aria-hidden="true">⠿</span><label title="' + esc(c.label) + '"><input type="checkbox" data-col="' + k + '"' + (on ? ' checked' : '') + (lk ? ' disabled' : '') + '><span>' + esc(c.label) + '</span></label>' +
+              (pinned ? '' : '<button type="button" data-mv="-1" data-k="' + k + '" aria-label="Move ' + esc(c.label) + ' up"' + (i === 0 || q ? ' disabled' : '') + '>↑</button>' +
+              '<button type="button" data-mv="1" data-k="' + k + '" aria-label="Move ' + esc(c.label) + ' down"' + (i === keys.length - 1 || q ? ' disabled' : '') + '>↓</button>') + '</div>';
+          }).join('') + '</div></div>';
+      });
+      var all = S.cols.order.length, shown = S.cols.order.filter(function (k) { return S.cols.hidden.indexOf(k) < 0; }).length;
+      $('pick-title').innerHTML = 'Columns <span class="cnt">' + shown + ' of ' + all + ' shown</span>';
+      return (h || '<div class="cnone">No column with that name</div>') + '<p class="meta" style="margin:10px 0 0;font-size:13px;color:var(--soft)">Drag ⠿ or use ↑↓ to change the order. Saved for this event on every computer. No data is deleted.</p>';
     }
-    pick('Columns', body(), function () {});
-    colsBody = body;
+    function locked(k) { var c = colOf(k); return !!(c && c.fixed) || PIN.indexOf(k) > -1; }
+    function redraw() { var b = $('pick-body'), y = b.scrollTop, list = b.querySelector('#cols-list'); list.innerHTML = body(); b.scrollTop = y; }
+    pick('Columns', '<div class="ctools"><input id="cols-q" type="search" placeholder="Find a column" autocomplete="off"><button type="button" class="clink" id="cols-reset">Reset</button></div><div id="cols-list"></div>', function () {});
+    $('dlg2').querySelector('.dialog').classList.add('colsdlg');
+    $('cols-list').innerHTML = body();
+    colsBody = function () { redraw(); };
     $('pick-ok').textContent = 'Done';
+    $('cols-q').addEventListener('input', function () { q = this.value.trim().toLowerCase(); redraw(); });
     $('pick-body').onclick = function (e) {
-      var up = e.target.closest('[data-up]'), dn = e.target.closest('[data-down]'), o = S.cols.order;
-      if (up) { var i = Number(up.dataset.up); o.splice(i - 1, 0, o.splice(i, 1)[0]); }
-      else if (dn) { var j = Number(dn.dataset.down); o.splice(j + 1, 0, o.splice(j, 1)[0]); }
-      else return;
-      saveCols(); $('pick-body').innerHTML = body(); render();
+      var b = e.target.closest('[data-mv],[data-gall],#cols-reset'); if (!b) return;
+      if (b.id === 'cols-reset') {
+        var before = { order: S.cols.order.slice(), hidden: S.cols.hidden.slice() };
+        S.cols.order = COLS.map(function (c) { return c.k; }); S.cols.hidden = [];
+        saveCols(); redraw(); render();
+        toast('Columns back to the default', 'Undo', function () { S.cols.order = before.order; S.cols.hidden = before.hidden; saveCols(); if (!$('dlg2').hidden && $('cols-list')) redraw(); render(); });
+        return;
+      }
+      if (b.dataset.gall) {
+        colGroups()[+b.dataset.gall].keys.forEach(function (k) {
+          if (locked(k)) return; var i = S.cols.hidden.indexOf(k);
+          if (b.dataset.v === 'hide' && i < 0) S.cols.hidden.push(k); else if (b.dataset.v === 'show' && i > -1) S.cols.hidden.splice(i, 1);
+        });
+        saveCols(); redraw(); render(); return;
+      }
+      // ↑↓ swap with the next column of the same group, keeping the other groups where they are
+      var k = b.dataset.k, gk = colGroups().filter(function (g) { return g.keys.indexOf(k) > -1; })[0].keys, j = gk.indexOf(k) + Number(b.dataset.mv);
+      if (j < 0 || j >= gk.length || PIN.indexOf(gk[j]) > -1) return;
+      var o = S.cols.order, a = o.indexOf(k), z = o.indexOf(gk[j]); o[a] = gk[j]; o[z] = k;
+      saveCols(); redraw(); render();
+      var nb = $('pick-body').querySelector('[data-k="' + k + '"][data-mv="' + b.dataset.mv + '"]'); if (nb && !nb.disabled) nb.focus();
     };
     $('pick-body').onchange = function (e) {
       var cb = e.target.closest('[data-col]'); if (!cb) return;
       var k = cb.dataset.col, h = S.cols.hidden;
       if (cb.checked) S.cols.hidden = h.filter(function (x) { return x !== k; }); else if (h.indexOf(k) < 0) h.push(k);
-      saveCols(); render();
+      saveCols(); redraw(); render();
     };
   });
+  // The Columns window groups: guest, flights, hotel & table, the event's own columns (each in the table's current order).
+  function colGroups() {
+    var G = [{ t: 'Guest', keys: [] }, { t: 'Flights', keys: [] }, { t: 'Hotel & table', keys: [] }, { t: 'This event’s columns', keys: [] }];
+    S.cols.order.forEach(function (k) {
+      var c = colOf(k); if (!c) return;
+      G[c.custom ? 3 : /^(arr|dep)/.test(k) ? 1 : /^(checkIn|checkOut|room|table)$/.test(k) ? 2 : 0].keys.push(k);
+    });
+    return G.filter(function (g) { return g.keys.length; });
+  }
   // Drag in the Columns window (saves at once) and in the view editor (saved with the view).
   var colsBody = null;
   dragRows($('pick-body'), '.colrow[data-ck], .vc[data-vk]', function () {
     if (!$('pick-body').querySelector('.colrow[data-ck]') || !colsBody) return;
-    S.cols.order = Array.prototype.map.call($('pick-body').querySelectorAll('.colrow[data-ck]'), function (r) { return r.dataset.ck; });
-    saveCols(); $('pick-body').innerHTML = colsBody(); render();
+    var o = S.cols.order;
+    Array.prototype.forEach.call($('pick-body').querySelectorAll('.cgrid'), function (grid) {
+      var now = Array.prototype.map.call(grid.querySelectorAll('.colrow[data-ck]'), function (r) { return r.dataset.ck; });
+      var slots = now.map(function (k) { return o.indexOf(k); }).sort(function (a, b) { return a - b; });
+      slots.forEach(function (at, i) { o[at] = now[i]; });
+    });
+    saveCols(); colsBody(); render();
   });
   $('dlg2').addEventListener('transitionend', function () {});
-  var pickObserver = new MutationObserver(function () { if ($('dlg2').hidden) { $('pick-ok').textContent = 'Apply'; $('pick-body').onclick = null; $('pick-body').onchange = null; } });
+  var pickObserver = new MutationObserver(function () { if ($('dlg2').hidden) { $('pick-ok').textContent = 'Apply'; $('pick-body').onclick = null; $('pick-body').onchange = null; $('dlg2').querySelector('.dialog').classList.remove('colsdlg'); colsBody = null; } });
   pickObserver.observe($('dlg2'), { attributes: true, attributeFilter: ['hidden'] });
 
   // ---------- views (saved in the sheet, shared with everyone on this list) ----------
