@@ -286,6 +286,7 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
     <p class="err" id="login-err" hidden></p>
     <button type="submit" class="btn" id="login-btn" data-t="enter"></button>
     <div class="note" data-t="stuck"></div>
+    <a class="note" id="to-rsvp" style="color:var(--ink);font-weight:600;font-size:14.5px;min-height:44px;display:flex;align-items:center;justify-content:center;gap:6px"><span data-t="notYet"></span> <u data-t="toRsvp"></u></a>
   </form>
 
   <div class="loading" id="loading" data-t="loading"></div>
@@ -416,6 +417,7 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
       homeAndroid: 'בתפריט של הדפדפן (⋮) בחרו "הוספה למסך הבית" או "התקנת אפליקציה".', homeStep1: 'לחצו על כפתור השיתוף בספארי', homeStep2: 'גללו ובחרו "הוספה למסך הבית"', homeStep3: 'לחצו "הוסף"', homeOk: 'הבנתי',
       errNone: 'לא מצאנו את המספר הזה ברשימת האורחים. בדקו שזה המספר שאיתו אישרתם הגעה, או כתבו לנו.',
       errBad: 'מספר הטלפון לא נראה תקין.', errNet: 'משהו השתבש. נסו שוב בעוד רגע.', errClosed: 'העדכון סגור כרגע. כתבו לנו אם צריך לשנות משהו.',
+      notYet: 'עוד לא אישרתם הגעה?', toRsvp: 'לאישור הגעה', knownMsg: 'אתם כבר רשומים. כאן אפשר לעדכן הכול',
       errNames: 'נא למלא שם פרטי ושם משפחה באנגלית.', errDate: 'תאריך בפורמט DD/MM/YYYY ושעה בפורמט HH:MM.', missing: 'האירוע לא נמצא. בדקו את הלינק.'
     },
     en: {
@@ -433,6 +435,7 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
       wa: 'Questions? Message us on Instagram', insta: 'Follow us on Instagram', editName: 'Fix name',
       errNone: 'We couldn’t find this number on the guest list. Check it’s the number you RSVP’d with, or message us.',
       errBad: 'This phone number doesn’t look right.', errNet: 'Something went wrong. Please try again in a moment.', errClosed: 'Updates are closed right now. Message us if something needs to change.',
+      notYet: 'Haven’t RSVP’d yet?', toRsvp: 'RSVP here', knownMsg: 'You’re already registered. You can update everything here',
       errNames: 'Please write first and last name in English letters.', errDate: 'Dates as DD/MM/YYYY and times as HH:MM.', missing: 'This event was not found. Please check the link.'
     }
   };
@@ -624,6 +627,8 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
       state = {}; TR = null; SV = {}; flDirty = false; OPEN = null;
       $('loading').hidden = true; $('family').hidden = false; $('hi-wrap').hidden = false;
       apply(); showHome();
+      // Came from the RSVP form with a phone that was already registered.
+      if (/[?&]known=1/.test(location.search)) { toast(T[L].knownMsg); try { history.replaceState(null, '', location.pathname + location.search.replace(/[?&]known=1/, '').replace(/^&/, '?')); } catch (x) {} }
       // Came from "Save to home screen" on the thank-you card: show the save card (and the steps) right away.
       if (/[?&]home=1/.test(location.search) && !standalone()) {
         $('c-home').hidden = false;
@@ -1099,6 +1104,7 @@ input.num::placeholder{color:#9A9AA1;text-transform:none}
   document.addEventListener('focusout', function () { setTimeout(place, 60); });
 
   // ---------- start ----------
+  $('to-rsvp').href = BASE + EVENT + '/rsvp?new=1' + (L === 'en' ? '&lang=en' : '');
   apply();
   api({ action: 'rsvpInfo' }).then(function (res) {
     if (!res.ok) throw new Error('missing');

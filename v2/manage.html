@@ -1104,10 +1104,11 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     { k: 'checkIn', label: 'Check In', type: 'date' },
     { k: 'checkOut', label: 'Check Out', type: 'date' },
     { k: 'room', label: 'Room #', type: 'text' },
-    { k: 'table', label: 'Table #', type: 'text' }
+    { k: 'table', label: 'Table #', type: 'text' },
+    { k: 'phone2', label: 'Own Phone', type: 'text' }
   ];
   var WIDTH = { no: 76, first: 120, last: 140, group: 180, age: 80, status: 112, phone: 168,
-    arrDate: 108, arrTime: 84, arrFlight: 116, arrBus: 120, depDate: 108, depTime: 84, depFlight: 116, depBus: 120, checkIn: 100, checkOut: 100, room: 80, table: 80 };
+    arrDate: 108, arrTime: 84, arrFlight: 116, arrBus: 120, depDate: 108, depTime: 84, depFlight: 116, depBus: 120, checkIn: 100, checkOut: 100, room: 80, table: 80, phone2: 150 };
   var TYPE = {}; COLS.forEach(function (c) { TYPE[c.k] = c.type; });
   // Dates are kept as DD/MM/YYYY text, times as HH:MM.
   // Quick typing: 1409 or 14/9 → 14/09/<year>, 140927 → 14/09/2027. Year: the wedding's if known, else the next time that day comes.
@@ -1774,6 +1775,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function update(no, fields) {
     var g = byNo(no); if (!g) return;
     if ('phone' in fields) fields.phone = normPhone(fields.phone);
+    if ('phone2' in fields) fields.phone2 = fields.phone2 ? normPhone(fields.phone2) : '';
     Object.keys(fields).forEach(function (k) { if (TYPE[k] === 'date') fields[k] = normDate(fields[k]); if (TYPE[k] === 'time') fields[k] = normTime(fields[k]); });
     var changed = {}; Object.keys(fields).forEach(function (k) { if (String(g[k]) !== String(fields[k]).trim()) changed[k] = String(fields[k]).trim(); });
     if (!Object.keys(changed).length) { render(); return; }
@@ -2069,7 +2071,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function cellFix(k, v) {
     var c = colOf(k); v = String(v == null ? '' : v).replace(/\r/g, '').trim();
     if (!c || c.fixed) return { err: 'skip' };
-    if (k === 'phone') v = v ? normPhone(v) : '';
+    if (k === 'phone' || k === 'phone2') v = v ? normPhone(v) : '';
     if (TYPE[k] === 'date') v = normDate(v);
     if (TYPE[k] === 'time') v = normTime(v);
     if (c.type === 'select') {

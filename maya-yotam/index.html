@@ -1,4 +1,9 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1, maximum-scale=1,viewport-fit=cover"><title>Maya & Yotam – Porto Heli 2027</title><meta property="og:type" content="website"><meta property="og:url" content="https://events.kaiwedd.com/maya-yotam/rsvp"><meta property="og:title" content="Maya & Yotam – We’re getting married!"><meta property="og:description" content="Porto Heli, Greece · 3–5.6.2027 · You’re invited"><meta property="og:image" content="https://weddings.kaiwedd.com/maya-yotam/preview.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="description" content="Porto Heli, Greece · 3–5.6.2027 · You’re invited"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
+<!doctype html><html><head><meta charset=utf8>
+<script>
+/* One link: a guest who already RSVP'd (or signed in) on this phone goes straight to their guest area. ?new=1 shows the form anyway. */
+(function () { try { var p = location.pathname, v = p.indexOf('/v2/') === 0, e = (p.split('/').filter(Boolean)[v ? 1 : 0] || '').toLowerCase();
+  if (e && !/[?&]new=1/.test(location.search) && localStorage.getItem('kai-portal-' + e)) location.replace((v ? '/v2/' : '/') + e + '/guests' + (/[?&]lang=en/.test(location.search) ? '?lang=en' : '')); } catch (x) {} })();
+</script><meta name=viewport content="width=device-width,initial-scale=1, maximum-scale=1,viewport-fit=cover"><title>Maya & Yotam – Porto Heli 2027</title><meta property="og:type" content="website"><meta property="og:url" content="https://events.kaiwedd.com/maya-yotam/rsvp"><meta property="og:title" content="Maya & Yotam – We’re getting married!"><meta property="og:description" content="Porto Heli, Greece · 3–5.6.2027 · You’re invited"><meta property="og:image" content="https://weddings.kaiwedd.com/maya-yotam/preview.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="description" content="Porto Heli, Greece · 3–5.6.2027 · You’re invited"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
 /* Phones: fields at 16px so the iPhone never zooms in (that left pages too wide). */
 @media (max-width:900px),(pointer:coarse){input:not([type=checkbox]):not([type=radio]),select,textarea{font-size:16px!important}}
 /* Phones: the page itself never scrolls sideways; wide tables keep their own scroll. */
@@ -125,6 +130,16 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visib
 .comp .opt { min-height: 52px; }
 .send { height: 54px; border: none; border-radius: 2px; background: var(--text); color: #fff; font: 500 17px var(--sans); letter-spacing: .04em; cursor: pointer; }
 .err { margin: -10px 0 0; font-size: 14px; color: #9B2C2C; }
+.already { display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 2px; background: var(--field); color: var(--text); text-decoration: none; }
+.already .a-t { flex: 1; display: flex; flex-direction: column; gap: 1px; }
+.already b { font: 600 15px var(--sans); }
+.already span span { font-size: 13.5px; color: var(--soft); }
+.already i { font-style: normal; font-size: 18px; color: var(--ink); }
+.known { margin: -10px 0 0; font-size: 14px; line-height: 1.5; color: var(--text); background: #FBF1DE; border-radius: 2px; padding: 9px 12px; }
+.known a { color: var(--ink); font-weight: 600; }
+.same { display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 15px; cursor: pointer; }
+.same input { width: 22px; height: 22px; margin: 0; accent-color: var(--ink); }
+.ph-hint { margin: -6px 0 0; font-size: 13px; color: var(--soft); }
 .thanks { align-items: center; text-align: center; gap: 12px; padding: 40px 24px; }
 .thanks .big { font-family: var(--sans); font-weight: 500; font-size: 28px; line-height: 1.2; color: var(--text); }
 .thanks p { margin: 0; font-family: var(--sans); font-size: 17px; line-height: 1.6; }
@@ -173,6 +188,7 @@ footer p { margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1
 
 
   <form id="rsvp" class="panel" novalidate>
+    <a class="already" href="/maya-yotam/guests"><span class="a-t"><b>כבר אישרתם הגעה?</b><span>לעדכון פרטים וטיסות</span></span><i aria-hidden="true">←</i></a>
     <h2>היי, יקרים ואהובים שלנו.<br>יש סיבה שהגעתם עד לכאן!<span class="h2-ask">תצטרפו אלינו?</span></h2>
     <div style="margin-top: -6px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; padding-bottom: 22px; border-bottom: 1px solid var(--hair);">
       <div style="font-size: 19px; font-weight: 600; color: var(--text);">דואגים לכם מא׳ ועד ת׳ ❤️</div>
@@ -191,6 +207,7 @@ footer p { margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1
     </div>
     <p style="margin: -12px 0 0; font-size: 13px; color: var(--soft);">נא למלא את השמות באנגלית</p>
     <div class="field"><label class="lbl" for="phone">טלפון (וואטסאפ)</label><input id="phone" type="tel" dir="ltr" autocomplete="tel" placeholder="050-0000000"></div>
+    <p class="known" id="known" hidden>המספר הזה כבר אישר הגעה. <a href="/maya-yotam/guests" id="known-go">לעדכון פרטים ← לאזור האישי</a></p>
 
     <div class="field">
       <div class="lbl" id="attend-lbl">האם תגיעו?</div>
@@ -258,6 +275,7 @@ footer p { margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1
     document.querySelectorAll('.comp').forEach(function (el) {
       var n = el.dataset.n, d = compData[n] || {};
       d.first = el.querySelector('.cf').value; d.last = el.querySelector('.cl').value;
+      var ph = el.querySelector('.cp'); if (ph) d.phone = ph.value;
       compData[n] = d;
     });
   }
@@ -266,6 +284,8 @@ footer p { margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1
     var list = $('comp-list'); list.innerHTML = '';
     for (var n = 2; n <= guests; n++) {
       var d = compData[n] || (compData[n] = { type: 'adult', first: '', last: '' });
+      // An adult gets a phone field (recommended, not required); a child or baby is "same phone as the main one" until unticked.
+      if (d.same == null) d.same = d.type !== 'adult';
       var card = document.createElement('div'); card.className = 'comp'; card.dataset.n = n;
       card.innerHTML =
         '<div class="comp-title">אורח ' + n + '</div>' +
@@ -277,8 +297,11 @@ footer p { margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1
           TYPES.map(function (t) {
             return '<button type="button" class="opt" data-t="' + t[0] + '" aria-pressed="' + (d.type === t[0]) + '">' + t[1] + (t[2] ? '<small>' + t[2] + '</small>' : '') + '</button>';
           }).join('') +
-        '</div>';
+        '</div>' +
+        '<label class="same"><input type="checkbox" class="cs"' + (d.same ? ' checked' : '') + '> אותו טלפון כמו הראשי</label>' +
+        (d.same ? '' : '<input class="cp" type="tel" inputmode="tel" dir="ltr" autocomplete="off" placeholder="טלפון (מומלץ)" aria-label="טלפון"><p class="ph-hint">' + (d.type === 'adult' ? 'כדי שגם הוא/היא יוכלו להיכנס לאזור האישי' : 'אם יש לו/לה טלפון משלו/ה') + '</p>');
       card.querySelector('.cf').value = d.first; card.querySelector('.cl').value = d.last;
+      if (card.querySelector('.cp')) card.querySelector('.cp').value = d.phone || '';
       list.appendChild(card);
     }
     $('comp-wrap').hidden = guests < 2;
@@ -287,10 +310,25 @@ footer p { margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1
 
   $('comp-list').addEventListener('click', function (e) {
     var b = e.target.closest('.opt'); if (!b) return;
-    var card = b.closest('.comp');
-    compData[card.dataset.n].type = b.dataset.t;
-    card.querySelectorAll('.opt').forEach(function (x) { x.setAttribute('aria-pressed', x === b); });
+    var card = b.closest('.comp'), d = compData[card.dataset.n];
+    d.type = b.dataset.t; d.same = d.type !== 'adult';
+    renderComp();
   });
+  $('comp-list').addEventListener('change', function (e) {
+    if (!e.target.classList.contains('cs')) return;
+    var n = e.target.closest('.comp').dataset.n; saveComp(); compData[n].same = e.target.checked; renderComp();
+    var f = document.querySelector('.comp[data-n="' + n + '"] .cp'); if (f) f.focus();
+  });
+  // The phone is already registered: say so, with the way to the guest area.
+  var knownT = null, knownSeq = 0;
+  function checkPhone() {
+    var v = $('phone').value.replace(/[^\d+]/g, ''), my = ++knownSeq;
+    if (v.replace(/\D/g, '').length < 9) { $('known').hidden = true; return; }
+    post({ action: 'rsvpCheck', e: 'maya-yotam', phone: v }).then(function (r) { return r.json(); }).then(function (r) { if (my === knownSeq) $('known').hidden = !(r && r.ok && r.known); }).catch(function () {});
+  }
+  $('phone').addEventListener('input', function () { clearTimeout(knownT); knownT = setTimeout(checkPhone, 600); });
+  $('phone').addEventListener('change', checkPhone);
+  $('known-go').addEventListener('click', function () { try { localStorage.setItem('kai-portal-maya-yotam', $('phone').value); } catch (x) {} });
   $('attend').addEventListener('click', function (e) {
     var b = e.target.closest('.opt'); if (!b) return;
     attend = b.dataset.v;
@@ -309,7 +347,7 @@ footer p { margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1
     var companions = [];
     if (attend !== 'no') for (var n = 2; n <= guests; n++) {
       var c = compData[n] || {};
-      companions.push({ first: c.first || '', last: c.last || '', type: c.type || 'adult' });
+      companions.push({ first: c.first || '', last: c.last || '', type: c.type || 'adult', phone: c.same ? '' : String(c.phone || '').trim() });
     }
     var payload = { e: 'maya-yotam', partyId: partyId, first: $('first').value, last: $('last').value, phone: $('phone').value,
       attend: attend, note: $('note').value, companions: companions };
@@ -319,6 +357,8 @@ footer p { margin: 0; font-family: var(--serif); font-size: 19px; line-height: 1
       .then(function (r) { return r.json(); })
       .then(function (res) {
         if (!res.ok) throw new Error(res.error);
+        // This phone was already registered: nothing new was added; the guest area shows the family, where they can update or add.
+        if (res.known) { try { localStorage.setItem('kai-portal-maya-yotam', payload.phone); } catch (x) {} location.href = '/maya-yotam/guests?known=1'; return; }
         partyId = res.partyId;
         // Next step: the guest area, signed in with this phone (always shown after a yes / maybe), plus ways to keep the link.
         $('to-portal').hidden = attend === 'no';

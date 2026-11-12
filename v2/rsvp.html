@@ -2,6 +2,11 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
+<script>
+/* One link: a guest who already RSVP'd (or signed in) on this phone goes straight to their guest area. ?new=1 shows the form anyway. */
+(function () { try { var p = location.pathname, v = p.indexOf('/v2/') === 0, e = (p.split('/').filter(Boolean)[v ? 1 : 0] || '').toLowerCase();
+  if (e && !/[?&]new=1/.test(location.search) && localStorage.getItem('kai-portal-' + e)) location.replace((v ? '/v2/' : '/') + e + '/guests' + (/[?&]lang=en/.test(location.search) ? '?lang=en' : '')); } catch (x) {} })();
+</script>
 <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1,viewport-fit=cover">
 <title>You’re invited</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -185,6 +190,18 @@ html[dir=ltr] input[type=tel] { text-align: left; }
 .hosting .h-note { margin: 0; font-size: 13px; line-height: 1.5; color: var(--soft); text-wrap: balance; }
 .hero .caps.day { white-space: normal; text-wrap: balance; }
 .names-hint { margin: -12px 0 0; font-size: 13px; color: var(--soft); }
+/* one link: "Already RSVP'd?" at the top of the form, "this phone is already registered", and each extra guest's own phone */
+.already { display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 2px; background: var(--field); color: var(--text); text-decoration: none; }
+.already .a-t { flex: 1; display: flex; flex-direction: column; gap: 1px; }
+.already b { font: 600 15px var(--sans); }
+.already span span { font-size: 13.5px; color: var(--soft); }
+.already i { font-style: normal; font-size: 18px; color: var(--ink); }
+.known { margin: -10px 0 0; font-size: 14px; line-height: 1.5; color: var(--text); background: #FBF1DE; border-radius: 2px; padding: 9px 12px; }
+.known a { color: var(--ink); font-weight: 600; }
+.same { display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 15px; cursor: pointer; }
+.same input { width: 22px; height: 22px; margin: 0; accent-color: var(--ink); }
+.ph-hint { margin: -6px 0 0; font-size: 13px; color: var(--soft); }
+.t-sage .already, .t-sage .known { border-radius: 7px; }
 /* "Magazine" first page (event setting Hero Layout = Magazine): the whole photo on top, uncropped, then the names and the details under it. */
 .kicker, .names, .rule, .cue { display: none; }
 .hero.mag { transform: none; padding: 0 26px 30px; }
@@ -313,6 +330,7 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 8px; font: 500 14px '
   </header>
 
   <form id="rsvp" class="panel" novalidate>
+    <a class="already" id="already" href="#"><span class="a-t"><b data-t="alreadyT"></b><span id="already-sub"></span></span><i aria-hidden="true">←</i></a>
     <h2><span id="intro"></span><span class="h2-ask" id="ask"></span></h2>
     <div class="hosting" id="hosting" hidden>
       <div class="h-title" id="ho-title"></div>
@@ -326,6 +344,7 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 8px; font: 500 14px '
     </div>
     <p class="names-hint" data-t="namesHint"></p>
     <div class="field"><label class="lbl" for="phone" data-t="phone"></label><input id="phone" type="tel" dir="ltr" autocomplete="tel" placeholder="050-0000000"></div>
+    <p class="known" id="known" hidden><span data-t="knownTxt"></span> <a href="#" id="known-go" data-t="knownGo"></a></p>
 
     <div class="field">
       <div class="lbl" id="attend-lbl" data-t="attendQ"></div>
@@ -395,6 +414,8 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 8px; font: 500 14px '
   var EVENT = (location.pathname.split('/').filter(Boolean)[location.pathname.indexOf('/v2/') === 0 ? 1 : 0] || '').toLowerCase();
   var BASE = location.pathname.indexOf('/v2/') === 0 ? '/v2/' : '/';   // /v2/<event>/… or, after the move, the old /<event>/… links
   var $ = function (id) { return document.getElementById(id); };
+  // The guest area link (same language).
+  function areaUrl(extra) { var l = /[?&]lang=en/.test(location.search) ? 'lang=en' : ''; var q = [l, extra || ''].filter(Boolean).join('&'); return BASE + EVENT + '/guests' + (q ? '?' + q : ''); }
   var T = {
     he: {
       invited: 'אתם מוזמנים', tapOpen: 'לחצו לפתיחת ההזמנה', title: 'אנחנו <em>מתחתנים</em>!', first: 'שם פרטי', last: 'שם משפחה', namesHint: 'נא למלא את השמות באנגלית',
@@ -408,7 +429,9 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 8px; font: 500 14px '
       intro: 'היי, יקרים ואהובים שלנו.\nיש סיבה שהגעתם עד לכאן!', ask: 'תצטרפו אלינו?', script: 'נתראה שם', kicker: 'החתונה של', cue: 'לאישור הגעה', thanks: 'התשובה שלכם נשמרה. מחכים לחגוג איתכם!',
       weddingDay: 'יום החתונה', locale: 'he-IL', missing: 'האירוע לא נמצא. בדקו את הלינק.', closed: 'טופס האישור עוד לא פתוח.',
       privacy: 'הפרטים שלכם נראים רק לזוג ולמתכנן החתונה.', selfWa: 'לשלוח לעצמי בוואטסאפ', keepWa: 'שליחה בוואטסאפ', keepHome: 'שמירה במסך הבית', followIg: 'עקבו אחרינו באינסטגרם', myArea: 'האזור האישי שלי:', youSaid: 'מה ענית:', coming: 'מגיעים', notComing: 'לא מגיעים', notSure: 'עוד לא בטוחים',
-      people: function (n) { return n === 1 ? 'אורח אחד' : n + ' אורחים'; }, change: 'לשינוי התשובה:'
+      people: function (n) { return n === 1 ? 'אורח אחד' : n + ' אורחים'; }, change: 'לשינוי התשובה:',
+      alreadyT: 'כבר אישרתם הגעה?', alreadySub: 'לעדכון פרטים וטיסות', alreadySubRsvp: 'לעדכון הפרטים', knownTxt: 'המספר הזה כבר אישר הגעה.', knownGo: 'לעדכון פרטים ← לאזור האישי',
+      samePhone: 'אותו טלפון כמו הראשי', ownPhone: 'טלפון (מומלץ)', ownHintAdult: 'כדי שגם הוא/היא יוכלו להיכנס לאזור האישי', ownHintKid: 'אם יש לו/לה טלפון משלו/ה'
     },
     en: {
       invited: 'You’re invited', tapOpen: 'Tap to open the invitation', title: 'We’re <em>getting</em> married!', first: 'First name', last: 'Last name', namesHint: 'Please write the names in English letters',
@@ -422,7 +445,9 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 8px; font: 500 14px '
       intro: 'Hi, our dear and beloved ones.\nThere’s a reason you’re here!', ask: 'Will you join us?', script: 'See you there', kicker: 'The wedding of', cue: 'RSVP', thanks: 'Your reply is saved. We can’t wait to celebrate with you!',
       weddingDay: 'Wedding day', locale: 'en-GB', missing: 'This event was not found. Please check the link.', closed: 'This RSVP form isn’t open yet.',
       privacy: 'Your details are seen only by the couple and the wedding planner.', selfWa: 'Send it to myself on WhatsApp', keepWa: 'Send on WhatsApp', keepHome: 'Save to home screen', followIg: 'Follow us on Instagram', myArea: 'My guest area:', youSaid: 'Your reply:', coming: 'Coming', notComing: 'Not coming', notSure: 'Not sure yet',
-      people: function (n) { return n === 1 ? '1 guest' : n + ' guests'; }, change: 'To change your reply:'
+      people: function (n) { return n === 1 ? '1 guest' : n + ' guests'; }, change: 'To change your reply:',
+      alreadyT: 'Already RSVP’d?', alreadySub: 'Update your details and flights', alreadySubRsvp: 'Update your details', knownTxt: 'This number has already RSVP’d.', knownGo: 'Update your details → your guest area',
+      samePhone: 'Same phone as the main one', ownPhone: 'Phone (recommended)', ownHintAdult: 'So they can sign in to the guest area too', ownHintKid: 'If they have their own phone'
     }
   };
   var CFG = null, L = 'he';
@@ -498,8 +523,11 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 8px; font: 500 14px '
       $('ho-text').innerHTML = lines(hText); $('ho-text').hidden = !hText;
       $('ho-note').innerHTML = lines(hNote); $('ho-note').hidden = !hNote;
       $('thanks-text').innerHTML = lines(txt('Thanks', t.thanks));
+      $('already-sub').textContent = CFG['Portal Flights'] === 'on' ? t.alreadySub : t.alreadySubRsvp;
       document.title = (CFG.couple ? CFG.couple + ' – ' : '') + T.en.invited;
     }
+    if (!CFG) $('already-sub').textContent = t.alreadySub;
+    $('already').href = areaUrl();
     renderComp();
   }
 
@@ -507,9 +535,12 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 8px; font: 500 14px '
     document.querySelectorAll('.comp').forEach(function (el) {
       var n = el.dataset.n, d = compData[n] || {};
       d.first = el.querySelector('.cf').value; d.last = el.querySelector('.cl').value;
+      var ph = el.querySelector('.cp'); if (ph) d.phone = ph.value;
       compData[n] = d;
     });
   }
+  // Each extra guest: an adult gets a phone field (recommended, not required); a child or baby is "same phone as the main one" until unticked.
+  function isAdult(type) { return type === 'adult' || type === 'Adult'; }
   // Events with their own Age Groups (Settings › Age Groups, e.g. the hotel's "Baby 0-4, Child 5-12, Teen 13-17"): one button per group, with its ages.
   function kidMode() { return groupRanges().length > 0; }
   function groupRanges() {
@@ -526,6 +557,7 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 8px; font: 500 14px '
     for (var n = 2; n <= guests; n++) {
       var d = compData[n] || (compData[n] = { type: kidMode() ? 'Adult' : 'adult', first: '', last: '' });
       if (kidMode() && /^[a-z]/.test(d.type)) d.type = 'Adult';
+      if (d.same == null) d.same = !isAdult(d.type);
       var card = document.createElement('div'); card.className = 'comp'; card.dataset.n = n;
       card.innerHTML =
         '<div class="comp-title">' + t.guest + ' ' + n + '</div>' +
@@ -537,8 +569,11 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 8px; font: 500 14px '
           (kidMode() ? groupTypes(t) : t.types).map(function (x) {
             return '<button type="button" class="opt" data-t2="' + x[0] + '" aria-pressed="' + (d.type === x[0]) + '">' + x[1] + (x[2] ? '<small' + (/^\d/.test(x[2]) ? ' dir="ltr"' : '') + '>' + x[2] + '</small>' : '') + '</button>';
           }).join('') +
-        '</div>';
+        '</div>' +
+        '<label class="same"><input type="checkbox" class="cs"' + (d.same ? ' checked' : '') + '> ' + esc(t.samePhone) + '</label>' +
+        (d.same ? '' : '<input class="cp" type="tel" inputmode="tel" dir="ltr" autocomplete="off" placeholder="' + esc(t.ownPhone) + '" aria-label="' + esc(t.ownPhone) + '"><p class="ph-hint">' + esc(isAdult(d.type) ? t.ownHintAdult : t.ownHintKid) + '</p>');
       card.querySelector('.cf').value = d.first; card.querySelector('.cl').value = d.last;
+      if (card.querySelector('.cp')) card.querySelector('.cp').value = d.phone || '';
       list.appendChild(card);
     }
     $('comp-wrap').hidden = guests < 2;
@@ -552,15 +587,33 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 8px; font: 500 14px '
   });
   $('comp-list').addEventListener('click', function (e) {
     var b = e.target.closest('.opt'); if (!b) return;
-    var card = b.closest('.comp');
-    compData[card.dataset.n].type = b.dataset.t2;
-    card.querySelectorAll('.opt').forEach(function (x) { x.setAttribute('aria-pressed', x === b); });
+    var card = b.closest('.comp'), d = compData[card.dataset.n];
+    d.type = b.dataset.t2; d.same = !isAdult(d.type);
+    renderComp();
+  });
+  $('comp-list').addEventListener('change', function (e) {
+    if (!e.target.classList.contains('cs')) return;
+    var n = e.target.closest('.comp').dataset.n; saveComp(); compData[n].same = e.target.checked; renderComp();
+    var f = document.querySelector('.comp[data-n="' + n + '"] .cp'); if (f) f.focus();
   });
   $('attend').addEventListener('click', function (e) {
     var b = e.target.closest('.opt'); if (!b) return;
     attend = b.dataset.v;
     this.querySelectorAll('.opt').forEach(function (x) { x.setAttribute('aria-pressed', x === b); });
     $('coming').hidden = attend === 'no';
+  });
+  var knownT = null, knownSeq = 0;
+  function checkPhone() {
+    var v = $('phone').value.replace(/[^\d+]/g, ''), my = ++knownSeq;
+    if (v.replace(/\D/g, '').length < 9) { $('known').hidden = true; return; }
+    KAI_PUB({ action: 'rsvpCheck', e: EVENT, phone: v }).then(function (r) { if (my === knownSeq) $('known').hidden = !(r && r.ok && r.known); }).catch(function () {});
+  }
+  $('phone').addEventListener('input', function () { clearTimeout(knownT); knownT = setTimeout(checkPhone, 600); });
+  $('phone').addEventListener('change', checkPhone);
+  $('known-go').addEventListener('click', function (e) {
+    e.preventDefault();
+    try { localStorage.setItem('kai-portal-' + EVENT, $('phone').value); } catch (x) {}
+    location.href = areaUrl();
   });
   $('inc').addEventListener('click', function () { if (guests < 10) { guests++; renderComp(); } });
   $('dec').addEventListener('click', function () { if (guests > 1) { guests--; renderComp(); } });
@@ -575,7 +628,8 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 8px; font: 500 14px '
     var companions = [];
     if (attend !== 'no') for (var n = 2; n <= guests; n++) {
       var c = compData[n] || {};
-      companions.push(kidMode() ? { first: c.first || '', last: c.last || '', type: c.type === 'Adult' ? 'adult' : 'child', group: c.type || 'Adult' } : { first: c.first || '', last: c.last || '', type: c.type || 'adult' });
+      var own = c.same ? '' : String(c.phone || '').trim();
+      companions.push(kidMode() ? { first: c.first || '', last: c.last || '', type: c.type === 'Adult' ? 'adult' : 'child', group: c.type || 'Adult', phone: own } : { first: c.first || '', last: c.last || '', type: c.type || 'adult', phone: own });
     }
     var payload = { e: EVENT, first: $('first').value, last: $('last').value, phone: $('phone').value, attend: attend, note: $('note').value, companions: companions };
     var btn = this.querySelector('.send');
@@ -583,6 +637,8 @@ html .t-sage .hero.mag .caps.where { order: 6; margin-top: 8px; font: 500 14px '
     KAI_PUB(payload)
       .then(function (res) {
         if (!res.ok) throw new Error(res.error);
+        // This phone was already registered: nothing new was added; their guest area shows the family, where they can update or add.
+        if (res.known) { try { localStorage.setItem('kai-portal-' + EVENT, payload.phone); localStorage.setItem('kai-rsvp-done-' + EVENT, '1'); } catch (x) {} location.href = areaUrl('known=1'); return; }
         // Next step: the guest area, already signed in with this phone (Noam wants it on every thank-you card).
         var more = CFG && ['Portal Flights', 'Portal Stay', 'Portal Info'].some(function (k) { return CFG[k] === 'on'; });
         $('to-portal').hidden = attend === 'no';
