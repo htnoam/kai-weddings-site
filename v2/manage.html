@@ -801,17 +801,17 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
 .sc-tsave input { height: 36px; border: 1px solid var(--line); border-radius: 4px; padding: 0 10px; max-width: 360px; background: var(--surface); }
 .sc-copy .foot { display: flex; gap: 8px; align-items: center; padding: 10px 14px; border-top: 1px solid var(--hair); background: var(--soft-surface); }
 .sc-row.sunrow { background: #FBF3E2; }
+.toadmin { align-self: center; font-size: 13.5px; font-weight: 600; color: var(--ink); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; white-space: nowrap; }
 #sumv { position: fixed; inset: 0; z-index: 300; background: rgba(20,20,30,.4); display: flex; align-items: center; justify-content: center; padding: 16px; }
 #sumv[hidden] { display: none; }
 #sumv .sv-in { background: var(--surface); border-radius: 10px; width: 100%; max-width: 560px; max-height: 88vh; display: flex; flex-direction: column; overflow: hidden; }
 #sumv .sv-h { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
-#sumv .sv-b { overflow: auto; padding: 6px 16px 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 4px 22px; }
+#sumv .sv-b { overflow: auto; padding: 6px 16px 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 4px 22px; }
 #sumv h3 { margin: 12px 0 4px; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--soft); }
-#sumv table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
-#sumv table { table-layout: auto; }
-#sumv td { padding: 4px 0; border-bottom: 1px solid var(--row-line); width: auto; min-width: 0; max-width: none; height: auto; }
-#sumv td.n { width: 56px; }
-#sumv td.n { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+#sumv .sv-r { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 5px 0; border-bottom: 1px solid var(--row-line); font-size: 14.5px; }
+#sumv .sv-r span { min-width: 0; overflow-wrap: anywhere; }
+#sumv .sv-r b { flex: none; font-variant-numeric: tabular-nums; }
+#sumv section { min-width: 0; }
 #sumv ul { margin: 6px 0 0; padding-left: 16px; font-size: 13px; color: var(--muted); }
 #sumv .sv-f { grid-column: 1 / -1; margin: 10px 0 0; font-size: 12.5px; color: var(--soft); }
 .sc-cms { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; margin-top: 6px; }
@@ -891,7 +891,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
 <body>
 <header class="top">
   <div class="top-in">
-    <div class="brand"><span class="couple" id="couple">Guest List</span><span class="when" id="when"></span></div>
+    <div class="brand"><a class="toadmin" id="toadmin" hidden aria-label="All events" title="All events">‹ Events</a><span class="couple" id="couple">Guest List</span><span class="when" id="when"></span></div>
     <nav class="sect" id="sect" aria-label="Sections" hidden>
       <button type="button" id="s-guests" class="on"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.3-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 4.8a3.3 3.3 0 0 1 0 6.4M18 14.8c2 .6 3.2 2.3 3.5 5.2"/></svg>Guests</button>
       <button type="button" id="s-sched"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4M7.5 14h3M7.5 17h6"/></svg>Schedule</button>
@@ -1365,6 +1365,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   }
   function show(res, keepView) {
       S.guests = res.guests; S.who = res.who; S.admin = res.admin; S.views = res.views || [];
+      // Noam: a way back to all the events (the home-screen app opens the guest list in the same window).
+      if (S.admin) { $('toadmin').href = location.pathname.indexOf('/v2/') === 0 ? '/v2/admin' : '/admin'; $('toadmin').hidden = false; }
       S.reminders = res.reminders || {}; S.reminderText = res.reminderText || ''; S.lang = res.lang || 'he';
       S.changes = res.changes || [];
       briefLoad(res.brief);
@@ -3186,7 +3188,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var txt = D.map(function (b) { return b.t + '\n' + b.rows.map(function (r) { return '  ' + r[0] + (r[1] !== '' ? ': ' + r[1] : ''); }).join('\n') + (b.who && b.who.length ? '\n' + b.who.map(function (w) { return '   – ' + w; }).join('\n') : ''); }).join('\n\n');
     d.innerHTML = '<div class="sv-in"><div class="sv-h"><b>Summary · ' + esc($('couple').textContent) + '</b><span class="grow"></span><button type="button" class="btn" data-sv="copy">Copy</button><button type="button" class="btn" data-sv="close">Close</button></div><div class="sv-b">' +
       D.map(function (b) {
-        return '<section><h3>' + esc(b.t) + '</h3><table>' + b.rows.map(function (r) { return '<tr><td dir="auto">' + esc(r[0]) + '</td><td class="n">' + esc(r[1]) + '</td></tr>'; }).join('') + '</table>' +
+        return '<section><h3>' + esc(b.t) + '</h3>' + b.rows.map(function (r) { return '<div class="sv-r"><span dir="auto">' + esc(r[0]) + '</span><b>' + esc(r[1]) + '</b></div>'; }).join('') +
           (b.who && b.who.length ? '<ul>' + b.who.map(function (w) { return '<li dir="auto">' + esc(w) + '</li>'; }).join('') + '</ul>' : '') + '</section>';
       }).join('') + '<p class="sv-f">Counts only guests who confirmed. Updates by itself.</p></div></div>';
     d.hidden = false;

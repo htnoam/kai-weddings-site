@@ -157,6 +157,12 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   .ec-h { position: relative; padding-right: 34px; }
   .ec-h .dots { position: absolute; top: -4px; right: -4px; width: 36px; height: 36px; font-size: 20px; }
   .ecard.ended { opacity: .7; }
+  /* Phones: each event card opens and closes; closed shows the name, date, place and the numbers. */
+  .ec-top { cursor: pointer; display: flex; flex-direction: column; gap: 8px; -webkit-tap-highlight-color: transparent; }
+  .ec-more { display: flex; flex-direction: column; gap: 8px; }
+  .ecard.closed .ec-more { display: none; }
+  .ec-n .ec-chev { margin-left: auto; align-self: center; width: 9px; height: 9px; border: solid var(--muted); border-width: 0 2px 2px 0; transform: rotate(45deg) translateY(-3px); }
+  .ecard:not(.closed) .ec-n .ec-chev { transform: rotate(-135deg) translate(-2px, -2px); }
   .top-in { gap: 8px; flex-wrap: nowrap; padding: 8px 12px; }
   .pc-only, .v2tag { display: none !important; }
   .brand { white-space: nowrap; }
@@ -501,6 +507,14 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
   // Nearest date first; events without a date go last.
   function byDate(a, b) { var x = /^\d{4}-/.test(a.date) ? a.date : '9999', y = /^\d{4}-/.test(b.date) ? b.date : '9999'; return x < y ? -1 : x > y ? 1 : String(a.couple).localeCompare(String(b.couple)); }
   var SHOW_ENDED = false;
+  // Phones: which event cards are open (kept on this device).
+  var OPENEV = {}; try { OPENEV = JSON.parse(localStorage.getItem('kai-dash-open') || '{}') || {}; } catch (x) {}
+  function togEvent(slug) {
+    var card = document.querySelector('.ecard[data-slug="' + slug + '"]'); if (!card) return;
+    OPENEV[slug] = card.classList.toggle('closed') ? undefined : 1; if (!OPENEV[slug]) delete OPENEV[slug];
+    card.querySelector('.ec-top').setAttribute('aria-expanded', !card.classList.contains('closed'));
+    try { localStorage.setItem('kai-dash-open', JSON.stringify(OPENEV)); } catch (x) {}
+  }
 
   // Show the last list straight away (saved on this device), then refresh it from the hub.
   var PTR_REFRESH = function () { return load(); };
@@ -592,10 +606,11 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     // Phones: one card per event instead of the wide table.
     $('ecards').innerHTML = shown.map(function (ev) {
       var c = ev.counts || {}, v = function (x) { return x == null ? '—' : x; };
-      return '<div class="ecard' + (ev.status === 'Ended' ? ' ended' : '') + '">' +
-        '<div class="ec-h"><div class="couple">' + esc(ev.couple) + '</div><div class="sub">' + esc([fmtDate(ev.date), ev.place, ev.status === 'Ended' ? 'Ended' : ''].filter(Boolean).join(' · ')) + '</div>' + (when(ev) ? '<div class="sub">' + esc(when(ev)) + '</div>' : '') + (ev.error ? '<div class="err">' + esc(ev.error) + '</div>' : '') +
+      return '<div class="ecard' + (ev.status === 'Ended' ? ' ended' : '') + (OPENEV[ev.slug] ? '' : ' closed') + '" data-slug="' + esc(ev.slug) + '">' +
+        '<div class="ec-top" data-tog="' + esc(ev.slug) + '" role="button" tabindex="0" aria-expanded="' + !!OPENEV[ev.slug] + '"><div class="ec-h"><div class="couple">' + esc(ev.couple) + '</div><div class="sub">' + esc([fmtDate(ev.date), ev.place, ev.status === 'Ended' ? 'Ended' : ''].filter(Boolean).join(' · ')) + '</div>' + (when(ev) ? '<div class="sub">' + esc(when(ev)) + '</div>' : '') + (ev.error ? '<div class="err">' + esc(ev.error) + '</div>' : '') +
           '<button type="button" class="dots" data-menu="' + esc(ev.slug) + '" aria-label="More actions">⋯</button></div>' +
-        '<div class="ec-n"><span><b>' + v(c.total) + '</b> guests</span><span class="c-ok"><b>' + v(c.Confirmed) + '</b> ✓</span><span class="c-warn"><b>' + v(c.Maybe) + '</b> maybe</span><span class="c-bad"><b>' + v(c.Declined) + '</b> ✗</span></div>' +
+        '<div class="ec-n"><span><b>' + v(c.total) + '</b> guests</span><span class="c-ok"><b>' + v(c.Confirmed) + '</b> ✓</span><span class="c-warn"><b>' + v(c.Maybe) + '</b> maybe</span><span class="c-bad"><b>' + v(c.Declined) + '</b> ✗</span><span class="ec-chev" aria-hidden="true"></span></div></div>' +
+        '<div class="ec-more">' +
         (ages(c) ? '<div class="sub">Confirmed: ' + ages(c) + '</div>' : '') + needs(ev) +
         '<div class="ec-a"><a class="btn primary" href="' + BASE + esc(ev.slug) + '/portal' + (ACODE ? '/' + esc(ACODE) : '') + '" target="_blank" rel="noopener">Guest list</a>' +
           '<button type="button" class="btn" data-editev="' + esc(ev.slug) + '">Edit event</button>' +
@@ -603,7 +618,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
           '<a class="btn" href="' + BASE + esc(ev.slug) + '/rsvp" target="_blank" rel="noopener">RSVP</a></div>') +
         '<div class="ec-b">' +
           '<span class="ec-copy">Links:</span>' + linkBtns(ev, '') + '</div>' +
-      '</div>';
+      '</div></div>';
     }).join('') + toggle;
   }
 
@@ -612,6 +627,8 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
   function closeMenu() { $('menu').hidden = true; MENU = ''; }
   ['rows', 'ecards'].forEach(function (id) { $(id).addEventListener('click', function (e) {
     if (e.target.closest('[data-ended]')) { SHOW_ENDED = !SHOW_ENDED; render(); return; }
+    var tg = e.target.closest('[data-tog]');
+    if (tg && !e.target.closest('button, a')) { togEvent(tg.dataset.tog); return; }
     var b = e.target.closest('[data-menu]'); if (!b) return;
     e.stopPropagation();
     if (MENU === b.dataset.menu && !$('menu').hidden) { closeMenu(); return; }
