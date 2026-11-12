@@ -473,6 +473,10 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .rm-nx { justify-content: center; height: 42px; font-size: 15px; }
 .rm-all { color: var(--ok); font-weight: 600; }
 .bg { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 1400px; margin: 4px auto 0; }
+/* Budget as a spreadsheet (Univer, like Google Sheets) */
+.bg-grid { height: calc(100vh - 190px); height: calc(100dvh - 190px); min-height: 460px; border: 1px solid var(--hair); border-radius: 8px; overflow: hidden; background: #FFFFFF; position: relative; }
+.bg-grid .bg-load { position: absolute; inset: 0; display: grid; place-items: center; color: var(--soft); font-size: 14px; }
+@media (max-width: 759px) { .bg-grid { height: calc(100dvh - 150px); min-height: 380px; } }
 .bg-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .bg-top h1 { margin: 0; font-size: 22px; }
 .bg-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
@@ -3607,6 +3611,13 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (b.source === 'sheet' && SECT === 'budget' && !BG.preview && $('budget').querySelector('iframe') && BG.data && BG.data.source === 'sheet') {
       BG.data = b; var chip = $('budget').querySelector('.bg-chip.ok'); if (chip) chip.textContent = '✓ The couple’s page updated ' + bgAgo(b.synced); return;
     }
+    if (b.source === 'grid') {
+      // The spreadsheet is open: Noam's own copy is never reloaded under his hands; the couple's reloads when Noam saved a change.
+      if (GRID.api && (S.admin || JSON.stringify(b.grid) === GRID.json)) { BG.data = Object.assign({}, b, { grid: BG.data.grid }); return; }
+      BG.data = b;
+      if (location.hash === '#budget' && SECT === 'guests') showSect('budget'); else if (SECT === 'budget') bgRender();
+      return;
+    }
     BG.data = b.source === 'sheet' ? b : bgNorm(b);
     if (location.hash === '#budget' && SECT === 'guests') showSect('budget');
     else if (SECT === 'budget') bgRender();
@@ -3627,6 +3638,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   }
   function bgRender() {
     var box = $('budget'); if (!BG.data) { box.innerHTML = ''; return; }
+    if (BG.data.source === 'grid') { gridRender(); return; }
     if (BG.data.source === 'sheet') { box.innerHTML = bgSheetHtml(); return; }
     var K = bgCalc(), admin = S.admin, h = '';
     h += '<div class="bg-top"><h1>Budget</h1><span class="grow"></span>' +
@@ -3775,11 +3787,49 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     });
   }
   function bgChanged(now) { BG.dirty = true; clearTimeout(BG.timer); BG.timer = setTimeout(bgFlush, now ? 0 : 900); }
+  // ---------- budget as a spreadsheet ----------
+  var GRID = { api: null, json: '', t: null, loading: null };
+  function gridAssets() {
+    if (window.KaiGrid) return Promise.resolve();
+    if (GRID.loading) return GRID.loading;
+    GRID.loading = new Promise(function (ok, bad) {
+      var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/app/grid/kai-grid.css'; document.head.appendChild(l);
+      var sc = document.createElement('script'); sc.src = '/app/grid/kai-grid.js'; sc.onload = function () { ok(); }; sc.onerror = function () { GRID.loading = null; bad(); }; document.head.appendChild(sc);
+    });
+    return GRID.loading;
+  }
+  function gridRender() {
+    var box = $('budget'), json = JSON.stringify(BG.data.grid || {});
+    if (GRID.api && $('bg-grid') && json === GRID.json) return;
+    if (GRID.api) { GRID.api.dispose(); GRID.api = null; }
+    GRID.json = json;
+    box.innerHTML = '<div class="bg-top"><h1>Budget</h1><span class="grow"></span>' + (S.admin ? '<span class="bg-chip" id="bg-gstate">Saves by itself</span>' : '<span class="bg-chip">🔒 View only</span>') + '</div>' +
+      '<div class="bg-grid" id="bg-grid"><div class="bg-load">Loading the budget…</div></div>';
+    gridAssets().then(function () {
+      var el = $('bg-grid'); if (!el || GRID.json !== json) return;
+      el.innerHTML = '';
+      GRID.api = window.KaiGrid.mount(el, JSON.parse(json), { readOnly: !S.admin, onChange: S.admin ? gridChanged : null });
+      if (S.admin) gridGuests();
+    }).catch(function () { var el = $('bg-grid'); if (el) el.innerHTML = '<div class="bg-load">Couldn’t load the budget. Refresh the page.</div>'; });
+  }
+  // Noam's copy: the confirmed guests by age go into Guests!B3:B6, as the Google Sheet's sync did.
+  function gridGuests() {
+    var n = { Adult: 0, Teen: 0, Child: 0, Baby: 0 };
+    live().forEach(function (g) { if (g.status === 'Confirmed') n[g.age === 'Teen' || g.age === 'Child' || g.age === 'Baby' ? g.age : 'Adult']++; });
+    var want = [n.Adult, n.Teen, n.Child, n.Baby], cur = ['B3', 'B4', 'B5', 'B6'].map(function (a) { return Number(String(GRID.api.getValue('Guests', a) || '').replace(/[^\d.\-]/g, '')); });
+    if (want.some(function (v, i) { return v !== cur[i]; })) GRID.api.setValues('Guests', 'B3:B6', want.map(function (v) { return [v]; }));
+  }
+  function gridChanged() {
+    BG.dirty = true; var st = $('bg-gstate'); if (st) st.textContent = 'Saving…';
+    clearTimeout(GRID.t); GRID.t = setTimeout(bgFlush, 1500);
+  }
+  window.addEventListener('beforeunload', function (e) { if (BG.dirty && BG.data && BG.data.source === 'grid') { bgFlush(); e.preventDefault(); e.returnValue = ''; } });
   function bgFlush() {
+    if (BG.data && BG.data.source === 'grid' && GRID.api && BG.dirty && !BG.saving) { BG.data = { source: 'grid', cats: [], grid: GRID.api.snapshot() }; GRID.json = JSON.stringify(BG.data.grid); }
     clearTimeout(BG.timer); if (!BG.dirty || BG.saving || !BG.data) return;
     BG.dirty = false; BG.saving = true; saving('busy');
     api('saveBudget', { budget: BG.data }).then(function () {
-      BG.saving = false; saving('ok'); if (BG.dirty) bgFlush();
+      BG.saving = false; saving('ok'); var st = $('bg-gstate'); if (st && !BG.dirty) st.textContent = '✓ Saved'; if (BG.dirty) bgFlush();
     }).catch(function (e) { BG.saving = false; BG.dirty = true; saving('err'); toast(e.server ? e.message : 'Couldn’t save the budget. Check your connection.', null, null, true); });
   }
   function bgLineAt(el) { var tr = el.closest('[data-bgl]'); return tr ? BG.data.cats[+tr.dataset.bgc].lines[+tr.dataset.bgl] : null; }
