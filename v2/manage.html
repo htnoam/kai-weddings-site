@@ -552,6 +552,87 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
   .bg-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .bg-card b { font-size: 20px; }
 }
+/* Budget: two ways to work (Noam tries both) – Dashboard (lines open to edit) and Table (everything editable in place) */
+.bg.wide { max-width: none; }
+.bg-seg { display: inline-flex; background: #EAE7E0; border-radius: 8px; padding: 3px; margin-left: 10px; }
+.bg-seg button { border: none; background: none; font: inherit; font-size: 14px; color: var(--muted); padding: 6px 14px; border-radius: 6px; cursor: pointer; }
+.bg-seg button[aria-pressed="true"] { background: #FFFFFF; color: var(--text); font-weight: 700; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.bg-pill { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12.5px; font-weight: 600; white-space: nowrap; background: #F1F3F4; color: #4A4A50; }
+.bg-pill.st-1 { background: #E8EEFC; color: #1F3A9E; } .bg-pill.st-2 { background: #FEF0C7; color: #7A4E00; } .bg-pill.st-3 { background: #DCF1DF; color: #1E6B34; }
+.bg-dash { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; font-size: 14px; }
+.bg-dr { display: grid; grid-template-columns: 26px minmax(0, 2.4fr) minmax(0, 1.4fr) 104px 100px 104px 104px 124px; gap: 10px; align-items: center; padding: 8px 14px; border-bottom: 1px solid var(--row-line); }
+.bg-dr .r { text-align: right; font-variant-numeric: tabular-nums; }
+.bg-dr .el { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.bg-dh { background: #FAF9F6; border-bottom: 1px solid var(--line); font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--soft); }
+.bg-dg { background: #F7F5F1; font-weight: 700; cursor: pointer; user-select: none; }
+.bg-dg:hover { background: #F1EEE8; }
+.bg-dg .nm { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.bg-dg .nm i { width: 10px; height: 10px; border-radius: 3px; background: var(--gc); flex: none; }
+.bg-dg .nm small { font-weight: 400; color: var(--soft); font-size: 13px; white-space: nowrap; }
+.bg-dg .bg-cn { border: 1px solid transparent; background: transparent; font: inherit; font-weight: 700; padding: 3px 6px; border-radius: 4px; min-width: 0; width: 220px; color: var(--text); }
+.bg-dg .bg-cn:hover, .bg-dg .bg-cn:focus { border-color: var(--line); background: #FFFFFF; outline: none; }
+.bg-dg .chev { color: var(--soft); text-align: center; }
+.bg-dl { cursor: pointer; }
+.bg-dl:hover { background: #FAF9F6; }
+.bg-dl.on { background: #F0F1FA; box-shadow: inset 3px 0 0 var(--ink); }
+.bg-dl .vd { color: var(--muted); }
+.bg-dl .due.soon { color: #8A4B00; font-weight: 700; } .bg-dl .due.late { color: #A1271B; font-weight: 700; }
+.bg-de { background: #F7F8FD; border-bottom: 1px solid var(--line); padding: 14px 14px 14px 50px; display: flex; flex-direction: column; gap: 12px; }
+.bg-de .row { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: flex-end; }
+.bg-de label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: var(--soft); }
+.bg-de input[type="text"], .bg-de select { height: 36px; border: 1px solid var(--line); border-radius: 6px; padding: 0 8px; font: inherit; font-size: 14px; background: #FFFFFF; color: var(--text); box-sizing: border-box; }
+.bg-de input[type="text"]:focus, .bg-de select:focus { border-color: var(--accent); outline: none; }
+.bg-de .w-item { width: 300px; } .bg-de .w-vd { width: 200px; } .bg-de .w-n { width: 96px; text-align: right; } .bg-de .w-due { width: 124px; } .bg-de .w-note { width: 420px; max-width: 100%; }
+.bg-de input.due.soon { background: #FDE8CC; color: #8A4B00; font-weight: 700; } .bg-de input.due.late { background: #FAD7D4; color: #A1271B; font-weight: 700; }
+.bg-de .bg-q .lk { height: 36px; line-height: 36px; flex: 0 0 64px; }
+.bg-de .bg-q select { height: 36px; width: 160px; flex: none; }
+.bg-de .ck { flex-direction: row; align-items: center; height: 36px; gap: 6px; font-size: 14px; color: var(--text); font-weight: 400; }
+.bg-de .calc { font-size: 14px; color: var(--muted); padding-bottom: 8px; } .bg-de .calc b { color: var(--text); font-size: 16px; }
+.bg-de .pays { display: flex; flex-direction: column; gap: 6px; }
+.bg-de .pays > b { font-size: 13px; }
+.bg-de .acts { display: flex; gap: 10px; align-items: center; }
+.bg-de .acts .grow { flex: 1; }
+.bg-de .del { border: none; background: none; color: #A1271B; font: inherit; font-weight: 600; cursor: pointer; padding: 6px 4px; }
+.bg-dadd { border-bottom: 1px solid var(--row-line); }
+.bg-dadd .bg-add { padding: 8px 14px 8px 50px; }
+.bg-dfoot { background: #FAF9F6; font-weight: 700; border-bottom: none; }
+.bg-tools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13.5px; }
+.bg-tools .chip { height: 32px; padding: 0 12px; border-radius: 16px; border: 1px solid var(--line); background: #FFFFFF; font: inherit; font-size: 13.5px; cursor: pointer; }
+.bg-tools .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #FFFFFF; font-weight: 600; }
+.bg-tools .lbl { color: var(--soft); margin-left: 10px; }
+.bg-tools select, .bg-tools input { height: 32px; border: 1px solid var(--line); border-radius: 6px; padding: 0 8px; font: inherit; font-size: 13.5px; background: #FFFFFF; }
+.bg-tools input { width: 210px; }
+.bg-tt { overflow: auto; max-height: calc(100dvh - 300px); min-height: 360px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.bg-tt .bg-t { min-width: 1180px; }
+.bg-tt .bg-t thead th { position: sticky; top: 0; z-index: 2; }
+.bg-tt .bg-t td:first-child { padding-left: 10px; }
+.bg-t tr.bg-tg td { background: #F7F5F1; font-weight: 700; padding: 6px 8px; border-bottom: 1px solid var(--line); box-shadow: inset 4px 0 0 var(--gc); cursor: pointer; }
+.bg-t tr.bg-tg .in { display: flex; align-items: center; gap: 12px; }
+.bg-t tr.bg-tg .bg-cn { border: 1px solid transparent; background: transparent; font: inherit; font-weight: 700; padding: 3px 6px; border-radius: 4px; width: 220px; color: var(--text); }
+.bg-t tr.bg-tg .bg-cn:hover, .bg-t tr.bg-tg .bg-cn:focus { border-color: var(--line); background: #FFFFFF; outline: none; }
+.bg-t tr.bg-tg .s { font-weight: 400; color: var(--muted); font-size: 13px; white-space: nowrap; } .bg-t tr.bg-tg .s b { color: var(--text); margin-left: 3px; }
+.bg-t tr.bg-tadd td { border-bottom: 1px solid var(--row-line); padding: 0; }
+.bg-t tr.bg-tadd .bg-add { padding: 6px 10px; }
+.bg-t tfoot td { position: sticky; bottom: 0; background: #FAF9F6; font-weight: 700; border-top: 1px solid var(--line); padding: 8px; }
+.bg-t select.st-0, .bg-t select.st-1, .bg-t select.st-2, .bg-t select.st-3 { border-radius: 14px; }
+.bg-nores { padding: 18px; color: var(--soft); text-align: center; }
+.bg-tt .bg-t input[type="text"], .bg-tt .bg-t .bg-q select { background: transparent; }
+.bg-tt .bg-t input[type="text"]:hover, .bg-tt .bg-t .bg-q select:hover { background: #FFFDF3; }
+.bg-tt .bg-t input[type="text"]:focus { background: #FFFFFF; }
+.bg-tt .bg-t td { border-right: 1px solid var(--row-line); }
+.bg-guests select { height: 30px; border: 1px solid var(--line); border-radius: 4px; font: inherit; background: #FFFFFF; padding: 0 6px; }
+.bg-guests input[data-bgn] { width: 56px; }
+@media (max-width: 760px) {
+  .bg-dr { grid-template-columns: 14px minmax(0, 1fr) 82px 100px; gap: 8px; padding: 9px 10px; }
+  .bg-dr > :nth-child(3), .bg-dr > :nth-child(5), .bg-dr > :nth-child(6), .bg-dr > :nth-child(7) { display: none; }
+  .bg-dg .bg-cn { width: 100%; } .bg-dg .nm small { display: none; }
+  .bg-dr .bg-pill { font-size: 11.5px; padding: 2px 8px; }
+  .bg-dadd .bg-add { padding-left: 32px; }
+  .bg-de { padding: 12px 10px; }
+  .bg-de .w-item, .bg-de .w-vd, .bg-de .w-note { width: 100%; }
+  .bg-seg { margin-left: 0; }
+  .bg-tools input { width: 100%; }
+}
 .onb { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; }
 .onb[hidden] { display: none; }
 .onb-h { display: flex; align-items: center; gap: 10px; font-size: 14px; }
@@ -3555,15 +3636,23 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   // Noam edits; the couple sees it read-only, without his notes. Quantities can follow the confirmed guests.
   var BG = { on: false, data: null, open: {}, timer: null, dirty: false, saving: false };
   var BG_ST = ['Quote', 'Approved', 'Deposit paid', 'Fully paid'];
-  var BG_LINK = [['', 'Typed'], ['adults', 'Adults'], ['kids', 'Children'], ['babies', 'Babies'], ['adkids', 'Adults + children'], ['all', 'All guests']];
+  var BG_LINK = [['', 'Typed'], ['adults', 'Adults (+ teens)'], ['adultsOnly', 'Adults 18+'], ['teens', 'Teens'], ['kids', 'Children'], ['kidteens', 'Teens + children'], ['babies', 'Babies'], ['adkids', 'Adults + children'], ['all', 'All guests']];
+  try { BG.view = localStorage.getItem('kai-bg-view') === 'table' ? 'table' : 'dash'; } catch (e) { BG.view = 'dash'; }
+  BG.closed = {}; BG.edit = ''; BG.filter = 'all'; BG.by = 'cat'; BG.q = '';
   var BG_COL = ['#3B5BA9', '#6A4C93', '#2E7D6B', '#B5651D', '#5F6368', '#8A3B5B', '#2D6E8E'];
   function bgId() { return Math.random().toString(36).slice(2, 10); }
   function bgNum(v) { var n = parseFloat(String(v == null ? '' : v).replace(/[^\d.\-]/g, '')); return isFinite(n) ? n : 0; }
   function bgEur(n) { return (n < 0 ? '-€' : '€') + Math.round(Math.abs(n)).toLocaleString('en-US'); }
   function bgDate(s) { var m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(String(s || '').trim()); return m ? new Date(+m[3], m[2] - 1, +m[1]) : null; }
   function bgCounts() {
-    var c = { adults: 0, kids: 0, babies: 0 };
-    live().forEach(function (g) { if (g.status !== 'Confirmed') return; if (g.age === 'Child') c.kids++; else if (g.age === 'Baby') c.babies++; else c.adults++; });
+    var c = { adults: 0, kids: 0, babies: 0, teens: 0 };
+    // Planned numbers (typed by Noam) instead of the confirmed guests – before most guests have answered
+    if (BG.data && BG.data.countFrom === 'plan') {
+      var P = BG.data.plan || {};
+      c.teens = Math.round(bgNum(P.teens)); c.adults = Math.round(bgNum(P.adults)) + c.teens; c.kids = Math.round(bgNum(P.kids)); c.babies = Math.round(bgNum(P.babies));
+    } else live().forEach(function (g) { if (g.status !== 'Confirmed') return; if (g.age === 'Child') c.kids++; else if (g.age === 'Baby') c.babies++; else { c.adults++; if (g.age === 'Teen') c.teens++; } });
+    // "adults" counts teens too (as before); adultsOnly / teens / kidteens split them for events with a Teen age group
+    c.adultsOnly = c.adults - c.teens; c.kidteens = c.kids + c.teens;
     c.adkids = c.adults + c.kids; c.all = c.adkids + c.babies; return c;
   }
   function bgNights() { return Math.max(1, Math.round(bgNum(BG.data.nights)) || 1); }
@@ -3574,6 +3663,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     b = b && typeof b === 'object' ? b : {};
     var cats = Array.isArray(b.cats) ? b.cats : [];
     return { nights: b.nights == null ? 1 : b.nights, buffer: b.buffer == null ? 10 : b.buffer,
+      countFrom: b.countFrom === 'plan' ? 'plan' : '', plan: b.plan && typeof b.plan === 'object' ? b.plan : { adults: '', teens: '', kids: '', babies: '' },
       cats: cats.map(function (c) { return { id: c.id || bgId(), name: c.name || 'Group', lines: (Array.isArray(c.lines) ? c.lines : []).map(function (l) {
         return { id: l.id || bgId(), vendor: l.vendor || '', item: l.item || '', unit: l.unit == null ? '' : l.unit, qty: l.qty == null ? '' : l.qty, link: l.link || '', nightsOn: !!l.nightsOn,
           due: l.due || '', status: l.status || 'Quote', note: l.note || '', pays: Array.isArray(l.pays) ? l.pays : [] };
@@ -3642,17 +3732,25 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (BG.data.source === 'grid') { gridRender(); return; }
     if (BG.data.source === 'sheet') { box.innerHTML = bgSheetHtml(); return; }
     var K = bgCalc(), admin = S.admin, h = '';
-    h += '<div class="bg-top"><h1>Budget</h1><span class="grow"></span>' +
+    box.classList.toggle('wide', !!admin && BG.view === 'table');
+    h += '<div class="bg-top"><h1>Budget</h1>' +
+      (admin ? '<span class="bg-seg" role="group" aria-label="How to show the budget"><button type="button" data-bgv="dash" aria-pressed="' + (BG.view === 'dash') + '">Dashboard</button><button type="button" data-bgv="table" aria-pressed="' + (BG.view === 'table') + '">Table</button></span>' : '') +
+      '<span class="grow"></span>' +
       '<button type="button" class="btn" data-bga="csv">Download (Excel)</button>' +
       (admin ? '<button type="button" class="btn" data-bga="addcat">+ Group</button>' : '') + '</div>';
     h += bgCards(K);
     var C = K.C;
-    h += '<div class="bg-guests"><span>Confirmed guests:</span><b>' + C.adults + '</b> adults · <b>' + C.kids + '</b> children · <b>' + C.babies + '</b> babies' +
+    var plan = BG.data.countFrom === 'plan', P = BG.data.plan;
+    h += '<div class="bg-guests">' + (admin
+        ? '<select data-bgcf aria-label="Count guests from"><option value="">Confirmed guests</option><option value="plan"' + (plan ? ' selected' : '') + '>Planned numbers</option></select>' +
+          (plan ? [['adults', 'adults'], ['teens', 'teens'], ['kids', 'children'], ['babies', 'babies']].map(function (x) { return '<label><input type="text" inputmode="numeric" data-bgn="' + x[0] + '" value="' + esc(P[x[0]]) + '">' + x[1] + '</label>'; }).join('')
+            : ' <b>' + C.adults + '</b> adults · <b>' + C.kids + '</b> children · <b>' + C.babies + '</b> babies')
+        : '<span>' + (plan ? 'Planned guests:' : 'Confirmed guests:') + '</span><b>' + C.adults + '</b> adults · <b>' + C.kids + '</b> children · <b>' + C.babies + '</b> babies') +
       (admin ? '<span class="sep"></span><label>Nights <input type="text" inputmode="numeric" data-bgg="nights" value="' + esc(BG.data.nights) + '"></label>' +
         '<label>Safety buffer <input type="text" inputmode="numeric" data-bgg="buffer" value="' + esc(BG.data.buffer) + '">%</label>'
         : ' · ' + bgNights() + (bgNights() === 1 ? ' night' : ' nights')) + '</div>';
     if (admin && !BG.data.cats.some(function (c) { return c.lines.length; })) h += '<div class="bg-empty">No lines yet. Add them under each group, or <button type="button" class="linkbtn" data-bga="example">start from an example</button> (Shir &amp; Ami’s lines and prices – change or delete anything).</div>';
-    h += admin ? bgAdminHtml(K) : bgCoupleHtml(K);
+    h += admin ? (BG.view === 'table' ? bgTableHtml(K) : bgDashHtml(K)) : bgCoupleHtml(K);
     h += '<p class="bg-foot">' + (admin ? 'Quantities set to Adults / Children / Babies follow the confirmed guests by themselves. The couple sees this page without your notes, and can’t change anything.' : 'Prepared by KAI Event Planners. Updates by itself as guests confirm.') + '</p>';
     box.innerHTML = h;
   }
@@ -3707,6 +3805,152 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
         }).join('') + '</section>';
     }).join('');
   }
+  // ----- Noam's two ways to work on the same lines: Dashboard (click a line to edit it) and Table (everything editable in place) -----
+  function bgPass(l, lt, q) {
+    if (BG.filter === 'left' && !(lt.left > 0.005)) return false;
+    if (BG.filter === 'quote' && l.status !== 'Quote') return false;
+    if (BG.filter === 'due' && !bgDueKind(l, lt.left)) return false;
+    return !q || (l.item + ' ' + l.vendor + ' ' + l.note).toLowerCase().indexOf(q) > -1;
+  }
+  // The groups on screen: the budget's own groups, or (Table only) by vendor or status, after the filter and the search.
+  function bgGroups(K, dash) {
+    var G = [], map = {}, by = dash ? 'cat' : BG.by, q = dash ? '' : BG.q.trim().toLowerCase();
+    BG.data.cats.forEach(function (c, ci) {
+      if (by === 'cat') { map['c' + ci] = { key: 'c' + ci, ci: ci, name: c.name, col: BG_COL[ci % BG_COL.length], items: [] }; G.push(map['c' + ci]); }
+      c.lines.forEach(function (l, li) {
+        if (!dash && !bgPass(l, K.cats[ci].lines[li], q)) return;
+        var key = by === 'vendor' ? 'v' + (l.vendor.trim().toLowerCase() || '~') : by === 'status' ? 's' + l.status : 'c' + ci, g = map[key];
+        if (!g) {
+          g = map[key] = { key: key, name: by === 'vendor' ? (l.vendor.trim() || 'No vendor') : l.status, col: by === 'status' ? ['#8C8A84', '#2E3A9E', '#C77A1E', '#2F7D4F'][Math.max(0, BG_ST.indexOf(l.status))] : BG_COL[G.length % BG_COL.length], items: [] };
+          G.push(g);
+        }
+        g.items.push([ci, li]);
+      });
+    });
+    if (by === 'status') G.sort(function (a, b) { return BG_ST.indexOf(a.name) - BG_ST.indexOf(b.name); });
+    if (by === 'vendor') G.sort(function (a, b) { return a.key === 'v~' ? 1 : b.key === 'v~' ? -1 : a.name.localeCompare(b.name); });
+    return G;
+  }
+  function bgGSum(g, K) {
+    return g.items.reduce(function (s, p) { var lt = K.cats[p[0]].lines[p[1]]; s.t += lt.total; s.p += lt.paid; return s; }, { t: 0, p: 0 });
+  }
+  function bgQtyHtml(l, lt, k) {
+    return '<span class="bg-q">' + (l.link ? '<b class="lk" id="bg-q-' + k + '" title="Follows the confirmed guests">' + lt.qty + '</b>' : '<input type="text" inputmode="decimal" class="r w-n" data-bf="qty" value="' + esc(l.qty) + '" aria-label="Quantity">') +
+      '<select data-bf="link" aria-label="Quantity from">' + BG_LINK.map(function (o) { return '<option value="' + o[0] + '"' + (l.link === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></span>';
+  }
+  function bgPaysHtml(l, lt) {
+    return l.pays.map(function (p, pi) {
+      return '<div class="bg-pr" data-bgp="' + pi + '"><input type="text" data-bpf="date" value="' + esc(p.date) + '" placeholder="dd/mm/yyyy" aria-label="Payment date">' +
+        '<input type="text" inputmode="decimal" class="r" data-bpf="amount" value="' + esc(p.amount) + '" placeholder="Amount €" aria-label="Amount">' +
+        '<input type="text" data-bpf="note" value="' + esc(p.note) + '" placeholder="Note (deposit, transfer…)" aria-label="Payment note" dir="auto">' +
+        '<button type="button" class="bg-x" data-bga="delpay" aria-label="Delete payment">×</button></div>';
+    }).join('') + '<div><button type="button" class="btn" data-bga="addpay">+ Add payment</button>' + (lt.left > 0.005 && l.pays.length === 0 ? ' <span class="hint">Type the amount when the couple pays.</span>' : '') + '</div>';
+  }
+  function bgDashHtml(K) {
+    var h = '<div class="bg-dash"><div class="bg-dr bg-dh"><span></span><span>Item</span><span>Vendor</span><span class="r">Total</span><span class="r">Paid</span><span class="r">Left</span><span>Due</span><span>Status</span></div>';
+    bgGroups(K, true).forEach(function (g, gi) {
+      var c = BG.data.cats[g.ci], open = !BG.closed[c.id], s = bgGSum(g, K);
+      h += '<div class="bg-dr bg-dg" data-bgtog="' + esc(c.id) + '" style="--gc:' + g.col + '" aria-expanded="' + open + '"><span class="chev">' + (open ? '▾' : '▸') + '</span>' +
+        '<span class="nm"><i></i><input type="text" class="bg-cn" data-bgc="' + g.ci + '" data-bf="name" value="' + esc(c.name) + '" aria-label="Group name"><small>' + c.lines.length + (c.lines.length === 1 ? ' line' : ' lines') + '</small></span><span></span>' +
+        '<span class="r" id="bg-g-t-' + gi + '">' + bgEur(s.t) + '</span><span class="r" id="bg-g-p-' + gi + '">' + bgEur(s.p) + '</span><span class="r" id="bg-g-l-' + gi + '">' + bgEur(s.t - s.p) + '</span><span></span>' +
+        '<span style="text-align:right"><button type="button" class="bg-x" data-bga="delcat" data-bgc="' + g.ci + '" aria-label="Delete group" title="Delete group">×</button></span></div>';
+      if (!open) return;
+      g.items.forEach(function (p) { h += bgDashLine(K, p[0], p[1]); });
+      h += '<div class="bg-dadd"><button type="button" class="bg-add" data-bga="addline" data-bgc="' + g.ci + '">+ Add line</button></div>';
+    });
+    return h + '<div class="bg-dr bg-dfoot"><span></span><span>Total</span><span></span><span class="r" id="bg-f-t">' + bgEur(K.total) + '</span><span class="r" id="bg-f-p">' + bgEur(K.paid) + '</span><span class="r" id="bg-f-l">' + bgEur(K.left) + '</span><span></span><span></span></div></div>';
+  }
+  function bgDashLine(K, ci, li) {
+    var l = BG.data.cats[ci].lines[li], lt = K.cats[ci].lines[li], k = ci + '-' + li, on = BG.edit === l.id, dk = bgDueKind(l, lt.left);
+    var h = '<div class="bg-dr bg-dl' + (on ? ' on' : '') + '" data-bgc="' + ci + '" data-bgl="' + li + '" data-bga="edit" role="button" tabindex="0" aria-expanded="' + on + '">' +
+      '<span></span><span class="el" style="font-weight:600" id="bg-i-' + k + '">' + esc(l.item || '(no name yet)') + '</span><span class="el vd" id="bg-v-' + k + '">' + esc(l.vendor) + '</span>' +
+      '<span class="r" style="font-weight:700" id="bg-t-' + k + '">' + bgEur(lt.total) + '</span><span class="r" id="bg-p-' + k + '">' + (lt.paid ? bgEur(lt.paid) : '–') + '</span><span class="r" id="bg-l-' + k + '">' + bgEur(lt.left) + '</span>' +
+      '<span class="due ' + dk + '" id="bg-d-' + k + '">' + esc(l.due) + '</span><span><span class="bg-pill st-' + BG_ST.indexOf(l.status) + '" id="bg-s-' + k + '">' + esc(l.status) + '</span></span></div>';
+    if (!on) return h;
+    return h + '<div class="bg-de" data-bgc="' + ci + '" data-bgl="' + li + '">' +
+      '<div class="row"><label>Item<input type="text" class="w-item" data-bf="item" value="' + esc(l.item) + '" dir="auto"></label>' +
+        '<label>Vendor<input type="text" class="w-vd" data-bf="vendor" value="' + esc(l.vendor) + '" dir="auto"></label>' +
+        '<label>Status<select class="st st-' + BG_ST.indexOf(l.status) + '" data-bf="status">' + BG_ST.map(function (s) { return '<option' + (l.status === s ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select></label>' +
+        '<label>Due<input type="text" class="w-due due ' + dk + '" data-bf="due" value="' + esc(l.due) + '" placeholder="dd/mm/yyyy"></label></div>' +
+      '<div class="row"><label>Unit €<input type="text" inputmode="decimal" class="w-n" data-bf="unit" value="' + esc(l.unit) + '"></label>' +
+        '<label>Quantity' + bgQtyHtml(l, lt, k) + '</label>' +
+        '<label class="ck"><input type="checkbox" data-bf="nightsOn"' + (l.nightsOn ? ' checked' : '') + '> × ' + bgNights() + (bgNights() === 1 ? ' night' : ' nights') + '</label>' +
+        '<span class="calc">= <b id="bg-t2-' + k + '">' + bgEur(lt.total) + '</b></span></div>' +
+      '<div class="row"><label>Notes – only you<input type="text" class="w-note" data-bf="note" value="' + esc(l.note) + '" dir="auto"></label></div>' +
+      '<div class="pays"><b>Payments</b>' + bgPaysHtml(l, lt) + '</div>' +
+      '<div class="acts"><button type="button" class="btn primary" data-bga="edit">Done</button><span class="grow"></span><button type="button" class="del" data-bga="delline">Delete line</button></div></div>';
+  }
+  function bgTableHtml(K) {
+    var G = bgGroups(K, false), n = 0, h = '<div class="bg-tools">' +
+      [['all', 'All'], ['left', 'Still to pay'], ['quote', 'Quotes'], ['due', 'Late & due soon']].map(function (f) { return '<button type="button" class="chip" data-bgf="' + f[0] + '" aria-pressed="' + (BG.filter === f[0]) + '">' + f[1] + '</button>'; }).join('') +
+      '<span class="lbl">Group by</span><select data-bgby aria-label="Group by">' + [['cat', 'Group'], ['vendor', 'Vendor'], ['status', 'Status']].map(function (o) { return '<option value="' + o[0] + '"' + (BG.by === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>' +
+      '<span style="flex:1"></span><input type="search" data-bgq value="' + esc(BG.q) + '" placeholder="Find a line, vendor or note" aria-label="Find"></div>';
+    h += '<div class="bg-tt"><table class="bg-t"><colgroup><col style="width:220px"><col style="width:140px"><col style="width:80px"><col style="width:150px"><col style="width:56px"><col style="width:96px"><col style="width:100px"><col style="width:108px"><col style="width:128px"><col><col style="width:34px"></colgroup>' +
+      '<thead><tr><th>Item</th><th>Vendor</th><th class="r">Unit €</th><th class="r">Qty</th><th class="c">Nights</th><th class="r">Total</th><th class="r">Paid</th><th>Due</th><th>Status</th><th>Notes (only you)</th><th></th></tr></thead><tbody>';
+    G.forEach(function (g, gi) {
+      var cat = BG.by === 'cat', tk = cat ? BG.data.cats[g.ci].id : 'by:' + g.key, open = !BG.closed[tk], s = bgGSum(g, K);
+      n += g.items.length;
+      if (!cat && !g.items.length) return;
+      h += '<tr class="bg-tg" data-bgtog="' + esc(tk) + '" style="--gc:' + g.col + '"><td colspan="11"><div class="in"><span>' + (open ? '▾' : '▸') + '</span>' +
+        (cat ? '<input type="text" class="bg-cn" data-bgc="' + g.ci + '" data-bf="name" value="' + esc(g.name) + '" aria-label="Group name">' : '<span>' + esc(g.name) + '</span>') +
+        '<span class="s">' + g.items.length + (g.items.length === 1 ? ' line' : ' lines') + '</span><span style="flex:1"></span>' +
+        '<span class="s">Total<b id="bg-g-t-' + gi + '">' + bgEur(s.t) + '</b></span><span class="s">Paid<b id="bg-g-p-' + gi + '">' + bgEur(s.p) + '</b></span><span class="s">Left<b id="bg-g-l-' + gi + '">' + bgEur(s.t - s.p) + '</b></span>' +
+        (cat ? '<button type="button" class="bg-x" data-bga="delcat" data-bgc="' + g.ci + '" aria-label="Delete group" title="Delete group">×</button>' : '') + '</div></td></tr>';
+      if (!open) return;
+      g.items.forEach(function (p) { h += bgTableRow(K, p[0], p[1]); });
+      if (cat) h += '<tr class="bg-tadd"><td colspan="11"><button type="button" class="bg-add" data-bga="addline" data-bgc="' + g.ci + '">+ Add line</button></td></tr>';
+    });
+    if (!n && (BG.filter !== 'all' || BG.q.trim())) h += '<tr><td colspan="11" class="bg-nores">No lines match. <button type="button" class="linkbtn" data-bgf="all" data-bgclear="1">Show all</button></td></tr>';
+    var ft = G.reduce(function (a, g) { var s = bgGSum(g, K); a.t += s.t; a.p += s.p; return a; }, { t: 0, p: 0 });
+    return h + '</tbody><tfoot><tr><td>' + (BG.filter !== 'all' || BG.q.trim() ? 'Shown · ' : 'Total · ') + n + ' lines</td><td></td><td></td><td></td><td></td><td class="r" id="bg-f-t">' + bgEur(ft.t) + '</td><td class="r" id="bg-f-p">' + bgEur(ft.p) + '</td>' +
+      '<td colspan="4">Left <span id="bg-f-l">' + bgEur(ft.t - ft.p) + '</span></td></tr></tfoot></table></div>';
+  }
+  function bgTableRow(K, ci, li) {
+    var l = BG.data.cats[ci].lines[li], lt = K.cats[ci].lines[li], k = ci + '-' + li, open = !!BG.open[l.id], dk = bgDueKind(l, lt.left);
+    var h = '<tr data-bgc="' + ci + '" data-bgl="' + li + '">' +
+      '<td><input type="text" data-bf="item" value="' + esc(l.item) + '" aria-label="Item" dir="auto"></td>' +
+      '<td><input type="text" data-bf="vendor" value="' + esc(l.vendor) + '" aria-label="Vendor" dir="auto"></td>' +
+      '<td><input type="text" inputmode="decimal" class="r" data-bf="unit" value="' + esc(l.unit) + '" aria-label="Unit price"></td>' +
+      '<td>' + bgQtyHtml(l, lt, k) + '</td>' +
+      '<td class="c"><input type="checkbox" data-bf="nightsOn"' + (l.nightsOn ? ' checked' : '') + ' aria-label="Times the nights"></td>' +
+      '<td class="r tot" id="bg-t-' + k + '">' + bgEur(lt.total) + '</td>' +
+      '<td class="r"><button type="button" class="bg-paid" data-bga="pays" aria-expanded="' + open + '"><span id="bg-p-' + k + '">' + (lt.paid ? bgEur(lt.paid) : '+ pay') + '</span> ' + (open ? '▴' : '▾') + '</button></td>' +
+      '<td><input type="text" class="due ' + dk + '" data-bf="due" value="' + esc(l.due) + '" placeholder="dd/mm/yyyy" aria-label="Due date"></td>' +
+      '<td><select class="st st-' + BG_ST.indexOf(l.status) + '" data-bf="status" aria-label="Status">' + BG_ST.map(function (s) { return '<option' + (l.status === s ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select></td>' +
+      '<td><input type="text" data-bf="note" value="' + esc(l.note) + '" aria-label="Note" dir="auto"></td>' +
+      '<td><button type="button" class="bg-x" data-bga="delline" aria-label="Delete line" title="Delete line">×</button></td></tr>';
+    if (open) h += '<tr class="bg-pays" data-bgc="' + ci + '" data-bgl="' + li + '"><td></td><td colspan="10"><div class="bg-pl"><b>Payments</b>' + bgPaysHtml(l, lt) + '</div></td></tr>';
+    return h;
+  }
+  // View switch, open/close a group, filters, group by, search, Enter = the same field one line down
+  $('budget').addEventListener('click', function (e) {
+    if (!S.admin || !BG.data || BG.data.source) return;
+    var v = e.target.closest('[data-bgv]');
+    if (v) { BG.view = v.dataset.bgv; BG.edit = ''; try { localStorage.setItem('kai-bg-view', BG.view); } catch (x) {} bgRender(); return; }
+    var f = e.target.closest('[data-bgf]');
+    if (f) { BG.filter = f.dataset.bgf; if (f.dataset.bgclear) BG.q = ''; bgRender(); return; }
+    var g = e.target.closest('[data-bgtog]');
+    if (g && !e.target.closest('input, button, select')) { BG.closed[g.dataset.bgtog] = !BG.closed[g.dataset.bgtog]; bgRender(); }
+  });
+  $('budget').addEventListener('change', function (e) {
+    if (e.target.matches('[data-bgby]')) { BG.by = e.target.value; bgRender(); }
+    if (e.target.matches('[data-bgcf]') && S.admin) { BG.data.countFrom = e.target.value; bgChanged(true); bgRender(); }
+  });
+  $('budget').addEventListener('input', function (e) {
+    if (e.target.matches('[data-bgn]') && S.admin) { BG.data.plan[e.target.dataset.bgn] = e.target.value.trim(); bgRecalc(); bgChanged(); return; }
+    if (!e.target.matches('[data-bgq]')) return;
+    BG.q = e.target.value; clearTimeout(BG.qt);
+    BG.qt = setTimeout(function () { bgRender(); var s = $('budget').querySelector('[data-bgq]'); if (s) { s.focus(); s.setSelectionRange(s.value.length, s.value.length); } }, 250);
+  });
+  $('budget').addEventListener('keydown', function (e) {
+    var t = e.target;
+    if ((e.key === 'Enter' || e.key === ' ') && t.matches('.bg-dl')) { e.preventDefault(); t.click(); return; }
+    if (e.key !== 'Enter' || !t.dataset.bf || t.tagName !== 'INPUT' || !t.closest('.bg-tt')) return;
+    e.preventDefault();
+    var rows = Array.prototype.slice.call($('budget').querySelectorAll('.bg-tt tr[data-bgl]:not(.bg-pays)')), i = rows.indexOf(t.closest('tr'));
+    var nx = rows[i + (e.shiftKey ? -1 : 1)], el = nx && nx.querySelector('[data-bf="' + t.dataset.bf + '"]');
+    if (el) { el.focus(); if (el.select) el.select(); } else t.blur();
+  });
   // ----- Budget kept in Noam's Google Sheet: he edits the sheet right here; the couple sees a clean copy the Hub sends every few minutes -----
   function bgSheetCalc() {
     var D = BG.data, today = new Date(new Date().toDateString()), K = { total: 0, paid: 0, next: null, late: 0 };
@@ -3783,9 +4027,17 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       set('bg-c-t-' + ci, bgEur(ct.total)); set('bg-c-p-' + ci, bgEur(ct.paid)); set('bg-c-l-' + ci, bgEur(ct.total - ct.paid));
       c.lines.forEach(function (l, li) {
         var lt = ct.lines[li], k = ci + '-' + li;
-        set('bg-t-' + k, bgEur(lt.total)); set('bg-l-' + k, bgEur(lt.left)); set('bg-p-' + k, lt.paid ? bgEur(lt.paid) : '+ pay'); set('bg-q-' + k, lt.qty);
+        set('bg-t-' + k, bgEur(lt.total)); set('bg-l-' + k, bgEur(lt.left)); set('bg-p-' + k, lt.paid ? bgEur(lt.paid) : BG.view === 'dash' ? '–' : '+ pay'); set('bg-q-' + k, lt.qty);
+        if (BG.view === 'dash' && $('bg-i-' + k)) {
+          set('bg-t2-' + k, bgEur(lt.total)); set('bg-i-' + k, l.item || '(no name yet)'); set('bg-v-' + k, l.vendor); set('bg-d-' + k, l.due); set('bg-s-' + k, l.status);
+          $('bg-d-' + k).className = 'due ' + bgDueKind(l, lt.left); $('bg-s-' + k).className = 'bg-pill st-' + BG_ST.indexOf(l.status);
+        }
       });
     });
+    if (!S.admin) return;
+    var ft = 0, fp = 0;
+    bgGroups(K, BG.view === 'dash').forEach(function (g, gi) { var s = bgGSum(g, K); ft += s.t; fp += s.p; set('bg-g-t-' + gi, bgEur(s.t)); set('bg-g-p-' + gi, bgEur(s.p)); set('bg-g-l-' + gi, bgEur(s.t - s.p)); });
+    set('bg-f-t', bgEur(ft)); set('bg-f-p', bgEur(fp)); set('bg-f-l', bgEur(ft - fp));
   }
   function bgChanged(now) { BG.dirty = true; clearTimeout(BG.timer); BG.timer = setTimeout(bgFlush, now ? 0 : 900); }
   // ---------- budget as a spreadsheet ----------
@@ -3842,14 +4094,14 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (t.dataset.bpf) { var p = l.pays[+t.closest('[data-bgp]').dataset.bgp]; p[t.dataset.bpf] = t.value; bgRecalc(); bgChanged(); return; }
     if (t.dataset.bf && t.type !== 'checkbox' && t.tagName !== 'SELECT') {
       l[t.dataset.bf] = t.value; bgRecalc(); bgChanged();
-      if (t.dataset.bf === 'due') { var tr = t.closest('tr'), lt = bgCalc().cats[+tr.dataset.bgc].lines[+tr.dataset.bgl]; t.className = 'due ' + bgDueKind(l, lt.left); }
+      if (t.dataset.bf === 'due') { var tr = t.closest('[data-bgl]'), lt = bgCalc().cats[+tr.dataset.bgc].lines[+tr.dataset.bgl], dk = bgDueKind(l, lt.left); t.classList.remove('soon', 'late'); if (dk) t.classList.add(dk); }
     }
   });
   $('budget').addEventListener('change', function (e) {
     var t = e.target; if (!S.admin || !BG.data) return;
     var l = bgLineAt(t); if (!l) return;
     if (t.dataset.bf === 'nightsOn') { l.nightsOn = t.checked; bgRecalc(); bgChanged(); }
-    else if (t.dataset.bf === 'status') { l.status = t.value; t.className = 'st st-' + BG_ST.indexOf(l.status); bgChanged(); }
+    else if (t.dataset.bf === 'status') { l.status = t.value; t.className = 'st st-' + BG_ST.indexOf(l.status); bgRecalc(); bgChanged(); }
     else if (t.dataset.bf === 'link') { if (!t.value && l.link) l.qty = bgQty(l, bgCounts()); l.link = t.value; bgChanged(); bgRender(); }
   });
   $('budget').addEventListener('click', function (e) {
@@ -3865,19 +4117,22 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       BG.data.cats.splice(ci, 1); bgChanged(true); bgRender(); return;
     }
     if (a === 'addline') {
-      BG.data.cats[ci].lines.push({ id: bgId(), vendor: '', item: '', unit: '', qty: 1, link: '', nightsOn: false, due: '', status: 'Quote', note: '', pays: [] });
+      var nl = { id: bgId(), vendor: '', item: '', unit: '', qty: 1, link: '', nightsOn: false, due: '', status: 'Quote', note: '', pays: [] };
+      BG.data.cats[ci].lines.push(nl);
+      if (BG.view === 'dash') { BG.edit = nl.id; BG.closed[BG.data.cats[ci].id] = false; }
       bgChanged(); bgRender();
-      var rows = $('budget').querySelectorAll('tr[data-bgc="' + ci + '"]:not(.bg-pays) [data-bf="vendor"]'); if (rows.length) rows[rows.length - 1].focus();
+      var rows = $('budget').querySelectorAll(BG.view === 'dash' ? '.bg-de [data-bf="item"]' : 'tr[data-bgc="' + ci + '"]:not(.bg-pays) [data-bf="item"]'); if (rows.length) rows[rows.length - 1].focus();
       return;
     }
     if (a === 'example') { bgExample(); bgChanged(true); bgRender(); return; }
     if (!l) return;
     if (a === 'delline') { if ((l.item || l.vendor || bgPaid(l)) && !confirmDel('Delete “' + (l.item || l.vendor) + '”?')) return; BG.data.cats[ci].lines.splice(+tr.dataset.bgl, 1); bgChanged(true); bgRender(); return; }
+    if (a === 'edit') { BG.edit = BG.edit === l.id ? '' : l.id; bgRender(); var ed = $('budget').querySelector('.bg-dl.on'); if (ed) ed.focus({ preventScroll: true }); return; }
     if (a === 'pays') { BG.open[l.id] = !BG.open[l.id]; bgRender(); return; }
     if (a === 'addpay') {
       var d = new Date(); l.pays.push({ id: bgId(), date: ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + '/' + d.getFullYear(), amount: '', note: '' });
       bgChanged(); bgRender();
-      var am = $('budget').querySelectorAll('tr.bg-pays[data-bgc="' + ci + '"][data-bgl="' + tr.dataset.bgl + '"] [data-bpf="amount"]'); if (am.length) am[am.length - 1].focus();
+      var am = $('budget').querySelectorAll('tr.bg-pays[data-bgc="' + ci + '"][data-bgl="' + tr.dataset.bgl + '"] [data-bpf="amount"], .bg-de[data-bgc="' + ci + '"][data-bgl="' + tr.dataset.bgl + '"] [data-bpf="amount"]'); if (am.length) am[am.length - 1].focus();
       return;
     }
     if (a === 'delpay') { l.pays.splice(+b.closest('[data-bgp]').dataset.bgp, 1); bgChanged(true); bgRender(); }
