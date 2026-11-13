@@ -602,7 +602,21 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .bg-tools .lbl { color: var(--soft); margin-left: 10px; }
 .bg-tools select, .bg-tools input { height: 32px; border: 1px solid var(--line); border-radius: 6px; padding: 0 8px; font: inherit; font-size: 13.5px; background: #FFFFFF; }
 .bg-tools input { width: 210px; }
-.bg-tt { overflow: auto; max-height: calc(100dvh - 300px); min-height: 360px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.bg.cmp { gap: 10px; margin-top: 0; }
+.bg.cmp .bg-top h1 { font-size: 20px; }
+.bg.cmp .bg-seg { margin-left: 4px; }
+.bg-kpis { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 4px 18px; flex-wrap: wrap; font-size: 13.5px; color: var(--muted); margin-left: 12px; }
+.bg-kpis > span { white-space: nowrap; }
+.bg-kpis b { font-size: 17px; color: var(--text); font-variant-numeric: tabular-nums; margin-left: 2px; }
+.bg-kpis small { font-size: 12.5px; color: var(--soft); }
+.bg-kpis .ok b { color: var(--ok); }
+.bg-kpis .nx { display: inline-flex; align-items: baseline; gap: 6px; background: #FBF3E2; color: #8A5A12; border-radius: 6px; padding: 2px 10px; }
+.bg-kpis .nx.late { background: #FAD7D4; color: #A1271B; } .bg-kpis .nx.late b { color: #A1271B; }
+.bg-kpis .nx b { font-size: 15px; }
+.bg-kpis .nx small { display: none; }
+.bg.cmp .bg-top .btn { height: 34px; }
+.bg.cmp .bg-guests { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; }
+.bg-tt { overflow: auto; max-height: calc(100dvh - 190px); min-height: 360px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
 .bg-tt .bg-t { min-width: 1180px; }
 .bg-tt .bg-t thead th { position: sticky; top: 0; z-index: 2; }
 .bg-tt .bg-t td:first-child { padding-left: 10px; }
@@ -632,6 +646,8 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
   .bg-de .w-item, .bg-de .w-vd, .bg-de .w-note { width: 100%; }
   .bg-seg { margin-left: 0; }
   .bg-tools input { width: 100%; }
+  .bg-kpis { flex: 1 1 100%; order: 5; margin-left: 0; gap: 4px 14px; }
+  .bg-kpis .nx small, .bg-kpis small { display: none; }
 }
 .onb { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; }
 .onb[hidden] { display: none; }
@@ -3733,15 +3749,24 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (BG.data.source === 'sheet') { box.innerHTML = bgSheetHtml(); return; }
     var K = bgCalc(), admin = S.admin, h = '';
     box.classList.toggle('wide', !!admin && BG.view === 'table');
-    h += '<div class="bg-top"><h1>Budget</h1>' +
-      (admin ? '<span class="bg-seg" role="group" aria-label="How to show the budget"><button type="button" data-bgv="dash" aria-pressed="' + (BG.view === 'dash') + '">Dashboard</button><button type="button" data-bgv="table" aria-pressed="' + (BG.view === 'table') + '">Table</button></span>' : '') +
-      '<span class="grow"></span>' +
-      '<button type="button" class="btn" data-bga="csv">Download (Excel)</button>' +
-      (admin ? '<button type="button" class="btn" data-bga="addcat">+ Group</button>' : '') + '</div>';
-    h += bgCards(K);
     var C = K.C;
     var plan = BG.data.countFrom === 'plan', P = BG.data.plan;
-    h += '<div class="bg-guests">' + (admin
+    box.classList.toggle('cmp', !!admin);
+    if (admin) {
+      // Noam: one short line on top (the numbers inline), so the lines get the screen
+      h += '<div class="bg-top"><h1>Budget</h1>' +
+        '<span class="bg-seg" role="group" aria-label="How to show the budget"><button type="button" data-bgv="dash" aria-pressed="' + (BG.view === 'dash') + '">Dashboard</button><button type="button" data-bgv="table" aria-pressed="' + (BG.view === 'table') + '">Table</button></span>' +
+        '<span class="bg-kpis"><span>Total <b id="bg-k-total">' + bgEur(K.total) + '</b> <small id="bg-k-per">' + (C.all ? bgEur(K.total / C.all) + ' per guest' : '') + '</small></span>' +
+          '<span class="ok">Paid <b id="bg-k-paid">' + bgEur(K.paid) + '</b></span><span>Left <b id="bg-k-left">' + bgEur(K.left) + '</b></span>' +
+          '<span class="nx' + (K.late ? ' late' : '') + '" id="bg-k-next">' + bgNextHtml(K) + '</span></span>' +
+        '<button type="button" class="btn" data-bgset aria-expanded="' + !!BG.set + '">' + (plan ? 'Planned' : 'Confirmed') + ': ' + C.all + ' guests · ' + bgNights() + (bgNights() === 1 ? ' night' : ' nights') + ' ' + (BG.set ? '▴' : '▾') + '</button>' +
+        '<button type="button" class="btn" data-bga="csv">Download</button>' +
+        '<button type="button" class="btn" data-bga="addcat">+ Group</button></div>';
+    } else {
+      h += '<div class="bg-top"><h1>Budget</h1><span class="grow"></span><button type="button" class="btn" data-bga="csv">Download (Excel)</button></div>';
+      h += bgCards(K);
+    }
+    if (!admin || BG.set) h += '<div class="bg-guests">' + (admin
         ? '<select data-bgcf aria-label="Count guests from"><option value="">Confirmed guests</option><option value="plan"' + (plan ? ' selected' : '') + '>Planned numbers</option></select>' +
           (plan ? [['adults', 'adults'], ['teens', 'teens'], ['kids', 'children'], ['babies', 'babies']].map(function (x) { return '<label><input type="text" inputmode="numeric" data-bgn="' + x[0] + '" value="' + esc(P[x[0]]) + '">' + x[1] + '</label>'; }).join('')
             : ' <b>' + C.adults + '</b> adults · <b>' + C.kids + '</b> children · <b>' + C.babies + '</b> babies')
@@ -3751,7 +3776,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
         : ' · ' + bgNights() + (bgNights() === 1 ? ' night' : ' nights')) + '</div>';
     if (admin && !BG.data.cats.some(function (c) { return c.lines.length; })) h += '<div class="bg-empty">No lines yet. Add them under each group, or <button type="button" class="linkbtn" data-bga="example">start from an example</button> (Shir &amp; Ami’s lines and prices – change or delete anything).</div>';
     h += admin ? (BG.view === 'table' ? bgTableHtml(K) : bgDashHtml(K)) : bgCoupleHtml(K);
-    h += '<p class="bg-foot">' + (admin ? 'Quantities set to Adults / Children / Babies follow the confirmed guests by themselves. The couple sees this page without your notes, and can’t change anything.' : 'Prepared by KAI Event Planners. Updates by itself as guests confirm.') + '</p>';
+    if (!admin) h += '<p class="bg-foot">Prepared by KAI Event Planners. Updates by itself as guests confirm.</p>';
     box.innerHTML = h;
   }
   function bgAdminHtml(K) {
@@ -3927,6 +3952,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (!S.admin || !BG.data || BG.data.source) return;
     var v = e.target.closest('[data-bgv]');
     if (v) { BG.view = v.dataset.bgv; BG.edit = ''; try { localStorage.setItem('kai-bg-view', BG.view); } catch (x) {} bgRender(); return; }
+    if (e.target.closest('[data-bgset]')) { BG.set = !BG.set; bgRender(); return; }
     var f = e.target.closest('[data-bgf]');
     if (f) { BG.filter = f.dataset.bgf; if (f.dataset.bgclear) BG.q = ''; bgRender(); return; }
     var g = e.target.closest('[data-bgtog]');
