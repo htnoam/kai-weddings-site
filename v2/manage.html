@@ -545,6 +545,11 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .bg-chip.ok { background: #E6F2E3; color: #2F6B2F; }
 .bg-top a.btn { text-decoration: none; display: inline-flex; align-items: center; }
 .bg-frame { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; height: calc(100vh - 210px); min-height: 520px; }
+/* Noam's Google Sheet: the whole width and height under one short line */
+.bg:has(.bg-frame) { max-width: none; gap: 8px; margin-top: 0; }
+.bg:has(.bg-frame) .bg-top h1 { font-size: 20px; }
+.bg:has(.bg-frame) .bg-top .btn, .bg:has(.bg-frame) .bg-chip { height: 32px; }
+.bg-frame { height: calc(100vh - 128px); height: calc(100dvh - 128px); }
 .bg-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
 .bg-prev { background: #FBF3E2; border: 1px solid #EAD9B5; color: #8A5A12; border-radius: 8px; padding: 8px 14px; font-weight: 600; font-size: 14px; }
 .bg-foot { margin: 0; font-size: 12.5px; color: var(--soft); }
@@ -4028,9 +4033,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     }
     h += '</div>';
     if (admin && !BG.preview) {
-      return h + '<div class="bg-frame"><iframe title="Budget sheet" src="' + url + '" allow="clipboard-read; clipboard-write"></iframe></div>' +
-        '<p class="bg-foot">You edit the sheet right here (or in Google Sheets – it’s the same file). The couple’s page is rebuilt from it every 5 minutes, without your notes. ' +
-        'If the sheet asks you to sign in, or won’t let you type here, use <b>Open in Google Sheets</b>. Guest numbers: switch on in the sheet’s Guests tab (B14).</p>';
+      return h + '<div class="bg-frame" title="You edit the sheet right here (or in Google Sheets – same file). The couple’s page is rebuilt from it every 5 minutes, without your notes."><iframe title="Budget sheet" src="' + url + '" allow="clipboard-read; clipboard-write"></iframe></div>';
     }
     h += (admin ? '<div class="bg-prev">This is what the couple sees.</div>' : '') + bgSheetCards(K) + bgSheetCouple(K) +
       '<p class="bg-foot">Prepared by KAI Event Planners' + (BG.data.synced ? ' · updated ' + esc(bgAgo(BG.data.synced)) : '') + '.</p>';
