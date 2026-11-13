@@ -474,8 +474,9 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .rm-all { color: var(--ok); font-weight: 600; }
 .bg { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 1400px; margin: 4px auto 0; }
 /* Budget as a spreadsheet (Univer, like Google Sheets): the whole width of the screen */
-.bg:has(.bg-grid) { max-width: none; }
-.bg-grid { height: calc(100vh - 190px); height: calc(100dvh - 190px); min-height: 460px; border: 1px solid var(--hair); border-radius: 8px; overflow: hidden; background: #FFFFFF; position: relative; }
+.bg:has(.bg-grid) { max-width: none; gap: 8px; margin-top: 0; }
+.bg:has(.bg-grid) .bg-top h1 { font-size: 20px; }
+.bg-grid { height: calc(100vh - 128px); height: calc(100dvh - 128px); min-height: 460px; border: 1px solid var(--hair); border-radius: 8px; overflow: hidden; background: #FFFFFF; position: relative; }
 .bg-grid .bg-load { position: absolute; inset: 0; display: grid; place-items: center; color: var(--soft); font-size: 14px; }
 @media (max-width: 759px) { .bg-grid { height: calc(100dvh - 150px); min-height: 380px; } }
 .bg-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -551,6 +552,33 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .bg:has(.bg-frame) .bg-top .btn, .bg:has(.bg-frame) .bg-chip { height: 32px; }
 .bg-frame { height: calc(100vh - 128px); height: calc(100dvh - 128px); }
 .bg-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+.bg-gs { font-size: 13.5px; font-weight: 600; color: var(--ink); text-decoration: none; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 5px 12px; }
+.bg-gs:hover { border-color: var(--ink); }
+.bg-open { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; }
+.bg-open .t { flex: 1; min-width: 240px; display: flex; flex-direction: column; gap: 3px; }
+.bg-open .t b { font-size: 17px; } .bg-open .t span { color: var(--muted); font-size: 14px; }
+.bg-open .btn.big { height: 46px; padding: 0 22px; font-size: 16px; text-decoration: none; display: inline-flex; align-items: center; }
+.bg-ct { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: auto; }
+.bg-ct table { width: 100%; min-width: 860px; table-layout: auto; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+.bg-ct th { position: sticky; top: 0; background: #2E3A9E; color: #FFFFFF; text-align: left; font-size: 13px; font-weight: 700; padding: 9px 12px; white-space: nowrap; }
+.bg-ct td { padding: 8px 12px; border-bottom: 1px solid var(--row-line); white-space: nowrap; }
+.bg-ct td { border-right: none; border-left: none; }
+.bg-ct th:first-child, .bg-ct td:first-child { width: 34%; white-space: normal; min-width: 220px; padding-left: 26px; }
+.bg-ct th:first-child { padding-left: 14px; }
+.bg-ct .r { text-align: right; } .bg-ct .b { font-weight: 700; } .bg-ct .ok { color: var(--ok); }
+.bg-ct tr.g td { background: #ECEAF6; font-weight: 700; color: var(--ink); }
+.bg-ct tr.g td:first-child { box-shadow: inset 4px 0 0 var(--gc); }
+.bg-ct tr.g td:first-child { padding-left: 14px; }
+.bg-ct tr.g td.r { color: var(--text); }
+.bg-ct td.due.late { color: #A1271B; font-weight: 700; background: #FAD7D4; } .bg-ct td.due.soon { color: #8A4B00; font-weight: 700; background: #FDE8CC; }
+.bg-ct tfoot td { background: #E8E6E1; font-weight: 700; border-bottom: none; }
+.bg-ct tfoot td:first-child { padding-left: 14px; }
+@media (max-width: 760px) {
+  .bg-ct table { min-width: 0; font-size: 13px; }
+  .bg-ct th:nth-child(2), .bg-ct td:nth-child(2), .bg-ct th:nth-child(3), .bg-ct td:nth-child(3), .bg-ct th:nth-child(4), .bg-ct td:nth-child(4),
+  .bg-ct th:nth-child(6), .bg-ct td:nth-child(6), .bg-ct th:nth-child(9), .bg-ct td:nth-child(9) { display: none; }
+  .bg-ct th, .bg-ct td { padding: 8px 8px; } .bg-ct th:first-child, .bg-ct td:first-child { min-width: 0; width: auto; padding-left: 14px; }
+}
 .bg-prev { background: #FBF3E2; border: 1px solid #EAD9B5; color: #8A5A12; border-radius: 8px; padding: 8px 14px; font-weight: 600; font-size: 14px; }
 .bg-foot { margin: 0; font-size: 12.5px; color: var(--soft); }
 @media (max-width: 760px) {
@@ -4009,33 +4037,34 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       '<div class="bg-card"><span>Left to pay</span><b>' + bgEur(K.left) + '</b><small>' + pct + '% paid</small></div>' +
       '<div class="bg-card next' + (K.late ? ' late' : '') + '">' + bgNextHtml(K) + '</div></div>';
   }
+  // The couple's page (and Noam's preview of it): a table – one row per line, group rows with subtotals
   function bgSheetCouple(K) {
-    return (BG.data.cats || []).map(function (c, ci) {
-      if (!(c.lines || []).length) return '';
-      return '<section class="bg-cat ro" style="--gc:' + BG_COL[ci % BG_COL.length] + '"><div class="bg-ch"><b>' + esc(c.name) + '</b><span class="grow"></span><span class="bg-cs">' + bgEur(c._t) + '</span></div>' +
-        c.lines.map(function (l) {
-          var q = bgNum(l.qty), n = bgNum(l.nights), unit = bgNum(l.unit), left = bgNum(l.left);
-          var calc = unit && (q !== 1 || n) ? q + ' × ' + bgEur(unit) + (n ? ' × ' + n + (n === 1 ? ' night' : ' nights') : '') : '';
-          var dk = bgDueKind(l, left);
-          return '<div class="bg-ro"><div class="a"><b>' + esc(l.item) + '</b>' + (calc ? '<small>' + esc(calc) + '</small>' : '') + '</div>' +
-            '<div class="b"><b>' + bgEur(bgNum(l.total)) + '</b><span class="ok">' + (bgNum(l.paid) ? 'Paid ' + bgEur(bgNum(l.paid)) : 'Not paid yet') + '</span>' +
-            (left > 0.005 && l.due ? '<span class="due ' + dk + '">' + esc(l.due) + ' · ' + bgEur(left) + '</span>' : '') + '</div></div>';
-        }).join('') + '</section>';
-    }).join('') || '<div class="bg-empty">The budget isn’t ready yet.</div>';
+    var cats = (BG.data.cats || []).filter(function (c) { return (c.lines || []).length; });
+    if (!cats.length) return '<div class="bg-empty">The budget isn’t ready yet.</div>';
+    var stc = function (s) { var i = ['quote', 'approved', 'deposit paid', 'paid', 'fully paid'].indexOf(String(s || '').toLowerCase()); return i < 0 ? 0 : Math.min(i, 3); };
+    var h = '<div class="bg-ct"><table><thead><tr><th>Item</th><th class="r">Unit €</th><th class="r">Qty</th><th class="r">Nights</th><th class="r">Total</th><th class="r">Paid</th><th class="r">Left</th><th>Due</th><th>Status</th></tr></thead><tbody>';
+    cats.forEach(function (c) {
+      var ci = (BG.data.cats || []).indexOf(c);
+      h += '<tr class="g" style="--gc:' + BG_COL[ci % BG_COL.length] + '"><td>' + esc(c.name) + '</td><td></td><td></td><td></td><td class="r">' + bgEur(c._t) + '</td><td class="r">' + bgEur(c._p) + '</td><td class="r">' + bgEur(c._t - c._p) + '</td><td></td><td></td></tr>';
+      c.lines.forEach(function (l) {
+        var q = bgNum(l.qty), n = bgNum(l.nights), unit = bgNum(l.unit), paid = bgNum(l.paid), left = bgNum(l.left), dk = bgDueKind(l, left);
+        h += '<tr><td>' + esc(l.item) + '</td><td class="r">' + (unit ? (unit % 1 ? '€' + unit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : bgEur(unit)) : '') + '</td><td class="r">' + (q || '') + '</td><td class="r">' + (n || '') + '</td>' +
+          '<td class="r b">' + bgEur(bgNum(l.total)) + '</td><td class="r ok">' + (paid ? bgEur(paid) : '–') + '</td><td class="r">' + bgEur(left) + '</td>' +
+          '<td class="due ' + dk + '">' + (left > 0.005 ? esc(l.due || '') : '') + '</td><td>' + (l.status ? '<span class="bg-pill st-' + stc(l.status) + '">' + esc(l.status) + '</span>' : '') + '</td></tr>';
+      });
+    });
+    return h + '</tbody><tfoot><tr><td>Total</td><td></td><td></td><td></td><td class="r">' + bgEur(K.total) + '</td><td class="r">' + bgEur(K.paid) + '</td><td class="r">' + bgEur(K.left) + '</td><td></td><td></td></tr></tfoot></table></div>';
   }
   function bgSheetHtml() {
     var K = bgSheetCalc(), admin = S.admin && BG.sheet, url = 'https://docs.google.com/spreadsheets/d/' + encodeURIComponent(BG.sheet) + '/edit';
     var h = '<div class="bg-top"><h1>Budget</h1>' + (admin ? '<span class="bg-src">your Google Sheet</span>' : '') + '<span class="grow"></span>';
     if (admin) {
       h += '<span class="bg-chip ok">✓ The couple’s page updated ' + esc(bgAgo(BG.data.synced)) + '</span>' +
-        '<button type="button" class="btn" data-bgs="preview" aria-pressed="' + !!BG.preview + '">' + (BG.preview ? '← Back to the sheet' : 'See what the couple sees') + '</button>' +
-        '<a class="btn primary" href="' + url + '" target="_blank" rel="noopener">Open in Google Sheets ↗</a>';
+        '<a class="bg-gs" href="' + url + '" target="_blank" rel="noopener" title="You edit the budget in Google Sheets. This page (what the couple sees) is rebuilt from it every 5 minutes, without your notes.">Edit in Google Sheets ↗</a>';
     }
     h += '</div>';
-    if (admin && !BG.preview) {
-      return h + '<div class="bg-frame" title="You edit the sheet right here (or in Google Sheets – same file). The couple’s page is rebuilt from it every 5 minutes, without your notes."><iframe title="Budget sheet" src="' + url + '" allow="clipboard-read; clipboard-write"></iframe></div>';
-    }
-    h += (admin ? '<div class="bg-prev">This is what the couple sees.</div>' : '') + bgSheetCards(K) + bgSheetCouple(K) +
+    // Noam works in Google Sheets itself (its own tab); here he sees the couple's page, built from it
+    h += bgSheetCards(K) + bgSheetCouple(K) +
       '<p class="bg-foot">Prepared by KAI Event Planners' + (BG.data.synced ? ' · updated ' + esc(bgAgo(BG.data.synced)) : '') + '.</p>';
     return h;
   }
@@ -4096,6 +4125,9 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   }
   // Noam's copy: the confirmed guests by age go into Guests!B3:B6, as the Google Sheet's sync did.
   function gridGuests() {
+    // only while the sheet's Guests!B13 says Yes (No = Noam keeps typed, planned numbers)
+    var sw = String(GRID.api.getValue('Guests', 'A13') || '').trim() ? String(GRID.api.getValue('Guests', 'B13') || '').trim().toLowerCase() : 'yes';
+    if (sw !== 'yes') return;
     var n = { Adult: 0, Teen: 0, Child: 0, Baby: 0 };
     live().forEach(function (g) { if (g.status === 'Confirmed') n[g.age === 'Teen' || g.age === 'Child' || g.age === 'Baby' ? g.age : 'Adult']++; });
     var want = [n.Adult, n.Teen, n.Child, n.Baby], cur = ['B3', 'B4', 'B5', 'B6'].map(function (a) { return Number(String(GRID.api.getValue('Guests', a) || '').replace(/[^\d.\-]/g, '')); });
