@@ -1122,19 +1122,44 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   .vt .vt-n { background: none; color: var(--soft); font-weight: 400; padding: 0; min-width: 0; margin-left: 5px; font-size: 13px; }
   .tabrow .subbar { align-self: center; padding: 0 14px; }
 }
+/* Phones: the sections live in a side menu (☰ opens it) */
+.menubtn, .sect-h, .sect-ev, .sect-scrim { display: none; }
+@media (max-width: 759px) {
+  .menubtn { display: grid; place-items: center; position: relative; width: 38px; height: 38px; flex-shrink: 0; align-self: center; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); padding: 0; }
+  body:has(#sect[hidden]) .menubtn { display: none; }
+  .menubtn svg { width: 22px; height: 22px; }
+  body:has(#s-brief-n:not([hidden])) .menubtn::after { content: ''; position: absolute; top: 5px; right: 5px; width: 9px; height: 9px; border-radius: 50%; background: #C2410C; }
+  body:has(#sect:not([hidden])) .toadmin { display: none; }
+  .brand { align-items: center; flex-wrap: nowrap; gap: 10px; }
+  .top .sect { position: fixed; top: 0; bottom: 0; left: 0; z-index: 70; order: 0; width: min(290px, 84vw); margin: 0; flex-direction: column; align-items: stretch; gap: 4px;
+    padding: max(22px, env(safe-area-inset-top, 0px)) 14px max(18px, env(safe-area-inset-bottom, 0px)); background: #FFFFFF; border: none; border-radius: 0;
+    box-shadow: 8px 0 30px -10px rgba(0,0,0,.35); transform: translateX(-105%); visibility: hidden; transition: transform .22s ease, visibility .22s; overflow-y: auto; }
+  body.menu-open .top .sect { transform: none; visibility: visible; }
+  .top .sect .sect-h { display: block; font: 600 21px/1.2 var(--serif); color: var(--ink); padding: 0 10px 14px; }
+  .top .sect button { flex: 0 0 auto; height: auto; min-width: 0; justify-content: flex-start; padding: 12px 10px; gap: 12px; font-size: 16px; font-weight: 600; color: var(--text); border-radius: 10px; }
+  .top .sect button.on { background: #ECEAF6; color: var(--ink); }
+  .top .sect svg { width: 22px; height: 22px; }
+  .top .sect .bn { margin-left: auto; background: #C2410C; color: #FFFFFF; }
+  .top .sect button.on .bn { background: #C2410C; }
+  .top .sect .sect-ev { display: block; margin-top: auto; padding: 12px 10px; color: var(--ink); font-weight: 700; font-size: 15px; text-decoration: none; }
+  body.menu-open .sect-scrim { display: block; position: fixed; inset: 0; z-index: 69; background: rgba(20,20,30,.45); }
+}
 </style>
 <style id="freeze"></style>
 </head>
 <body>
 <header class="top">
   <div class="top-in">
-    <div class="brand"><a class="toadmin" id="toadmin" hidden aria-label="All events" title="All events">‹ Events</a><span class="couple" id="couple">Guest List</span><span class="when" id="when"></span></div>
+    <div class="brand"><button type="button" class="menubtn" id="menubtn" aria-label="Menu" aria-expanded="false" aria-controls="sect"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><a class="toadmin" id="toadmin" hidden aria-label="All events" title="All events">‹ Events</a><span class="couple" id="couple">Guest List</span><span class="when" id="when"></span></div>
     <nav class="sect" id="sect" aria-label="Sections" hidden>
+      <b class="sect-h" id="sect-h"></b>
       <button type="button" id="s-guests" class="on"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.3-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 4.8a3.3 3.3 0 0 1 0 6.4M18 14.8c2 .6 3.2 2.3 3.5 5.2"/></svg>Guests</button>
       <button type="button" id="s-sched"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4M7.5 14h3M7.5 17h6"/></svg>Schedule</button>
       <button type="button" id="s-brief" hidden><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 5h9a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h1"/><path d="M8 11h8M8 15h5"/></svg>Questions <span class="bn" id="s-brief-n" hidden></span></button>
       <button type="button" id="s-budget" hidden><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg>Budget</button>
+      <a class="sect-ev" id="sect-ev" hidden>‹ All events</a>
     </nav>
+    <div class="sect-scrim" id="sect-scrim"></div>
     <button type="button" class="sumline" id="sumline" aria-expanded="false" aria-controls="stats"></button>
     <section class="stats" id="stats" aria-label="Summary"></section>
     <div class="me">
@@ -3622,7 +3647,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var st = document.createElement('style');
     st.textContent = '.ptr{position:fixed;left:50%;top:-44px;z-index:400;width:36px;height:36px;margin-left:-18px;border-radius:50%;background:#fff;color:#4A3B6B;box-shadow:0 4px 14px -4px rgba(0,0,0,.3);display:grid;place-items:center;transition:opacity .15s;opacity:0;pointer-events:none}.ptr.go svg{animation:ptrspin .8s linear infinite}@keyframes ptrspin{to{transform:rotate(360deg)}}';
     document.head.appendChild(st);
-    var blocked = function (t) { return window.innerWidth >= 760 || (t && t.closest && t.closest('textarea, input, select, [role="dialog"], .sheet, #pushsheet, #br-allv, .dlg')); };
+    var blocked = function (t) { return window.innerWidth >= 760 || (t && t.closest && t.closest('textarea, input, select, [role="dialog"], .sheet, #pushsheet, #br-allv, .dlg, #sect')); };
     document.addEventListener('touchstart', function (e) { y0 = !busy && window.scrollY <= 0 && e.touches.length === 1 && !blocked(e.target) ? e.touches[0].clientY : null; dy = 0; }, { passive: true });
     document.addEventListener('touchmove', function (e) {
       if (y0 == null) return; dy = e.touches[0].clientY - y0;
@@ -3733,6 +3758,15 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (name === 'sched') { schedRender(); try { localStorage.setItem('kai-onb-sched-' + EVENT, '1'); } catch (e) {} }
     if (name === 'brief') { BR.edit = false; briefRender(); }
   }
+  // Phones: the ☰ side menu (the same section buttons, sliding in from the left)
+  function menuOpen(o) {
+    document.body.classList.toggle('menu-open', o); $('menubtn').setAttribute('aria-expanded', o ? 'true' : 'false');
+    if (o) { $('sect-h').textContent = $('couple').textContent; $('sect-ev').hidden = $('toadmin').hidden; $('sect-ev').href = $('toadmin').href; }
+  }
+  $('menubtn').addEventListener('click', function () { menuOpen(!document.body.classList.contains('menu-open')); });
+  $('sect-scrim').addEventListener('click', function () { menuOpen(false); });
+  $('sect').addEventListener('click', function (e) { if (e.target.closest('button')) menuOpen(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && document.body.classList.contains('menu-open')) menuOpen(false); });
   $('s-guests').addEventListener('click', function () { showSect('guests'); });
   $('s-sched').addEventListener('click', function () { showSect('sched'); });
   $('s-brief').addEventListener('click', function () { showSect('brief'); });
