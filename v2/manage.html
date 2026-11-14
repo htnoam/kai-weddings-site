@@ -615,6 +615,14 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 #p-pastebox::placeholder { color: var(--soft); font-size: 14px; }
 @media (max-width: 760px) {
   .bg-ct.k .m-hide { display: none; }
+  /* the four totals in one short row */
+  .bg-cards.k { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+  .bg-cards.k .bg-card { padding: 8px 8px 7px; border-radius: 8px; }
+  .bg-cards.k .bg-card > span:first-child { font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bg-cards.k .bg-card b { font-size: clamp(12px, 3.6vw, 15px); white-space: nowrap; letter-spacing: -.01em; }
+  .bg-cards.k .bg-card b small { font-size: 11px !important; }
+  .bg-cards.k .bg-card > small { font-size: 10.5px; }
+  .bg-cards.k .bg-card .bar { height: 4px; margin-top: 4px; }
   .bg-ct.k th:first-child, .bg-ct.k td:first-child { min-width: 0; }
 }
 @media (max-width: 760px) {
@@ -4170,7 +4178,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       '<a class="bg-gs" href="' + url + '" target="_blank" rel="noopener" title="You edit the budget in Google Sheets. This page (what the couple sees) is rebuilt from it every 5 minutes.">Edit in Google Sheets ↗</a>' +
       '<button type="button" class="btn primary" data-bgk="pay">+ Record payment</button>';
     h += '</div>';
-    h += '<div class="bg-cards">' +
+    h += '<div class="bg-cards k">' +
       '<div class="bg-card"><span>Total</span><b>' + bgEur(total) + '</b><small>' + lines.length + ' services</small></div>' +
       '<div class="bg-card"><span>Paid</span><b class="ok">' + bgEur(paid) + '</b><span class="bar"><i style="width:' + Math.min(pct, 100) + '%"></i></span></div>' +
       '<div class="bg-card"><span>Left to pay</span><b>' + bgEur(left) + '</b><small>' + pct + '% paid</small></div>' +
