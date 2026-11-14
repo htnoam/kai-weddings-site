@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { getSession } from './api'
 import { AddLead } from './components/AddLead'
 import { FollowUps } from './components/FollowUps'
@@ -40,6 +40,55 @@ function Shell({ onSignedOut }: { onSignedOut: () => void }) {
   const [adding, setAdding] = useState(false)
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS)
 
+
+  const [pullDistance, setPullDistance] = useState(0)
+  const pullOffset = pullRefreshing ? 58 : pullDistance
+  const pullStyle = { transform: `translate3d(0, ${pullOffset}px, 0)`, transition: pullDistance > 0 ? "none" : "transform 220ms ease-out", willChange: "transform" as const }
+  const [pullRefreshing, setPullRefreshing] = useState(false)
+  const startY = useRef<number | null>(null)
+  const pulling = useRef(false)
+  const distanceRef = useRef(0)
+
+  useEffect(() => {
+    const onStart = (e: TouchEvent) => {
+      startY.current = null
+      pulling.current = false
+      if (loading || pullRefreshing || window.scrollY > 1 || e.touches.length !== 1) return
+      if (e.target instanceof Element && e.target.closest('input,textarea,select,[contenteditable]')) return
+      startY.current = e.touches[0].clientY
+    }
+    const onMove = (e: TouchEvent) => {
+      if (startY.current === null || e.touches.length !== 1) return
+      const delta = e.touches[0].clientY - startY.current
+      if (delta <= 0 || window.scrollY > 1) return
+      pulling.current = true
+      if (e.cancelable) e.preventDefault()
+      distanceRef.current = Math.min(100, delta * 0.45)
+      setPullDistance(distanceRef.current)
+    }
+    const onEnd = () => {
+      const trigger = pulling.current && distanceRef.current >= 65 && !loading && !pullRefreshing
+      startY.current = null
+      pulling.current = false
+      distanceRef.current = 0
+      setPullDistance(0)
+      if (trigger) {
+        setPullRefreshing(true)
+        Promise.resolve(refresh()).finally(() => setPullRefreshing(false))
+      }
+    }
+    document.addEventListener('touchstart', onStart, { passive: true })
+    document.addEventListener('touchmove', onMove, { passive: false })
+    document.addEventListener('touchend', onEnd)
+    document.addEventListener('touchcancel', onEnd)
+    return () => {
+      document.removeEventListener('touchstart', onStart)
+      document.removeEventListener('touchmove', onMove)
+      document.removeEventListener('touchend', onEnd)
+      document.removeEventListener('touchcancel', onEnd)
+    }
+  }, [loading, pullRefreshing, refresh])
+
   // Keep the scroll position of the list when coming back from a lead.
   const [scrollY, setScrollY] = useState(0)
   const open = (id: string) => {
@@ -74,7 +123,15 @@ function Shell({ onSignedOut }: { onSignedOut: () => void }) {
 
   return (
     <div className="min-h-dvh bg-gray-50">
-      <header className="border-b border-gray-200 bg-white px-3 pb-2 pt-[calc(6px+env(safe-area-inset-top))]">
+      {(pullDistance > 0 || pullRefreshing) && (
+        <div className="pointer-events-none fixed inset-x-0 top-[calc(env(safe-area-inset-top)+12px)] z-50 flex justify-center" aria-live="polite">
+          <span className="rounded-full bg-white px-3 py-2 text-xs font-medium text-gray-600 shadow-md">
+            {pullRefreshing ? 'מרענן נתונים…' : pullDistance >= 65 ? 'שחרר לרענון' : 'משוך לרענון'}
+          </span>
+        </div>
+      )}
+
+      <header style={pullStyle} className="border-b border-gray-200 bg-white px-3 pb-2 pt-[calc(6px+env(safe-area-inset-top))]">
         <div className="flex h-11 items-center justify-between">
           <div className={`px-1 ${tab === 'leads' ? 'text-[14px] font-bold tracking-[0.12em]' : 'text-lg font-semibold'}`}>{title}</div>
           <div className="flex items-center gap-1">
@@ -124,7 +181,7 @@ function Shell({ onSignedOut }: { onSignedOut: () => void }) {
         )}
       </header>
 
-      <main className="mx-auto max-w-xl px-3 pb-[calc(84px+env(safe-area-inset-bottom))]">
+      <main style={pullStyle} className="mx-auto max-w-xl px-3 pb-[calc(84px+env(safe-area-inset-bottom))]">
         {!leads.length && loading && <div className="py-16 text-center text-sm text-gray-500">טוען לידים מ־Google Sheets…</div>}
         {tab === 'leads' && (leads.length > 0 || !loading) && (
           <LeadList
