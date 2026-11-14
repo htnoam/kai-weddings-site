@@ -1,0 +1,7 @@
+node_modules/
+app/dist/
+test/sheet.csv
+test/shots/
+test/*.log
+.env
+*.tsbuildinfo
