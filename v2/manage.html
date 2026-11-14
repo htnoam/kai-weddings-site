@@ -623,6 +623,30 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
   .bg-cards.k .bg-card b small { font-size: 11px !important; }
   .bg-cards.k .bg-card > small { font-size: 10.5px; }
   .bg-cards.k .bg-card .bar { height: 4px; margin-top: 4px; }
+  .bg-ct.k tbody tr[data-bgl], .bg-ct.k tbody tr[data-bgv], .bg-ct.k tbody tr[data-bgp] { cursor: pointer; }
+  .bg-ct.k tbody tr:active td { background: #ECEAF6; }
+}
+.bgk-sheet { position: fixed; inset: 0; z-index: 55; }
+.bgk-shade { position: absolute; inset: 0; background: rgba(20,20,30,.45); }
+.bgk-sh { position: absolute; left: 0; right: 0; bottom: 0; max-height: 86vh; max-height: 86dvh; display: flex; flex-direction: column; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -10px 30px -10px rgba(0,0,0,.3); transition: transform .22s ease; }
+.bgk-grab { width: 40px; height: 5px; border-radius: 3px; background: #D8D5CE; margin: 10px auto 6px; flex-shrink: 0; }
+.bgk-body { overflow-y: auto; padding: 6px 18px max(22px, env(safe-area-inset-bottom, 0px)); }
+.bgk-body h3 { margin: 0 0 2px; font-size: 19px; line-height: 1.25; }
+.bgk-sub { color: var(--soft); font-size: 13.5px; margin-bottom: 10px; }
+.bgk-calc { background: var(--bg); border-radius: 12px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin: 10px 0 14px; font-size: 15px; }
+.bgk-calc b { font-size: 22px; }
+.bgk-kv { display: grid; grid-template-columns: 96px 1fr; gap: 8px 10px; font-size: 14.5px; margin-bottom: 12px; align-items: baseline; }
+.bgk-kv > span:nth-child(odd) { color: var(--soft); }
+.bgk-lnk { border: none; background: none; padding: 0; font: inherit; font-weight: 700; color: var(--ink); text-align: left; }
+.bgk-sec { font-size: 12px; font-weight: 700; color: var(--soft); text-transform: uppercase; letter-spacing: .05em; margin: 14px 0 8px; }
+.bgk-trio { border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; font-size: 12.5px; color: var(--soft); }
+.bgk-trio b { display: block; color: var(--text); font-size: 15.5px; } .bgk-trio b.ok { color: var(--ok); }
+.bgk-li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line); font-size: 14px; }
+.bgk-li small { display: block; color: var(--soft); font-size: 12.5px; }
+.bgk-btns { display: flex; gap: 8px; margin-top: 16px; } .bgk-btns .btn { flex: 1; height: 44px; justify-content: center; text-decoration: none; }
+.bgk-body > .btn { display: inline-flex; align-items: center; text-decoration: none; }
+.bgk-big { font-size: 30px; font-weight: 800; margin: 2px 0 2px; }
+@media (max-width: 759px) {
   .bg-ct.k th:first-child, .bg-ct.k td:first-child { min-width: 0; }
 }
 @media (max-width: 760px) {
@@ -1371,6 +1395,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   </form>
 </div>
 
+<div class="bgk-sheet" id="bgk-sheet" hidden><div class="bgk-shade" id="bgk-shade"></div><div class="bgk-sh" id="bgk-sh" role="dialog" aria-modal="true"><div class="bgk-grab"></div><div class="bgk-body" id="bgk-body"></div></div></div>
 <div class="toast" id="toast" role="status" hidden></div>
 
 <script src="/app/dtpick.js"></script>
@@ -4188,9 +4213,9 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (!lines.length) h += '<div class="bgk-none">No services yet.</div>';
     else {
       h += '<div class="bg-ct k"><table><thead><tr><th>Service</th><th class="m-hide">Category</th><th>Vendor</th><th class="r m-hide">Unit €</th><th class="r m-hide">Qty</th><th class="r">Total</th><th class="m-hide"></th></tr></thead><tbody>';
-      lines.forEach(function (l) {
+      lines.forEach(function (l, li) {
         var u = bgNum(l.unit), q = bgNum(l.qty), t = bgNum(l.total);
-        h += '<tr><td>' + esc(l.item) + '</td><td class="m-hide mut">' + esc(l.category || '') + '</td><td>' + (l.vendor ? esc(l.vendor) : '<span class="mut">–</span>') + '</td>' +
+        h += '<tr data-bgl="' + li + '"><td>' + esc(l.item) + '</td><td class="m-hide mut">' + esc(l.category || '') + '</td><td>' + (l.vendor ? esc(l.vendor) : '<span class="mut">–</span>') + '</td>' +
           '<td class="r m-hide">' + (u ? bgMoney(u) : '') + '</td><td class="r m-hide">' + (q || '') + '</td><td class="r b">' + (t ? bgMoney(t) : '<span class="mut">–</span>') + '</td>' +
           '<td class="m-hide">' + (l.ok ? '<span class="bg-pill st-3">Confirmed</span>' : '') + '</td></tr>';
       });
@@ -4206,7 +4231,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
         var nv = v.name === BGK_NV, ct = '';
         if (!nv) ct = admin ? (v.contract ? '<a class="bgk-a" href="' + esc(v.contract) + '" target="_blank" rel="noopener">Open ↗</a> <button type="button" class="linkbtn" data-bgk="contract" data-v="' + esc(v.name) + '">replace</button>'
           : '<button type="button" class="bgk-up" data-bgk="contract" data-v="' + esc(v.name) + '">📎 Add contract</button>') : (v.hasContract ? '✓' : '');
-        h += '<tr' + (nv ? ' class="nv"' : '') + '><td>' + esc(v.name) + '</td><td class="r b">' + bgMoney(v.total) + '</td><td class="r ok m-hide">' + (bgNum(v.paid) ? bgMoney(v.paid) : '–') + '</td><td class="r">' + bgMoney(v.balance) + '</td>' +
+        h += '<tr data-bgv="' + esc(v.name) + '"' + (nv ? ' class="nv"' : '') + '><td>' + esc(v.name) + '</td><td class="r b">' + bgMoney(v.total) + '</td><td class="r ok m-hide">' + (bgNum(v.paid) ? bgMoney(v.paid) : '–') + '</td><td class="r">' + bgMoney(v.balance) + '</td>' +
           '<td class="m-hide">' + (nv ? '' : '<span class="bg-pill st-' + stc(v.status) + '">' + esc(v.status) + '</span>') + '</td><td>' + ct + '</td></tr>';
       });
       h += '</tbody></table></div>';
@@ -4217,7 +4242,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     else {
       h += '<div class="bg-ct k"><table><thead><tr><th>Date</th><th>Vendor</th><th class="r">Amount</th><th class="m-hide">Paid by</th>' + (admin ? '<th class="m-hide">Method</th><th>Receipt</th><th class="m-hide">Note</th>' : '') + '</tr></thead><tbody>';
       pays.slice().reverse().forEach(function (x) {
-        h += '<tr><td>' + esc(x.date || '') + '</td><td>' + esc(x.vendor) + '</td><td class="r b">' + bgMoney(x.amount) + '</td><td class="m-hide">' + esc(x.by || '') + '</td>' +
+        h += '<tr data-bgp="' + pays.indexOf(x) + '"><td>' + esc(x.date || '') + '</td><td>' + esc(x.vendor) + '</td><td class="r b">' + bgMoney(x.amount) + '</td><td class="m-hide">' + esc(x.by || '') + '</td>' +
           (admin ? '<td class="m-hide">' + esc(x.method || '') + '</td><td>' + (x.receipt ? '<a class="bgk-a" href="' + esc(x.receipt) + '" target="_blank" rel="noopener">Receipt ↗</a>'
             : '<button type="button" class="bgk-up" data-bgk="receipt" data-row="' + x.row + '" data-w="' + esc((x.date ? x.date + ' · ' : '') + x.vendor + ' · ' + bgMoney(x.amount)) + '">📎 Add receipt</button>') + '</td><td class="m-hide mut">' + esc(x.note || '') + '</td>' : '') + '</tr>';
       });
@@ -4240,6 +4265,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       var names = []; (BG.data.vendors || []).forEach(function (v) { if (v.name !== BGK_NV && names.indexOf(v.name) < 0) names.push(v.name); });
       $('p-vendor').innerHTML = '<option value="">' + (names.length ? 'Choose…' : 'No vendors yet – add them in the sheet') + '</option>' + names.map(function (n) { return '<option>' + esc(n) + '</option>'; }).join('');
       $('p-amount').value = ''; $('p-date').value = payToday(); $('p-by').value = ''; $('p-method').value = ''; $('p-note').value = '';
+      if (o.vendor) $('p-vendor').value = o.vendor;
     }
     payShowFile(); $('p-err').hidden = true; $('p-auto').hidden = true; PAY.ocr = 0; payAutoClear(); $('dlg-pay').hidden = false;
     setTimeout(function () { (pay ? $('p-vendor') : $('p-drop')).focus(); }, 30);
@@ -4407,13 +4433,76 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       load(true);
     }).catch(function (x) { PAY.busy = false; $('p-save').disabled = false; $('p-save').textContent = PAY.mode === 'pay' ? 'Save payment' : 'Save'; payErr(x.message); });
   });
-  $('budget').addEventListener('click', function (e) {
-    var b = e.target.closest('[data-bgk]'); if (!b || !S.admin) return;
+  function bgkAct(b) {
     var k = b.dataset.bgk;
-    if (k === 'pay') payOpen('pay');
+    if (k === 'pay') payOpen('pay', { vendor: b.dataset.v || '' });
     else if (k === 'contract') payOpen('contract', { vendor: b.dataset.v });
     else if (k === 'receipt') payOpen('receipt', { row: +b.dataset.row, what: b.dataset.w });
+  }
+  $('budget').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-bgk]');
+    if (b) { if (S.admin) bgkAct(b); return; }
+    if (e.target.closest('a, button') || window.innerWidth >= 760 || !BG.data || BG.data.format !== 'kai') return;
+    var tr = e.target.closest('tr[data-bgl], tr[data-bgv], tr[data-bgp]'); if (!tr) return;
+    if (tr.dataset.bgl != null) bgkSheet(bgkLineHtml(+tr.dataset.bgl));
+    else if (tr.dataset.bgv != null) bgkSheet(bgkVendorHtml(tr.dataset.bgv));
+    else bgkSheet(bgkPayHtml(+tr.dataset.bgp));
   });
+  // ----- Phones: tap a row › its details slide up from the bottom (swipe down or tap outside to close) -----
+  function bgkSheet(html) {
+    if (!html) return;
+    $('bgk-body').innerHTML = html; $('bgk-sheet').hidden = false;
+    var sh = $('bgk-sh'); sh.style.transform = 'translateY(100%)'; sh.getBoundingClientRect(); sh.style.transform = '';
+    $('bgk-body').scrollTop = 0;
+  }
+  function bgkClose() { $('bgk-sheet').hidden = true; }
+  $('bgk-shade').addEventListener('click', bgkClose);
+  $('bgk-sh').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-bgk]'); if (b && S.admin) { bgkClose(); bgkAct(b); return; }
+    var v = e.target.closest('[data-bgvn]'); if (v) bgkSheet(bgkVendorHtml(v.dataset.bgvn));
+  });
+  (function () {
+    var y0 = null, dy = 0, sh = $('bgk-sh');
+    sh.addEventListener('touchstart', function (e) { y0 = $('bgk-body').scrollTop <= 0 ? e.touches[0].clientY : null; dy = 0; sh.style.transition = 'none'; }, { passive: true });
+    sh.addEventListener('touchmove', function (e) { if (y0 == null) return; dy = Math.max(0, e.touches[0].clientY - y0); sh.style.transform = dy ? 'translateY(' + dy + 'px)' : ''; }, { passive: true });
+    sh.addEventListener('touchend', function () { sh.style.transition = ''; if (y0 != null && dy > 90) bgkClose(); sh.style.transform = ''; y0 = null; }, { passive: true });
+  })();
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('bgk-sheet').hidden && $('dlg-pay').hidden) bgkClose(); });
+  function bgkVend(name) { return (BG.data.vendors || []).filter(function (v) { return v.name === (name || BGK_NV); })[0] || null; }
+  function bgkTrio(v) { return '<div class="bgk-trio"><div>Total<b>' + bgMoney(v.total) + '</b></div><div>Paid<b class="ok">' + bgMoney(v.paid) + '</b></div><div>Left<b>' + bgMoney(v.balance) + '</b></div></div>'; }
+  function bgkBtns(name) {
+    if (!S.admin || !BG.sheet || !name || name === BGK_NV) return '';
+    var v = bgkVend(name) || {};
+    return '<div class="bgk-btns">' + (v.contract ? '<a class="btn" href="' + esc(v.contract) + '" target="_blank" rel="noopener">📎 Contract ↗</a>' : '<button type="button" class="btn" data-bgk="contract" data-v="' + esc(name) + '">📎 Contract</button>') +
+      '<button type="button" class="btn primary" data-bgk="pay" data-v="' + esc(name) + '">+ Payment</button></div>';
+  }
+  function bgkStat(s) { return '<span class="bg-pill st-' + (s === 'Paid' ? 3 : s === 'Partly paid' ? 2 : 0) + '">' + esc(s) + '</span>'; }
+  function bgkLineHtml(i) {
+    var l = (BG.data.lines || [])[i]; if (!l) return '';
+    var u = bgNum(l.unit), q = bgNum(l.qty), t = bgNum(l.total), v = bgkVend(l.vendor), calc = u && q && Math.abs(u * q - t) < 0.01 ? bgMoney(u) + ' × ' + q : '';
+    var h = '<h3>' + esc(l.item) + '</h3>' + (l.category ? '<div class="bgk-sub">' + esc(l.category) + '</div>' : '') + (l.ok ? '<span class="bg-pill st-3">✓ Confirmed</span>' : '');
+    h += '<div class="bgk-calc"><span>' + calc + '</span><b>' + (t ? bgMoney(t) : '–') + '</b></div>';
+    h += '<div class="bgk-kv"><span>Vendor</span>' + (l.vendor ? '<button type="button" class="bgk-lnk" data-bgvn="' + esc(l.vendor) + '">' + esc(l.vendor) + ' ›</button>' : '<b class="mut">No vendor yet</b>') +
+      (l.note ? '<span>Notes</span><span>' + esc(l.note) + '</span>' : '') + '</div>';
+    if (v && l.vendor) h += '<div class="bgk-sec">' + esc(l.vendor) + ' – all services</div>' + bgkTrio(v);
+    return h + bgkBtns(l.vendor);
+  }
+  function bgkVendorHtml(name) {
+    var v = bgkVend(name); if (!v) return '';
+    var ls = (BG.data.lines || []).filter(function (l) { return (l.vendor || BGK_NV) === v.name; }), ps = (BG.data.payments || []).filter(function (x) { return (x.vendor || BGK_NV) === v.name; });
+    var h = '<h3>' + esc(v.name) + '</h3><div class="bgk-sub">' + ls.length + ' service' + (ls.length === 1 ? '' : 's') + (v.name !== BGK_NV ? ' · ' + bgkStat(v.status) : '') + (!S.admin && v.hasContract ? ' · contract ✓' : '') + '</div>' + bgkTrio(v);
+    if (ps.length) { h += '<div class="bgk-sec">Payments</div>'; ps.slice().reverse().forEach(function (x) { h += '<div class="bgk-li"><span>' + esc(x.date || '') + '<small>' + esc([x.method, x.by].filter(Boolean).join(' · ')) + '</small></span><b>' + bgMoney(x.amount) + '</b></div>'; }); }
+    if (ls.length) { h += '<div class="bgk-sec">Services</div>'; ls.forEach(function (l) { var u = bgNum(l.unit), q = bgNum(l.qty), t = bgNum(l.total); h += '<div class="bgk-li"><span>' + esc(l.item) + (u && q && Math.abs(u * q - t) < 0.01 ? '<small>' + bgMoney(u) + ' × ' + q + '</small>' : '') + '</span><b>' + (t ? bgMoney(t) : '–') + '</b></div>'; }); }
+    return h + bgkBtns(v.name);
+  }
+  function bgkPayHtml(i) {
+    var x = (BG.data.payments || [])[i]; if (!x) return '';
+    var h = '<div class="bgk-sub">Payment' + (x.date ? ' · ' + esc(x.date) : '') + '</div><div class="bgk-big">' + bgMoney(x.amount) + '</div><div class="bgk-sub">to <button type="button" class="bgk-lnk" data-bgvn="' + esc(x.vendor || BGK_NV) + '">' + esc(x.vendor || BGK_NV) + ' ›</button></div>';
+    h += '<div class="bgk-kv">' + (x.by ? '<span>Paid by</span><b>' + esc(x.by) + '</b>' : '') + (x.method ? '<span>Method</span><b>' + esc(x.method) + '</b>' : '') + (x.note ? '<span>Note</span><span>' + esc(x.note) + '</span>' : '') + '</div>';
+    if (S.admin && BG.sheet) h += '<div class="bgk-sec">Receipt (only you)</div>' + (x.receipt ? '<a class="btn" href="' + esc(x.receipt) + '" target="_blank" rel="noopener">Open the receipt ↗</a>'
+      : '<button type="button" class="btn" data-bgk="receipt" data-row="' + x.row + '" data-w="' + esc((x.date ? x.date + ' · ' : '') + x.vendor + ' · ' + bgMoney(x.amount)) + '">📎 Add receipt</button>');
+    return h;
+  }
   function bgSheetHtml() {
     var K = bgSheetCalc(), admin = S.admin && BG.sheet, url = 'https://docs.google.com/spreadsheets/d/' + encodeURIComponent(BG.sheet) + '/edit';
     var h = '<div class="bg-top"><h1>Budget</h1>' + (admin ? '<span class="bg-src">your Google Sheet</span>' : '') + '<span class="grow"></span>';
