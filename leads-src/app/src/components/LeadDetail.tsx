@@ -122,12 +122,14 @@ export function LeadDetail({ lead, onBack, onPrevious, onNext, position, total }
   }
 
   const [replyTab, setReplyTab] = useState<'PUBLIC' | 'DM'>('PUBLIC')
-  const storedReply = replyTab === 'PUBLIC' ? lead.publicReply : lead.privateMessage
+  const storedReply = replyTab === 'PUBLIC' ? (lead.publicReply || lead.extra?.['Public Reply'] || '') : (lead.privateMessage || lead.extra?.['Private Message'] || '')
   const [replyDraft, setReplyDraft] = useState(storedReply || '')
   const [replySaving, setReplySaving] = useState(false)
+  const replyBackendReady = lead.publicReply !== undefined && lead.privateMessage !== undefined
   const [replyError, setReplyError] = useState(false)
   useEffect(() => { setReplyDraft(storedReply || ''); setReplyError(false) }, [lead.id, replyTab, storedReply])
   const saveReply = async () => {
+    if (!replyBackendReady) { setReplyError(true); return }
     setReplySaving(true)
     setReplyError(false)
     const res = await update(lead.id, { [replyTab === 'PUBLIC' ? 'publicReply' : 'privateMessage']: replyDraft.trim() })
@@ -278,12 +280,12 @@ export function LeadDetail({ lead, onBack, onPrevious, onNext, position, total }
             placeholder="טרם הוכנה תגובה אישית לליד הזה. אפשר להוסיף כאן נוסח ולשמור."
             className="w-full rounded-xl border border-gray-200 p-3 text-left text-base leading-relaxed outline-none focus:border-gray-400" />
           <div className="mt-2 grid grid-cols-2 gap-2">
-            <button disabled={busy || replySaving || replyDraft.trim() === (storedReply || '')}
+            <button disabled={busy || replySaving || !replyBackendReady || replyDraft.trim() === (storedReply || '')}
               onClick={saveReply} className="h-11 rounded-xl border border-gray-300 bg-white text-sm font-semibold disabled:opacity-40">שמור תגובה</button>
             <button disabled={!replyDraft.trim()} onClick={copyReply}
               className="h-11 rounded-xl bg-blue-600 text-sm font-semibold text-white disabled:opacity-40">{copiedReply ? '✓ הועתק' : 'Copy Reply'}</button>
           </div>
-          {replyError && <p className="mt-2 text-xs text-red-600">שמירת התגובה נכשלה. נסה שוב.</p>}
+          {replyError && <p className="mt-2 text-xs text-red-600">שמירה דורשת עדכון של שרת הנתונים. אפשר להעתיק את הטיוטה כעת.</p>}
           <p className="mt-2 text-xs text-gray-500">התגובה נשמרת בשדה ייעודי בגיליון. שליחה ל־Reddit מתבצעת ידנית.</p>
         </section>
 
