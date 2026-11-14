@@ -68,7 +68,7 @@ function Shell({ onSignedOut }: { onSignedOut: () => void }) {
   if (adding) return <AddLead onClose={() => setAdding(false)} onOpen={(id) => setOpenId(id)} />
   if (lead) return <LeadDetail lead={lead} onBack={() => setOpenId(null)} />
 
-  const title = tab === 'leads' ? 'KAI LEADS' : tab === 'followups' ? 'מעקבים' : 'הגדרות'
+  const title = tab === 'leads' ? 'Kai event leads' : tab === 'followups' ? 'מעקבים' : 'הגדרות'
 
   return (
     <div className="min-h-dvh bg-gray-50">
