@@ -604,6 +604,11 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .drop-file img[src=""] { display: none; }
 .drop-file span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text); }
 .pay-what { margin: 0; font-size: 15px; color: var(--text); }
+.pay-auto { margin: 0; font-size: 13.5px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+.pay-auto.ok { color: #7A5A00; }
+.pay-auto .spin { width: 14px; height: 14px; border: 2px solid var(--line); border-top-color: var(--ink); border-radius: 50%; animation: payspin .8s linear infinite; }
+@keyframes payspin { to { transform: rotate(360deg); } }
+#payform .auto { background: #FFF6D5; border-color: #E8C766; }
 @media (max-width: 760px) {
   .bg-ct.k .m-hide { display: none; }
   .bg-ct.k th:first-child, .bg-ct.k td:first-child { min-width: 0; }
@@ -1344,6 +1349,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       <div id="p-empty"><b id="p-flabel">Receipt</b> <span id="p-fopt">(optional)</span> – <button type="button" class="linkbtn" id="p-pick">choose a file or take a photo</button>, drag it here, or paste a screenshot (Ctrl+V / ⌘V).</div>
       <div class="drop-file" id="p-has" hidden><img id="p-thumb" src="" alt=""><span id="p-fname"></span><button type="button" class="linkbtn" id="p-clear">Remove</button></div>
     </div>
+    <p class="pay-auto" id="p-auto" hidden></p>
     <p class="err" id="p-err" hidden></p>
     <div class="act">
       <button type="button" class="btn" id="p-cancel">Cancel</button>
@@ -4207,7 +4213,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     return h + '<p class="bg-foot">Prepared by KAI Event Planners' + (D.synced ? ' · updated ' + esc(bgAgo(D.synced)) : '') + '.</p>';
   }
   // The payment / receipt / contract dialog
-  var PAY = { mode: 'pay', row: 0, vendor: '', file: null, busy: false };
+  var PAY = { mode: 'pay', row: 0, vendor: '', file: null, busy: false, ocr: 0 };
   function payToday() { var d = new Date(); return ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + '/' + d.getFullYear(); }
   function payOpen(mode, o) {
     o = o || {}; PAY.mode = mode; PAY.row = o.row || 0; PAY.vendor = o.vendor || ''; PAY.file = null; PAY.busy = false;
@@ -4222,7 +4228,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       $('p-vendor').innerHTML = '<option value="">' + (names.length ? 'Choose…' : 'No vendors yet – add them in the sheet') + '</option>' + names.map(function (n) { return '<option>' + esc(n) + '</option>'; }).join('');
       $('p-amount').value = ''; $('p-date').value = payToday(); $('p-by').value = ''; $('p-method').value = ''; $('p-note').value = '';
     }
-    payShowFile(); $('p-err').hidden = true; $('dlg-pay').hidden = false;
+    payShowFile(); $('p-err').hidden = true; $('p-auto').hidden = true; PAY.ocr = 0; payAutoClear(); $('dlg-pay').hidden = false;
     setTimeout(function () { (pay ? $('p-vendor') : $('p-drop')).focus(); }, 30);
   }
   function payShowFile() {
@@ -4253,10 +4259,78 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       r.readAsDataURL(f);
     });
   }
-  function payTake(f) { if (!f) return; payErr(''); payReadFile(f).then(function (x) { PAY.file = x; payShowFile(); }, function (e) { payErr(e.message); }); }
+  function payTake(f) { if (!f) return; payErr(''); payReadFile(f).then(function (x) { PAY.file = x; payShowFile(); if (PAY.mode === 'pay') payOcr(x); }, function (e) { payErr(e.message); }); }
+  // ----- Reading the receipt: Google reads the text (Hub › budgetOcr), and the form is filled from it. Noam checks before saving. -----
+  function payAuto(t, ok) { var a = $('p-auto'); a.hidden = !t; a.className = 'pay-auto' + (ok ? ' ok' : ''); a.innerHTML = t; }
+  function payAutoClear() { ['p-vendor', 'p-amount', 'p-date', 'p-method', 'p-note'].forEach(function (id) { $(id).classList.remove('auto'); }); }
+  ['p-vendor', 'p-amount', 'p-date', 'p-method', 'p-note'].forEach(function (id) { $(id).addEventListener('input', function () { this.classList.remove('auto'); }); $(id).addEventListener('change', function () { this.classList.remove('auto'); }); });
+  // "10.665,00" / "10,665.00" / "10 665" / "1234.5" → a number
+  function payNum(t) {
+    t = String(t).replace(/[\s '’]/g, '');
+    var d = t.lastIndexOf('.'), c = t.lastIndexOf(',');
+    if (d > -1 && c > -1) t = d > c ? t.replace(/,/g, '') : t.replace(/\./g, '').replace(',', '.');
+    else if (c > -1) t = /,\d{3}$/.test(t) && t.split(',').length >= 2 && !/,\d{1,2}$/.test(t) ? t.replace(/,/g, '') : t.replace(',', '.');
+    else if (d > -1 && /\.\d{3}$/.test(t) && (t.split('.').length > 2 || !/^0/.test(t))) t = t.replace(/\./g, '');
+    var n = parseFloat(t); return isFinite(n) ? n : 0;
+  }
+  var PAY_MON = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12, 'ינו': 1, 'פבר': 2, 'מרץ': 3, 'אפר': 4, 'מאי': 5, 'יונ': 6, 'יול': 7, 'אוג': 8, 'ספט': 9, 'אוק': 10, 'נוב': 11, 'דצמ': 12 };
+  function payParse(text) {
+    var T = String(text || ''), low = T.toLowerCase(), lines = T.split(/\r?\n/), out = {};
+    // amount: a number next to EUR / € / Amount / Total / סכום / סה"כ – the biggest one; otherwise the biggest number with cents
+    var NUM = /\d{1,3}(?:[.,\s ]\d{3})+(?:[.,]\d{1,2})?|\d+(?:[.,]\d{1,2})?/g, best = 0;
+    lines.forEach(function (ln, i) {
+      var key = /(€|eur\b|euro|amount|total|sum|paid|סכום|סה"כ|סה״כ|לתשלום|שולם)/i.test(ln) || (i > 0 && /^(amount|total|סכום|סה"כ)\s*:?\s*$/i.test(lines[i - 1].trim()));
+      if (!key || /(phone|tel|iban|card|ending|ref|booking|number|טלפון)/i.test(ln)) return;
+      (ln.replace(/\b20\d{2}-\d{2}-\d{2}\b|\b\d{1,2}[\/.\-]\d{1,2}[\/.\-]\d{2,4}\b|\b\d{1,2}:\d{2}\b/g, ' ').match(NUM) || []).forEach(function (m) { var n = payNum(m); if (n > best && n < 1e7) best = n; });
+    });
+    if (!best) (T.match(/\d{1,3}(?:[.,\s]\d{3})*[.,]\d{2}(?!\d)/g) || []).forEach(function (m) { var n = payNum(m); if (n > best && n < 1e7) best = n; });
+    if (best) out.amount = Math.round(best * 100) / 100;
+    // date → dd/mm/yyyy
+    var p2 = function (n) { return ('0' + n).slice(-2); }, ok = function (d, m, y) { if (y < 100) y += 2000; return d >= 1 && d <= 31 && m >= 1 && m <= 12 && y >= 2020 && y <= 2040 ? p2(d) + '/' + p2(m) + '/' + y : ''; }, mt;
+    if ((mt = /\b(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4}|\d{2})\b/.exec(T))) out.date = ok(+mt[1], +mt[2], +mt[3]);
+    if (!out.date && (mt = /\b(20\d{2})-(\d{2})-(\d{2})\b/.exec(T))) out.date = ok(+mt[3], +mt[2], +mt[1]);
+    if (!out.date && (mt = /\b(\d{1,2})\s+([A-Za-z֐-׿]{3,})\.?,?\s+(\d{4})\b/.exec(T)) && PAY_MON[mt[2].slice(0, 3).toLowerCase()]) out.date = ok(+mt[1], PAY_MON[mt[2].slice(0, 3).toLowerCase()], +mt[3]);
+    if (!out.date && (mt = /\b([A-Za-z]{3,})\.?\s+(\d{1,2}),?\s+(\d{4})\b/.exec(T)) && PAY_MON[mt[1].slice(0, 3).toLowerCase()]) out.date = ok(+mt[2], PAY_MON[mt[1].slice(0, 3).toLowerCase()], +mt[3]);
+    if (!out.date) delete out.date;
+    // vendor: one of this budget's vendors whose name (or its first long word) is in the text
+    var vb = '';
+    (BG.data.vendors || []).forEach(function (v) {
+      if (v.name === BGK_NV) return; var n = v.name.toLowerCase(), w = n.split(/\s+/).filter(function (x) { return x.length >= 4; })[0];
+      if ((low.indexOf(n) > -1 || (w && low.indexOf(w) > -1)) && v.name.length > vb.length) vb = v.name;
+    });
+    if (vb) out.vendor = vb;
+    // method
+    out.method = /\b(visa|mastercard|master card|amex|american express|diners|card)\b|כרטיס|ויזה/i.test(T) ? 'Card' : /\bbit\b|ביט/i.test(T) ? 'Bit' : /paybox|פייבוקס/i.test(T) ? 'PayBox'
+      : /transfer|iban|swift|העברה בנקאית|העברה/i.test(T) ? 'Bank transfer' : /\bcash\b|מזומן/i.test(T) ? 'Cash' : '';
+    if (!out.method) delete out.method;
+    // note: reference numbers
+    var notes = [];
+    if ((mt = /ref(?:erence)?\.?\s*(?:number|no\.?|#)?\s*:?\s*([A-Z0-9][A-Z0-9\-]{3,})/i.exec(T))) notes.push('Ref ' + mt[1]);
+    if ((mt = /booking\s*reference[\s\S]{0,40}?\b(\d{3,})\b/i.exec(T)) || (mt = /booking\s*(?:no\.?|number|#)?\s*:?\s*([A-Z0-9\-]{3,})/i.exec(T))) notes.push('Booking ' + mt[1]);
+    if ((mt = /ending\s*(\d{4})/i.exec(T))) notes.push('card ' + mt[1]);
+    if (notes.length) out.note = notes.join(' · ');
+    return out;
+  }
+  function payOcr(file) {
+    var id = ++PAY.ocr;
+    payAuto('<span class="spin"></span>Reading the receipt…');
+    KAI.ready().then(function () { return KAI.sb.functions.invoke('budget-hub', { body: { action: 'budgetOcr', slug: EVENT, file: { name: file.name, mime: file.mime, data: file.data } } }); }).then(function (r) {
+      if (id !== PAY.ocr || $('dlg-pay').hidden || PAY.mode !== 'pay') return;
+      var res = r && r.data || {};
+      if (r.error || !res.ok) throw new Error(res.error || '');
+      var f = payParse(res.text), got = [];
+      var put = function (elId, v, empty) { var el = $(elId); if (v == null || v === '' || !empty(el)) return; el.value = v; if (el.value === String(v)) { el.classList.add('auto'); got.push(elId); } };
+      put('p-vendor', f.vendor, function (el) { return !el.value; });
+      put('p-amount', f.amount != null ? String(f.amount) : '', function (el) { return !el.value.trim(); });
+      put('p-date', f.date, function (el) { return !el.value.trim() || el.value === payToday(); });
+      put('p-method', f.method, function (el) { return !el.value; });
+      put('p-note', f.note, function (el) { return !el.value.trim(); });
+      payAuto(got.length ? '✓ Filled from the receipt – check the yellow fields before saving.' : 'Couldn’t find the details in this receipt – please type them.', !!got.length);
+    }).catch(function () { if (id === PAY.ocr && !$('dlg-pay').hidden) payAuto('Couldn’t read this receipt – please type the details.'); });
+  }
   $('p-pick').addEventListener('click', function () { $('p-file').click(); });
   $('p-file').addEventListener('change', function () { payTake(this.files[0]); this.value = ''; });
-  $('p-clear').addEventListener('click', function () { PAY.file = null; payShowFile(); });
+  $('p-clear').addEventListener('click', function () { PAY.file = null; PAY.ocr++; payShowFile(); $('p-auto').hidden = true; });
   $('p-drop').addEventListener('dragover', function (e) { e.preventDefault(); this.classList.add('over'); });
   $('p-drop').addEventListener('dragleave', function () { this.classList.remove('over'); });
   $('p-drop').addEventListener('drop', function (e) { e.preventDefault(); this.classList.remove('over'); payTake(e.dataTransfer.files[0]); });
