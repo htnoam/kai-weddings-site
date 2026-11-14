@@ -38,6 +38,8 @@ const FIELDS = [
   { key: 'url', headers: ['קישור לפוסט', 'Original Post URL', 'URL'], type: 'url' },
   { key: 'description', headers: ['תיאור / צורך', 'Description / Requirements', 'Description'] },
   { key: 'notes', headers: ['הערות טיפול', 'Internal Notes', 'Notes'] },
+  { key: 'publicReply', headers: ['Public Reply', 'תגובה פומבית'] },
+  { key: 'privateMessage', headers: ['Private Message', 'הודעה פרטית'] },
   // Added by setup()
   { key: 'id', headers: ['מזהה ליד', 'Lead ID'], added: true },
   { key: 'weddingType', headers: ['סוג חתונה', 'Wedding Type'], type: 'enum', enumName: 'WEDDING_TYPE', added: true },
@@ -85,7 +87,7 @@ const ENUMS = {
 };
 
 const EDITABLE = [
-  'status', 'priority', 'notes', 'followUpDate', 'lastContactDate', 'destination', 'weddingDate',
+  'status', 'priority', 'notes', 'publicReply', 'privateMessage', 'followUpDate', 'lastContactDate', 'destination', 'weddingDate',
   'budget', 'budgetAmount', 'budgetCurrency', 'guests', 'weddingType', 'verification', 'archived',
   'title', 'description', 'plannerBudget', 'source', 'community', 'url', 'postDate',
 ];
