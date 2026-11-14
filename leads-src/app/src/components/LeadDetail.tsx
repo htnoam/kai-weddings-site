@@ -121,6 +121,33 @@ export function LeadDetail({ lead, onBack, onPrevious, onNext, position, total }
     saveNotes(next)
   }
 
+  // Reply drafts are stored in the existing Notes field so no backend migration is required.
+  // The marker format also lets the daily research workflow populate drafts in Google Sheets.
+  const replyPattern = /\\[KAI_REPLY_(PUBLIC|DM)\\]\\n([\\s\\S]*?)\\n\\[\\/KAI_REPLY_\\1\\]/g
+  const getReply = (kind: 'PUBLIC' | 'DM') => {
+    const match = [...notes.matchAll(replyPattern)].find((m) => m[1] === kind)
+    return match?.[2] || ''
+  }
+  const [replyTab, setReplyTab] = useState<'PUBLIC' | 'DM'>('PUBLIC')
+  const [replyDraft, setReplyDraft] = useState('')
+  useEffect(() => { setReplyDraft(getReply(replyTab)) }, [lead.id, lead.notes, replyTab])
+  const saveReply = async () => {
+    const cleaned = notes.replace(replyPattern, '').trim()
+    const previous = { PUBLIC: getReply('PUBLIC'), DM: getReply('DM') }
+    previous[replyTab] = replyDraft.trim()
+    const blocks = (['PUBLIC', 'DM'] as const).filter((kind) => previous[kind]).map((kind) =>
+      `[KAI_REPLY_${kind}]\\n${previous[kind]}\\n[/KAI_REPLY_${kind}]`)
+    await saveNotes([cleaned, ...blocks].filter(Boolean).join('\\n\\n'))
+  }
+  const [copiedReply, setCopiedReply] = useState(false)
+  const copyReply = async () => {
+    try {
+      await navigator.clipboard.writeText(replyDraft)
+      setCopiedReply(true)
+      window.setTimeout(() => setCopiedReply(false), 2500)
+    } catch { window.alert('לא ניתן להעתיק. ניתן לבחור ולהעתיק את הטקסט ידנית.') }
+  }
+
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState<Changes>({})
   const startEdit = () => {
@@ -240,6 +267,28 @@ export function LeadDetail({ lead, onBack, onPrevious, onNext, position, total }
           {lead.status === 'CONTACTED' || lead.followUpDate ? null : (
             <p className="mt-2 text-center text-xs text-gray-400">״פניתי״ קובע מעקב אוטומטי בעוד 3 ימים</p>
           )}
+        </section>
+
+        {/* Suggested replies: written by ChatGPT and saved in the existing sheet Notes column. */}
+        <section className={card}>
+          <div className="mb-2 flex items-center justify-between">
+            <h2 className="text-base font-semibold text-gray-900">✍️ Suggested Reply</h2>
+            <span className="text-xs text-gray-500">בדיקה לפני שליחה</span>
+          </div>
+          <div className="mb-3 grid grid-cols-2 gap-2">
+            <button onClick={() => setReplyTab('PUBLIC')} className={`h-10 rounded-xl text-sm font-semibold ${replyTab === 'PUBLIC' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-700'}`}>Public Comment</button>
+            <button onClick={() => setReplyTab('DM')} className={`h-10 rounded-xl text-sm font-semibold ${replyTab === 'DM' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-700'}`}>Private Message</button>
+          </div>
+          <textarea dir="ltr" rows={6} value={replyDraft} onChange={(e) => setReplyDraft(e.target.value)}
+            placeholder="טרם הוכנה תגובה אישית לליד הזה. אפשר להוסיף כאן נוסח ולשמור."
+            className="w-full rounded-xl border border-gray-200 p-3 text-left text-base leading-relaxed outline-none focus:border-gray-400" />
+          <div className="mt-2 grid grid-cols-2 gap-2">
+            <button disabled={busy || notesDirty || replyDraft.trim() === getReply(replyTab)}
+              onClick={saveReply} className="h-11 rounded-xl border border-gray-300 bg-white text-sm font-semibold disabled:opacity-40">שמור תגובה</button>
+            <button disabled={!replyDraft.trim()} onClick={copyReply}
+              className="h-11 rounded-xl bg-blue-600 text-sm font-semibold text-white disabled:opacity-40">{copiedReply ? '✓ הועתק' : 'Copy Reply'}</button>
+          </div>
+          <p className="mt-2 text-xs text-gray-500">התגובה נשמרת בהערות הליד בגיליון. שליחה ל־Reddit מתבצעת ידנית.</p>
         </section>
 
         {/* Notes: one tap phrases */}
