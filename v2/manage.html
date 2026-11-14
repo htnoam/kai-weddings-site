@@ -609,6 +609,10 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .pay-auto .spin { width: 14px; height: 14px; border: 2px solid var(--line); border-top-color: var(--ink); border-radius: 50%; animation: payspin .8s linear infinite; }
 @keyframes payspin { to { transform: rotate(360deg); } }
 #payform .auto { background: #FFF6D5; border-color: #E8C766; }
+.paste-row { display: flex; gap: 8px; align-items: stretch; margin-top: 10px; }
+.paste-row .btn { flex-shrink: 0; height: 40px; }
+#p-pastebox { flex: 1; min-width: 0; height: 40px; resize: none; border: 1px dashed var(--line); border-radius: 8px; padding: 9px 10px; font: inherit; font-size: 16px; background: #FFFFFF; color: transparent; caret-color: transparent; }
+#p-pastebox::placeholder { color: var(--soft); font-size: 14px; }
 @media (max-width: 760px) {
   .bg-ct.k .m-hide { display: none; }
   .bg-ct.k th:first-child, .bg-ct.k td:first-child { min-width: 0; }
@@ -1346,7 +1350,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     <p class="pay-what" id="pay-what" hidden></p>
     <div class="drop" id="p-drop" tabindex="0">
       <input type="file" id="p-file" accept="image/*,application/pdf" hidden>
-      <div id="p-empty"><b id="p-flabel">Receipt</b> <span id="p-fopt">(optional)</span> – <button type="button" class="linkbtn" id="p-pick">choose a file or take a photo</button>, drag it here, or paste a screenshot (Ctrl+V / ⌘V).</div>
+      <div id="p-empty"><b id="p-flabel">Receipt</b> <span id="p-fopt">(optional)</span> – <button type="button" class="linkbtn" id="p-pick">choose a file or take a photo</button>, drag it here, or paste it (Ctrl+V / ⌘V).
+        <div class="paste-row"><button type="button" class="btn" id="p-paste">📋 Paste</button><textarea id="p-pastebox" rows="1" inputmode="none" autocomplete="off" aria-label="Paste a copied file here" placeholder="or tap and hold here › Paste"></textarea></div></div>
       <div class="drop-file" id="p-has" hidden><img id="p-thumb" src="" alt=""><span id="p-fname"></span><button type="button" class="linkbtn" id="p-clear">Remove</button></div>
     </div>
     <p class="pay-auto" id="p-auto" hidden></p>
@@ -4238,6 +4243,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function payErr(t) { $('p-err').textContent = t; $('p-err').hidden = !t; }
   // Photos and screenshots are made smaller (JPEG, at most 2000 px); PDFs go as they are.
   function payReadFile(f) {
+    if (f && !f.type && /\.pdf$/i.test(f.name || '')) f = new File([f], f.name, { type: 'application/pdf' });
     return new Promise(function (ok, bad) {
       if (/^image\/(png|jpe?g|webp|heic|heif|bmp)$/i.test(f.type)) {
         var img = new Image(), u = window.URL.createObjectURL(f);
@@ -4329,6 +4335,32 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     }).catch(function () { if (id === PAY.ocr && !$('dlg-pay').hidden) payAuto('Couldn’t read this receipt – please type the details.'); });
   }
   $('p-pick').addEventListener('click', function () { $('p-file').click(); });
+  // Pasting a copied file. On iPhone "Paste" only shows in a field you can type in, so there is a paste field (long-press › Paste),
+  // and a Paste button that reads the clipboard directly (the iPhone asks with its own small "Paste" bubble).
+  function payClipFile(dt) {
+    var fs = [].slice.call((dt && dt.files) || []);
+    if (!fs.length) [].slice.call((dt && dt.items) || []).forEach(function (x) { if (x.kind === 'file') { var g = x.getAsFile(); if (g) fs.push(g); } });
+    return fs.filter(function (f) { return /pdf|image\//i.test(f.type) || /\.pdf$/i.test(f.name || ''); })[0] || fs[0] || null;
+  }
+  $('p-pastebox').addEventListener('paste', function (e) {
+    e.preventDefault(); e.stopPropagation(); this.value = '';
+    var f = payClipFile(e.clipboardData);
+    if (f) payTake(f); else payErr('There is no file to paste. Copy the receipt (the file itself, not a link) and try again.');
+  });
+  $('p-pastebox').addEventListener('input', function () { this.value = ''; });
+  $('p-paste').addEventListener('click', function () {
+    if (!navigator.clipboard || !navigator.clipboard.read) { $('p-pastebox').focus(); return payErr('Tap and hold the box next to the button, then choose Paste.'); }
+    navigator.clipboard.read().then(function (items) {
+      var pick = null;
+      items.forEach(function (it) { it.types.forEach(function (t) { if (!pick && t === 'application/pdf') pick = [it, t]; }); });
+      items.forEach(function (it) { it.types.forEach(function (t) { if (!pick && /^image\//.test(t)) pick = [it, t]; }); });
+      if (!pick) throw new Error('none');
+      return pick[0].getType(pick[1]).then(function (blob) {
+        var t = pick[1], ext = t === 'application/pdf' ? 'pdf' : (t.split('/')[1] || 'png').replace('jpeg', 'jpg');
+        payTake(new File([blob], 'Pasted.' + ext, { type: t }));
+      });
+    }).catch(function () { $('p-pastebox').focus(); payErr('Couldn’t paste with the button – tap and hold the box next to it, then choose Paste.'); });
+  });
   $('p-file').addEventListener('change', function () { payTake(this.files[0]); this.value = ''; });
   $('p-clear').addEventListener('click', function () { PAY.file = null; PAY.ocr++; payShowFile(); $('p-auto').hidden = true; });
   $('p-drop').addEventListener('dragover', function (e) { e.preventDefault(); this.classList.add('over'); });
@@ -4336,8 +4368,9 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   $('p-drop').addEventListener('drop', function (e) { e.preventDefault(); this.classList.remove('over'); payTake(e.dataTransfer.files[0]); });
   document.addEventListener('paste', function (e) {
     if ($('dlg-pay').hidden) return;
-    var it = [].slice.call((e.clipboardData && e.clipboardData.items) || []).filter(function (x) { return x.kind === 'file'; })[0];
-    if (it) { e.preventDefault(); payTake(it.getAsFile()); }
+    if (e.target && e.target.id === 'p-pastebox') return;
+    var f = payClipFile(e.clipboardData);
+    if (f) { e.preventDefault(); payTake(f); }
   });
   $('p-cancel').addEventListener('click', function () { if (!PAY.busy) $('dlg-pay').hidden = true; });
   $('dlg-pay').addEventListener('keydown', function (e) { if (e.key === 'Escape' && !PAY.busy) { e.stopPropagation(); $('dlg-pay').hidden = true; } });
