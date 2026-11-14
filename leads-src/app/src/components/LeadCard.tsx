@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { contactedChanges, daysFromToday, followUpLabel, guestsText, shortDate, yearsOf } from '../lib'
+import { contactedChanges, daysFromToday, followUpLabel, guestsText, shortDate, yearsOf, daysFromToday as daysSince } from '../lib'
 import { useStore } from '../store'
 import type { Lead } from '../types'
 import { PriorityTag, StatusBadge } from './ui'
@@ -65,6 +65,8 @@ export function LeadCard({ lead, onOpen }: { lead: Lead; onOpen: (id: string) =>
   if (lead.budget) meta.push(<bdi key="b">{lead.budget}</bdi>)
   else if (guests) meta.push(<span key="g">{guests}</span>)
   const fuDays = lead.followUpDate ? daysFromToday(lead.followUpDate) : NaN
+  const postAge = lead.postDate ? -daysSince(lead.postDate) : NaN
+  const postLabel = !Number.isFinite(postAge) ? 'תאריך פרסום לא ידוע' : postAge === 0 ? 'פורסם היום' : postAge === 1 ? 'פורסם אתמול' : postAge > 1 ? `פורסם לפני ${postAge} ימים` : 'תאריך פרסום עתידי'
 
   return (
     <div className="relative overflow-hidden rounded-2xl border border-gray-200 bg-white">
@@ -87,13 +89,13 @@ export function LeadCard({ lead, onOpen }: { lead: Lead; onOpen: (id: string) =>
           onClick={() => {
             if (!swiped.current) onOpen(lead.id)
           }}
-          className="w-full select-none px-4 py-3 text-start active:bg-gray-50"
+          className="w-full select-none px-3 py-2.5 text-start active:bg-gray-50"
         >
-          <div className="text-[15px] font-semibold leading-snug text-gray-900" dir="auto">
+          <div className="line-clamp-2 text-[14px] font-semibold leading-snug text-gray-900" dir="auto">
             {lead.title || '(ללא כותרת)'}
           </div>
           {meta.length > 0 && (
-            <div className="mt-1 text-sm text-gray-600">
+            <div className="mt-0.5 line-clamp-1 text-xs text-gray-600">
               {meta.map((m, i) => (
                 <span key={i}>
                   {i > 0 && ' · '}
@@ -102,7 +104,8 @@ export function LeadCard({ lead, onOpen }: { lead: Lead; onOpen: (id: string) =>
               ))}
             </div>
           )}
-          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+          <div className="mt-1 text-[11px] text-gray-500">{postLabel}</div>
+          <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
             <PriorityTag lead={lead} />
             {lead.status !== 'NEW' && <StatusBadge lead={lead} />}
             {lead.followUpDate && (
