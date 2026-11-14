@@ -581,6 +581,33 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 }
 .bg-prev { background: #FBF3E2; border: 1px solid #EAD9B5; color: #8A5A12; border-radius: 8px; padding: 8px 14px; font-weight: 600; font-size: 14px; }
 .bg-foot { margin: 0; font-size: 12.5px; color: var(--soft); }
+/* KAI budget template: services, vendors and payments; Noam records payments, receipts and contracts from here */
+.bgk-h { margin: 8px 0 0; font-size: 16px; font-weight: 700; display: flex; align-items: baseline; gap: 10px; }
+.bgk-h small { font-size: 13px; font-weight: 400; color: var(--soft); }
+.bg-ct.k table { min-width: 0; }
+.bg-ct.k th, .bg-ct.k td { display: table-cell; }
+.bg-ct.k th:first-child, .bg-ct.k td:first-child { width: auto; min-width: 180px; padding-left: 14px; }
+.bg-ct.k td.mut { color: var(--soft); }
+.bg-ct.k tr.nv td:first-child { color: var(--soft); font-style: italic; }
+.bgk-a { font-size: 13px; font-weight: 600; color: var(--ink); text-decoration: none; white-space: nowrap; }
+.bgk-a:hover { text-decoration: underline; }
+.bgk-up { border: 1px dashed var(--line); background: var(--surface); color: var(--muted); border-radius: 999px; font: inherit; font-size: 12.5px; font-weight: 600; padding: 3px 10px; cursor: pointer; white-space: nowrap; }
+.bgk-up:hover { border-color: var(--ink); color: var(--ink); }
+.bgk-none { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; color: var(--soft); font-size: 14px; }
+.bg-top .btn.primary { height: 32px; }
+.drop { border: 1.5px dashed var(--line); border-radius: 8px; padding: 12px 14px; font-size: 14px; color: var(--muted); background: #FAF9F6; outline: none; }
+.drop.over, .drop:focus { border-color: var(--ink); background: #F1F0FA; }
+.drop b { color: var(--text); }
+.drop .linkbtn { font-size: 14px; color: var(--ink); padding: 0; }
+.drop-file { display: flex; align-items: center; gap: 12px; }
+.drop-file img { width: 56px; height: 56px; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); }
+.drop-file img[src=""] { display: none; }
+.drop-file span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text); }
+.pay-what { margin: 0; font-size: 15px; color: var(--text); }
+@media (max-width: 760px) {
+  .bg-ct.k .m-hide { display: none; }
+  .bg-ct.k th:first-child, .bg-ct.k td:first-child { min-width: 0; }
+}
 @media (max-width: 760px) {
   .bg-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .bg-card b { font-size: 20px; }
@@ -1271,6 +1298,35 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
 </div>
 
 <datalist id="groups"></datalist>
+<div class="overlay" id="dlg-pay" hidden>
+  <form class="dialog" id="payform" role="dialog" aria-modal="true" aria-labelledby="pay-title" novalidate>
+    <h2 id="pay-title">Record a payment</h2>
+    <div id="pay-fields" style="display:flex;flex-direction:column;gap:14px">
+      <label class="f">Vendor *<select id="p-vendor"></select></label>
+      <div class="two">
+        <label class="f">Amount (€) *<input id="p-amount" inputmode="decimal" autocomplete="off" placeholder="0"></label>
+        <label class="f">Date *<input id="p-date" inputmode="numeric" autocomplete="off" placeholder="dd/mm/yyyy"></label>
+      </div>
+      <div class="two">
+        <label class="f">Paid by<select id="p-by"><option></option><option>Couple</option><option>Bride’s family</option><option>Groom’s family</option><option>Other</option></select></label>
+        <label class="f">Method<select id="p-method"><option></option><option>Bank transfer</option><option>Card</option><option>Cash</option><option>Bit</option><option>PayBox</option><option>Other</option></select></label>
+      </div>
+      <label class="f">Note<input id="p-note" autocomplete="off"></label>
+    </div>
+    <p class="pay-what" id="pay-what" hidden></p>
+    <div class="drop" id="p-drop" tabindex="0">
+      <input type="file" id="p-file" accept="image/*,application/pdf" hidden>
+      <div id="p-empty"><b id="p-flabel">Receipt</b> <span id="p-fopt">(optional)</span> – <button type="button" class="linkbtn" id="p-pick">choose a file or take a photo</button>, drag it here, or paste a screenshot (Ctrl+V / ⌘V).</div>
+      <div class="drop-file" id="p-has" hidden><img id="p-thumb" src="" alt=""><span id="p-fname"></span><button type="button" class="linkbtn" id="p-clear">Remove</button></div>
+    </div>
+    <p class="err" id="p-err" hidden></p>
+    <div class="act">
+      <button type="button" class="btn" id="p-cancel">Cancel</button>
+      <button type="submit" class="btn primary" id="p-save">Save payment</button>
+    </div>
+  </form>
+</div>
+
 <div class="toast" id="toast" role="status" hidden></div>
 
 <script src="/app/dtpick.js"></script>
@@ -3779,7 +3835,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function bgRender() {
     var box = $('budget'); if (!BG.data) { box.innerHTML = ''; return; }
     if (BG.data.source === 'grid') { gridRender(); return; }
-    if (BG.data.source === 'sheet') { box.innerHTML = bgSheetHtml(); return; }
+    if (BG.data.source === 'sheet') { box.innerHTML = BG.data.format === 'kai' ? bgKaiHtml() : bgSheetHtml(); return; }
     var K = bgCalc(), admin = S.admin, h = '';
     box.classList.toggle('wide', !!admin && BG.view === 'table');
     var C = K.C;
@@ -4055,6 +4111,160 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     });
     return h + '</tbody><tfoot><tr><td>Total</td><td></td><td></td><td></td><td class="r">' + bgEur(K.total) + '</td><td class="r">' + bgEur(K.paid) + '</td><td class="r">' + bgEur(K.left) + '</td><td></td><td></td></tr></tfoot></table></div>';
   }
+  // ----- KAI budget template (Google Sheet): services, vendors, payments. Noam records payments, receipts and contracts here;
+  // the Hub writes them into the sheet (and the files into the couple's folder) and the page refreshes. -----
+  var BGK_NV = 'No vendor yet';
+  function bgMoney(n) { n = bgNum(n); return n % 1 ? '€' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : bgEur(n); }
+  function bgKaiHtml() {
+    var D = BG.data, admin = !!(S.admin && BG.sheet), url = 'https://docs.google.com/spreadsheets/d/' + encodeURIComponent(BG.sheet) + '/edit';
+    var lines = D.lines || [], vend = D.vendors || [], pays = D.payments || [];
+    var total = bgNum(D.total), paid = bgNum(D.paid), left = total - paid, pct = total ? Math.round(100 * paid / total) : 0, conf = lines.filter(function (l) { return l.ok; }).length;
+    var stc = function (s) { return s === 'Paid' ? 3 : s === 'Partly paid' ? 2 : 0; };
+    var h = '<div class="bg-top"><h1>Budget</h1>' + (admin ? '<span class="bg-src">your Google Sheet</span>' : '') + '<span class="grow"></span>';
+    if (admin) h += '<span class="bg-chip ok">✓ The couple’s page updated ' + esc(bgAgo(D.synced)) + '</span>' +
+      '<a class="bg-gs" href="' + url + '" target="_blank" rel="noopener" title="You edit the budget in Google Sheets. This page (what the couple sees) is rebuilt from it every 5 minutes.">Edit in Google Sheets ↗</a>' +
+      '<button type="button" class="btn primary" data-bgk="pay">+ Record payment</button>';
+    h += '</div>';
+    h += '<div class="bg-cards">' +
+      '<div class="bg-card"><span>Total</span><b>' + bgEur(total) + '</b><small>' + lines.length + ' services</small></div>' +
+      '<div class="bg-card"><span>Paid</span><b class="ok">' + bgEur(paid) + '</b><span class="bar"><i style="width:' + Math.min(pct, 100) + '%"></i></span></div>' +
+      '<div class="bg-card"><span>Left to pay</span><b>' + bgEur(left) + '</b><small>' + pct + '% paid</small></div>' +
+      '<div class="bg-card"><span>Confirmed</span><b>' + conf + ' <small style="font-size:15px">of ' + lines.length + '</small></b><small>services booked</small></div></div>';
+    // Services
+    h += '<h2 class="bgk-h">Services</h2>';
+    if (!lines.length) h += '<div class="bgk-none">No services yet.</div>';
+    else {
+      h += '<div class="bg-ct k"><table><thead><tr><th>Service</th><th class="m-hide">Category</th><th>Vendor</th><th class="r m-hide">Unit €</th><th class="r m-hide">Qty</th><th class="r">Total</th><th class="m-hide"></th></tr></thead><tbody>';
+      lines.forEach(function (l) {
+        var u = bgNum(l.unit), q = bgNum(l.qty), t = bgNum(l.total);
+        h += '<tr><td>' + esc(l.item) + '</td><td class="m-hide mut">' + esc(l.category || '') + '</td><td>' + (l.vendor ? esc(l.vendor) : '<span class="mut">–</span>') + '</td>' +
+          '<td class="r m-hide">' + (u ? bgMoney(u) : '') + '</td><td class="r m-hide">' + (q || '') + '</td><td class="r b">' + (t ? bgMoney(t) : '<span class="mut">–</span>') + '</td>' +
+          '<td class="m-hide">' + (l.ok ? '<span class="bg-pill st-3">Confirmed</span>' : '') + '</td></tr>';
+      });
+      h += '</tbody><tfoot><tr><td>Total</td><td class="m-hide"></td><td></td><td class="m-hide"></td><td class="m-hide"></td><td class="r">' + bgMoney(total) + '</td><td class="m-hide"></td></tr></tfoot></table></div>';
+    }
+    // Vendors
+    var vs = vend.filter(function (v) { return bgNum(v.total) || bgNum(v.paid) || v.name !== BGK_NV; });
+    h += '<h2 class="bgk-h">Vendors</h2>';
+    if (!vs.length) h += '<div class="bgk-none">No vendors yet' + (admin ? ' – add their names in the sheet’s Name column.' : '.') + '</div>';
+    else {
+      h += '<div class="bg-ct k"><table><thead><tr><th>Vendor</th><th class="r">Total</th><th class="r m-hide">Paid</th><th class="r">Left</th><th class="m-hide">Status</th><th>Contract</th></tr></thead><tbody>';
+      vs.forEach(function (v) {
+        var nv = v.name === BGK_NV, ct = '';
+        if (!nv) ct = admin ? (v.contract ? '<a class="bgk-a" href="' + esc(v.contract) + '" target="_blank" rel="noopener">Open ↗</a> <button type="button" class="linkbtn" data-bgk="contract" data-v="' + esc(v.name) + '">replace</button>'
+          : '<button type="button" class="bgk-up" data-bgk="contract" data-v="' + esc(v.name) + '">📎 Add contract</button>') : (v.hasContract ? '✓' : '');
+        h += '<tr' + (nv ? ' class="nv"' : '') + '><td>' + esc(v.name) + '</td><td class="r b">' + bgMoney(v.total) + '</td><td class="r ok m-hide">' + (bgNum(v.paid) ? bgMoney(v.paid) : '–') + '</td><td class="r">' + bgMoney(v.balance) + '</td>' +
+          '<td class="m-hide">' + (nv ? '' : '<span class="bg-pill st-' + stc(v.status) + '">' + esc(v.status) + '</span>') + '</td><td>' + ct + '</td></tr>';
+      });
+      h += '</tbody></table></div>';
+    }
+    // Payments
+    h += '<h2 class="bgk-h">Payments' + (pays.length ? ' <small>' + pays.length + '</small>' : '') + '</h2>';
+    if (!pays.length) h += '<div class="bgk-none">No payments yet.</div>';
+    else {
+      h += '<div class="bg-ct k"><table><thead><tr><th>Date</th><th>Vendor</th><th class="r">Amount</th><th class="m-hide">Paid by</th>' + (admin ? '<th class="m-hide">Method</th><th>Receipt</th><th class="m-hide">Note</th>' : '') + '</tr></thead><tbody>';
+      pays.slice().reverse().forEach(function (x) {
+        h += '<tr><td>' + esc(x.date || '') + '</td><td>' + esc(x.vendor) + '</td><td class="r b">' + bgMoney(x.amount) + '</td><td class="m-hide">' + esc(x.by || '') + '</td>' +
+          (admin ? '<td class="m-hide">' + esc(x.method || '') + '</td><td>' + (x.receipt ? '<a class="bgk-a" href="' + esc(x.receipt) + '" target="_blank" rel="noopener">Receipt ↗</a>'
+            : '<button type="button" class="bgk-up" data-bgk="receipt" data-row="' + x.row + '" data-w="' + esc((x.date ? x.date + ' · ' : '') + x.vendor + ' · ' + bgMoney(x.amount)) + '">📎 Add receipt</button>') + '</td><td class="m-hide mut">' + esc(x.note || '') + '</td>' : '') + '</tr>';
+      });
+      h += '</tbody></table></div>';
+    }
+    return h + '<p class="bg-foot">Prepared by KAI Event Planners' + (D.synced ? ' · updated ' + esc(bgAgo(D.synced)) : '') + '.</p>';
+  }
+  // The payment / receipt / contract dialog
+  var PAY = { mode: 'pay', row: 0, vendor: '', file: null, busy: false };
+  function payToday() { var d = new Date(); return ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + '/' + d.getFullYear(); }
+  function payOpen(mode, o) {
+    o = o || {}; PAY.mode = mode; PAY.row = o.row || 0; PAY.vendor = o.vendor || ''; PAY.file = null; PAY.busy = false;
+    var pay = mode === 'pay';
+    $('pay-title').textContent = pay ? 'Record a payment' : mode === 'receipt' ? 'Add a receipt' : 'Add the contract';
+    $('pay-fields').hidden = !pay; $('pay-fields').style.display = pay ? 'flex' : 'none';
+    $('pay-what').hidden = pay; $('pay-what').textContent = mode === 'receipt' ? 'Payment: ' + (o.what || '') : 'Vendor: ' + PAY.vendor;
+    $('p-flabel').textContent = mode === 'contract' ? 'Contract' : 'Receipt'; $('p-fopt').textContent = pay ? '(optional)' : '*';
+    $('p-save').textContent = pay ? 'Save payment' : 'Save'; $('p-save').disabled = false;
+    if (pay) {
+      var names = []; (BG.data.vendors || []).forEach(function (v) { if (v.name !== BGK_NV && names.indexOf(v.name) < 0) names.push(v.name); });
+      $('p-vendor').innerHTML = '<option value="">' + (names.length ? 'Choose…' : 'No vendors yet – add them in the sheet') + '</option>' + names.map(function (n) { return '<option>' + esc(n) + '</option>'; }).join('');
+      $('p-amount').value = ''; $('p-date').value = payToday(); $('p-by').value = ''; $('p-method').value = ''; $('p-note').value = '';
+    }
+    payShowFile(); $('p-err').hidden = true; $('dlg-pay').hidden = false;
+    setTimeout(function () { (pay ? $('p-vendor') : $('p-drop')).focus(); }, 30);
+  }
+  function payShowFile() {
+    var f = PAY.file; $('p-empty').hidden = !!f; $('p-has').hidden = !f;
+    $('p-thumb').src = f && f.preview || ''; $('p-fname').textContent = f ? f.name : '';
+  }
+  function payErr(t) { $('p-err').textContent = t; $('p-err').hidden = !t; }
+  // Photos and screenshots are made smaller (JPEG, at most 2000 px); PDFs go as they are.
+  function payReadFile(f) {
+    return new Promise(function (ok, bad) {
+      if (/^image\/(png|jpe?g|webp|heic|heif|bmp)$/i.test(f.type)) {
+        var img = new Image(), u = window.URL.createObjectURL(f);
+        img.onload = function () {
+          var k = Math.min(1, 2000 / Math.max(img.width, img.height)), c = document.createElement('canvas');
+          c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+          var g = c.getContext('2d'); g.fillStyle = '#FFFFFF'; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height);
+          window.URL.revokeObjectURL(u); var d = c.toDataURL('image/jpeg', 0.85);
+          ok({ name: String(f.name || 'Screenshot').replace(/\.[^.]+$/, '') + '.jpg', mime: 'image/jpeg', data: d.split(',')[1], preview: d });
+        };
+        img.onerror = function () { window.URL.revokeObjectURL(u); bad(new Error('That picture could not be read. Try a JPG, PNG or PDF.')); };
+        img.src = u; return;
+      }
+      if (!/pdf|image\//i.test(f.type)) return bad(new Error('Use a photo, a screenshot or a PDF.'));
+      if (f.size > 15e6) return bad(new Error('The file is too big (15 MB at most).'));
+      var r = new FileReader();
+      r.onload = function () { ok({ name: f.name || 'file.pdf', mime: f.type, data: String(r.result).split(',')[1], preview: '' }); };
+      r.onerror = function () { bad(new Error('The file could not be read.')); };
+      r.readAsDataURL(f);
+    });
+  }
+  function payTake(f) { if (!f) return; payErr(''); payReadFile(f).then(function (x) { PAY.file = x; payShowFile(); }, function (e) { payErr(e.message); }); }
+  $('p-pick').addEventListener('click', function () { $('p-file').click(); });
+  $('p-file').addEventListener('change', function () { payTake(this.files[0]); this.value = ''; });
+  $('p-clear').addEventListener('click', function () { PAY.file = null; payShowFile(); });
+  $('p-drop').addEventListener('dragover', function (e) { e.preventDefault(); this.classList.add('over'); });
+  $('p-drop').addEventListener('dragleave', function () { this.classList.remove('over'); });
+  $('p-drop').addEventListener('drop', function (e) { e.preventDefault(); this.classList.remove('over'); payTake(e.dataTransfer.files[0]); });
+  document.addEventListener('paste', function (e) {
+    if ($('dlg-pay').hidden) return;
+    var it = [].slice.call((e.clipboardData && e.clipboardData.items) || []).filter(function (x) { return x.kind === 'file'; })[0];
+    if (it) { e.preventDefault(); payTake(it.getAsFile()); }
+  });
+  $('p-cancel').addEventListener('click', function () { if (!PAY.busy) $('dlg-pay').hidden = true; });
+  $('dlg-pay').addEventListener('keydown', function (e) { if (e.key === 'Escape' && !PAY.busy) { e.stopPropagation(); $('dlg-pay').hidden = true; } });
+  $('payform').addEventListener('submit', function (e) {
+    e.preventDefault(); if (PAY.busy) return;
+    var body = { slug: EVENT };
+    if (PAY.mode === 'pay') {
+      var amt = parseFloat(String($('p-amount').value).replace(/[€,\s]/g, '')), dt = $('p-date').value.trim();
+      if (!$('p-vendor').value) return payErr('Choose the vendor.');
+      if (!(amt > 0)) return payErr('Type the amount.');
+      var m = /^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})$/.exec(dt); if (!m) return payErr('Write the date as dd/mm/yyyy.');
+      dt = ('0' + m[1]).slice(-2) + '/' + ('0' + m[2]).slice(-2) + '/' + m[3];
+      body.action = 'budgetPay'; body.vendor = $('p-vendor').value; body.amount = amt; body.date = dt;
+      body.by = $('p-by').value; body.method = $('p-method').value; body.note = $('p-note').value.trim();
+    } else {
+      if (!PAY.file) return payErr(PAY.mode === 'contract' ? 'Add the contract file.' : 'Add the receipt.');
+      body.action = PAY.mode === 'contract' ? 'budgetContract' : 'budgetReceipt'; body.vendor = PAY.vendor; body.row = PAY.row;
+    }
+    if (PAY.file) body.file = { name: PAY.file.name, mime: PAY.file.mime, data: PAY.file.data };
+    PAY.busy = true; payErr(''); $('p-save').disabled = true; $('p-save').textContent = 'Saving…';
+    KAI.ready().then(function () { return KAI.sb.functions.invoke('budget-hub', { body: body }); }).then(function (r) {
+      var res = r && r.data || {};
+      if (r.error || !res.ok) throw new Error(res.error || 'Couldn’t save. Check your connection and try again.');
+      PAY.busy = false; $('dlg-pay').hidden = true;
+      toast(body.action === 'budgetPay' ? 'Payment saved in the sheet.' : body.action === 'budgetContract' ? 'Contract saved in the couple’s Contracts folder.' : 'Receipt saved in the couple’s Payments folder.');
+      load(true);
+    }).catch(function (x) { PAY.busy = false; $('p-save').disabled = false; $('p-save').textContent = PAY.mode === 'pay' ? 'Save payment' : 'Save'; payErr(x.message); });
+  });
+  $('budget').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-bgk]'); if (!b || !S.admin) return;
+    var k = b.dataset.bgk;
+    if (k === 'pay') payOpen('pay');
+    else if (k === 'contract') payOpen('contract', { vendor: b.dataset.v });
+    else if (k === 'receipt') payOpen('receipt', { row: +b.dataset.row, what: b.dataset.w });
+  });
   function bgSheetHtml() {
     var K = bgSheetCalc(), admin = S.admin && BG.sheet, url = 'https://docs.google.com/spreadsheets/d/' + encodeURIComponent(BG.sheet) + '/edit';
     var h = '<div class="bg-top"><h1>Budget</h1>' + (admin ? '<span class="bg-src">your Google Sheet</span>' : '') + '<span class="grow"></span>';
