@@ -7,7 +7,7 @@ import { LeadList } from './components/LeadList'
 import { Login } from './components/Login'
 import { Settings } from './components/Settings'
 import { Icon, Toasts } from './components/ui'
-import { EMPTY_FILTERS, daysFromToday, isOpen, needsFollowUp } from './lib'
+import { EMPTY_FILTERS, applyFilters, sortLeads, daysFromToday, isOpen, needsFollowUp } from './lib'
 import { StoreProvider, useStore } from './store'
 import type { Filters, Lead } from './types'
 
@@ -64,9 +64,11 @@ function Shell({ onSignedOut }: { onSignedOut: () => void }) {
   const current = SEGMENTS.find((s) => s.key === seg)!
   const segLeads = useMemo(() => leads.filter(current.test), [leads, current])
 
+  const visibleLeads = useMemo(() => sortLeads(applyFilters(segLeads, filters), filters.sort), [segLeads, filters])
+  const leadIndex = openId ? visibleLeads.findIndex((l) => l.id === openId) : -1
   const lead = openId ? leads.find((l) => l.id === openId) : null
   if (adding) return <AddLead onClose={() => setAdding(false)} onOpen={(id) => setOpenId(id)} />
-  if (lead) return <LeadDetail lead={lead} onBack={() => setOpenId(null)} />
+  if (lead) return <LeadDetail key={lead.id} lead={lead} onBack={() => setOpenId(null)} position={leadIndex >= 0 ? leadIndex + 1 : undefined} total={leadIndex >= 0 ? visibleLeads.length : undefined} onPrevious={leadIndex > 0 ? () => setOpenId(visibleLeads[leadIndex - 1].id) : undefined} onNext={leadIndex >= 0 && leadIndex < visibleLeads.length - 1 ? () => setOpenId(visibleLeads[leadIndex + 1].id) : undefined} />
 
   const title = tab === 'leads' ? 'Kai event leads' : tab === 'followups' ? 'מעקבים' : 'הגדרות'
 
