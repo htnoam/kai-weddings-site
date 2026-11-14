@@ -42,6 +42,8 @@ function Shell({ onSignedOut }: { onSignedOut: () => void }) {
 
 
   const [pullDistance, setPullDistance] = useState(0)
+  const pullOffset = pullRefreshing ? 58 : pullDistance
+  const pullStyle = { transform: `translate3d(0, ${pullOffset}px, 0)`, transition: pullDistance > 0 ? "none" : "transform 220ms ease-out", willChange: "transform" as const }
   const [pullRefreshing, setPullRefreshing] = useState(false)
   const startY = useRef<number | null>(null)
   const pulling = useRef(false)
@@ -129,7 +131,7 @@ function Shell({ onSignedOut }: { onSignedOut: () => void }) {
         </div>
       )}
 
-      <header className="border-b border-gray-200 bg-white px-3 pb-2 pt-[calc(6px+env(safe-area-inset-top))]">
+      <header style={pullStyle} className="border-b border-gray-200 bg-white px-3 pb-2 pt-[calc(6px+env(safe-area-inset-top))]">
         <div className="flex h-11 items-center justify-between">
           <div className={`px-1 ${tab === 'leads' ? 'text-[14px] font-bold tracking-[0.12em]' : 'text-lg font-semibold'}`}>{title}</div>
           <div className="flex items-center gap-1">
@@ -179,7 +181,7 @@ function Shell({ onSignedOut }: { onSignedOut: () => void }) {
         )}
       </header>
 
-      <main className="mx-auto max-w-xl px-3 pb-[calc(84px+env(safe-area-inset-bottom))]">
+      <main style={pullStyle} className="mx-auto max-w-xl px-3 pb-[calc(84px+env(safe-area-inset-bottom))]">
         {!leads.length && loading && <div className="py-16 text-center text-sm text-gray-500">טוען לידים מ־Google Sheets…</div>}
         {tab === 'leads' && (leads.length > 0 || !loading) && (
           <LeadList
