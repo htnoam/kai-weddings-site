@@ -1,6 +1,6 @@
 {
-  "name": "KAI LEADS",
-  "short_name": "KAI LEADS",
+  "name": "Kai event leads",
+  "short_name": "Kai event leads",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
