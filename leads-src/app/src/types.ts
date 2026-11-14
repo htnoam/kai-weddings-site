@@ -30,6 +30,8 @@ export interface Lead {
   url: string
   description: string
   notes: string
+  publicReply: string
+  privateMessage: string
   weddingType: WeddingType | null
   weddingTypeRaw: string
   followUpDate: string
@@ -50,6 +52,8 @@ export type EditableKey =
   | 'status'
   | 'priority'
   | 'notes'
+  | 'publicReply'
+  | 'privateMessage'
   | 'followUpDate'
   | 'lastContactDate'
   | 'destination'
