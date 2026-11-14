@@ -37,6 +37,6 @@ jobs:
           if ! git diff --cached --quiet; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git commit -m "Build KAI Leads from source [skip ci]"
+            git commit -m "Build KAI Leads from source"
             git push
           fi
