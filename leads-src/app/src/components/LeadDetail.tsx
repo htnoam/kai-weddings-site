@@ -86,7 +86,7 @@ const TEXT_FIELDS: { key: keyof Changes; label: string; multiline?: boolean }[] 
   { key: 'description', label: 'תיאור', multiline: true },
 ]
 
-export function LeadDetail({ lead, onBack }: { lead: Lead; onBack: () => void }) {
+export function LeadDetail({ lead, onBack, onPrevious, onNext, position, total }: { lead: Lead; onBack: () => void; onPrevious?: () => void; onNext?: () => void; position?: number; total?: number }) {
   const { update, saving } = useStore()
   const busy = !!saving[lead.id]
   const [fuOpen, setFuOpen] = useState(false)
@@ -178,6 +178,7 @@ export function LeadDetail({ lead, onBack }: { lead: Lead; onBack: () => void })
           <span className="text-[15px] font-medium">חזרה</span>
         </button>
         <div className="flex-1" />
+        {position && total && <span className="mb-3 me-3 text-xs text-gray-500">{position} מתוך {total}</span>}
         {busy && <span className="mb-3 me-3 text-xs text-gray-400">שומר…</span>}
       </header>
 
@@ -200,6 +201,7 @@ export function LeadDetail({ lead, onBack }: { lead: Lead; onBack: () => void })
           <div className="mt-2 flex flex-wrap items-center gap-3">
             <StatusBadge lead={lead} />
             <PriorityTag lead={lead} />
+            <span className="text-xs text-gray-500">{lead.postDate ? `פורסם ${formatDate(lead.postDate)}` : 'תאריך פרסום לא ידוע'}</span>
             {lead.followUpDate && (
               <span className={`text-xs font-semibold ${fu < 0 ? 'text-red-600' : fu === 0 ? 'text-orange-600' : 'text-gray-600'}`}>
                 מעקב: {followUpLabel(lead.followUpDate)}
@@ -406,6 +408,12 @@ export function LeadDetail({ lead, onBack }: { lead: Lead; onBack: () => void })
         </details>
       </div>
 
+      {(onPrevious || onNext) && (
+        <nav className="sticky bottom-0 z-20 mx-auto mt-3 flex max-w-xl gap-2 border-t border-gray-200 bg-white/95 px-3 py-2 pb-[calc(8px+env(safe-area-inset-bottom))] backdrop-blur" aria-label="מעבר בין לידים">
+          <button disabled={!onPrevious || busy || notesDirty} onClick={onPrevious} className="h-11 flex-1 rounded-xl border border-gray-200 text-sm font-semibold disabled:opacity-30">הקודם</button>
+          <button disabled={!onNext || busy || notesDirty} onClick={onNext} className="h-11 flex-1 rounded-xl bg-gray-900 text-sm font-semibold text-white disabled:opacity-30">הליד הבא ←</button>
+        </nav>
+      )}
       <Sheet open={fuOpen} onClose={() => setFuOpen(false)} title="מעקב בתאריך">
         <FollowUpPicker
           value={lead.followUpDate}
