@@ -121,15 +121,15 @@ export function LeadDetail({ lead, onBack, onPrevious, onNext, position, total }
     saveNotes(next)
   }
 
-  const [replyTab, setReplyTab] = useState<'PUBLIC' | 'DM'>('PUBLIC')
-  const storedReply = replyTab === 'PUBLIC' ? (lead.publicReply || lead.extra?.['Public Reply'] || '') : (lead.privateMessage || lead.extra?.['Private Message'] || '')
+  const [replyTab, setReplyTab] = useState<'PUBLIC' | 'DM' | 'BRIDE'>('PUBLIC')
+  const storedReply = replyTab === 'PUBLIC' ? (lead.publicReply || lead.extra?.['Public Reply'] || '') : replyTab === 'DM' ? (lead.privateMessage || lead.extra?.['Private Message'] || '') : (lead.extra?.['Former Bride Recommendation'] || '')
   const [replyDraft, setReplyDraft] = useState(storedReply || '')
   const [replySaving, setReplySaving] = useState(false)
   const replyBackendReady = lead.publicReply !== undefined && lead.privateMessage !== undefined
   const [replyError, setReplyError] = useState(false)
   useEffect(() => { setReplyDraft(storedReply || ''); setReplyError(false) }, [lead.id, replyTab, storedReply])
   const saveReply = async () => {
-    if (!replyBackendReady) { setReplyError(true); return }
+    if (!replyBackendReady || replyTab === 'BRIDE') { setReplyError(true); return }
     setReplySaving(true)
     setReplyError(false)
     const res = await update(lead.id, { [replyTab === 'PUBLIC' ? 'publicReply' : 'privateMessage']: replyDraft.trim() })
@@ -272,19 +272,21 @@ export function LeadDetail({ lead, onBack, onPrevious, onNext, position, total }
             <h2 className="text-base font-semibold text-gray-900">✍️ Suggested Reply</h2>
             <span className="text-xs text-gray-500">בדיקה לפני שליחה</span>
           </div>
-          <div className="mb-3 grid grid-cols-2 gap-2">
+          <div className="mb-3 grid grid-cols-3 gap-2">
             <button onClick={() => setReplyTab('PUBLIC')} className={`h-10 rounded-xl text-sm font-semibold ${replyTab === 'PUBLIC' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-700'}`}>Public Comment</button>
             <button onClick={() => setReplyTab('DM')} className={`h-10 rounded-xl text-sm font-semibold ${replyTab === 'DM' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-700'}`}>Private Message</button>
+            <button onClick={() => setReplyTab('BRIDE')} className={`h-10 rounded-xl text-xs font-semibold ${replyTab === 'BRIDE' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-700'}`}>Former Bride</button>
           </div>
-          <textarea dir="ltr" rows={6} value={replyDraft} onChange={(e) => setReplyDraft(e.target.value)}
+          <textarea dir="ltr" rows={6} value={replyDraft} readOnly={replyTab === 'BRIDE'} onChange={(e) => setReplyDraft(e.target.value)}
             placeholder="טרם הוכנה תגובה אישית לליד הזה. אפשר להוסיף כאן נוסח ולשמור."
             className="w-full rounded-xl border border-gray-200 p-3 text-left text-base leading-relaxed outline-none focus:border-gray-400" />
           <div className="mt-2 grid grid-cols-2 gap-2">
-            <button disabled={busy || replySaving || !replyBackendReady || replyDraft.trim() === (storedReply || '')}
+            <button disabled={replyTab === 'BRIDE' || busy || replySaving || !replyBackendReady || replyDraft.trim() === (storedReply || '')}
               onClick={saveReply} className="h-11 rounded-xl border border-gray-300 bg-white text-sm font-semibold disabled:opacity-40">שמור תגובה</button>
             <button disabled={!replyDraft.trim()} onClick={copyReply}
               className="h-11 rounded-xl bg-blue-600 text-sm font-semibold text-white disabled:opacity-40">{copiedReply ? '✓ הועתק' : 'Copy Reply'}</button>
           </div>
+          {replyTab === 'BRIDE' && <p className="mt-2 text-xs text-gray-500">הטיוטה נוצרת באוטומציה ונשמרת בגיליון. אפשר להעתיק אותה מכאן; עריכה מתבצעת בגיליון. מומלץ לוודא שהנוסח תואם לניסיון האישי ולכללי הקהילה.</p>}
           {replyError && <p className="mt-2 text-xs text-red-600">שמירה דורשת עדכון של שרת הנתונים. אפשר להעתיק את הטיוטה כעת.</p>}
           <p className="mt-2 text-xs text-gray-500">התגובה נשמרת בשדה ייעודי בגיליון. שליחה ל־Reddit מתבצעת ידנית.</p>
         </section>
