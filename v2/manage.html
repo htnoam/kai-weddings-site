@@ -290,6 +290,7 @@ tr:last-child td { border-bottom: 1px solid var(--hair); }
 td .c { display: block; padding: 0 8px; min-height: 0; height: 29px; line-height: 29px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 td.num .c { text-align: right; padding-right: 10px; }
 td[data-k="first"] b { font-weight: 600; }
+:where(#grid tbody tr:nth-child(even of [data-no])) td { background: #F7F6F2; }
 tbody tr[data-no]:hover td { background: #F8F7F3; }
 td.ed:hover { background: #EFEEE8 !important; }
 tr.sel-row td { background: #EEF0FA; }
@@ -597,15 +598,22 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .bg-top .btn.primary { height: 32px; }
 /* Computers: the budget as a spreadsheet (like the guests table) */
 .bg:has(.bx-top) { gap: 10px; }
-.bx-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.bx-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .bx-top h1 { margin: 0; font-size: 20px; }
-.bx-bar { flex: 0 1 260px; min-width: 80px; height: 8px; border-radius: 4px; background: #E4E1DA; overflow: hidden; }
+.bx-bar { flex: 0 1 140px; min-width: 60px; height: 8px; border-radius: 4px; background: #E4E1DA; overflow: hidden; }
 .bx-bar i { display: block; height: 100%; background: var(--ok); }
 .bx-sum { font-size: 14.5px; color: var(--muted); white-space: nowrap; }
 .bx-sum b { color: var(--text); }
 .bx-conf { font-size: 13px; color: var(--soft); white-space: nowrap; }
 .bx-saved { font-size: 12.5px; color: var(--ok); white-space: nowrap; }
 .bx-top .btn { height: 32px; }
+.bx-lock { display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px 0 8px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; white-space: nowrap; }
+.bx-lock i { position: relative; width: 30px; height: 18px; border-radius: 9px; background: #C9C6BF; transition: background .15s; }
+.bx-lock i::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: #FFFFFF; transition: left .15s; }
+.bx-lock.on { color: var(--ok); }
+.bx-lock.on i { background: var(--ok); }
+.bx-lock.on i::after { left: 14px; }
+.bx-ro { font-size: 13px; font-weight: 600; color: var(--muted); background: #EFEDE7; border-radius: 999px; padding: 5px 12px; white-space: nowrap; }
 .bx-chb b { display: inline-block; min-width: 18px; height: 18px; line-height: 18px; border-radius: 9px; background: #F5C542; color: #3A2E00; font-size: 11.5px; text-align: center; margin-left: 4px; padding: 0 4px; }
 .bx-tabs { margin-bottom: -11px; }
 .bx-tabs .vt small { font-weight: 500; color: var(--soft); margin-left: 2px; }
@@ -1768,6 +1776,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       S.reminders = res.reminders || {}; S.reminderText = res.reminderText || ''; S.lang = res.lang || 'he';
       S.changes = res.changes || [];
       briefLoad(res.brief);
+      BX.can = res.budgetEdit !== false;
       bgLoad(res.budget, res.budgetSheet);
       schedLoad(res.schedule, res.wedding);
       setCustom(res.custom || []);
@@ -4320,7 +4329,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   // ----- Computers: the budget as a spreadsheet, like the guests table. The couple and Noam edit it right here: every change
   // goes straight into the Google Sheet (through budget-hub, one at a time) and is logged, so Noam sees what the couple changed
   // (yellow cells with who / when / what it was, a Changes list with Undo). -----
-  var BX = { tab: 'services', sel: null, edit: null, q: [], busy: false, sort: null, widths: {}, changes: null, chOpen: false, del: null, hi: {}, saved: '' };
+  var BX = { can: true, tab: 'services', sel: null, edit: null, q: [], busy: false, sort: null, widths: {}, changes: null, chOpen: false, del: null, hi: {}, saved: '' };
   try { BX.widths = JSON.parse(localStorage.getItem('kai-budget-widths') || '{}') || {}; } catch (e) {}
   var BX_COLS = [
     { k: 'ok', f: 'ok', t: '✓', w: 44 },
@@ -4333,6 +4342,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   ];
   var BX_FL = { ok: 'Confirmed', category: 'Category', service: 'Service', name: 'Name', cost: 'Cost', qty: 'Quantity', add: 'Added a line', 'delete': 'Deleted a line' };
   function bxW(c) { return BX.widths[c.k] || c.w; }
+  function bxRO() { return !S.admin && BX.can === false; }   // Noam locked the budget: the couple can only look
   function bxLines() { return (BG.data && BG.data.lines) || []; }
   function bxOrder() {
     var L = bxLines(), o = L.map(function (l, i) { return i; }), s = BX.sort; if (!s) return o;
@@ -4371,6 +4381,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var h = '<div class="bx-top"><h1>Budget</h1><span class="bx-bar" title="' + pct + '% paid"><i style="width:' + Math.min(pct, 100) + '%"></i></span>' +
       '<span class="bx-sum">' + bgEur(paid) + ' paid of <b>' + bgEur(total) + '</b> · <b>' + bgEur(left) + '</b> left</span><span class="grow"></span>' +
       '<span class="bx-saved" id="bx-saved">' + esc(BX.saved) + '</span><span class="bx-conf">' + conf + ' of ' + named.length + ' services confirmed</span>';
+    if (admin) h += '<button type="button" class="bx-lock' + (BX.can ? ' on' : '') + '" data-bxlock="1" role="switch" aria-checked="' + BX.can + '" title="' + (BX.can ? 'The couple can change this budget. Click to lock it.' : 'The budget is locked – the couple can only look. Click to let them make changes.') + '"><i></i>' + (BX.can ? 'Couple can edit' : 'Locked for the couple') + '</button>';
+    if (bxRO()) h += '<span class="bx-ro">🔒 View only</span>';
     if (admin) h += '<button type="button" class="btn bx-chb' + (nNew ? ' new' : '') + '" data-bxch="open">Changes' + (nNew ? ' <b>' + nNew + '</b>' : '') + '</button>' +
       '<a class="bg-gs" href="' + url + '" target="_blank" rel="noopener" title="The same budget in Google Sheets. Changes here go straight into the sheet.">Google Sheet ↗</a>' +
       '<button type="button" class="btn primary" data-bgk="pay">+ Record payment</button>';
@@ -4399,17 +4411,18 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       }
       var added = hi[l.row + '|add'];
       h += '<tr data-bxl="' + li + '"' + (n % 2 ? ' class="z"' : '') + '><td class="chk' + (added ? ' chg' : '') + '"' + (added ? ' title="' + esc('Added by ' + added.by_name + ' · ' + bxWhen(added.at)) + '"' : '') + '>' +
-        '<span class="rn">' + (l.row || '') + '</span><button type="button" class="bx-x" data-bxdel="ask" title="Delete this line" aria-label="Delete this line">×</button></td>';
+        '<span class="rn">' + (l.row || '') + '</span>' + (bxRO() ? '' : '<button type="button" class="bx-x" data-bxdel="ask" title="Delete this line" aria-label="Delete this line">×</button>') + '</td>';
       BX_COLS.forEach(function (c, ci) {
         var cg = c.f && hi[l.row + '|' + c.f], tip = cg ? 'Changed by ' + cg.by_name + ' · ' + bxWhen(cg.at) + '\nWas: ' + bxVal(c.f, cg.old_value) : '';
-        var cls = (c.ro ? 'ro' : 'ed') + (c.num ? ' num' : '') + (cg ? ' chg' : '') + (c.k === 'total' ? ' b' : '') + (c.k === 'ok' ? ' okc' : '') + (c.k === 'category' ? ' mut' : '');
+        var cls = (c.ro || bxRO() ? 'ro' : 'ed') + (c.num ? ' num' : '') + (cg ? ' chg' : '') + (c.k === 'total' ? ' b' : '') + (c.k === 'ok' ? ' okc' : '') + (c.k === 'category' ? ' mut' : '');
         var inner = c.k === 'ok' ? '<span class="bx-ck' + (l.ok ? ' on' : '') + '" role="checkbox" aria-checked="' + !!l.ok + '" aria-label="Confirmed">' + (l.ok ? '✓' : '') + '</span>' : esc(bxCellText(l, c));
         h += '<td data-bxc="' + ci + '" class="' + cls + '"' + (tip ? ' title="' + esc(tip) + '"' : '') + '><div class="c">' + inner + '</div></td>';
       });
       h += '</tr>';
     });
     h += '</tbody><tfoot><tr><td class="chk"></td><td></td><td></td><td>Total</td><td></td><td></td><td></td><td class="num b"><div class="c">' + bgMoney(total) + '</div></td></tr></tfoot></table></div>';
-    h += '<div class="bx-under"><button type="button" class="linkbtn bx-add" data-bxadd="1">+ Add a service</button><span class="bx-tip">Click a cell and type to change it · Enter or Tab to save · Esc to cancel · drag a column’s edge to make it wider</span></div>';
+    h += bxRO() ? '<div class="bx-under"><span class="bx-tip">Noam has locked the budget for changes. Ask him if you want to change something.</span></div>'
+      : '<div class="bx-under"><button type="button" class="linkbtn bx-add" data-bxadd="1">+ Add a service</button><span class="bx-tip">Click a cell and type to change it · Enter or Tab to save · Esc to cancel · drag a column’s edge to make it wider</span></div>';
     h += '<datalist id="bx-cats">' + (function () { var s = {}; L.forEach(function (l) { if (l.category) s[l.category] = 1; }); return Object.keys(s).map(function (k) { return '<option value="' + esc(k) + '">'; }).join(''); })() + '</datalist>';
     return h + bxChPanel(admin);
   }
@@ -4468,6 +4481,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   }
   function bxStartEdit(li, ci, first) {
     var c = BX_COLS[ci], l = bxLines()[li]; if (!c || c.ro || !l) return;
+    if (bxRO()) { toast('Noam has locked the budget for changes.'); return; }
     if (c.k === 'ok') { bxCommit(li, ci, !l.ok); return; }
     var td = bxTd(li, ci); if (!td) return;
     BX.edit = { li: li, ci: ci };
@@ -4495,6 +4509,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   }
   function bxCommit(li, ci, raw) {
     var c = BX_COLS[ci], l = bxLines()[li]; if (!c || !l) return;
+    if (bxRO()) { toast('Noam has locked the budget for changes.'); bxRedraw(); return; }
     var val = raw, old = l[c.k];
     if (c.num) {
       var s = String(raw).replace(/[€\s,]/g, '');
@@ -4567,7 +4582,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     bxStartEdit(+td.parentNode.dataset.bxl, +td.dataset.bxc);
   });
   $('budget').addEventListener('click', function (e) {
-    var b = e.target.closest('[data-bxt], [data-bxs], [data-bxadd], [data-bxdel], [data-bxch], [data-bxundo]'); if (!b || BX.resizing) return;
+    var b = e.target.closest('[data-bxt], [data-bxs], [data-bxadd], [data-bxdel], [data-bxch], [data-bxundo], [data-bxlock]'); if (!b || BX.resizing) return;
     if (b.dataset.bxt) { BX.tab = b.dataset.bxt; BX.sel = null; bxRedraw(); return; }
     if (b.dataset.bxs) {
       var k = b.dataset.bxs, s = BX.sort;
@@ -4587,6 +4602,14 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
         BX.q.push({ l: dl, op: 'delete', check: dl.item || '' }); bxRun();
       }
       bxRedraw(); return;
+    }
+    if (b.dataset.bxlock) {
+      var on = !BX.can; BX.can = on; bxRedraw();
+      KAI.ready().then(function () { return KAI.sb.rpc('kai_budget_lock', { p_slug: EVENT, p_on: on }); }).then(function (r) {
+        var res = r && r.data || {};
+        if (r.error || !res.ok) { BX.can = !on; bxRedraw(); toast(res.error || 'Couldn’t save. Check your connection.', null, null, true); return; }
+        toast(on ? 'The couple can change the budget again.' : 'Locked – the couple can only look at the budget now.');
+      }); return;
     }
     if (b.dataset.bxch === 'open') { BX.chOpen = !BX.chOpen; if (BX.chOpen) bxChanges(); bxRedraw(); return; }
     if (b.dataset.bxch === 'close') { BX.chOpen = false; bxRedraw(); return; }
