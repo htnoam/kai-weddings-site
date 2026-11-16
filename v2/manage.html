@@ -290,8 +290,8 @@ tr:last-child td { border-bottom: 1px solid var(--hair); }
 td .c { display: block; padding: 0 8px; min-height: 0; height: 29px; line-height: 29px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 td.num .c { text-align: right; padding-right: 10px; }
 td[data-k="first"] b { font-weight: 600; }
-:where(#grid tbody tr:nth-child(even of [data-no])) td { background: #F7F6F2; }
-tbody tr[data-no]:hover td { background: #F8F7F3; }
+:where(#grid tbody tr:nth-child(even of [data-no])) td, :where(#bx tbody tr:nth-child(even of [data-bxl])) td { background: #F7F6F2; }
+tbody tr[data-no]:hover td, #bx tbody tr[data-bxl]:hover td { background: #F8F7F3; }
 td.ed:hover { background: #EFEEE8 !important; }
 tr.sel-row td { background: #EEF0FA; }
 tr.open-row td { background: var(--ink-soft); }
@@ -383,23 +383,23 @@ tbody tr.flash td { animation: rowflash 2.6s ease-out; }
 /* someone else is editing this cell right now (live) */
 /* spreadsheet (like Excel): selected cells, active cell, row numbers, copy/fill outlines, totals bar */
 .tablewrap { position: relative; }
-#grid tbody td[data-k], #grid tbody td.chk { user-select: none; -webkit-user-select: none; }
-#grid tbody td.ed, #grid tbody td[data-k] { cursor: cell; }
-#grid td.sel { background: #E8EDFB !important; }
-#grid td.act { background: #FFFFFF !important; box-shadow: inset 0 0 0 2px var(--ink) !important; }
-#grid th.selh { background: #DCE3F7 !important; color: var(--ink) !important; }
-#grid td.chk.selh { background: #DCE3F7 !important; }
-#grid td.chk.selh .rn { color: var(--ink); font-weight: 700; }
-#grid td.chk { cursor: pointer; }
-#grid td.chk .rn { display: block; text-align: center; color: var(--muted); font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; }
-#grid th.corner { cursor: pointer; }
-#grid th.corner .nosort { border: none; background: none; font: inherit; font-size: 11.5px; font-weight: 700; color: var(--soft); padding: 4px 2px; cursor: pointer; }
-#grid th.corner .nosort:hover { color: var(--ink); }
+#grid tbody td[data-k], #grid tbody td.chk, #bx tbody td[data-k], #bx tbody td.chk { user-select: none; -webkit-user-select: none; }
+#grid tbody td.ed, #grid tbody td[data-k], #bx tbody td[data-k] { cursor: cell; }
+#grid td.sel, #bx td.sel { background: #E8EDFB !important; }
+#grid td.act, #bx td.act { background: #FFFFFF !important; box-shadow: inset 0 0 0 2px var(--ink) !important; }
+#grid th.selh, #bx th.selh { background: #DCE3F7 !important; color: var(--ink) !important; }
+#grid td.chk.selh, #bx td.chk.selh { background: #DCE3F7 !important; }
+#grid td.chk.selh .rn, #bx td.chk.selh .rn { color: var(--ink); font-weight: 700; }
+#grid td.chk, #bx td.chk { cursor: pointer; }
+#grid td.chk .rn, #bx td.chk .rn { display: block; text-align: center; color: var(--muted); font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; }
+#grid th.corner, #bx th.corner { cursor: pointer; }
+#grid th.corner .nosort, #bx th.corner .nosort { border: none; background: none; font: inherit; font-size: 11.5px; font-weight: 700; color: var(--soft); padding: 4px 2px; cursor: pointer; }
+#grid th.corner .nosort:hover, #bx th.corner .nosort:hover { color: var(--ink); }
 .gov { position: absolute; pointer-events: none; z-index: 1; box-sizing: border-box; }
 .gov.box { border: 1px solid var(--ink); }
 .gov.cp { border: 2px dashed #2F9E44; }
 .gov.fillp { border: 2px dashed #6E6E75; }
-.gov .fh { position: absolute; right: -5px; bottom: -5px; width: 8px; height: 8px; background: var(--ink); border: 1px solid #FFFFFF; pointer-events: auto; cursor: crosshair; }
+.gov .fh, .gov .bfh { position: absolute; right: -5px; bottom: -5px; width: 8px; height: 8px; background: var(--ink); border: 1px solid #FFFFFF; pointer-events: auto; cursor: crosshair; }
 .selbar { position: sticky; left: 0; bottom: 0; z-index: 4; display: flex; justify-content: flex-end; gap: 22px; padding: 6px 16px; background: #FAF9F7; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--soft); }
 .selbar b { color: var(--text, #2B2B30); font-weight: 600; }
 .menu .kb { float: right; color: var(--soft); font-size: 12px; margin-left: 18px; }
@@ -621,32 +621,15 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .bx-pane > .bgk-h { display: none; }
 .bx-wrap { flex: none; max-width: 100%; width: fit-content; align-self: flex-start; border-radius: 0 4px 4px 4px; }
 .bx td.num .c { color: var(--text); }
-.bx td .c { height: 31px; line-height: 31px; }
-.bx tbody tr.z td { background: #F7F6F2; }
-.bx tbody tr:hover td { background: #F1EFEA; }
 .bx td.mut .c { color: var(--muted); }
 .bx td.b .c { font-weight: 700; }
-.bx td.ro .c { color: var(--text); }
-.bx td.ed { cursor: cell; }
-.bx th.r button { text-align: right; padding-right: 10px; }
+.bx th.r button { text-align: right; padding-right: 22px; }
 .bx tfoot td { background: #F1EFEA; border-top: 1px solid var(--line); font-weight: 700; }
-.bx tfoot td .c { height: 33px; line-height: 33px; }
-.bx tfoot td:nth-child(4) { padding-left: 8px; }
-.bx td.chk .rn { line-height: 31px; }
-.bx td.act { background: #FFFFFF !important; box-shadow: inset 0 0 0 2px var(--ink) !important; }
-.bx th.selh { background: #DCE3F7 !important; color: var(--ink) !important; }
-.bx td.chk.selh { background: #DCE3F7 !important; }
-.bx td.chk.selh .rn { color: var(--ink); font-weight: 700; }
-.bx td.chk { position: relative; }
-.bx .bx-x { display: none; position: absolute; inset: 3px 8px; border: none; border-radius: 4px; background: #F6E3E3; color: var(--bad); font-size: 16px; font-weight: 700; line-height: 1; cursor: pointer; }
-.bx tbody tr:hover .bx-x { display: block; }
+.bx tfoot td .c { height: 31px; line-height: 31px; }
 .bx td.okc .c { text-align: center; padding: 0; }
-.bx-ck { display: inline-block; width: 17px; height: 17px; line-height: 15px; border: 1.5px solid #B9B6AE; border-radius: 4px; background: #FFFFFF; color: #FFFFFF; font-size: 12px; font-weight: 800; vertical-align: middle; cursor: pointer; }
+.bx-ck { display: inline-block; width: 16px; height: 16px; line-height: 14px; border: 1.5px solid #B9B6AE; border-radius: 4px; background: #FFFFFF; color: #FFFFFF; font-size: 11px; font-weight: 800; text-align: center; vertical-align: middle; cursor: pointer; }
 .bx-ck.on { background: #2B7A3D; border-color: #2B7A3D; }
-.bx td.chg, .bx tbody tr td.chg { background: #FFF2CC !important; }
-.bx td.chg.act { background: #FFF2CC !important; }
-.bx tr.bx-delq td { background: #FDF1F1 !important; }
-.bx tr.bx-delq .c { display: flex; align-items: center; gap: 8px; height: auto; padding: 5px 10px; color: var(--bad); font-weight: 600; }
+.bx-fbar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .btn.sm { height: 26px; padding: 0 10px; font-size: 12.5px; }
 .bx-under { display: flex; align-items: center; gap: 16px; }
 .bx-add { font-size: 14px; font-weight: 600; color: var(--ink); text-decoration: none; padding: 4px 0; }
@@ -4326,13 +4309,18 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (window.innerWidth >= 760) return bxHtml(h.slice(iV, iP), h.slice(iP));
     return h + '<p class="bg-foot">Prepared by KAI Event Planners' + (D.synced ? ' · updated ' + esc(bgAgo(D.synced)) : '') + '.</p>';
   }
-  // ----- Computers: the budget as a spreadsheet, like the guests table. The couple and Noam edit it right here: every change
-  // goes straight into the Google Sheet (through budget-hub, one at a time) and is logged, so Noam sees what the couple changed
-  // (yellow cells with who / when / what it was, a Changes list with Undo). -----
-  var BX = { can: true, tab: 'services', sel: null, edit: null, q: [], busy: false, sort: null, widths: {}, changes: null, chOpen: false, del: null, hi: {}, saved: '' };
+  // ----- Computers: the budget as a spreadsheet that works exactly like the guests table: click / drag / Shift / Ctrl to select,
+  // type to edit, copy & paste (to and from Excel / Google Sheets), fill down / right and the fill handle, Delete to clear, undo,
+  // right-click menus, filters and sort, move and resize columns. The couple and Noam edit it right here: every change goes
+  // straight into the Google Sheet (through budget-hub, in order) and is logged, so Noam sees what the couple changed. -----
+  var BX = { can: true, tab: 'services', edit: null, q: [], busy: false, sort: { k: 'row', dir: 1 }, widths: {}, order: null, align: {}, filters: {},
+    changes: null, chOpen: false, hi: {}, saved: '', a: null, b: null, c: null, extra: [], copy: null, undo: [], redo: [], menuCut: false };
   try { BX.widths = JSON.parse(localStorage.getItem('kai-budget-widths') || '{}') || {}; } catch (e) {}
+  try { BX.order = JSON.parse(localStorage.getItem('kai-budget-cols') || 'null'); } catch (e) {}
+  try { BX.align = JSON.parse(localStorage.getItem('kai-budget-align') || '{}') || {}; } catch (e) {}
+  function bxStore(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (x) {} }
   var BX_COLS = [
-    { k: 'ok', f: 'ok', t: '✓', w: 44 },
+    { k: 'ok', f: 'ok', t: '✓', label: 'Confirmed', w: 44 },
     { k: 'category', f: 'category', t: 'Category', w: 170 },
     { k: 'item', f: 'service', t: 'Service', w: 340 },
     { k: 'vendor', f: 'name', t: 'Name', w: 180 },
@@ -4341,34 +4329,60 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     { k: 'total', t: 'Total price', w: 130, num: true, ro: true }
   ];
   var BX_FL = { ok: 'Confirmed', category: 'Category', service: 'Service', name: 'Name', cost: 'Cost', qty: 'Quantity', add: 'Added a line', 'delete': 'Deleted a line' };
+  var BX_LOCKED = 'Noam has locked the budget for changes.';
+  function bxCol(k) { return BX_COLS.filter(function (c) { return c.k === k; })[0]; }
+  function bxColByF(f) { return BX_COLS.filter(function (c) { return c.f === f; })[0]; }
+  function bxCols() {
+    var keys = BX_COLS.map(function (c) { return c.k; }), o = (BX.order || []).filter(function (k) { return keys.indexOf(k) > -1; });
+    keys.forEach(function (k) { if (o.indexOf(k) < 0) o.push(k); });
+    return o.map(bxCol);
+  }
   function bxW(c) { return BX.widths[c.k] || c.w; }
+  function bxAl(k) { if (BX.align[k]) return BX.align[k]; var c = bxCol(k); return c.k === 'ok' ? 'c' : c.num ? 'r' : 'a'; }
   function bxRO() { return !S.admin && BX.can === false; }   // Noam locked the budget: the couple can only look
   function bxLines() { return (BG.data && BG.data.lines) || []; }
-  function bxOrder() {
-    var L = bxLines(), o = L.map(function (l, i) { return i; }), s = BX.sort; if (!s) return o;
-    var c = BX_COLS.filter(function (x) { return x.k === s.k; })[0];
-    return o.sort(function (a, b) {
-      var x = L[a][s.k], y = L[b][s.k];
-      if (!c.num && c.k !== 'ok' && !x !== !y) return x ? -1 : 1;   // empty cells last
-      var r = c.num ? bgNum(x) - bgNum(y) : c.k === 'ok' ? (x ? 1 : 0) - (y ? 1 : 0) : String(x || '').localeCompare(String(y || ''), undefined, { sensitivity: 'base' });
-      return (s.d === 'desc' ? -r : r) || a - b;
-    });
+  function bxLiOfRow(row) { var L = bxLines(); for (var i = 0; i < L.length; i++) if (L[i].row === row) return i; return -1; }
+  // a cell's value: raw (copy / compare / undo) and as shown (money, ticks); filters use the shown text
+  function bxRaw(l, k) {
+    var c = bxCol(k); if (!l || !c) return '';
+    if (k === 'ok') return l.ok ? 'TRUE' : 'FALSE';
+    if (c.num) return bgNum(l[k]) ? String(bgNum(l[k])) : '';
+    return String(l[k] == null ? '' : l[k]);
   }
-  function bxCellText(l, c) {
-    if (c.k === 'unit' || c.k === 'total') { var n = bgNum(l[c.k]); return n ? bgMoney(n) : (c.k === 'total' && l.item ? '–' : ''); }
-    if (c.k === 'qty') return bgNum(l.qty) ? String(bgNum(l.qty)) : '';
-    return String(l[c.k] == null ? '' : l[c.k]);
+  function bxShown(l, k) {
+    if (k === 'ok') return l.ok ? 'Confirmed' : 'Not confirmed';
+    if (k === 'unit' || k === 'total') { var n = bgNum(l[k]); return n ? bgMoney(n) : (k === 'total' && l.item ? '–' : ''); }
+    return bxRaw(l, k);
+  }
+  function bxPass(l, skip) {
+    return Object.keys(BX.filters).every(function (k) { return k === skip || BX.filters[k].indexOf(bxShown(l, k)) > -1; });
+  }
+  // the rows on screen: filtered, then sorted (by the sheet's row number unless a column was chosen)
+  function bxList() {
+    var L = bxLines(), o = [], s = BX.sort;
+    L.forEach(function (l, i) { if (bxPass(l)) o.push(i); });
+    return o.sort(function (a, b) {
+      var x = L[a], y = L[b], r;
+      if (s.k === 'row') { r = (x.row || 1e9) - (y.row || 1e9); return (s.dir < 0 ? -r : r) || a - b; }
+      var c = bxCol(s.k), vx = x[s.k], vy = y[s.k];
+      if (!c.num && c.k !== 'ok' && !vx !== !vy) return vx ? -1 : 1;   // empty cells last
+      r = c.num ? bgNum(vx) - bgNum(vy) : c.k === 'ok' ? (vx ? 1 : 0) - (vy ? 1 : 0) : String(vx || '').localeCompare(String(vy || ''), undefined, { sensitivity: 'base', numeric: true });
+      return (s.dir < 0 ? -r : r) || (x.row || 1e9) - (y.row || 1e9);
+    });
   }
   function bxWhen(iso) { var d = new Date(iso); if (isNaN(d)) return ''; var p = function (n) { return ('0' + n).slice(-2); }; return p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()); }
   function bxVal(f, v) { if (f === 'ok') return String(v) === 'true' ? '✓ ticked' : 'not ticked'; if (f === 'cost') return v === '' || v == null ? 'empty' : bgMoney(v); return v === '' || v == null ? 'empty' : String(v); }
-  // which cells the couple changed and Noam hasn't looked at yet (Noam editing the same cell clears it, as in the sheet)
+  // which cells the couple changed and Noam hasn't marked as seen (Noam editing the same cell clears it, as in the sheet)
   function bxHi() {
     var hi = {}, ch = (BX.changes || []).slice().reverse();
     ch.forEach(function (c) {
       if (c.undone || /^undo /.test(c.field)) return;
       var key = c.sheet_row + '|' + c.field;
       if (c.by_admin) { delete hi[key]; return; }
-      if (!c.seen && c.field !== 'delete') hi[key] = c;
+      if (!c.seen && c.field !== 'delete') {
+        if (hi[key]) { hi[key] = Object.assign({}, c, { old_value: hi[key].old_value, ids: hi[key].ids.concat([c.id]) }); }
+        else hi[key] = Object.assign({}, c, { ids: [c.id] });
+      }
     });
     BX.hi = hi; return hi;
   }
@@ -4393,37 +4407,45 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     }).join('') + '</div>';
     if (BX.tab === 'vendors') return h + '<div class="bx-pane">' + vendorsH + '</div>' + bxChPanel(admin);
     if (BX.tab === 'payments') return h + '<div class="bx-pane">' + paysH + '</div>' + bxChPanel(admin);
+    // filters in use, as chips (like the guests table)
+    var fk = Object.keys(BX.filters);
+    if (fk.length) h += '<div class="fchips bx-fbar">' + fk.map(function (k) {
+      var c = bxCol(k), v = BX.filters[k], txt = v.length === 1 ? (v[0] || '(empty)') : v.length + ' values';
+      return '<span class="fchip"><button type="button" class="fc-edit" data-bxf="' + k + '"><b>' + esc(c.label || c.t) + ':</b> ' + esc(txt) + '</button><button type="button" class="fc-x" data-bxunf="' + k + '" aria-label="Remove this filter">✕</button></span>';
+    }).join('') + '<button type="button" class="linkbtn" data-bxunf="*">Clear filters</button></div>';
     // the spreadsheet
-    var tw = 48; BX_COLS.forEach(function (c) { tw += bxW(c); });
-    h += '<div class="tablewrap bx-wrap"><table class="bx" id="bx" style="width:' + tw + 'px;min-width:0"><thead><tr><th class="chk corner" style="width:48px">#</th>';
-    BX_COLS.forEach(function (c) {
-      var s = BX.sort && BX.sort.k === c.k ? BX.sort.d : '';
-      h += '<th data-bxk="' + c.k + '" style="width:' + bxW(c) + 'px"' + (c.num ? ' class="r"' : '') + (s ? ' aria-sort="' + (s === 'asc' ? 'ascending' : 'descending') + '"' : '') + '>' +
-        '<button type="button" data-bxs="' + c.k + '" title="Sort">' + c.t + (s ? (s === 'asc' ? ' ▲' : ' ▼') : '') + '</button><span class="rz" data-bz="' + c.k + '" title="Drag to resize · double-click to reset"></span></th>';
+    var cols = bxCols(), tw = 48, s = BX.sort, ro = bxRO(), list = bxList();
+    cols.forEach(function (c) { tw += bxW(c); });
+    h += '<div class="tablewrap bx-wrap"><table class="bx" id="bx" style="width:' + tw + 'px;min-width:0"><thead><tr>' +
+      '<th class="chk corner" style="width:48px" title="Select all"><button type="button" class="nosort" title="Sort by row number">#' + (s.k === 'row' ? (s.dir > 0 ? '↑' : '↓') : '') + '</button><span class="sr">Select all</span></th>';
+    cols.forEach(function (c) {
+      var arrow = s.k === c.k ? (s.dir > 0 ? ' ↑' : ' ↓') : '';
+      h += '<th data-bxk="' + c.k + '" style="width:' + bxW(c) + 'px"' + (c.num ? ' class="r"' : '') + ' aria-sort="' + (s.k === c.k ? (s.dir > 0 ? 'ascending' : 'descending') : 'none') + '">' +
+        '<button type="button" title="' + esc(c.label || c.t) + '">' + esc(c.t) + arrow + '</button>' +
+        '<button type="button" class="fbtn' + (BX.filters[c.k] ? ' on' : '') + '" data-bxf="' + c.k + '" aria-label="Filter ' + esc(c.label || c.t) + '" title="Filter"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 4h18l-7 8.5V19l-4 2v-8.5z"/></svg></button>' +
+        '<span class="rz" data-bz="' + c.k + '" title="Drag to resize · double-click to reset"></span></th>';
     });
     h += '</tr></thead><tbody>';
-    bxOrder().forEach(function (li, n) {
-      var l = L[li];
-      if (BX.del === l) {
-        h += '<tr data-bxl="' + li + '" class="bx-delq"><td class="chk"><span class="rn">' + (l.row || '') + '</span></td><td colspan="' + BX_COLS.length + '"><div class="c">Delete “' + esc(l.item || 'this line') + '” from the budget? ' +
-          '<button type="button" class="btn danger sm" data-bxdel="yes">Delete</button> <button type="button" class="btn sm" data-bxdel="no">Cancel</button></div></td></tr>';
-        return;
-      }
-      var added = hi[l.row + '|add'];
-      h += '<tr data-bxl="' + li + '"' + (n % 2 ? ' class="z"' : '') + '><td class="chk' + (added ? ' chg' : '') + '"' + (added ? ' title="' + esc('Added by ' + added.by_name + ' · ' + bxWhen(added.at)) + '"' : '') + '>' +
-        '<span class="rn">' + (l.row || '') + '</span>' + (bxRO() ? '' : '<button type="button" class="bx-x" data-bxdel="ask" title="Delete this line" aria-label="Delete this line">×</button>') + '</td>';
-      BX_COLS.forEach(function (c, ci) {
-        var cg = c.f && hi[l.row + '|' + c.f], tip = cg ? 'Changed by ' + cg.by_name + ' · ' + bxWhen(cg.at) + '\nWas: ' + bxVal(c.f, cg.old_value) : '';
-        var cls = (c.ro || bxRO() ? 'ro' : 'ed') + (c.num ? ' num' : '') + (cg ? ' chg' : '') + (c.k === 'total' ? ' b' : '') + (c.k === 'ok' ? ' okc' : '') + (c.k === 'category' ? ' mut' : '');
-        var inner = c.k === 'ok' ? '<span class="bx-ck' + (l.ok ? ' on' : '') + '" role="checkbox" aria-checked="' + !!l.ok + '" aria-label="Confirmed">' + (l.ok ? '✓' : '') + '</span>' : esc(bxCellText(l, c));
-        h += '<td data-bxc="' + ci + '" class="' + cls + '"' + (tip ? ' title="' + esc(tip) + '"' : '') + '><div class="c">' + inner + '</div></td>';
+    list.forEach(function (li) {
+      var l = L[li], added = hi[l.row + '|add'];
+      h += '<tr data-bxl="' + li + '"><td class="chk' + (added ? ' chg' : '') + '"><span class="rn">' + (l.row || '') + '</span></td>';
+      cols.forEach(function (c) {
+        var cg = c.f && hi[l.row + '|' + c.f];
+        var cls = (c.ro || ro ? 'ro' : 'ed') + ' al-' + bxAl(c.k) + (cg ? ' chg' : '') + (c.k === 'total' ? ' b' : '') + (c.k === 'ok' ? ' okc' : '') + (c.k === 'category' ? ' mut' : '');
+        var inner = c.k === 'ok' ? '<span class="bx-ck' + (l.ok ? ' on' : '') + '" role="checkbox" aria-checked="' + !!l.ok + '" aria-label="Confirmed">' + (l.ok ? '✓' : '') + '</span>' : esc(bxShown(l, c.k));
+        h += '<td data-k="' + c.k + '" class="' + cls + '"><div class="c">' + inner + '</div></td>';
       });
       h += '</tr>';
     });
-    h += '</tbody><tfoot><tr><td class="chk"></td><td></td><td></td><td>Total</td><td></td><td></td><td></td><td class="num b"><div class="c">' + bgMoney(total) + '</div></td></tr></tfoot></table></div>';
-    h += bxRO() ? '<div class="bx-under"><span class="bx-tip">Noam has locked the budget for changes. Ask him if you want to change something.</span></div>'
-      : '<div class="bx-under"><button type="button" class="linkbtn bx-add" data-bxadd="1">+ Add a service</button><span class="bx-tip">Click a cell and type to change it · Enter or Tab to save · Esc to cancel · drag a column’s edge to make it wider</span></div>';
-    h += '<datalist id="bx-cats">' + (function () { var s = {}; L.forEach(function (l) { if (l.category) s[l.category] = 1; }); return Object.keys(s).map(function (k) { return '<option value="' + esc(k) + '">'; }).join(''); })() + '</datalist>';
+    h += '</tbody><tfoot><tr><td class="chk"></td>' + cols.map(function (c, i) {
+      if (c.k === 'total') return '<td class="al-r b"><div class="c">' + bgMoney(total) + '</div></td>';
+      return '<td>' + (c.k === 'item' || (i === 1 && !cols.some(function (x) { return x.k === 'item'; })) ? '<div class="c">Total</div>' : '') + '</td>';
+    }).join('') + '</tr></tfoot></table>' +
+      (list.length ? '' : '<div class="empty">' + (fk.length ? 'No lines match these filters.' : 'No lines yet.') + '</div>') +
+      '<div class="selbar" id="bxselbar" hidden></div></div>';
+    h += ro ? '<div class="bx-under"><span class="bx-tip">Noam has locked the budget for changes. Ask him if you want to change something.</span></div>'
+      : '<div class="bx-under"><button type="button" class="linkbtn bx-add" data-bxadd="1">+ Add a service</button><span class="bx-tip">Click a cell and type to change it · right-click for more · Ctrl+Z to undo</span></div>';
+    h += '<datalist id="bx-cats">' + (function () { var o = {}; L.forEach(function (l) { if (l.category) o[l.category] = 1; }); return Object.keys(o).map(function (k) { return '<option value="' + esc(k) + '">'; }).join(''); })() + '</datalist>';
     return h + bxChPanel(admin);
   }
   // Noam: the list of changes (newest first), each with Undo
@@ -4432,7 +4454,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var ch = BX.changes, h = '<aside class="bx-ch" aria-label="Changes"><div class="bx-chh"><b>Changes</b><span class="grow"></span>' +
       '<button type="button" class="linkbtn" data-bxch="seen">Mark all as seen</button><button type="button" class="x" data-bxch="close" aria-label="Close">×</button></div><div class="bx-chl">';
     if (!ch) h += '<p class="mut">Loading…</p>';
-    else if (!ch.length) h += '<p class="mut">No changes yet. When the couple changes something here it shows up in this list, and the cell turns yellow.</p>';
+    else if (!ch.length) h += '<p class="mut">No changes yet. When the couple changes something here it shows up in this list, and the cell is marked.</p>';
     else ch.forEach(function (c) {
       var u = /^undo /.test(c.field), f = u ? c.field.slice(5) : c.field, what;
       if (u) what = 'Undid: ' + (BX_FL[f] || f) + (f === 'add' || f === 'delete' ? '' : ' → ' + bxVal(f, c.new_value));
@@ -4454,99 +4476,329 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     bxCall({ action: 'budgetChanges' }).then(function (r) { if (r.ok) { BX.changes = r.changes || []; bxRedraw(); } });
   }
   function bxSavedTxt(t) { BX.saved = t; var s = $('bx-saved'); if (s) s.textContent = t; }
+  function bxGrid() { return SECT === 'budget' && BG.data && BG.data.format === 'kai' && window.innerWidth >= 760 && BX.tab === 'services'; }
   function bxRedraw() {
     if (SECT !== 'budget' || !BG.data || BG.data.format !== 'kai' || window.innerWidth < 760 || BX.edit) return;
     var w = $('budget').querySelector('.bx-wrap'), sx = w ? w.scrollLeft : 0, sy = window.scrollY;
     bgRender();
     w = $('budget').querySelector('.bx-wrap'); if (w) w.scrollLeft = sx; window.scrollTo(window.scrollX, sy);
+  }
+
+  // ---------- selection (the same model as the guests table: a = where it started, b = the far corner, c = the active cell) ----------
+  function bxR() { return Array.prototype.map.call($('budget').querySelectorAll('#bx tbody tr[data-bxl]'), function (tr) { return Number(tr.dataset.bxl); }); }
+  function bxC() { return Array.prototype.map.call($('budget').querySelectorAll('#bx thead th[data-bxk]'), function (th) { return th.dataset.bxk; }); }
+  function bxIdx(p, R, C) { return p ? { r: R.indexOf(p.li), c: C.indexOf(p.k) } : { r: -1, c: -1 }; }
+  function bxRect(a, b, R, C) {
+    var x = bxIdx(a, R, C), y = bxIdx(b, R, C);
+    if (x.r < 0 || y.r < 0 || x.c < 0 || y.c < 0) return null;
+    return { r0: Math.min(x.r, y.r), r1: Math.max(x.r, y.r), c0: Math.min(x.c, y.c), c1: Math.max(x.c, y.c) };
+  }
+  function bxRects() {
+    var R = bxR(), C = bxC(), out = [];
+    if (BX.a) BX.extra.concat([{ a: BX.a, b: BX.b }]).forEach(function (q) { var r = bxRect(q.a, q.b, R, C); if (r) out.push(r); });
+    return { R: R, C: C, list: out };
+  }
+  function bxCells() {
+    var s = bxRects(), seen = {}, out = [];
+    s.list.forEach(function (q) { for (var r = q.r0; r <= q.r1; r++) for (var c = q.c0; c <= q.c1; c++) { var key = r + ':' + c; if (!seen[key]) { seen[key] = 1; out.push({ li: s.R[r], k: s.C[c], r: r, c: c }); } } });
+    return out;
+  }
+  function bxSelLines() { var seen = {}; return bxCells().filter(function (x) { if (seen[x.li]) return false; seen[x.li] = 1; return true; }).map(function (x) { return x.li; }); }
+  function bxTd(li, k) { return $('budget').querySelector('#bx tr[data-bxl="' + li + '"] td[data-k="' + k + '"]'); }
+  function bxOn() {
+    if (!BX.c || BX.edit || !bxGrid() || !$('bx') || !$('bx').offsetParent) return false;
+    if (!$('menu').hidden || !$('xmenu').hidden || !$('dlg-pay').hidden || !$('bgk-sheet').hidden || (BXF.el && !BXF.el.hidden)) return false;
+    var a = document.activeElement;
+    return !(a && (/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) || a.isContentEditable));
+  }
+  function bxOverlay(cls, q, s) {
+    var a = bxTd(s.R[q.r0], s.C[q.c0]), b = bxTd(s.R[q.r1], s.C[q.c1]); if (!a || !b) return null;
+    var wrap = a.closest('.tablewrap'), w = wrap.getBoundingClientRect(), ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+    var d = document.createElement('div'); d.className = 'gov ' + cls;
+    d.style.left = (ra.left - w.left + wrap.scrollLeft - wrap.clientLeft) + 'px'; d.style.top = (ra.top - w.top + wrap.scrollTop - wrap.clientTop) + 'px';
+    d.style.width = (rb.right - ra.left) + 'px'; d.style.height = (rb.bottom - ra.top) + 'px';
+    wrap.appendChild(d); return d;
+  }
+  function bxPaint() {
+    var tb = $('bx'); if (!tb) return;
+    Array.prototype.forEach.call(tb.querySelectorAll('.sel, .act, .selh'), function (el) { el.classList.remove('sel', 'act', 'selh'); });
+    Array.prototype.forEach.call($('budget').querySelectorAll('.bx-wrap .gov'), function (el) { el.remove(); });
+    var s = bxRects(), cols = {}, rows = {};
+    s.list.forEach(function (q) {
+      for (var r = q.r0; r <= q.r1; r++) { rows[s.R[r]] = 1; for (var c = q.c0; c <= q.c1; c++) { var td = bxTd(s.R[r], s.C[c]); if (td) td.classList.add('sel'); } }
+      for (var c2 = q.c0; c2 <= q.c1; c2++) cols[s.C[c2]] = 1;
+    });
+    Object.keys(cols).forEach(function (k) { var th = tb.querySelector('th[data-bxk="' + k + '"]'); if (th) th.classList.add('selh'); });
+    Object.keys(rows).forEach(function (li) { var td = tb.querySelector('tr[data-bxl="' + li + '"] td.chk'); if (td) td.classList.add('selh'); });
+    var at = BX.c && bxTd(BX.c.li, BX.c.k); if (at) at.classList.add('act');
+    var last = s.list[s.list.length - 1];
+    if (last) { var box = bxOverlay('box', last, s); if (box && !bxRO() && !BX.extra.length) { var h = document.createElement('span'); h.className = 'bfh'; h.title = 'Drag to fill'; box.appendChild(h); } }
+    if (BX.copy) { var cq = bxRect(BX.copy.a, BX.copy.b, s.R, s.C); if (cq) bxOverlay('cp', cq, s); }
+    bxBar();
+  }
+  // The bar under the table: like Excel's status bar.
+  function bxBar() {
+    var bar = $('bxselbar'); if (!bar) return;
+    var L = bxLines(), cells = bxCells();
+    if (cells.length < 2) { bar.hidden = true; return; }
+    var vals = cells.map(function (x) { return bxRaw(L[x.li], x.k); }).filter(function (v) { return v !== '' && v !== 'FALSE'; });
+    var nums = vals.filter(function (v) { return /^-?\d+(\.\d+)?$/.test(v); }).map(Number), html = '';
+    var money = cells.some(function (x) { return x.k === 'unit' || x.k === 'total'; }), fmt = function (n) { n = Math.round(n * 100) / 100; return money ? bgMoney(n) : String(n); };
+    if (nums.length) { var sum = nums.reduce(function (t, n) { return t + n; }, 0); html += '<span>Average: <b>' + fmt(sum / nums.length) + '</b></span>'; }
+    html += '<span>Count: <b>' + vals.length + '</b></span>';
+    if (nums.length) html += '<span>Sum: <b>' + fmt(nums.reduce(function (t, n) { return t + n; }, 0)) + '</b></span>';
+    bar.innerHTML = html; bar.hidden = false;
+  }
+  function bxShow(li, k) {
+    var td = bxTd(li, k); if (!td) return;
+    var wrap = td.closest('.tablewrap'), w = wrap.getBoundingClientRect(), r = td.getBoundingClientRect();
+    if (r.left < w.left + 48) wrap.scrollLeft -= w.left + 48 - r.left; else if (r.right > w.right) wrap.scrollLeft += r.right - w.right;
+    r = td.getBoundingClientRect();
+    if (r.bottom > window.innerHeight - 10 || r.top < 0) td.scrollIntoView({ block: 'nearest' });
+  }
+  function bxGo(r, c, extend, R, C) {
+    r = Math.max(0, Math.min(R.length - 1, r)); c = Math.max(0, Math.min(C.length - 1, c));
+    var p = { li: R[r], k: C[c] };
+    if (extend) BX.b = p; else { BX.extra = []; BX.a = BX.b = BX.c = p; }
+    bxPaint(); bxShow(p.li, p.k);
+  }
+  function bxJump(R, C, r, c, dr, dc) {   // Ctrl+arrow: to the edge of the data, like Excel
+    var L = bxLines(), has = function (r, c) { var v = bxRaw(L[R[r]], C[c]); return !!v && v !== 'FALSE'; }, inb = function (r, c) { return r >= 0 && r < R.length && c >= 0 && c < C.length; };
+    if (!inb(r + dr, c + dc)) return { r: r, c: c };
+    if (has(r, c) && has(r + dr, c + dc)) { while (inb(r + dr, c + dc) && has(r + dr, c + dc)) { r += dr; c += dc; } return { r: r, c: c }; }
+    r += dr; c += dc; while (!has(r, c) && inb(r + dr, c + dc)) { r += dr; c += dc; }
+    return { r: r, c: c };
+  }
+  function bxStep(key, back) {   // Enter / Tab: inside a selected range they go round the range; otherwise down / right
+    var s = bxRects(), R = s.R, C = s.C, cur = bxIdx(BX.c, R, C); if (cur.r < 0 || cur.c < 0) return;
+    if (/^Arrow/.test(key)) { var d = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] }[key]; bxGo(cur.r + d[0], cur.c + d[1], false, R, C); return; }
+    var q = s.list[s.list.length - 1], d1 = back ? -1 : 1, r = cur.r, c = cur.c;
+    if (q && !BX.extra.length && (q.r1 > q.r0 || q.c1 > q.c0)) {
+      if (key === 'Enter') { r += d1; if (r > q.r1) { r = q.r0; c = c + 1 > q.c1 ? q.c0 : c + 1; } else if (r < q.r0) { r = q.r1; c = c - 1 < q.c0 ? q.c1 : c - 1; } }
+      else { c += d1; if (c > q.c1) { c = q.c0; r = r + 1 > q.r1 ? q.r0 : r + 1; } else if (c < q.c0) { c = q.c1; r = r - 1 < q.r0 ? q.r1 : r - 1; } }
+      BX.c = { li: R[r], k: C[c] }; bxPaint(); bxShow(BX.c.li, BX.c.k); return;
+    }
+    if (key === 'Enter') bxGo(r + d1, c, false, R, C); else bxGo(r, c + d1, false, R, C);
+  }
+  function bxSelectCols(k, shift, ctrl) {
+    var R = bxR(); if (!R.length) return;
+    if (shift && BX.a) { BX.a = { li: R[0], k: BX.a.k }; BX.b = { li: R[R.length - 1], k: k }; }
+    else { if (ctrl && BX.a) BX.extra.push({ a: BX.a, b: BX.b }); else BX.extra = []; BX.a = BX.c = { li: R[0], k: k }; BX.b = { li: R[R.length - 1], k: k }; }
     bxPaint();
   }
-  function bxTd(li, ci) { return $('budget').querySelector('tr[data-bxl="' + li + '"] td[data-bxc="' + ci + '"]'); }
-  function bxPaint() {
-    Array.prototype.forEach.call($('budget').querySelectorAll('#bx .act, #bx .selh'), function (el) { el.classList.remove('act', 'selh'); });
-    if (!BX.sel) return;
-    var td = bxTd(BX.sel.li, BX.sel.ci); if (!td) { BX.sel = null; return; }
-    td.classList.add('act');
-    var th = $('budget').querySelector('#bx thead th[data-bxk="' + BX_COLS[BX.sel.ci].k + '"]'); if (th) th.classList.add('selh');
-    var rn = td.parentNode.querySelector('td.chk'); if (rn) rn.classList.add('selh');
+  function bxSelectAll() {
+    var R = bxR(), C = bxC(); if (!R.length) return;
+    BX.extra = []; BX.a = BX.c = { li: R[0], k: C[0] }; BX.b = { li: R[R.length - 1], k: C[C.length - 1] }; bxPaint();
   }
-  function bxSelect(li, ci, scroll) {
-    BX.sel = { li: li, ci: ci }; bxPaint();
-    var td = bxTd(li, ci); if (td && scroll) td.scrollIntoView({ block: 'nearest', inline: 'nearest' });
-  }
-  function bxMove(dr, dc) {
-    if (!BX.sel) return; var o = bxOrder(), r = o.indexOf(BX.sel.li), c = BX.sel.ci;
-    c = Math.max(0, Math.min(BX_COLS.length - 1, c + dc)); r = Math.max(0, Math.min(o.length - 1, r + dr));
-    if (o.length) bxSelect(o[r], c, true);
-  }
-  function bxStartEdit(li, ci, first) {
-    var c = BX_COLS[ci], l = bxLines()[li]; if (!c || c.ro || !l) return;
-    if (bxRO()) { toast('Noam has locked the budget for changes.'); return; }
-    if (c.k === 'ok') { bxCommit(li, ci, !l.ok); return; }
-    var td = bxTd(li, ci); if (!td) return;
-    BX.edit = { li: li, ci: ci };
-    var v = first != null ? first : c.num ? (bgNum(l[c.k]) ? String(bgNum(l[c.k])) : '') : String(l[c.k] || '');
-    td.innerHTML = '<input class="cell" ' + (c.num ? 'inputmode="decimal" ' : '') + (c.k === 'category' ? 'list="bx-cats" ' : '') + 'aria-label="' + esc(c.t) + '">';
-    var inp = td.firstChild; inp.value = v; inp.focus(); if (first == null) inp.select(); else inp.setSelectionRange(v.length, v.length);
-    var done = false;
-    function end(save, dr, dc) {
-      if (done) return; done = true; BX.edit = null;
-      var val = inp.value;
-      if (save) bxCommit(li, ci, val); else if (l._new && !l.item) bxDropNew(l); else bxRedraw();
-      if (dr || dc) bxMove(dr, dc);
+
+  // ---------- writing cells: one value per cell, cleaned like the editor does; many cells = one step in Undo ----------
+  function bxFix(k, v) {
+    var c = bxCol(k); if (!c || c.ro) return { err: 'skip' };
+    if (k === 'ok') return { v: typeof v === 'boolean' ? v : /^(true|yes|y|1|✓|v|x|confirmed|כן)$/i.test(String(v).trim()) };
+    v = String(v == null ? '' : v).replace(/\r/g, '').trim();
+    if (c.num) {
+      var n = v.replace(/[€₪$\s,]/g, '');
+      if (n === '') return { v: '' };
+      if (!/^-?\d*\.?\d+$/.test(n)) return { err: '“' + v + '” isn’t a number (' + c.t + ').' };
+      return { v: String(parseFloat(n)) };
     }
-    inp.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') { e.preventDefault(); end(true, e.shiftKey ? -1 : 1, 0); }
-      else if (e.key === 'Tab') { e.preventDefault(); end(true, 0, e.shiftKey ? -1 : 1); }
-      else if (e.key === 'Escape') { e.preventDefault(); end(false); }
+    if (k === 'item' && !v) return { err: 'A service needs a name. To remove a line, right-click it and choose Delete.' };
+    return { v: v };
+  }
+  function bxSet(l, k, v) {
+    var c = bxCol(k);
+    if (k === 'ok') l.ok = !!v;
+    else if (c.num) { l[k] = v === '' ? 0 : +v; l.total = Math.round(bgNum(l.unit) * bgNum(l.qty) * 100) / 100; }
+    else l[k] = v;
+  }
+  function bxTotals() { var t = 0; bxLines().forEach(function (l) { t += bgNum(l.total); }); BG.data.total = Math.round(t * 100) / 100; }
+  // items: { li or row, k, v }
+  function bxApply(items, quiet) {
+    if (bxRO()) { toast(BX_LOCKED, null, null, true); return; }
+    var L = bxLines(), want = {}, order = [], undo = [], errs = [], n = 0;
+    items.forEach(function (it) {
+      var li = it.li != null ? it.li : bxLiOfRow(it.row); if (li < 0 || !L[li]) return;
+      var key = li + '|' + it.k; if (!(key in want)) order.push(key); want[key] = { li: li, k: it.k, v: it.v };
+    });
+    order.forEach(function (key) {
+      var it = want[key], l = L[it.li], c = bxCol(it.k);
+      var fx = bxFix(it.k, it.v); if (fx.err) { if (fx.err !== 'skip') errs.push(fx.err); return; }
+      if (l._new && it.k !== 'item') { errs.push('First give the new service a name.'); return; }
+      var old = bxRaw(l, it.k), nw = it.k === 'ok' ? (fx.v ? 'TRUE' : 'FALSE') : fx.v;
+      if (old === nw) return;
+      if (l._chk == null) l._chk = l.item || '';
+      if (l._new) { delete l._new; l._pending = true; bxSet(l, 'item', fx.v); BX.q.push({ l: l, op: 'add', value: fx.v }); l._chk = fx.v; n++; return; }
+      if (l.row) undo.push({ row: l.row, k: it.k, old: old, nw: nw });
+      bxSet(l, it.k, fx.v);
+      BX.q.push({ l: l, field: c.f, value: it.k === 'ok' ? fx.v : fx.v, check: l._chk });
+      if (it.k === 'item') l._chk = fx.v;
+      n++;
+    });
+    if (errs.length) toast(errs[0] + (errs.length > 1 ? ' (' + errs.length + ' cells skipped)' : ''), null, null, true);
+    if (!n) { bxRedraw(); return; }
+    if (!quiet && undo.length) { BX.undo.push(undo); if (BX.undo.length > 100) BX.undo.shift(); BX.redo = []; }
+    bxTotals(); bxRedraw(); bxRun();
+  }
+  function bxClear() { bxApply(bxCells().filter(function (x) { return x.k !== 'item'; }).map(function (x) { return { li: x.li, k: x.k, v: x.k === 'ok' ? false : '' }; })); }
+  function bxUndo(redo) {
+    var rec = (redo ? BX.redo : BX.undo).pop(); if (!rec) return;
+    (redo ? BX.undo : BX.redo).push(rec);
+    bxApply(rec.map(function (x) { return { row: x.row, k: x.k, v: redo ? x.nw : x.old }; }), true);
+  }
+  function bxFill(dir) {   // Ctrl+D / Ctrl+R
+    var s = bxRects(), R = s.R, C = s.C, L = bxLines(), items = [];
+    s.list.forEach(function (q) {
+      if (dir === 'd') { var sr = q.r0 === q.r1 ? q.r0 - 1 : q.r0; if (sr < 0) return; for (var c = q.c0; c <= q.c1; c++) for (var r = q.r0; r <= q.r1; r++) if (r !== sr) items.push({ li: R[r], k: C[c], v: bxRaw(L[R[sr]], C[c]) }); }
+      else { var sc = q.c0 === q.c1 ? q.c0 - 1 : q.c0; if (sc < 0) return; for (var r2 = q.r0; r2 <= q.r1; r2++) for (var c2 = q.c0; c2 <= q.c1; c2++) if (c2 !== sc) items.push({ li: R[r2], k: C[c2], v: bxRaw(L[R[r2]], C[sc]) }); }
+    });
+    bxApply(items);
+  }
+  function bxFillVal(src, n) { var t = /^(.*\D)(\d+)$/.exec(src); return t ? t[1] + Math.max(0, Number(t[2]) + n) : src; }
+  function bxFillDrag(e) {
+    e.preventDefault(); e.stopPropagation();
+    var s = bxRects(), q = s.list[s.list.length - 1], R = s.R, C = s.C, L = bxLines(), tgt = null, prev = null; if (!q) return;
+    function move(ev) {
+      var el = document.elementFromPoint(ev.clientX, ev.clientY), tr = el && el.closest('#bx tbody tr[data-bxl]'), td = el && el.closest('td[data-k]'); if (!tr || !td) return;
+      var r = R.indexOf(Number(tr.dataset.bxl)), c = C.indexOf(td.dataset.k); if (r < 0 || c < 0) return;
+      var dr = r > q.r1 ? r - q.r1 : r < q.r0 ? r - q.r0 : 0, dc = c > q.c1 ? c - q.c1 : c < q.c0 ? c - q.c0 : 0;
+      tgt = Math.abs(dr) >= Math.abs(dc) ? (dr ? { r0: Math.min(q.r0, r), r1: Math.max(q.r1, r), c0: q.c0, c1: q.c1, v: 1 } : null) : { r0: q.r0, r1: q.r1, c0: Math.min(q.c0, c), c1: Math.max(q.c1, c), v: 0 };
+      if (prev) prev.remove(); prev = tgt ? bxOverlay('fillp', tgt, s) : null;
+    }
+    function up() {
+      document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); if (prev) prev.remove();
+      if (!tgt) return;
+      var items = [], val = function (r, c) { return bxRaw(L[R[r]], C[c]); }, h = q.r1 - q.r0 + 1, w = q.c1 - q.c0 + 1, r, c;
+      if (tgt.v) for (c = q.c0; c <= q.c1; c++) for (r = tgt.r0; r <= tgt.r1; r++) { if (r >= q.r0 && r <= q.r1) continue; var off = r > q.r1 ? r - q.r1 : r - q.r0; items.push({ li: R[r], k: C[c], v: h === 1 ? bxFillVal(val(q.r0, c), off) : val(q.r0 + (((r - q.r0) % h) + h) % h, c) }); }
+      else for (r = q.r0; r <= q.r1; r++) for (c = tgt.c0; c <= tgt.c1; c++) { if (c >= q.c0 && c <= q.c1) continue; var off2 = c > q.c1 ? c - q.c1 : c - q.c0; items.push({ li: R[r], k: C[c], v: w === 1 ? bxFillVal(val(r, q.c0), off2) : val(r, q.c0 + (((c - q.c0) % w) + w) % w) }); }
+      BX.a = { li: R[tgt.r0], k: C[tgt.c0] }; BX.b = { li: R[tgt.r1], k: C[tgt.c1] };
+      bxApply(items);
+    }
+    document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
+  }
+  // Copy / cut / paste: tab-separated text, so it goes to and from Excel and Google Sheets.
+  function bxTSV(q, s) {
+    var L = bxLines(), out = [];
+    for (var r = q.r0; r <= q.r1; r++) { var row = []; for (var c = q.c0; c <= q.c1; c++) { var v = bxRaw(L[s.R[r]], s.C[c]); row.push(/[\t\n"]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v); } out.push(row.join('\t')); }
+    return out.join('\r\n');
+  }
+  function bxCopy(e, cut) {
+    if (!bxOn()) return;
+    var s = bxRects(), q = s.list[s.list.length - 1]; if (!q) return;
+    if (BX.extra.length) { toast('This can’t be done with several separate selections.', null, null, true); e.preventDefault(); return; }
+    var t = bxTSV(q, s); e.preventDefault(); e.clipboardData.setData('text/plain', t);
+    BX.copy = { a: { li: s.R[q.r0], k: s.C[q.c0] }, b: { li: s.R[q.r1], k: s.C[q.c1] }, cut: (cut || BX.menuCut) && !bxRO(), text: t };
+    bxPaint();
+  }
+  document.addEventListener('copy', function (e) { bxCopy(e, false); });
+  document.addEventListener('cut', function (e) { bxCopy(e, true); });
+  document.addEventListener('paste', function (e) { if (!bxOn()) return; e.preventDefault(); bxPaste(e.clipboardData.getData('text/plain')); });
+  function bxPaste(text) {
+    if (!BX.c) return;
+    if (bxRO()) { toast(BX_LOCKED, null, null, true); return; }
+    var data = parseTSV(text), s = bxRects(), R = s.R, C = s.C, q = s.list[s.list.length - 1]; if (!q || !data.length) return;
+    var h = data.length, w = Math.max.apply(null, data.map(function (r) { return r.length; })), items = [], over = 0;
+    if (h === 1 && w === 1) bxCells().forEach(function (x) { items.push({ li: x.li, k: x.k, v: data[0][0] }); });   // one value into the whole selection
+    else {
+      var sh = q.r1 - q.r0 + 1, sw = q.c1 - q.c0 + 1, th = sh % h === 0 && sw % w === 0 ? sh : h, tw = sh % h === 0 && sw % w === 0 ? sw : w;
+      for (var r = 0; r < th; r++) { if (q.r0 + r >= R.length) { over++; continue; } for (var c = 0; c < tw; c++) if (q.c0 + c < C.length) items.push({ li: R[q.r0 + r], k: C[q.c0 + c], v: data[r % h][c % w] == null ? '' : data[r % h][c % w] }); }
+      BX.extra = []; BX.a = { li: R[q.r0], k: C[q.c0] }; BX.b = { li: R[Math.min(q.r0 + th - 1, R.length - 1)], k: C[Math.min(q.c0 + tw - 1, C.length - 1)] }; BX.c = BX.a;
+    }
+    var src = BX.copy && BX.copy.cut && BX.copy.text.replace(/\r/g, '') === String(text).replace(/\r/g, '') ? BX.copy : null;
+    if (src) { var cq = bxRect(src.a, src.b, R, C); if (cq) for (var r2 = cq.r0; r2 <= cq.r1; r2++) for (var c2 = cq.c0; c2 <= cq.c1; c2++) if (C[c2] !== 'item') items.unshift({ li: R[r2], k: C[c2], v: C[c2] === 'ok' ? false : '' }); }
+    BX.copy = null;
+    if (over) toast(over + (over === 1 ? ' row didn’t' : ' rows didn’t') + ' fit below the last line. Add lines first.', null, null, true);
+    bxApply(items);
+  }
+
+  // ---------- editing a cell (the same as the guests table) ----------
+  function bxStartEdit(td, opts) {
+    opts = opts || {};
+    if (BX.edit || !td) return;
+    var li = Number(td.parentNode.dataset.bxl), k = td.dataset.k, c = bxCol(k), l = bxLines()[li];
+    if (!c || !l) return;
+    if (bxRO()) { toast(BX_LOCKED); return; }
+    if (c.ro) return;
+    if (k === 'ok') { bxApply([{ li: li, k: 'ok', v: !l.ok }]); return; }
+    BX.edit = { li: li, k: k };
+    var box = td.querySelector('.c'), el = document.createElement('input');
+    el.className = 'cell'; el.value = opts.text != null ? opts.text : bxRaw(l, k);
+    if (c.num) el.inputMode = 'decimal';
+    if (k === 'category') el.setAttribute('list', 'bx-cats');
+    el.setAttribute('aria-label', c.label || c.t);
+    box.innerHTML = ''; box.appendChild(el); el.focus();
+    if (opts.text != null || opts.end) { try { el.setSelectionRange(el.value.length, el.value.length); } catch (x) {} } else el.select();
+    // Started by typing: the arrow keys save and move, like Excel. Started with F2 / double-click: they move inside the text.
+    var done = false, typed = opts.text != null;
+    function finish(save, mv) {
+      if (done) return; done = true; BX.edit = null;
+      var v = el.value;
+      if (save && mv === 'all') bxApply(bxCells().map(function (x) { return { li: x.li, k: x.k, v: v }; }));
+      else if (save) { if (l._new && !String(v).trim()) bxDropNew(l); else bxApply([{ li: li, k: k, v: v }]); }
+      else if (l._new && !l.item) bxDropNew(l); else bxRedraw();
+      if (mv && mv !== 'all') bxStep(mv.key, mv.back);
+    }
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); finish(true, 'all'); }
+      else if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); finish(true, { key: e.key, back: e.shiftKey }); }
+      else if (e.key === 'Escape') { e.preventDefault(); finish(false); }
+      else if (typed && /^Arrow/.test(e.key)) { e.preventDefault(); finish(true, { key: e.key }); }
       e.stopPropagation();
     });
-    inp.addEventListener('blur', function () { end(true); });
+    el.addEventListener('blur', function () { finish(true); });
   }
-  function bxDropNew(l) { var L = bxLines(), i = L.indexOf(l); if (i >= 0) L.splice(i, 1); BX.sel = null; bxRedraw(); }
-  function bxTotals() {
-    var t = 0; bxLines().forEach(function (l) { t += bgNum(l.total); }); BG.data.total = Math.round(t * 100) / 100;
+  function bxDropNew(l) { var L = bxLines(), i = L.indexOf(l); if (i >= 0) L.splice(i, 1); BX.a = BX.b = BX.c = null; BX.extra = []; bxRedraw(); }
+  function bxAdd() {
+    if (bxRO()) { toast(BX_LOCKED, null, null, true); return; }
+    var L = bxLines(), l = { item: '', category: '', vendor: '', unit: 0, qty: 0, total: 0, ok: false, row: 0, _new: true };
+    L.push(l); BX.filters = {}; bxRedraw();
+    var li = L.length - 1; BX.extra = []; BX.a = BX.b = BX.c = { li: li, k: 'item' }; bxPaint(); bxShow(li, 'item');
+    bxStartEdit(bxTd(li, 'item'));
   }
-  function bxCommit(li, ci, raw) {
-    var c = BX_COLS[ci], l = bxLines()[li]; if (!c || !l) return;
-    if (bxRO()) { toast('Noam has locked the budget for changes.'); bxRedraw(); return; }
-    var val = raw, old = l[c.k];
-    if (c.num) {
-      var s = String(raw).replace(/[€\s,]/g, '');
-      if (s !== '' && !isFinite(parseFloat(s))) { toast('Type a number.', null, null, true); bxRedraw(); return; }
-      val = s === '' ? '' : String(parseFloat(s));
-      if ((val === '' ? 0 : +val) === bgNum(old) && (val !== '' || !bgNum(old))) { bxRedraw(); return; }
-    } else if (c.k !== 'ok') {
-      val = String(raw).trim();
-      if (val === String(old || '')) { if (l._new && !val) bxDropNew(l); else bxRedraw(); return; }
-      if (c.k === 'item' && !val) { toast('A service needs a name. To remove the line, use × next to its number.', null, null, true); bxRedraw(); return; }
-    }
-    var check = l.item || '';
-    if (l._new && c.k === 'item') {
-      delete l._new; l.item = val; l._pending = true;
-      BX.q.push({ l: l, op: 'add', value: val });
-    } else {
-      if (l._new) { toast('First give the service a name.', null, null, true); bxRedraw(); return; }
-      l[c.k] = c.num ? (val === '' ? 0 : +val) : val;
-      if (c.num) l.total = Math.round(bgNum(l.unit) * bgNum(l.qty) * 100) / 100;
-      BX.q.push({ l: l, field: c.f, value: c.k === 'ok' ? !!val : val, check: check });
-    }
+  // delete whole lines (with Undo, like the guests table)
+  function bxDel(lis) {
+    if (bxRO()) { toast(BX_LOCKED, null, null, true); return; }
+    var L = bxLines(), gone = lis.map(function (li) { return L[li]; }).filter(Boolean);
+    if (!gone.length) return;
+    gone.forEach(function (l) {
+      L.splice(L.indexOf(l), 1);
+      if (l._new) return;
+      if (l._chk == null) l._chk = l.item || '';
+      BX.q.push({ l: l, op: 'delete', check: l._chk });
+    });
+    BX.a = BX.b = BX.c = null; BX.extra = []; bxTotals(); bxRedraw(); bxRun();
+    var name = gone.length === 1 ? '“' + (gone[0].item || 'line') + '”' : gone.length + ' lines';
+    toast('Deleted ' + name, 'Undo', function () { bxRestore(gone); });
+  }
+  function bxRestore(gone) {
+    var L = bxLines();
+    gone.forEach(function (o) {
+      if (!o.item) return;
+      var l = { item: o.item, category: '', vendor: '', unit: 0, qty: 0, total: 0, ok: false, row: 0, _pending: true, _chk: o.item };
+      L.push(l); BX.q.push({ l: l, op: 'add', value: o.item });
+      [['category', o.category], ['vendor', o.vendor], ['unit', o.unit], ['qty', o.qty], ['ok', o.ok]].forEach(function (p) {
+        if (!p[1]) return; bxSet(l, p[0], p[1]);
+        BX.q.push({ l: l, field: bxCol(p[0]).f, value: p[0] === 'ok' ? true : p[1], check: o.item });
+      });
+    });
     bxTotals(); bxRedraw(); bxRun();
   }
   function bxRun() {
     if (BX.busy || !BX.q.length) return;
     var j = BX.q[0]; BX.busy = true; BG.saving = true; bxSavedTxt('Saving…');
+    if (j.op !== 'add' && !j.l.row) { BX.q.shift(); BX.busy = false; bxRun(); return; }   // a line that never reached the sheet
     var body = j.op === 'add' ? { action: 'budgetEdit', op: 'add', value: j.value } : { action: 'budgetEdit', op: j.op || '', row: j.l.row, field: j.field, value: j.value, check: j.check };
     bxCall(body).then(function (res) {
       BX.q.shift(); BX.busy = false;
       if (!res.ok) {
         BX.q = []; BG.saving = false; bxSavedTxt('');
         toast(res.error || 'Couldn’t save that change. Try again.', null, null, true);
+        bxLines().forEach(function (l) { delete l._chk; });
         load(true); return;
       }
       if (j.op === 'add') { j.l.row = res.row; delete j.l._pending; }
       if (BX.q.length) { bxRun(); return; }
       BG.saving = false; bxSavedTxt('✓ Saved in the sheet');
+      bxLines().forEach(function (l) { delete l._chk; });
       if (S.admin) bxChanges();
       load(true);
     }, function () {
@@ -4554,55 +4806,271 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       toast('Couldn’t save – check your connection. The page will reload the budget.', null, null, true); load(true);
     });
   }
-  // clicks, double-clicks, resizing and keys on the spreadsheet
+
+  // ---------- mouse: click selects, drag selects a range, Shift extends, Ctrl adds; the row number selects the line ----------
   $('budget').addEventListener('mousedown', function (e) {
+    if (e.button !== 0 || !bxGrid()) return;
     var rz = e.target.closest('[data-bz]');
-    if (rz) {
+    if (rz) {   // resize a column
       e.preventDefault(); e.stopPropagation();
       var th = rz.parentNode, k = rz.dataset.bz, x0 = e.clientX, w0 = th.offsetWidth, tb = $('bx'), t0 = tb.offsetWidth;
       rz.classList.add('on'); BX.resizing = true;
-      var move = function (ev) { var w = Math.max(40, Math.round(w0 + ev.clientX - x0)); th.style.width = w + 'px'; tb.style.width = (t0 + w - w0) + 'px'; BX.widths[k] = w; };
-      var up = function () {
-        document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); rz.classList.remove('on');
-        setTimeout(function () { BX.resizing = false; }, 0);
-        try { localStorage.setItem('kai-budget-widths', JSON.stringify(BX.widths)); } catch (x) {}
-      };
-      document.addEventListener('mousemove', move); document.addEventListener('mouseup', up); return;
+      var mv = function (ev) { var w = Math.max(40, Math.round(w0 + ev.clientX - x0)); th.style.width = w + 'px'; tb.style.width = (t0 + w - w0) + 'px'; BX.widths[k] = w; };
+      var upr = function () { document.removeEventListener('mousemove', mv); document.removeEventListener('mouseup', upr); rz.classList.remove('on'); setTimeout(function () { BX.resizing = false; }, 0); bxStore('kai-budget-widths', BX.widths); bxPaint(); };
+      document.addEventListener('mousemove', mv); document.addEventListener('mouseup', upr); return;
     }
-    var td = e.target.closest('#bx tbody td[data-bxc]'); if (!td || e.target.closest('input')) return;
-    var li = +td.parentNode.dataset.bxl, ci = +td.dataset.bxc;
-    if (e.target.closest('.bx-ck')) { e.preventDefault(); bxSelect(li, ci); bxStartEdit(li, ci); return; }
-    e.preventDefault(); if (document.activeElement && document.activeElement.blur && $('budget').contains(document.activeElement)) document.activeElement.blur();
-    bxSelect(li, ci);
+    if (e.target.classList.contains('bfh')) { bxFillDrag(e); return; }
+    var hth = e.target.closest('#bx thead th[data-bxk]');
+    if (hth && !e.target.closest('[data-bxf]')) { bxColDrag(e, hth); return; }
+    var tr = e.target.closest('#bx tbody tr[data-bxl]'); if (!tr || e.target.closest('.cell')) return;
+    var rn = e.target.closest('td.chk'), td = e.target.closest('td[data-k]'); if (!rn && !td) return;
+    e.preventDefault();
+    var ae = document.activeElement; if (ae && /^(INPUT|SELECT|TEXTAREA)$/.test(ae.tagName) && ae.blur) ae.blur();
+    var C = bxC(), li = Number(tr.dataset.bxl), rowMode = !!rn, hit = { li: li, k: rn ? C[0] : td.dataset.k }, end = rn ? { li: li, k: C[C.length - 1] } : hit;
+    if (td && e.target.closest('.bx-ck') && !e.shiftKey && !e.ctrlKey && !e.metaKey) { BX.extra = []; BX.a = BX.b = BX.c = hit; bxPaint(); bxStartEdit(td); return; }
+    if (e.shiftKey && BX.a) { if (rowMode) BX.a = { li: BX.a.li, k: C[0] }; BX.b = end; }
+    else { if ((e.ctrlKey || e.metaKey) && BX.a) BX.extra.push({ a: BX.a, b: BX.b }); else BX.extra = []; BX.a = BX.c = hit; BX.b = end; }
+    bxPaint();
+    function move(ev) {
+      var el = document.elementFromPoint(ev.clientX, ev.clientY), t2 = el && el.closest('#bx tbody tr[data-bxl]'); if (!t2) return;
+      var td2 = el.closest('td[data-k]'), l2 = Number(t2.dataset.bxl), nb = rowMode ? { li: l2, k: C[C.length - 1] } : td2 ? { li: l2, k: td2.dataset.k } : null;
+      if (!nb || (BX.b.li === nb.li && BX.b.k === nb.k)) return;
+      BX.b = nb; bxPaint();
+    }
+    function up() { document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); }
+    document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
   });
   $('budget').addEventListener('dblclick', function (e) {
     var rz = e.target.closest('[data-bz]');
-    if (rz) { delete BX.widths[rz.dataset.bz]; try { localStorage.setItem('kai-budget-widths', JSON.stringify(BX.widths)); } catch (x) {} bxRedraw(); return; }
-    var td = e.target.closest('#bx tbody td[data-bxc]'); if (!td || BX.edit || e.target.closest('.bx-ck')) return;
-    bxStartEdit(+td.parentNode.dataset.bxl, +td.dataset.bxc);
+    if (rz) { delete BX.widths[rz.dataset.bz]; bxStore('kai-budget-widths', BX.widths); bxRedraw(); return; }
+    var td = e.target.closest('#bx tbody td.ed'); if (!td || td.querySelector('.cell') || e.target.closest('.bx-ck')) return;
+    bxStartEdit(td, { end: true });
   });
-  $('budget').addEventListener('click', function (e) {
-    var b = e.target.closest('[data-bxt], [data-bxs], [data-bxadd], [data-bxdel], [data-bxch], [data-bxundo], [data-bxlock]'); if (!b || BX.resizing) return;
-    if (b.dataset.bxt) { BX.tab = b.dataset.bxt; BX.sel = null; bxRedraw(); return; }
-    if (b.dataset.bxs) {
-      var k = b.dataset.bxs, s = BX.sort;
-      BX.sort = !s || s.k !== k ? { k: k, d: 'asc' } : s.d === 'asc' ? { k: k, d: 'desc' } : null; bxRedraw(); return;
+  // move a column: drag its header left or right (remembered on this computer)
+  function bxColDrag(e, th) {
+    var x0 = e.clientX, y0 = e.clientY, k = th.dataset.bxk, on = false, ghost = null, line = null, drop = null, wrap = th.closest('.tablewrap'), scrollT = null;
+    function targets() { return Array.prototype.slice.call($('bx').querySelectorAll('thead th[data-bxk]')); }
+    function place(cx) {
+      var ths = targets(), wr = wrap.getBoundingClientRect(), i;
+      for (i = 0; i < ths.length; i++) { var r = ths[i].getBoundingClientRect(); if (cx < r.left + r.width / 2) break; }
+      drop = i;
+      var edge = i < ths.length ? ths[i].getBoundingClientRect().left : ths[ths.length - 1].getBoundingClientRect().right;
+      line.style.left = (edge - wr.left + wrap.scrollLeft) + 'px';
     }
-    if (b.dataset.bxadd) {
-      var L = bxLines(), l = { item: '', category: '', vendor: '', unit: 0, qty: 0, total: 0, ok: false, row: 0, _new: true };
-      L.push(l); BX.sort = null; bxRedraw();
-      var li = L.length - 1; bxSelect(li, 2, true); bxStartEdit(li, 2); return;
-    }
-    if (b.dataset.bxdel) {
-      var tr = b.closest('tr[data-bxl]'), ln = tr && bxLines()[+tr.dataset.bxl];
-      if (b.dataset.bxdel === 'ask') { if (ln && ln._new) { bxDropNew(ln); return; } BX.del = ln; BX.sel = null; bxRedraw(); return; }
-      var dl = BX.del; BX.del = null;
-      if (b.dataset.bxdel === 'yes' && dl) {
-        var L2 = bxLines(); L2.splice(L2.indexOf(dl), 1); bxTotals();
-        BX.q.push({ l: dl, op: 'delete', check: dl.item || '' }); bxRun();
+    function move(ev) {
+      if (!on) {
+        if (Math.abs(ev.clientX - x0) < 6 || Math.abs(ev.clientX - x0) < Math.abs(ev.clientY - y0)) return;
+        on = true; BX.resizing = true; th.classList.add('colmoving');
+        ghost = document.createElement('div'); ghost.className = 'colghost'; ghost.textContent = bxCol(k).label || bxCol(k).t; document.body.appendChild(ghost);
+        line = document.createElement('div'); line.className = 'coldrop'; wrap.appendChild(line);
       }
-      bxRedraw(); return;
+      ev.preventDefault();
+      ghost.style.left = (ev.clientX + 12) + 'px'; ghost.style.top = (ev.clientY + 10) + 'px';
+      place(ev.clientX);
+      clearInterval(scrollT); var wr = wrap.getBoundingClientRect(), dir = ev.clientX < wr.left + 40 ? -1 : ev.clientX > wr.right - 40 ? 1 : 0;
+      if (dir) scrollT = setInterval(function () { wrap.scrollLeft += dir * 18; place(ev.clientX); }, 30);
     }
+    function up() {
+      document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); clearInterval(scrollT);
+      if (!on) return;
+      th.classList.remove('colmoving'); ghost.remove(); line.remove(); setTimeout(function () { BX.resizing = false; }, 0);
+      var keys = targets().map(function (t) { return t.dataset.bxk; }), from = keys.indexOf(k);
+      if (drop === null || drop === from || drop === from + 1) return;
+      keys.splice(drop > from ? drop - 1 : drop, 0, keys.splice(from, 1)[0]);
+      BX.order = keys; bxStore('kai-budget-cols', keys); bxRedraw();
+    }
+    document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
+  }
+
+  // ---------- keyboard, like Excel (and the guests table) ----------
+  document.addEventListener('keydown', function (e) {
+    if (!bxOn()) return;
+    var ctrl = e.ctrlKey || e.metaKey, k = e.key, s = bxRects(), R = s.R, C = s.C; if (!R.length) return;
+    var cur = bxIdx(BX.c, R, C); if (cur.r < 0 || cur.c < 0) return;
+    var far = bxIdx(BX.b, R, C); if (far.r < 0) far = cur;
+    var arrow = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] }[k];
+    var td = bxTd(BX.c.li, BX.c.k), edit = td && td.classList.contains('ed'), isOk = BX.c.k === 'ok';
+    var stop = function () { e.preventDefault(); e.stopPropagation(); };
+    if (arrow) { stop(); var base = e.shiftKey ? far : cur, t = ctrl ? bxJump(R, C, base.r, base.c, arrow[0], arrow[1]) : { r: base.r + arrow[0], c: base.c + arrow[1] }; bxGo(t.r, t.c, e.shiftKey, R, C); return; }
+    if (k === 'Home') { stop(); bxGo(ctrl ? 0 : (e.shiftKey ? far : cur).r, 0, e.shiftKey, R, C); return; }
+    if (k === 'End') { stop(); bxGo(ctrl ? R.length - 1 : (e.shiftKey ? far : cur).r, C.length - 1, e.shiftKey, R, C); return; }
+    if (k === 'PageDown' || k === 'PageUp') { stop(); var per = Math.max(1, Math.floor(window.innerHeight / ((td && td.offsetHeight) || 30)) - 4); bxGo((e.shiftKey ? far : cur).r + (k === 'PageDown' ? per : -per), (e.shiftKey ? far : cur).c, e.shiftKey, R, C); return; }
+    if (k === 'Enter' || k === 'Tab') { stop(); bxStep(k, e.shiftKey); return; }
+    if (k === 'F2') { stop(); if (edit) bxStartEdit(td, { end: true }); else if (bxRO()) toast(BX_LOCKED); return; }
+    if (k === 'Delete') { stop(); bxClear(); return; }
+    if (k === 'Backspace') { stop(); if (edit && !isOk) bxStartEdit(td, { text: '' }); else if (edit) bxClear(); return; }
+    if (k === 'Escape') { if (BX.copy) { BX.copy = null; bxPaint(); } return; }
+    if (ctrl && !e.altKey) {
+      var lk = k.toLowerCase();
+      if (lk === 'z' && !e.shiftKey) { stop(); bxUndo(false); return; }
+      if (lk === 'y' || (lk === 'z' && e.shiftKey)) { stop(); bxUndo(true); return; }
+      if (lk === 'd') { stop(); bxFill('d'); return; }
+      if (lk === 'r') { stop(); bxFill('r'); return; }
+      if (lk === 'a') { stop(); bxSelectAll(); return; }
+      if (k === ' ' || e.code === 'Space') { stop(); var q0 = s.list[s.list.length - 1]; BX.extra = []; BX.a = { li: R[0], k: C[q0 ? q0.c0 : cur.c] }; BX.b = { li: R[R.length - 1], k: C[q0 ? q0.c1 : cur.c] }; bxPaint(); return; }
+      if (k === '+' || (k === '=' && e.shiftKey)) { stop(); bxAdd(); return; }
+      if (k === '-') { stop(); bxDel(bxSelLines()); return; }
+      return;   // Ctrl+C / X / V come as copy / cut / paste events
+    }
+    if (e.shiftKey && (k === ' ' || e.code === 'Space') && !e.altKey) { stop(); var q1 = s.list[s.list.length - 1]; BX.extra = []; BX.a = { li: R[q1 ? q1.r0 : cur.r], k: C[0] }; BX.b = { li: R[q1 ? q1.r1 : cur.r], k: C[C.length - 1] }; bxPaint(); return; }
+    if ((k === ' ' || e.code === 'Space') && isOk) { stop(); if (edit) bxStartEdit(td); else if (bxRO()) toast(BX_LOCKED); return; }
+    if (k.length === 1 && !e.altKey && !isOk) { stop(); if (edit) bxStartEdit(td, { text: k }); else if (bxRO()) toast(BX_LOCKED); }
+  }, true);
+
+  // ---------- right-click menus ----------
+  $('budget').addEventListener('contextmenu', function (e) {
+    if (!bxGrid()) return;
+    var th = e.target.closest('#bx thead th[data-bxk]');
+    if (th) {   // a column header: how its cells line up
+      e.preventDefault();
+      var k = th.dataset.bxk, c = bxCol(k), cur = BX.align[k] || '';
+      var m = openX('<div class="mh">' + esc(c.label || c.t) + ' · Align</div>' + [['', 'Automatic'], ['l', 'Left'], ['c', 'Center'], ['r', 'Right']].map(function (o) {
+        return '<button type="button" class="mi' + (o[0] === cur ? ' cur' : '') + '" data-bxal="' + o[0] + '" data-k="' + k + '">' + o[1] + (o[0] === cur ? '<em>✓</em>' : '') + '</button>';
+      }).join(''));
+      m.style.right = 'auto';
+      m.style.left = Math.max(8, Math.min(e.clientX, window.innerWidth - m.offsetWidth - 8)) + 'px';
+      m.style.top = Math.max(8, Math.min(e.clientY, window.innerHeight - m.offsetHeight - 8)) + 'px';
+      return;
+    }
+    var tr = e.target.closest('#bx tbody tr[data-bxl]'); if (!tr || e.target.closest('.cell')) return;
+    e.preventDefault();
+    var li = Number(tr.dataset.bxl), td = e.target.closest('td[data-k]'), C = bxC(), here = td ? td.dataset.k : null;
+    var inSel = bxCells().some(function (x) { return x.li === li && (!here || x.k === here); });   // right-click outside the selection selects that cell (or row) first
+    if (!inSel) { BX.extra = []; BX.a = BX.c = { li: li, k: here || C[0] }; BX.b = { li: li, k: here || C[C.length - 1] }; bxPaint(); }
+    var lis = bxSelLines(), many = lis.length > 1, l = bxLines()[li], ro = bxRO(), kb = function (t) { return '<span class="kb">' + t + '</span>'; };
+    var mi = function (a, label, key, cls) { return '<button type="button" class="mi' + (cls ? ' ' + cls : '') + '" role="menuitem" data-bm="' + a + '">' + label + (key ? kb(key) : '') + '</button>'; };
+    var m = $('menu');
+    m.className = 'menu';
+    m.innerHTML = (ro ? '' : mi('cut', 'Cut', 'Ctrl+X')) + mi('copy', 'Copy', 'Ctrl+C') + (ro ? '' : mi('paste', 'Paste', 'Ctrl+V')) + '<hr>' +
+      (ro ? '' : mi('filld', 'Fill down', 'Ctrl+D') + mi('fillr', 'Fill right', 'Ctrl+R') + mi('clear', 'Clear contents', 'Delete') + '<hr>') +
+      mi('sorta', 'Sort A → Z') + mi('sortz', 'Sort Z → A') + mi('fval', 'Filter by this value') + '<hr>' +
+      '<div class="mh">' + (many ? lis.length + ' selected lines' : esc(l.item || 'New line') + (l.row ? ' · row ' + l.row : '')) + '</div>' +
+      (ro ? '' : mi('add', 'Add a line', 'Ctrl+Shift++') + '<hr>' + mi('delete', many ? 'Delete ' + lis.length + ' lines' : 'Delete line', 'Ctrl+−', 'del'));
+    m.hidden = false; $('scrim').hidden = false;
+    var w = m.offsetWidth, h = m.offsetHeight;
+    m.style.left = Math.max(8, Math.min(e.clientX, window.innerWidth - w - 8)) + 'px';
+    m.style.top = Math.max(8, Math.min(e.clientY, window.innerHeight - h - 8)) + 'px';
+    m.dataset.nos = '';
+    var first = m.querySelector('button'); if (first) first.focus();
+  });
+  $('menu').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-bm]'); if (!b) return;
+    var a = b.dataset.bm; closeMenu();
+    if (a === 'cut' || a === 'copy') { BX.menuCut = a === 'cut'; try { document.execCommand('copy'); } catch (x) {} BX.menuCut = false; return; }
+    if (a === 'paste') { if (navigator.clipboard && navigator.clipboard.readText) navigator.clipboard.readText().then(bxPaste, function () { toast('Press Ctrl+V to paste.'); }); else toast('Press Ctrl+V to paste.'); return; }
+    if (a === 'filld' || a === 'fillr') { bxFill(a === 'filld' ? 'd' : 'r'); return; }
+    if (a === 'clear') { bxClear(); return; }
+    if (a === 'sorta' || a === 'sortz') { if (BX.c) { BX.sort = { k: BX.c.k, dir: a === 'sorta' ? 1 : -1 }; bxRedraw(); } return; }
+    if (a === 'fval') { if (BX.c) { var l = bxLines()[BX.c.li]; BX.filters[BX.c.k] = [l ? bxShown(l, BX.c.k) : '']; bxRedraw(); } return; }
+    if (a === 'add') { bxAdd(); return; }
+    if (a === 'delete') { bxDel(bxSelLines()); return; }
+  });
+  $('xmenu').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-bxal]'); if (!b) return;
+    if (b.dataset.bxal) BX.align[b.dataset.k] = b.dataset.bxal; else delete BX.align[b.dataset.k];
+    bxStore('kai-budget-align', BX.align); closeX(); bxRedraw();
+  });
+
+  // ---------- filter popover (the same as the guests table) ----------
+  var BXF = { el: null, scrim: null, k: null, vals: [], sel: {}, counts: {} };
+  function bxFilterOpen(k, anchor) {
+    var c = bxCol(k); if (!c) return;
+    if (!BXF.el) {
+      BXF.scrim = document.createElement('div'); BXF.scrim.className = 'fscrim'; BXF.scrim.hidden = true; document.body.appendChild(BXF.scrim);
+      BXF.el = document.createElement('div'); BXF.el.className = 'fpop'; BXF.el.hidden = true; document.body.appendChild(BXF.el);
+      BXF.scrim.addEventListener('click', bxFilterClose);
+      BXF.el.addEventListener('input', function (ev) { if (ev.target.classList.contains('bxfq')) bxFilterList(); });
+      BXF.el.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Enter' && ev.target.classList.contains('bxfq')) { ev.preventDefault(); BXF.el.querySelector('[data-bfp="ok"]').click(); }
+        if (ev.key === 'Escape') { ev.stopPropagation(); bxFilterClose(); }
+      });
+      BXF.el.addEventListener('change', function (ev) { var cb = ev.target.closest('[data-bfv]'); if (cb) BXF.sel[cb.dataset.bfv] = cb.checked; });
+      BXF.el.addEventListener('click', function (ev) {
+        var fs = ev.target.closest('[data-bfsort]');
+        if (fs) { BX.sort = { k: BXF.k, dir: Number(fs.dataset.bfsort) }; bxFilterClose(); bxRedraw(); return; }
+        var only = ev.target.closest('[data-bfonly]');
+        if (only) { ev.preventDefault(); BXF.vals.forEach(function (v) { BXF.sel[v] = v === only.dataset.bfonly; }); bxFilterList(); return; }
+        var b = ev.target.closest('[data-bfp]'); if (!b) return;
+        var a = b.dataset.bfp;
+        if (a === 'all' || a === 'none') { BXF.vals.forEach(function (v) { BXF.sel[v] = a === 'all'; }); bxFilterList(); return; }
+        if (a === 'cancel') { bxFilterClose(); return; }
+        if (a === 'ok') {
+          var keep = BXF.vals.filter(function (v) { return BXF.sel[v]; });
+          if (keep.length === BXF.vals.length) delete BX.filters[BXF.k]; else BX.filters[BXF.k] = keep;
+          bxFilterClose(); bxRedraw();
+        }
+      });
+    }
+    var counts = {};
+    bxLines().forEach(function (l) { if (!bxPass(l, k)) return; var v = bxShown(l, k); counts[v] = (counts[v] || 0) + 1; });
+    var vals = Object.keys(counts).sort(function (a, b) {
+      if (!a) return 1; if (!b) return -1;
+      if (c.num) return bgNum(a.replace(/[^\d.\-]/g, '')) - bgNum(b.replace(/[^\d.\-]/g, ''));
+      return a.localeCompare(b, undefined, { sensitivity: 'base', numeric: true });
+    });
+    var cur = BX.filters[k], sel = {};
+    vals.forEach(function (v) { sel[v] = !cur || cur.indexOf(v) > -1; });
+    BXF.k = k; BXF.vals = vals; BXF.sel = sel; BXF.counts = counts;
+    var asc = c.num ? 'Sort smallest → largest' : 'Sort A → Z', dsc = c.num ? 'Sort largest → smallest' : 'Sort Z → A', s = BX.sort;
+    BXF.el.innerHTML = '<div class="fp-h">' + esc(c.label || c.t) + '</div>' +
+      '<div class="fp-sort"><button type="button" class="linkbtn" data-bfsort="1">' + asc + (s.k === k && s.dir > 0 ? ' ✓' : '') + '</button><button type="button" class="linkbtn" data-bfsort="-1">' + dsc + (s.k === k && s.dir < 0 ? ' ✓' : '') + '</button></div>' +
+      '<input type="search" class="bxfq" placeholder="Search…" autocomplete="off">' +
+      '<div class="fp-tools"><button type="button" class="linkbtn" data-bfp="all">Select all</button><button type="button" class="linkbtn" data-bfp="none">Clear</button></div>' +
+      '<div class="fp-list"></div>' +
+      '<div class="fp-foot"><button type="button" class="btn" data-bfp="cancel">Cancel</button><button type="button" class="btn primary" data-bfp="ok">Apply</button></div>';
+    BXF.el.hidden = false; BXF.scrim.hidden = false;
+    bxFilterList();
+    var r = anchor.getBoundingClientRect(), w = BXF.el.offsetWidth;
+    BXF.el.style.left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8)) + 'px';
+    BXF.el.style.top = Math.min(r.bottom + 4, window.innerHeight - BXF.el.offsetHeight - 8) + 'px';
+    BXF.el.querySelector('.bxfq').focus();
+  }
+  function bxFilterList() {
+    var q = (BXF.el.querySelector('.bxfq').value || '').trim().toLowerCase();
+    BXF.el.querySelector('.fp-list').innerHTML = BXF.vals.filter(function (v) { return !q || v.toLowerCase().indexOf(q) > -1; }).map(function (v) {
+      return '<label class="fp-row"><input type="checkbox" data-bfv="' + esc(v) + '"' + (BXF.sel[v] ? ' checked' : '') + '><span class="fp-v' + (v ? '' : ' empty') + '">' + esc(v || '(empty)') + '</span><span class="fp-n">' + BXF.counts[v] + '</span><button type="button" class="fp-only" data-bfonly="' + esc(v) + '">only</button></label>';
+    }).join('') || '<div class="fp-none">No matches</div>';
+  }
+  function bxFilterClose() { if (BXF.el) { BXF.el.hidden = true; BXF.scrim.hidden = true; } }
+
+  // ---------- the changes the couple made (Noam): the same tooltip as the guests table ----------
+  $('budget').addEventListener('mouseover', function (e) {
+    var td = e.target.closest('#bx td.chg'); if (!td) return;
+    clearTimeout(tipT); if (td !== tipTd) bxTip(td);
+  });
+  $('budget').addEventListener('mouseout', function (e) { if (e.target.closest('#bx td.chg')) { clearTimeout(tipT); tipT = setTimeout(hideTip, 300); } });
+  function bxTip(td) {
+    var tr = td.closest('tr[data-bxl]'), l = tr && bxLines()[Number(tr.dataset.bxl)]; if (!l) return;
+    var c = td.dataset.k ? bxCol(td.dataset.k) : null, e = c ? BX.hi[l.row + '|' + c.f] : BX.hi[l.row + '|add']; if (!e) return;
+    var t = $('chgtip');
+    t.innerHTML = !c
+      ? '<div class="t">New line</div><div class="ln">Added by the couple</div><div class="who">' + esc(e.by_name || '') + ' · ' + esc(bxWhen(e.at)) + '</div>'
+      : '<div class="t">Changed by the couple</div><div class="ln"><s>' + esc(bxVal(e.field, e.old_value)) + '</s> → <b>' + esc(bxVal(e.field, e.new_value)) + '</b></div><div class="who">' + esc(e.by_name || '') + ' · ' + esc(bxWhen(e.at)) + '</div>';
+    t.innerHTML += '<button type="button" data-bxseen="' + e.ids.join(',') + '">✓ Seen</button>';
+    t.hidden = false; tipTd = td;
+    var r = td.getBoundingClientRect();
+    t.style.left = Math.max(8, Math.min(r.left, window.innerWidth - t.offsetWidth - 8)) + 'px';
+    t.style.top = (r.bottom + t.offsetHeight + 8 > window.innerHeight ? r.top - t.offsetHeight - 6 : r.bottom + 6) + 'px';
+  }
+  function bxSeen(ids) {
+    (BX.changes || []).forEach(function (c) { if (ids === 'all' || ids.indexOf(c.id) > -1) c.seen = true; });
+    hideTip(); bxRedraw();
+    bxCall(ids === 'all' ? { action: 'budgetSeen' } : { action: 'budgetSeen', ids: ids }).then(function (r) { if (!r.ok) toast(r.error || 'Couldn’t save.', null, null, true); });
+  }
+  $('chgtip').addEventListener('click', function (e) { var b = e.target.closest('[data-bxseen]'); if (b) bxSeen(b.dataset.bxseen.split(',').map(Number)); });
+
+  // ---------- the buttons around the table ----------
+  $('budget').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-bxt], [data-bxadd], [data-bxch], [data-bxundo], [data-bxlock], [data-bxf], [data-bxunf], #bx th.corner, #bx thead th[data-bxk]'); if (!b || BX.resizing) return;
+    if (b.dataset.bxt) { BX.tab = b.dataset.bxt; BX.a = BX.b = BX.c = null; BX.extra = []; bxRedraw(); return; }
+    if (b.dataset.bxf) { e.stopPropagation(); bxFilterOpen(b.dataset.bxf, b); return; }
+    if (b.dataset.bxunf) { if (b.dataset.bxunf === '*') BX.filters = {}; else delete BX.filters[b.dataset.bxunf]; bxRedraw(); return; }
+    if (b.matches('#bx th.corner')) {
+      if (e.target.closest('.nosort')) { BX.sort = { k: 'row', dir: BX.sort.k === 'row' ? -BX.sort.dir : 1 }; bxRedraw(); return; }
+      bxSelectAll(); return;
+    }
+    if (b.matches('#bx thead th[data-bxk]')) { bxSelectCols(b.dataset.bxk, e.shiftKey, e.ctrlKey || e.metaKey); return; }
+    if (b.dataset.bxadd) { bxAdd(); return; }
     if (b.dataset.bxlock) {
       var on = !BX.can; BX.can = on; bxRedraw();
       KAI.ready().then(function () { return KAI.sb.rpc('kai_budget_lock', { p_slug: EVENT, p_on: on }); }).then(function (r) {
@@ -4613,10 +5081,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     }
     if (b.dataset.bxch === 'open') { BX.chOpen = !BX.chOpen; if (BX.chOpen) bxChanges(); bxRedraw(); return; }
     if (b.dataset.bxch === 'close') { BX.chOpen = false; bxRedraw(); return; }
-    if (b.dataset.bxch === 'seen') {
-      (BX.changes || []).forEach(function (c) { c.seen = true; }); bxRedraw();
-      bxCall({ action: 'budgetSeen' }).then(function (r) { if (!r.ok) toast(r.error || 'Couldn’t save.', null, null, true); }); return;
-    }
+    if (b.dataset.bxch === 'seen') { bxSeen('all'); return; }
     if (b.dataset.bxundo) {
       b.disabled = true; b.textContent = 'Undoing…'; BG.saving = true;
       bxCall({ action: 'budgetUndo', id: +b.dataset.bxundo }).then(function (r) {
@@ -4625,44 +5090,6 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
         toast('Undone – the sheet is back as it was.'); bxChanges(); load(true);
       }); return;
     }
-  });
-  document.addEventListener('keydown', function (e) {
-    if (SECT !== 'budget' || !BX.sel || BX.edit || window.innerWidth < 760 || !BG.data || BG.data.format !== 'kai' || BX.tab !== 'services') return;
-    var a = document.activeElement; if (a && /INPUT|SELECT|TEXTAREA/.test(a.tagName)) return;
-    if (!$('dlg-pay').hidden) return;
-    var k = e.key, mod = e.ctrlKey || e.metaKey;
-    if (mod && (k === 'c' || k === 'C')) {
-      var l = bxLines()[BX.sel.li], c = BX_COLS[BX.sel.ci];
-      var t = c.k === 'ok' ? (l.ok ? 'TRUE' : 'FALSE') : c.num ? (bgNum(l[c.k]) ? String(bgNum(l[c.k])) : '') : String(l[c.k] || '');
-      try { navigator.clipboard.writeText(t); toast('Copied.'); } catch (x) {}
-      e.preventDefault(); return;
-    }
-    if (mod) return;
-    if (k === 'ArrowDown') { e.preventDefault(); bxMove(1, 0); }
-    else if (k === 'ArrowUp') { e.preventDefault(); bxMove(-1, 0); }
-    else if (k === 'ArrowRight' || (k === 'Tab' && !e.shiftKey)) { e.preventDefault(); bxMove(0, 1); }
-    else if (k === 'ArrowLeft' || (k === 'Tab' && e.shiftKey)) { e.preventDefault(); bxMove(0, -1); }
-    else if (k === 'Enter' || k === 'F2') { e.preventDefault(); bxStartEdit(BX.sel.li, BX.sel.ci); }
-    else if (k === ' ' && BX_COLS[BX.sel.ci].k === 'ok') { e.preventDefault(); bxStartEdit(BX.sel.li, BX.sel.ci); }
-    else if (k === 'Escape') { BX.sel = null; bxPaint(); }
-    else if (k === 'Delete' || k === 'Backspace') {
-      var cc = BX_COLS[BX.sel.ci]; e.preventDefault();
-      if (cc.ro || cc.k === 'ok') return;
-      if (cc.k === 'item') { toast('To remove a whole line, use × next to its number.'); return; }
-      bxCommit(BX.sel.li, BX.sel.ci, '');
-    }
-    else if (k.length === 1 && BX_COLS[BX.sel.ci].k !== 'ok' && !BX_COLS[BX.sel.ci].ro) { e.preventDefault(); bxStartEdit(BX.sel.li, BX.sel.ci, k); }
-  });
-  document.addEventListener('paste', function (e) {
-    if (SECT !== 'budget' || !BX.sel || BX.edit || window.innerWidth < 760 || BX.tab !== 'services') return;
-    var a = document.activeElement; if (a && /INPUT|SELECT|TEXTAREA/.test(a.tagName)) return;
-    var t = (e.clipboardData && e.clipboardData.getData('text/plain') || '').replace(/\r?\n$/, '');
-    if (!t || /[\t\n]/.test(t)) { if (t) toast('Paste one cell at a time.', null, null, true); return; }
-    var c = BX_COLS[BX.sel.ci]; if (c.ro) return; e.preventDefault();
-    bxCommit(BX.sel.li, BX.sel.ci, c.k === 'ok' ? /^(true|yes|1|✓|v|x)$/i.test(t.trim()) : t);
-  });
-  document.addEventListener('mousedown', function (e) {
-    if (BX.sel && !e.target.closest('#bx') && !e.target.closest('#toast')) { BX.sel = null; bxPaint(); }
   });
   // crossing between phone and computer width: switch between the cards and the spreadsheet
   (function () { var wide = window.innerWidth >= 760; window.addEventListener('resize', function () { var w = window.innerWidth >= 760; if (w !== wide) { wide = w; if (SECT === 'budget' && BG.data && BG.data.format === 'kai' && !BX.edit) bgRender(); } }); })();
