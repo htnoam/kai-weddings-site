@@ -1362,7 +1362,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     <div class="subbar">
       <span id="showing"></span>
       <button type="button" class="msort" id="msort" aria-label="Sort"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M3 8l4-4 4 4M17 20V4M13 16l4 4 4-4"/></svg><span id="msort-l"></span></button>
-      <div class="bulk" id="bulk" hidden>
+      <div class="bulk" id="bulk" data-esc hidden>
         <span id="bulk-n"></span>
         <button type="button" data-bulk="status">Change status</button>
         <button type="button" data-bulk="age">Age group</button>
@@ -1383,7 +1383,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
         <div class="selbar" id="selbar" hidden></div>
       </div>
       <div class="cards" id="cards"></div>
-      <aside class="panel" id="panel" hidden aria-label="Guest details"></aside>
+      <aside class="panel" id="panel" data-esc hidden aria-label="Guest details"></aside>
     </div>
   </div>
   <div class="sc" id="sched" hidden></div>
@@ -2906,6 +2906,14 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (!$('menu').hidden) closeMenu();
     else if (!$('dlg').hidden) $('dlg').hidden = true;
     else if (!$('dlg2').hidden) $('dlg2').hidden = true;
+  });
+  // Esc when nothing else is open (see esc.js): a selection of many cells shrinks back to one, then the deleted list goes back to the list.
+  (window.KAI_ESC = window.KAI_ESC || []).push(function () {
+    var one = function (X, paint) { if (!X || !X.a || (!X.extra.length && JSON.stringify(X.a) === JSON.stringify(X.b))) return false; X.extra = []; X.a = X.b = X.c || X.a; paint(); return true; };
+    if (document.getElementById('bx')) { if (one(BX, bxPaint)) return true; if (BX.trash) { BX.trash = false; bxRedraw(); return true; } return false; }
+    if (one(G, function () { paintSel(); gSyncChecked(); })) return true;
+    if (S.trash && !$('trash').hidden) { $('trash').click(); return true; }
+    return false;
   });
   $('menu').addEventListener('click', function (e) {
     var b = e.target.closest('[data-m]'); if (!b) return;
@@ -4708,7 +4716,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var ro = bxRO(), dis = ro ? ' disabled' : '', admin = !!(S.admin && BG.sheet), v = bgkVend(l.vendor);
     var f = function (k, label, val, extra) { return '<label class="f">' + esc(label) + '<input data-bpf="' + k + '" value="' + esc(val) + '"' + dis + (extra || '') + '></label>'; };
     var ps = (BG.data.payments || []).filter(function (x) { return l.vendor && x.vendor === l.vendor; });
-    return '<aside class="panel bx-panel" aria-label="Service details"><div class="hd"><div><div class="meta">Row ' + l.row + (l.category ? ' · ' + esc(l.category) : '') + '</div><div class="name">' + esc(l.item) + '</div></div>' +
+    return '<aside class="panel bx-panel" data-esc aria-label="Service details"><div class="hd"><div><div class="meta">Row ' + l.row + (l.category ? ' · ' + esc(l.category) : '') + '</div><div class="name">' + esc(l.item) + '</div></div>' +
       '<button type="button" class="x" data-bxa="pclose" aria-label="Close service details">×</button></div>' +
       f('item', 'Service', l.item) +
       '<div class="two">' + f('category', 'Category', l.category || '', ' list="bx-cats"') + f('vendor', 'Name', l.vendor || '') + '</div>' +
@@ -6606,5 +6614,6 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   load(false);
 })();
 </script>
+<script src="/v2/esc.js"></script>
 </body>
 </html>
