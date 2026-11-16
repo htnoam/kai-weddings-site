@@ -621,7 +621,15 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .bx-tabs .vt small { font-weight: 500; color: var(--soft); margin-left: 2px; }
 .bx-pane { display: flex; flex-direction: column; gap: 10px; padding-top: 4px; }
 .bx-pane > .bgk-h { display: none; }
-.bx-wrap { flex: none; max-width: 100%; width: fit-content; align-self: flex-start; border-radius: 0 4px 4px 4px; }
+.bx-wrap { max-width: 100%; }
+/* computers: the services table fills the screen and scrolls inside, like the guests table */
+@media (min-width: 760px) {
+  #budget:has(#bx) { flex: 1 1 auto; min-height: 0; }
+  #budget:has(#bx) .layout { order: 1; flex: 1 1 auto; min-height: 0; align-items: stretch; }
+  #budget:has(#bx) .tabrow { order: 2; }
+  #budget .bx-wrap { border-radius: 4px 4px 0 0; }
+}
+.bx-under { order: 3; }
 .bx td.num .c { color: var(--text); }
 .bx td.mut .c { color: var(--muted); }
 .bx td.b .c { font-weight: 700; }
@@ -631,6 +639,10 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .bx td.okc .c { text-align: center; padding: 0; }
 .bx-ck { display: inline-block; width: 16px; height: 16px; line-height: 14px; border: 1.5px solid #B9B6AE; border-radius: 4px; background: #FFFFFF; color: #FFFFFF; font-size: 11px; font-weight: 800; text-align: center; vertical-align: middle; cursor: pointer; }
 .bx-ck.on { background: #2B7A3D; border-color: #2B7A3D; }
+.bx-tools { margin-top: 2px; }
+.bx-panel .bx-ptot { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--hair); padding-top: 8px; }
+.bx-panel .bx-ptot b { font-size: 18px; }
+#bx td.miss { background: #FFF6E5; }
 .bx-fbar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .btn.sm { height: 26px; padding: 0 10px; font-size: 12.5px; }
 .bx-under { display: flex; align-items: center; gap: 16px; }
@@ -1764,7 +1776,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       S.reminders = res.reminders || {}; S.reminderText = res.reminderText || ''; S.lang = res.lang || 'he';
       S.changes = res.changes || [];
       briefLoad(res.brief);
-      BX.can = res.budgetEdit !== false;
+      BX.can = res.budgetEdit !== false; bxPrefsIn(res.budgetPrefs);
       bgLoad(res.budget, res.budgetSheet);
       schedLoad(res.schedule, res.wedding);
       setCustom(res.custom || []);
@@ -2455,7 +2467,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function paintSel() {
     if (!G) return;
     Array.prototype.forEach.call(document.querySelectorAll('#grid .sel, #grid .act, #grid .selh'), function (el) { el.classList.remove('sel', 'act', 'selh'); });
-    Array.prototype.forEach.call(document.querySelectorAll('.tablewrap .gov'), function (el) { el.remove(); });
+    Array.prototype.forEach.call($('grid').parentNode.querySelectorAll('.gov'), function (el) { el.remove(); });
     var s = gRects(), cols = {}, rows = {};
     s.list.forEach(function (q) {
       for (var r = q.r0; r <= q.r1; r++) { rows[s.R[r]] = 1; for (var c = q.c0; c <= q.c1; c++) { var td = tdOf(s.R[r], s.C[c]); if (td) td.classList.add('sel'); } }
@@ -4324,7 +4336,6 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   var BX = { can: true, tab: 'services', edit: null, q: [], busy: false, sort: { k: 'row', dir: 1 }, widths: {}, order: null, align: {}, filters: {},
     changes: null, chOpen: false, hi: {}, saved: '', a: null, b: null, c: null, extra: [], copy: null, undo: [], redo: [], menuCut: false };
   try { BX.widths = JSON.parse(localStorage.getItem('kai-budget-widths') || '{}') || {}; } catch (e) {}
-  try { BX.order = JSON.parse(localStorage.getItem('kai-budget-cols') || 'null'); } catch (e) {}
   try { BX.align = JSON.parse(localStorage.getItem('kai-budget-align') || '{}') || {}; } catch (e) {}
   function bxStore(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (x) {} }
   var BX_COLS = [
@@ -4341,11 +4352,6 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   var BX_LOCKED = 'Noam has locked the budget for changes.';
   function bxCol(k) { return BX_COLS.filter(function (c) { return c.k === k; })[0]; }
   function bxColByF(f) { return BX_COLS.filter(function (c) { return c.f === f; })[0]; }
-  function bxCols() {
-    var keys = BX_COLS.map(function (c) { return c.k; }), o = (BX.order || []).filter(function (k) { return keys.indexOf(k) > -1; });
-    keys.forEach(function (k) { if (o.indexOf(k) < 0) o.push(k); });
-    return o.map(bxCol);
-  }
   function bxW(c) { return BX.widths[c.k] || c.w; }
   function bxAl(k) { if (BX.align[k]) return BX.align[k]; var c = bxCol(k); return c.k === 'ok' || c.k === 'cur' ? 'c' : c.num ? 'r' : 'a'; }
   function bxRO() { return !S.admin && BX.can === false; }   // Noam locked the budget: the couple can only look
@@ -4367,20 +4373,6 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function bxPass(l, skip) {
     return Object.keys(BX.filters).every(function (k) { return k === skip || BX.filters[k].indexOf(bxShown(l, k)) > -1; });
   }
-  // the rows on screen: filtered, then sorted (by the sheet's row number unless a column was chosen)
-  function bxList() {
-    var L = bxLines(), o = [], s = BX.sort;
-    L.forEach(function (l, i) { if (bxPass(l)) o.push(i); });
-    return o.sort(function (a, b) {
-      var x = L[a], y = L[b], r;
-      if (s.k === 'row') { r = (x.row || 1e9) - (y.row || 1e9); return (s.dir < 0 ? -r : r) || a - b; }
-      var c = bxCol(s.k), vx = x[s.k], vy = y[s.k];
-      if (!c.num && c.k !== 'ok' && !vx !== !vy) return vx ? -1 : 1;   // empty cells last
-      if (c.k === 'cur') { vx = bgSym(vx); vy = bgSym(vy); }
-      r = c.num ? bgNum(vx) - bgNum(vy) : c.k === 'ok' ? (vx ? 1 : 0) - (vy ? 1 : 0) : String(vx || '').localeCompare(String(vy || ''), undefined, { sensitivity: 'base', numeric: true });
-      return (s.dir < 0 ? -r : r) || (x.row || 1e9) - (y.row || 1e9);
-    });
-  }
   function bxWhen(iso) { var d = new Date(iso); if (isNaN(d)) return ''; var p = function (n) { return ('0' + n).slice(-2); }; return p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()); }
   function bxVal(f, v, cur) { if (f === 'ok') return String(v) === 'true' ? '✓ ticked' : 'not ticked'; if (f === 'currency') return bgSym(v); if (f === 'cost') return v === '' || v == null ? 'empty' : bgMoney(v, cur); return v === '' || v == null ? 'empty' : String(v); }
   // which cells the couple changed and Noam hasn't marked as seen (Noam editing the same cell clears it, as in the sheet)
@@ -4396,70 +4388,6 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       }
     });
     BX.hi = hi; return hi;
-  }
-  function bxHtml(vendorsH, paysH) {
-    var D = BG.data, L = bxLines(), admin = !!(S.admin && BG.sheet), url = 'https://docs.google.com/spreadsheets/d/' + encodeURIComponent(BG.sheet) + '/edit';
-    var total = bgNum(D.total), paid = bgNum(D.paid), left = total - paid, pct = total ? Math.round(100 * paid / total) : 0;
-    var named = L.filter(function (l) { return l.item; }), conf = named.filter(function (l) { return l.ok; }).length;
-    if (admin && BX.changes === null && !BX.chAsked) { BX.chAsked = true; setTimeout(bxChanges, 0); }
-    var I = bgIls();
-    var hi = admin ? bxHi() : {}, nNew = admin ? (BX.changes || []).filter(function (c) { return !c.by_admin && !c.seen && !c.undone; }).length : 0;
-    var sumLine = function (sym, p, t) { var pc = t ? Math.round(100 * p / t) : 0; return (I.on ? '<span class="bx-sym">' + sym + '</span>' : '') + '<span class="bx-bar" title="' + pc + '% paid"><i style="width:' + Math.min(pc, 100) + '%"></i></span>' +
-      '<span class="bx-sum">' + bgMoney(p, sym) + ' paid of <b>' + bgMoney(t, sym) + '</b> · <b>' + bgMoney(t - p, sym) + '</b> left</span>'; };
-    var h = '<div class="bx-top"><h1>Budget</h1>' + (I.on ? '<span class="bx-sums">' + sumLine('€', paid, total) + sumLine('₪', I.paid, I.total) + '</span>' : sumLine('€', paid, total)) + '<span class="grow"></span>' +
-      '<span class="bx-saved" id="bx-saved">' + esc(BX.saved) + '</span><span class="bx-conf">' + conf + ' of ' + named.length + ' services confirmed</span>';
-    if (admin) h += '<button type="button" class="bx-lock' + (BX.can ? ' on' : '') + '" data-bxlock="1" role="switch" aria-checked="' + BX.can + '" title="' + (BX.can ? 'The couple can change this budget. Click to lock it.' : 'The budget is locked – the couple can only look. Click to let them make changes.') + '"><i></i>' + (BX.can ? 'Couple can edit' : 'Locked for the couple') + '</button>';
-    if (bxRO()) h += '<span class="bx-ro">🔒 View only</span>';
-    if (admin) h += '<button type="button" class="btn bx-chb' + (nNew ? ' new' : '') + '" data-bxch="open">Changes' + (nNew ? ' <b>' + nNew + '</b>' : '') + '</button>' +
-      '<a class="bg-gs" href="' + url + '" target="_blank" rel="noopener" title="The same budget in Google Sheets. Changes here go straight into the sheet.">Google Sheet ↗</a>' +
-      '<button type="button" class="btn primary" data-bgk="pay">+ Record payment</button>';
-    h += '</div>';
-    var nv = (D.vendors || []).filter(function (v) { return v.name !== BGK_NV; }).length, np = (D.payments || []).length;
-    h += '<div class="vtabs bx-tabs" role="tablist">' + [['services', 'Services', named.length], ['vendors', 'Vendors', nv], ['payments', 'Payments', np]].map(function (t) {
-      return '<button type="button" role="tab" class="vt' + (BX.tab === t[0] ? ' on' : '') + '" aria-selected="' + (BX.tab === t[0]) + '" data-bxt="' + t[0] + '">' + t[1] + ' <small>' + t[2] + '</small></button>';
-    }).join('') + '</div>';
-    if (BX.tab === 'vendors') return h + '<div class="bx-pane">' + vendorsH + '</div>' + bxChPanel(admin);
-    if (BX.tab === 'payments') return h + '<div class="bx-pane">' + paysH + '</div>' + bxChPanel(admin);
-    // filters in use, as chips (like the guests table)
-    var fk = Object.keys(BX.filters);
-    if (fk.length) h += '<div class="fchips bx-fbar">' + fk.map(function (k) {
-      var c = bxCol(k), v = BX.filters[k], txt = v.length === 1 ? (v[0] || '(empty)') : v.length + ' values';
-      return '<span class="fchip"><button type="button" class="fc-edit" data-bxf="' + k + '"><b>' + esc(c.label || c.t) + ':</b> ' + esc(txt) + '</button><button type="button" class="fc-x" data-bxunf="' + k + '" aria-label="Remove this filter">✕</button></span>';
-    }).join('') + '<button type="button" class="linkbtn" data-bxunf="*">Clear filters</button></div>';
-    // the spreadsheet
-    var cols = bxCols(), tw = 48, s = BX.sort, ro = bxRO(), list = bxList();
-    cols.forEach(function (c) { tw += bxW(c); });
-    h += '<div class="tablewrap bx-wrap"><table class="bx" id="bx" style="width:' + tw + 'px;min-width:0"><thead><tr>' +
-      '<th class="chk corner" style="width:48px" title="Select all"><button type="button" class="nosort" title="Sort by row number">#' + (s.k === 'row' ? (s.dir > 0 ? '↑' : '↓') : '') + '</button><span class="sr">Select all</span></th>';
-    cols.forEach(function (c) {
-      var arrow = s.k === c.k ? (s.dir > 0 ? ' ↑' : ' ↓') : '';
-      h += '<th data-bxk="' + c.k + '" style="width:' + bxW(c) + 'px"' + (c.num ? ' class="r"' : '') + ' aria-sort="' + (s.k === c.k ? (s.dir > 0 ? 'ascending' : 'descending') : 'none') + '">' +
-        '<button type="button" title="' + esc(c.label || c.t) + '">' + esc(c.t) + arrow + '</button>' +
-        '<button type="button" class="fbtn' + (BX.filters[c.k] ? ' on' : '') + '" data-bxf="' + c.k + '" aria-label="Filter ' + esc(c.label || c.t) + '" title="Filter"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 4h18l-7 8.5V19l-4 2v-8.5z"/></svg></button>' +
-        '<span class="rz" data-bz="' + c.k + '" title="Drag to resize · double-click to reset"></span></th>';
-    });
-    h += '</tr></thead><tbody>';
-    list.forEach(function (li) {
-      var l = L[li], added = hi[l.row + '|add'];
-      h += '<tr data-bxl="' + li + '"><td class="chk' + (added ? ' chg' : '') + '"><span class="rn">' + (l.row || '') + '</span></td>';
-      cols.forEach(function (c) {
-        var cg = c.f && hi[l.row + '|' + c.f];
-        var cls = (c.ro || ro ? 'ro' : 'ed') + ' al-' + bxAl(c.k) + (cg ? ' chg' : '') + (c.k === 'total' ? ' b' : '') + (c.k === 'ok' ? ' okc' : '') + (c.k === 'category' ? ' mut' : '');
-        var inner = c.k === 'ok' ? '<span class="bx-ck' + (l.ok ? ' on' : '') + '" role="checkbox" aria-checked="' + !!l.ok + '" aria-label="Confirmed">' + (l.ok ? '✓' : '') + '</span>' : esc(bxShown(l, c.k));
-        h += '<td data-k="' + c.k + '" class="' + cls + '"><div class="c">' + inner + '</div></td>';
-      });
-      h += '</tr>';
-    });
-    h += '</tbody><tfoot><tr><td class="chk"></td>' + cols.map(function (c, i) {
-      if (c.k === 'total') return '<td class="al-r b"><div class="c">' + bgMoney(total) + '</div>' + (I.on ? '<div class="c">' + bgMoney(I.total, '₪') + '</div>' : '') + '</td>';
-      return '<td>' + (c.k === 'item' || (i === 1 && !cols.some(function (x) { return x.k === 'item'; })) ? '<div class="c">Total</div>' : '') + '</td>';
-    }).join('') + '</tr></tfoot></table>' +
-      (list.length ? '' : '<div class="empty">' + (fk.length ? 'No lines match these filters.' : 'No lines yet.') + '</div>') +
-      '<div class="selbar" id="bxselbar" hidden></div></div>';
-    h += ro ? '<div class="bx-under"><span class="bx-tip">Noam has locked the budget for changes. Ask him if you want to change something.</span></div>'
-      : '<div class="bx-under"><button type="button" class="linkbtn bx-add" data-bxadd="1">+ Add a service</button><span class="bx-tip">Click a cell and type to change it · right-click for more · Ctrl+Z to undo</span></div>';
-    h += '<datalist id="bx-cats">' + (function () { var o = {}; L.forEach(function (l) { if (l.category) o[l.category] = 1; }); return Object.keys(o).map(function (k) { return '<option value="' + esc(k) + '">'; }).join(''); })() + '</datalist>';
-    return h + bxChPanel(admin);
   }
   // Noam: the list of changes (newest first), each with Undo
   function bxChPanel(admin) {
@@ -4497,6 +4425,573 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     w = $('budget').querySelector('.bx-wrap'); if (w) w.scrollLeft = sx; window.scrollTo(window.scrollX, sy);
   }
 
+  // ---------- what's on screen: views, columns, search, group by, missing info, changes to review (like the guests table) ----------
+  // Shared with everyone on this budget (saved with the event): column order / hidden, column names (Noam), saved views.
+  BX.prefs = { cols: null, labels: {}, views: [] }; BX.prefsT = 0;
+  BX.search = ''; BX.groupBy = false; BX.chgOnly = false; BX.view = ''; BX.missing = false; BX.trash = false; BX.deleted = null; BX.panel = null;
+  try { BX.view = localStorage.getItem('kai-budget-view-' + EVENT) || ''; } catch (e) {}
+  function bxPrefsIn(p) { if (Date.now() - BX.prefsT < 8000) return; p = p || {}; BX.prefs = { cols: p.cols || null, labels: p.labels || {}, views: Array.isArray(p.views) ? p.views : [] }; }
+  function bxPrefSave(key, val) {
+    BX.prefs[key] = val; BX.prefsT = Date.now();
+    KAI.ready().then(function () { return KAI.sb.rpc('kai_budget_prefs', { p_slug: EVENT, p_key: key, p_val: val }); })
+      .then(function (r) { var res = r && r.data || {}; if (r.error || !res.ok) toast(res.error || 'Couldn’t save. Check your connection.', null, null, true); });
+  }
+  function bxLabel(c) { return (BX.prefs.labels || {})[c.k] || c.label || c.t; }
+  function bxHead(c) { return c.k === 'ok' ? '✓' : bxLabel(c); }
+  function bxCurView() { return BX.view ? (BX.prefs.views || []).filter(function (v) { return v.name === BX.view; })[0] || null : null; }
+  function bxOrderAll() {
+    var keys = BX_COLS.map(function (c) { return c.k; }), o = ((BX.prefs.cols && BX.prefs.cols.order) || []).filter(function (k) { return keys.indexOf(k) > -1; });
+    keys.forEach(function (k) { if (o.indexOf(k) < 0) o.push(k); });
+    return o;
+  }
+  function bxHidden() { return (BX.prefs.cols && BX.prefs.cols.hidden) || []; }
+  // the columns on screen, in order
+  function bxCols() {
+    var v = bxCurView();
+    if (v && !BX.missing && !BX.trash) return v.cols.map(bxCol).filter(Boolean);
+    var hid = BX.missing ? [] : bxHidden();
+    return bxOrderAll().filter(function (k) { return hid.indexOf(k) < 0 || k === 'item'; }).map(bxCol);
+  }
+  function bxSaveOrder(keys) {   // keys: the visible columns in their new order
+    var v = bxCurView();
+    if (v) { var views = BX.prefs.views.map(function (x) { return x.name === v.name ? Object.assign({}, x, { cols: keys }) : x; }); bxPrefSave('views', views); return; }
+    var all = bxOrderAll(), seq = keys.slice();
+    bxPrefSave('cols', { order: all.map(function (k) { return keys.indexOf(k) > -1 ? seq.shift() : k; }), hidden: bxHidden().slice() });
+  }
+  // Missing info: lines with a service but some details still empty (which details: "What to check", on this computer)
+  var BX_MISS = [{ id: 'unit', label: 'Cost' }, { id: 'vendor', label: 'Name (vendor)' }, { id: 'category', label: 'Category' }, { id: 'qty', label: 'Quantity' }];
+  function bxMissOn() { var o = null; try { o = JSON.parse(localStorage.getItem('kai-budget-missing-' + EVENT) || 'null'); } catch (e) {} return Array.isArray(o) ? o : ['unit', 'vendor']; }
+  function bxMissOf(l) { if (!l.item) return []; return bxMissOn().filter(function (k) { return k === 'unit' || k === 'qty' ? !bgNum(l[k]) : !l[k]; }); }
+  function bxChgRows() { var o = {}; Object.keys(BX.hi).forEach(function (key) { o[key.split('|')[0]] = 1; }); return o; }
+  function bxMatch(l) {
+    var q = BX.search.trim().toLowerCase(); if (!q) return true;
+    return [l.item, l.vendor, l.category, String(l.row || '')].some(function (x) { return String(x || '').toLowerCase().indexOf(q) > -1; });
+  }
+  // the rows on screen: search, view filters, missing info, changes, then sorted (and grouped by category)
+  function bxList() {
+    var L = bxLines(), o = [], s = BX.sort, ch = BX.chgOnly ? bxChgRows() : null;
+    L.forEach(function (l, i) {
+      if (!bxPass(l) || !bxMatch(l)) return;
+      if (BX.missing && !bxMissOf(l).length) return;
+      if (ch && !ch[l.row]) return;
+      o.push(i);
+    });
+    var cmp = function (a, b) {
+      var x = L[a], y = L[b], r;
+      if (s.k === 'row') { r = (x.row || 1e9) - (y.row || 1e9); return (s.dir < 0 ? -r : r) || a - b; }
+      var c = bxCol(s.k), vx = x[s.k], vy = y[s.k];
+      if (!c) return a - b;
+      if (c.k === 'cur') { vx = bgSym(vx); vy = bgSym(vy); }
+      if (!c.num && c.k !== 'ok' && !vx !== !vy) return vx ? -1 : 1;   // empty cells last
+      r = c.num ? bgNum(vx) - bgNum(vy) : c.k === 'ok' ? (vx ? 1 : 0) - (vy ? 1 : 0) : String(vx || '').localeCompare(String(vy || ''), undefined, { sensitivity: 'base', numeric: true });
+      return (s.dir < 0 ? -r : r) || (x.row || 1e9) - (y.row || 1e9);
+    };
+    o.sort(cmp);
+    if (BX.groupBy) {   // keep the categories in the order they first appear in the sheet
+      var first = {}; L.slice().sort(function (x, y) { return (x.row || 1e9) - (y.row || 1e9); }).forEach(function (l) { var g = l.category || ''; if (!(g in first)) first[g] = Object.keys(first).length; });
+      o.sort(function (a, b) { var ga = L[a].category || '', gb = L[b].category || ''; return ga === gb ? cmp(a, b) : (!ga ? 1 : !gb ? -1 : first[ga] - first[gb]); });
+    }
+    return o;
+  }
+  // Freeze the row number and the columns up to the Service on the left (like the guests table), when there's room.
+  function bxFreeze() {
+    var st = $('bxfreeze'); if (!st) { st = document.createElement('style'); st.id = 'bxfreeze'; document.head.appendChild(st); }
+    var tb = $('bx'); if (!tb) { st.textContent = ''; return; }
+    var ths = tb.querySelectorAll('thead th'), wrap = tb.closest('.tablewrap'), n = 1, w = ths[0] ? ths[0].offsetWidth : 0, css = '', left = 0;
+    for (var i = 1; i < ths.length && i <= 4; i++) { w += ths[i].offsetWidth; if (ths[i].dataset.bxk === 'item') { n = i + 1; break; } }
+    if (n === 1 || w > wrap.clientWidth * 0.5 || tb.offsetWidth <= wrap.clientWidth) n = 1;
+    for (var j = 0; j < n; j++) {
+      css += '#bx thead th:nth-child(' + (j + 1) + '){left:' + left + 'px;z-index:3}#bx tbody tr[data-bxl] td:nth-child(' + (j + 1) + '){position:sticky;left:' + left + 'px;z-index:1}' +
+        ':where(#bx tbody tr[data-bxl] td:nth-child(' + (j + 1) + ')){background:var(--surface)}';
+      left += ths[j].offsetWidth;
+    }
+    if (n > 1) css += '#bx thead th:nth-child(' + n + '),#bx tbody tr[data-bxl] td:nth-child(' + n + '){box-shadow:inset -2px 0 0 var(--line)}';
+    st.textContent = css;
+  }
+
+  function bxHtml(vendorsH, paysH) {
+    var D = BG.data, L = bxLines(), admin = !!(S.admin && BG.sheet), url = 'https://docs.google.com/spreadsheets/d/' + encodeURIComponent(BG.sheet) + '/edit';
+    var total = bgNum(D.total), paid = bgNum(D.paid);
+    var named = L.filter(function (l) { return l.item; }), conf = named.filter(function (l) { return l.ok; }).length;
+    if (admin && BX.changes === null && !BX.chAsked) { BX.chAsked = true; setTimeout(bxChanges, 0); }
+    var I = bgIls(), ro = bxRO();
+    var hi = admin ? bxHi() : (BX.hi = {}), nch = Object.keys(bxChgRows()).length; if (!nch) BX.chgOnly = false;
+    var sumLine = function (sym, p, t) { var pc = t ? Math.round(100 * p / t) : 0; return (I.on ? '<span class="bx-sym">' + sym + '</span>' : '') + '<span class="bx-bar" title="' + pc + '% paid"><i style="width:' + Math.min(pc, 100) + '%"></i></span>' +
+      '<span class="bx-sum">' + bgMoney(p, sym) + ' paid of <b>' + bgMoney(t, sym) + '</b> · <b>' + bgMoney(t - p, sym) + '</b> left</span>'; };
+    var h = '<div class="bx-top"><h1>Budget</h1>' + (I.on ? '<span class="bx-sums">' + sumLine('€', paid, total) + sumLine('₪', I.paid, I.total) + '</span>' : sumLine('€', paid, total)) + '<span class="grow"></span>' +
+      '<span class="bx-saved" id="bx-saved">' + esc(BX.saved) + '</span><span class="bx-conf">' + conf + ' of ' + named.length + ' services confirmed</span>';
+    if (admin) h += '<button type="button" class="bx-lock' + (BX.can ? ' on' : '') + '" data-bxlock="1" role="switch" aria-checked="' + BX.can + '" title="' + (BX.can ? 'The couple can change this budget. Click to lock it.' : 'The budget is locked – the couple can only look. Click to let them make changes.') + '"><i></i>' + (BX.can ? 'Couple can edit' : 'Locked for the couple') + '</button>';
+    if (ro) h += '<span class="bx-ro">🔒 View only</span>';
+    if (admin) h += '<a class="bg-gs" href="' + url + '" target="_blank" rel="noopener" title="The same budget in Google Sheets. Changes here go straight into the sheet.">Google Sheet ↗</a>' +
+      '<button type="button" class="btn primary" data-bgk="pay">+ Record payment</button>';
+    h += '</div>';
+    var nv = (D.vendors || []).filter(function (v) { return v.name !== BGK_NV; }).length, np = (D.payments || []).length;
+    h += '<div class="vtabs bx-tabs" role="tablist">' + [['services', 'Services', named.length], ['vendors', 'Vendors', nv], ['payments', 'Payments', np]].map(function (t) {
+      return '<button type="button" role="tab" class="vt' + (BX.tab === t[0] ? ' on' : '') + '" aria-selected="' + (BX.tab === t[0]) + '" data-bxt="' + t[0] + '">' + t[1] + ' <small>' + t[2] + '</small></button>';
+    }).join('') + '</div>';
+    if (BX.tab === 'vendors') return h + '<div class="bx-pane">' + vendorsH + '</div>' + bxChPanel(admin);
+    if (BX.tab === 'payments') return h + '<div class="bx-pane">' + paysH + '</div>' + bxChPanel(admin);
+    if (BX.trash) return h + bxTrashHtml(ro);
+
+    // the toolbar (like the guests table's)
+    var v = bxCurView();
+    h += '<section class="toolbar bx-tools" aria-label="Actions">' +
+      (ro ? '' : '<button type="button" class="btn primary" data-bxa="add"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Add Service</button>') +
+      '<label class="sr" for="bxq">Search services, names or categories</label><input class="search" id="bxq" type="search" placeholder="Search services, names or categories" autocomplete="off" value="' + esc(BX.search) + '">' +
+      (admin && nch ? '<button type="button" class="btn chgbtn' + (BX.chgOnly ? ' on' : '') + '" data-bxa="chg" aria-pressed="' + BX.chgOnly + '" title="Changes the couple made that you haven’t looked at yet">Changes to review <i>' + nch + '</i></button>' : '') +
+      '<button type="button" class="btn" data-bxa="view" aria-haspopup="menu" style="margin-inline-start:auto">View ▾</button>' +
+      '<button type="button" class="btn" data-bxa="more" aria-haspopup="menu" aria-label="More">⋯</button></section>';
+    // filters in use, as chips
+    var fk = Object.keys(BX.filters);
+    if (fk.length) h += '<div class="fchips">' + fk.map(function (k) {
+      var c = bxCol(k), vv = BX.filters[k], txt = !vv.length ? '(none)' : vv.slice(0, 2).map(function (x) { return x || '(empty)'; }).join(', ') + (vv.length > 2 ? ' +' + (vv.length - 2) : '');
+      return '<span class="fchip"><button type="button" class="fc-edit" data-bxf="' + k + '"><b>' + esc(bxLabel(c)) + ':</b> ' + esc(txt) + '</button><button type="button" class="fc-x" data-bxunf="' + k + '" aria-label="Remove this filter">✕</button></span>';
+    }).join('') + (fk.length > 1 ? '<button type="button" class="linkbtn" data-bxunf="*">Clear all</button>' : '') + '</div>';
+    // views + what's showing (or the bulk actions)
+    var list = bxList(), nMiss = L.filter(function (l) { return bxMissOf(l).length; }).length, selN = bxWholeRows().length;
+    h += '<div class="tabrow"><nav class="vtabs" aria-label="Views">' + [{ name: '' }].concat(BX.prefs.views || []).map(function (x) {
+      return '<button type="button" class="vt' + (!BX.missing && x.name === BX.view ? ' on' : '') + '" data-bxview="' + esc(x.name) + '"' + (x.name ? ' title="Double-click to edit"' : '') + '>' + esc(x.name || 'All') + '</button>';
+    }).join('') + '<button type="button" class="vt' + (BX.missing ? ' on' : '') + '" data-bxmiss="1" title="Services with details still missing">Missing info' + (nMiss ? ' <span class="vt-n">' + nMiss + '</span>' : '') + '</button>' +
+      '<button type="button" class="vt add" data-bxnewview="1">+ New View</button></nav><div class="subbar">' +
+      (selN && !ro ? '<div class="bulk"><span>' + selN + ' selected</span><button type="button" data-bxbulk="ok">Mark confirmed</button><button type="button" data-bxbulk="unok">Not confirmed</button><button type="button" data-bxbulk="category">Category</button><button type="button" data-bxbulk="cur">Currency</button><button type="button" class="del" data-bxbulk="delete">Delete</button><button type="button" class="x" data-bxbulk="clear" aria-label="Clear selection">×</button></div>'
+        : '<span>Showing <b>' + list.length + '</b> of ' + L.length + ' services' + (BX.chgOnly ? '<button type="button" class="seenall" data-bxa="seenall">Mark all as seen</button>' : '') + '</span>') + '</div></div>';
+
+    // the spreadsheet
+    var cols = bxCols(), tw = 48, s = BX.sort;
+    cols.forEach(function (c) { tw += bxW(c); });
+    h += '<div class="layout"><div class="tablewrap bx-wrap"><table class="bx" id="bx" style="width:' + tw + 'px;min-width:0"><thead><tr>' +
+      '<th class="chk corner" style="width:48px" title="Select all"><button type="button" class="nosort" title="Sort by row number">#' + (s.k === 'row' ? (s.dir > 0 ? '↑' : '↓') : '') + '</button><span class="sr">Select all</span></th>';
+    cols.forEach(function (c) {
+      var arrow = s.k === c.k ? (s.dir > 0 ? ' ↑' : ' ↓') : '';
+      h += '<th data-bxk="' + c.k + '" style="width:' + bxW(c) + 'px"' + (c.num ? ' class="r"' : '') + ' aria-sort="' + (s.k === c.k ? (s.dir > 0 ? 'ascending' : 'descending') : 'none') + '">' +
+        '<button type="button" title="' + esc(bxLabel(c)) + '">' + esc(bxHead(c)) + arrow + '</button>' +
+        '<button type="button" class="fbtn' + (BX.filters[c.k] ? ' on' : '') + '" data-bxf="' + c.k + '" aria-label="Filter ' + esc(bxLabel(c)) + '" title="Filter"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 4h18l-7 8.5V19l-4 2v-8.5z"/></svg></button>' +
+        '<span class="rz" data-bz="' + c.k + '" title="Drag to resize · double-click to reset"></span></th>';
+    });
+    h += '</tr></thead><tbody>';
+    var lastG = null;
+    list.forEach(function (li) {
+      var l = L[li], added = hi[l.row + '|add'], miss = BX.missing ? bxMissOf(l) : [];
+      if (BX.groupBy && (l.category || '') !== lastG) {
+        lastG = l.category || '';
+        var gl = list.filter(function (x) { return (L[x].category || '') === lastG; }).map(function (x) { return L[x]; }), ge = 0, gi = 0;
+        gl.forEach(function (x) { if (x.cur === '₪') gi += bgNum(x.total); else ge += bgNum(x.total); });
+        h += '<tr class="grp"><td colspan="' + (cols.length + 1) + '"><bdi>' + esc(lastG || 'No category') + '</bdi> · ' + gl.length + (gl.length === 1 ? ' service' : ' services') + ' · ' + bgMoney(ge) + (gi ? ' + ' + bgMoney(gi, '₪') : '') + '</td></tr>';
+      }
+      h += '<tr data-bxl="' + li + '"><td class="chk' + (added ? ' chg' : '') + '"><span class="rn">' + (l.row || '') + '</span></td>';
+      cols.forEach(function (c) {
+        var cg = c.f && hi[l.row + '|' + c.f];
+        var cls = (c.ro || ro ? 'ro' : 'ed') + ' al-' + bxAl(c.k) + (cg ? ' chg' : '') + (c.k === 'total' ? ' b' : '') + (c.k === 'ok' ? ' okc' : '') + (c.k === 'category' ? ' mut' : '') + (miss.indexOf(c.k) > -1 ? ' miss' : '');
+        var inner = c.k === 'ok' ? '<span class="bx-ck' + (l.ok ? ' on' : '') + '" role="checkbox" aria-checked="' + !!l.ok + '" aria-label="Confirmed">' + (l.ok ? '✓' : '') + '</span>'
+          : c.k === 'item' && miss.length ? '<b>' + esc(l.item) + '</b> <span class="dup mz" title="Missing: ' + esc(miss.map(function (k) { return bxLabel(bxCol(k)); }).join(', ')) + '">no ' + esc(miss.map(function (k) { return bxLabel(bxCol(k)); }).join(', ').toLowerCase()) + '</span>'
+          : esc(bxShown(l, c.k));
+        h += '<td data-k="' + c.k + '" class="' + cls + '"><div class="c">' + inner + '</div></td>';
+      });
+      h += '</tr>';
+    });
+    var hasItem = cols.some(function (x) { return x.k === 'item'; });
+    h += '</tbody><tfoot><tr><td class="chk"></td>' + cols.map(function (c, i) {
+      if (c.k === 'total') return '<td class="al-r b"><div class="c">' + bgMoney(total) + '</div>' + (I.on ? '<div class="c">' + bgMoney(I.total, '₪') + '</div>' : '') + '</td>';
+      return '<td>' + (c.k === 'item' || (!hasItem && i === 1) ? '<div class="c">Total</div>' : '') + '</td>';
+    }).join('') + '</tr></tfoot></table>' +
+      (list.length ? '' : '<div class="empty">' + (BX.missing ? 'Nothing missing – every service has its details.' : BX.chgOnly ? 'No changes to review.' : L.length ? 'No services match these filters.' : 'No services yet.') + '</div>') +
+      '<div class="selbar" id="bxselbar" hidden></div></div>' + bxPanelHtml() + '</div>';
+    if (ro) h += '<div class="bx-under"><span class="bx-tip">Noam has locked the budget for changes. Ask him if you want to change something.</span></div>';
+    h += '<datalist id="bx-cats">' + (function () { var o = {}; L.forEach(function (l) { if (l.category) o[l.category] = 1; }); return Object.keys(o).map(function (k) { return '<option value="' + esc(k) + '">'; }).join(''); })() + '</datalist>';
+    return h + bxChPanel(admin);
+  }
+  // whole rows selected (by their number): the "selected services" for the bulk actions
+  function bxWholeRows() {
+    if (!$('bx')) return [];
+    var s = bxRects(), out = [];
+    s.list.forEach(function (q) { if (q.c0 === 0 && q.c1 === s.C.length - 1 && s.C.length > 1) for (var r = q.r0; r <= q.r1; r++) if (out.indexOf(s.R[r]) < 0) out.push(s.R[r]); });
+    return out;
+  }
+  function bxSubbar() {   // the bulk bar follows the selection without redrawing the table
+    var sb = $('budget').querySelector('.tabrow .subbar'); if (!sb) return;
+    var n = bxWholeRows().length, has = !!sb.querySelector('.bulk');
+    if (!!n !== has || (n && sb.querySelector('.bulk span').textContent !== n + ' selected')) {
+      var L = bxLines();
+      sb.innerHTML = n && !bxRO() ? '<div class="bulk"><span>' + n + ' selected</span><button type="button" data-bxbulk="ok">Mark confirmed</button><button type="button" data-bxbulk="unok">Not confirmed</button><button type="button" data-bxbulk="category">Category</button><button type="button" data-bxbulk="cur">Currency</button><button type="button" class="del" data-bxbulk="delete">Delete</button><button type="button" class="x" data-bxbulk="clear" aria-label="Clear selection">×</button></div>'
+        : '<span>Showing <b>' + bxR().length + '</b> of ' + L.length + ' services' + (BX.chgOnly ? '<button type="button" class="seenall" data-bxa="seenall">Mark all as seen</button>' : '') + '</span>';
+    }
+  }
+
+  // ---------- details of one service (side panel, like the guests table) ----------
+  function bxPanelHtml() {
+    var l = BX.panel != null ? bxLines()[bxLiOfRow(BX.panel)] : null; if (!l) return '';
+    var ro = bxRO(), dis = ro ? ' disabled' : '', admin = !!(S.admin && BG.sheet), v = bgkVend(l.vendor);
+    var f = function (k, label, val, extra) { return '<label class="f">' + esc(label) + '<input data-bpf="' + k + '" value="' + esc(val) + '"' + dis + (extra || '') + '></label>'; };
+    var ps = (BG.data.payments || []).filter(function (x) { return l.vendor && x.vendor === l.vendor; });
+    return '<aside class="panel bx-panel" aria-label="Service details"><div class="hd"><div><div class="meta">Row ' + l.row + (l.category ? ' · ' + esc(l.category) : '') + '</div><div class="name">' + esc(l.item) + '</div></div>' +
+      '<button type="button" class="x" data-bxa="pclose" aria-label="Close service details">×</button></div>' +
+      f('item', 'Service', l.item) +
+      '<div class="two">' + f('category', 'Category', l.category || '', ' list="bx-cats"') + f('vendor', 'Name', l.vendor || '') + '</div>' +
+      '<div class="two"><label class="f">Currency<select data-bpf="cur"' + dis + '><option value="€"' + (l.cur === '₪' ? '' : ' selected') + '>€</option><option value="₪"' + (l.cur === '₪' ? ' selected' : '') + '>₪</option></select></label>' +
+      '<label class="f">Confirmed<select data-bpf="ok"' + dis + '><option value="false"' + (l.ok ? '' : ' selected') + '>Not yet</option><option value="true"' + (l.ok ? ' selected' : '') + '>✓ Confirmed</option></select></label></div>' +
+      '<div class="two">' + f('unit', 'Cost', bxRaw(l, 'unit'), ' inputmode="decimal"') + f('qty', 'Quantity', bxRaw(l, 'qty'), ' inputmode="decimal"') + '</div>' +
+      '<div class="bx-ptot"><span>Total price</span><b>' + (bgNum(l.total) ? bgMoney(l.total, l.cur) : '–') + '</b></div>' +
+      (admin && l.note ? '<div class="meta"><b>Notes (only you):</b> ' + esc(l.note) + '</div>' : '') +
+      (v && l.vendor ? '<div class="hist"><h3>' + esc(l.vendor) + '</h3>' + bgkTrio(v) + (ps.length ? ps.slice().reverse().map(function (x) { return '<div class="it">' + esc(x.date || '') + ' · ' + bgMoney(x.amount, x.cur) + '<span>' + esc([x.method, x.by].filter(Boolean).join(' · ')) + '</span></div>'; }).join('') : '<div class="meta">No payments yet.</div>') + '</div>' : '') +
+      '<div class="prow">' + (admin && l.vendor ? '<button type="button" class="btn" data-bgk="pay" data-v="' + esc(l.vendor) + '">+ Payment</button>' : '') + (ro ? '' : '<button type="button" class="btn danger" data-bxa="pdel">Delete service</button>') + '</div>' +
+      '<div class="hist"><h3>Activity</h3><div id="bx-hist" class="meta">Loading…</div></div></aside>';
+  }
+  function bxOpen(li) {
+    var l = bxLines()[li]; if (!l || !l.row) return;
+    BX.panel = l.row; bxRedraw(); bxHist();
+  }
+  function bxHist() {
+    var row = BX.panel; if (row == null) return;
+    bxCall({ action: 'budgetHistory', row: row }).then(function (r) {
+      var el = $('bx-hist'); if (!el || BX.panel !== row) return;
+      if (!r.ok) { el.textContent = 'Couldn’t load activity.'; return; }
+      var l = bxLines()[bxLiOfRow(row)];
+      el.className = ''; el.innerHTML = (r.changes || []).length ? r.changes.map(function (c) {
+        var u = /^undo /.test(c.field), f = u ? c.field.slice(5) : c.field;
+        var what = u ? 'Undid ' + (BX_FL[f] || f).toLowerCase() : f === 'add' ? 'Added the service' : f === 'delete' ? 'Deleted the service' : (BX_FL[f] || f) + ': ' + bxVal(f, c.old_value, l && l.cur) + ' → ' + bxVal(f, c.new_value, l && l.cur);
+        return '<div class="it">' + esc(what) + (c.undone ? ' (undone)' : '') + '<span>' + esc((c.by_name || '') + ' · ' + bxWhen(c.at)) + '</span></div>';
+      }).join('') : '<div class="meta">No changes made here yet.</div>';
+    });
+  }
+  $('budget').addEventListener('change', function (e) {
+    var el = e.target.closest('[data-bpf]'); if (!el || BX.panel == null) return;
+    var li = bxLiOfRow(BX.panel); if (li < 0) return;
+    var k = el.dataset.bpf, v = k === 'ok' ? el.value === 'true' : el.value;
+    bxApply([{ li: li, k: k, v: v }]);
+  });
+
+  // ---------- deleted services (put them back, like the guests table's deleted guests) ----------
+  function bxTrashHtml(ro) {
+    var D = BX.deleted, h = '<section class="toolbar bx-tools"><button type="button" class="btn on" data-bxa="trashback">← Back to services</button></section>';
+    h += '<div class="subbar"><span>Deleted services: <b>' + (D ? D.length : '…') + '</b> · put back anything deleted by mistake</span></div>';
+    if (!D) return h + '<div class="empty">Loading…</div>';
+    if (!D.length) return h + '<div class="empty">Nothing was deleted.</div>';
+    return h + '<div class="tablewrap bx-wrap"><table class="bx" style="width:auto;min-width:760px"><thead><tr><th style="width:150px">Category</th><th style="width:300px">Service</th><th style="width:160px">Name</th><th style="width:120px" class="r"><button type="button">Total</button></th><th style="width:220px">Deleted</th><th style="width:110px"></th></tr></thead><tbody>' +
+      D.map(function (d) {
+        var t = bgNum(d.unit) * (bgNum(d.qty) || 0);
+        return '<tr><td><div class="c mut">' + esc(d.category) + '</div></td><td><div class="c">' + esc(d.item) + '</div></td><td><div class="c">' + esc(d.vendor) + '</div></td><td class="al-r"><div class="c">' + (t ? bgMoney(t, d.cur) : '') + '</div></td>' +
+          '<td><div class="c mut">' + esc((d.by_name || '') + ' · ' + bxWhen(d.at)) + '</div></td><td><div class="c">' + (ro ? '' : '<button type="button" class="linkbtn" data-bxrestore="' + d.id + '">Put back</button>') + '</div></td></tr>';
+      }).join('') + '</tbody></table></div>';
+  }
+  function bxTrashLoad() {
+    BX.deleted = null; bxRedraw();
+    bxCall({ action: 'budgetDeleted' }).then(function (r) { BX.deleted = r.ok ? r.deleted || [] : []; if (!r.ok) toast(r.error || 'Couldn’t load the deleted services.', null, null, true); bxRedraw(); });
+  }
+
+  // ---------- views (saved with the budget, shared with everyone on it) ----------
+  function bxUseView(name) {
+    BX.view = name; BX.missing = false; BX.trash = false; BX.chgOnly = false;
+    try { localStorage.setItem('kai-budget-view-' + EVENT, name); } catch (e) {}
+    var v = bxCurView();
+    BX.sort = v && v.sort ? { k: v.sort.k, dir: v.sort.dir } : { k: 'row', dir: 1 };
+    BX.filters = {}; if (v && v.filters) Object.keys(v.filters).forEach(function (k) { BX.filters[k] = v.filters[k].slice(); });
+    BX.a = BX.b = BX.c = null; BX.extra = []; bxRedraw();
+  }
+  function bxState() {
+    var c = bxCol(BX.sort.k), parts = [];
+    if (BX.sort.k !== 'row' || BX.sort.dir !== 1) parts.push('sorted by ' + (c ? bxLabel(c) : 'row number') + (BX.sort.dir < 0 ? ' ↓' : ' ↑'));
+    var n = Object.keys(BX.filters).length; if (n) parts.push(n + ' column filter' + (n > 1 ? 's' : ''));
+    return parts.join(' · ');
+  }
+  function bxViewOpen(v) {
+    var cols = v ? v.cols : ['ok', 'item', 'vendor', 'unit', 'qty', 'total'];
+    var all = cols.map(bxCol).concat(BX_COLS.filter(function (c) { return cols.indexOf(c.k) < 0; })).filter(function (c, i, a) { return c && a.indexOf(c) === i; });
+    pick(v ? 'Edit view' : 'New view',
+      '<label class="f">View name<input id="v-name" maxlength="40" value="' + esc(v ? v.name : '') + '" placeholder="e.g. Suppliers" autocomplete="off"></label>' +
+      '<div class="f" style="margin-top:12px">Columns <span style="font-weight:400;color:var(--soft)">· drag ⠿ to change the order</span></div><div class="vcols vord">' + all.map(function (c) {
+        var lock = c.k === 'item';
+        return '<div class="vc" data-vk="' + c.k + '"><span class="dh" title="Drag to move" aria-hidden="true">⠿</span><label><input type="checkbox" data-vc="' + c.k + '"' + (lock || cols.indexOf(c.k) > -1 ? ' checked' : '') + (lock ? ' disabled' : '') + '>' + esc(bxLabel(c)) + '</label></div>';
+      }).join('') + '</div>' +
+      (bxState() ? '<label class="vc" style="margin-top:12px"><input type="checkbox" id="v-state"' + (!v || bxCurView() === v ? ' checked' : '') + '>Save what’s on screen now: ' + esc(bxState()) + '</label>' : '') +
+      (v ? '<button type="button" class="btn danger" id="v-del" style="margin-top:12px">Delete view</button>' : ''),
+      function () {
+        var name = $('v-name').value.trim(), views = (BX.prefs.views || []).slice();
+        if (!name) { $('pick-err').textContent = 'Give the view a name.'; $('pick-err').hidden = false; return false; }
+        if (views.some(function (x) { return x.name.toLowerCase() === name.toLowerCase() && x !== v; }) || name.toLowerCase() === 'all') { $('pick-err').textContent = 'There’s already a view with that name.'; $('pick-err').hidden = false; return false; }
+        var ks = Array.prototype.map.call($('pick-body').querySelectorAll('.vc[data-vk]'), function (r) { return r.dataset.vk; }).filter(function (k) { var cb = $('pick-body').querySelector('[data-vc="' + k + '"]'); return cb && cb.checked; });
+        var nv = { name: name, cols: ks }, st = $('v-state');
+        if (st && st.checked) { nv.sort = { k: BX.sort.k, dir: BX.sort.dir }; nv.filters = JSON.parse(JSON.stringify(BX.filters)); }
+        else if (v) { nv.sort = v.sort; nv.filters = v.filters; }
+        if (v) views[views.indexOf(v)] = nv; else views.push(nv);
+        bxPrefSave('views', views); bxUseView(name);
+      });
+    var del = $('v-del');
+    if (del) del.onclick = function () {
+      var views = (BX.prefs.views || []).filter(function (x) { return x !== v; });
+      $('dlg2').hidden = true; bxPrefSave('views', views); bxUseView('');
+      toast('View deleted', 'Undo', function () { bxPrefSave('views', views.concat([v])); bxUseView(v.name); });
+    };
+  }
+  dragRows($('pick-body'), '.vc[data-vk]', function () {});
+
+  // ---------- Columns (show / hide / order – shared) and "What to check" (Missing info) ----------
+  function bxColumnsOpen() {
+    if (BX.missing) {
+      var on = bxMissOn();
+      pick('What to check', '<p class="imp-p" style="margin-bottom:8px">Services show up here when any of these are empty.</p><div class="vcols">' +
+        BX_MISS.map(function (x) { return '<label class="vc"><input type="checkbox" data-bmo="' + x.id + '"' + (on.indexOf(x.id) > -1 ? ' checked' : '') + '>' + esc(x.label) + '</label>'; }).join('') + '</div>',
+        function () {
+          var ids = Array.prototype.map.call($('pick-body').querySelectorAll('[data-bmo]:checked'), function (cb) { return cb.dataset.bmo; });
+          try { localStorage.setItem('kai-budget-missing-' + EVENT, JSON.stringify(ids)); } catch (e) {}
+          bxRedraw();
+        });
+      return;
+    }
+    if (bxCurView()) { bxViewOpen(bxCurView()); return; }
+    var q = '';
+    function body() {
+      var order = bxOrderAll(), hid = bxHidden(), keys = order.filter(function (k) { return !q || bxLabel(bxCol(k)).toLowerCase().indexOf(q) > -1; });
+      $('pick-title').innerHTML = 'Columns <span class="cnt">' + order.filter(function (k) { return hid.indexOf(k) < 0; }).length + ' of ' + order.length + ' shown</span>';
+      return (keys.length ? '<div class="cgrp"><div class="cgrid">' + keys.map(function (k, i) {
+        var c = bxCol(k), lk = k === 'item', on = hid.indexOf(k) < 0;
+        return '<div class="colrow' + (on ? '' : ' off') + '" data-bck="' + k + '"><span class="dh' + (q ? ' off' : '') + '" title="Drag to move" aria-hidden="true">⠿</span><label title="' + esc(bxLabel(c)) + '"><input type="checkbox" data-bcol="' + k + '"' + (on ? ' checked' : '') + (lk ? ' disabled' : '') + '><span>' + esc(bxLabel(c)) + '</span></label>' +
+          '<button type="button" data-bmv="-1" data-k="' + k + '" aria-label="Move ' + esc(bxLabel(c)) + ' up"' + (i === 0 || q ? ' disabled' : '') + '>↑</button>' +
+          '<button type="button" data-bmv="1" data-k="' + k + '" aria-label="Move ' + esc(bxLabel(c)) + ' down"' + (i === keys.length - 1 || q ? ' disabled' : '') + '>↓</button></div>';
+      }).join('') + '</div></div>' : '<div class="cnone">No column with that name</div>') + '<p class="meta" style="margin:10px 0 0;font-size:13px;color:var(--soft)">Drag ⠿ or use ↑↓ to change the order. Saved for this budget on every computer. No data is deleted.</p>';
+    }
+    function redraw() { var b = $('pick-body'), y = b.scrollTop; $('bxcols-list').innerHTML = body(); b.scrollTop = y; }
+    function save(order, hidden) { bxPrefSave('cols', { order: order, hidden: hidden }); redraw(); bxRedraw(); }
+    pick('Columns', '<div class="ctools"><input id="bxcols-q" type="search" placeholder="Find a column" autocomplete="off"><button type="button" class="clink" id="bxcols-reset">Reset</button></div><div id="bxcols-list"></div>', function () {});
+    $('dlg2').querySelector('.dialog').classList.add('colsdlg');
+    $('bxcols-list').innerHTML = body(); $('pick-ok').textContent = 'Done';
+    $('bxcols-q').addEventListener('input', function () { q = this.value.trim().toLowerCase(); redraw(); });
+    $('pick-body').onclick = function (e) {
+      var b = e.target.closest('[data-bmv],#bxcols-reset'); if (!b) return;
+      if (b.id === 'bxcols-reset') {
+        var before = BX.prefs.cols; save(BX_COLS.map(function (c) { return c.k; }), []);
+        toast('Columns back to the default', 'Undo', function () { bxPrefSave('cols', before); if (!$('dlg2').hidden && $('bxcols-list')) redraw(); bxRedraw(); });
+        return;
+      }
+      var o = bxOrderAll(), k = b.dataset.k, a = o.indexOf(k), z = a + Number(b.dataset.bmv);
+      if (z < 0 || z >= o.length) return;
+      o[a] = o[z]; o[z] = k; save(o, bxHidden().slice());
+      var nb = $('pick-body').querySelector('[data-k="' + k + '"][data-bmv="' + b.dataset.bmv + '"]'); if (nb && !nb.disabled) nb.focus();
+    };
+    $('pick-body').onchange = function (e) {
+      var cb = e.target.closest('[data-bcol]'); if (!cb) return;
+      var k = cb.dataset.bcol, hdn = bxHidden().filter(function (x) { return x !== k; });
+      if (!cb.checked) hdn.push(k);
+      save(bxOrderAll(), hdn);
+    };
+  }
+  dragRows($('pick-body'), '.colrow[data-bck]', function () {
+    if (!$('bxcols-list')) return;
+    var now = Array.prototype.map.call($('pick-body').querySelectorAll('.colrow[data-bck]'), function (r) { return r.dataset.bck; });
+    var o = bxOrderAll(), slots = now.map(function (k) { return o.indexOf(k); }).sort(function (a, b) { return a - b; });
+    slots.forEach(function (at, i) { o[at] = now[i]; });
+    bxPrefSave('cols', { order: o, hidden: bxHidden().slice() }); $('bxcols-list').innerHTML = ''; bxColumnsOpen(); bxRedraw();
+  });
+
+  // ---------- Add Service (a small window, like Add Guest) ----------
+  function bxAddOpen() {
+    if (bxRO()) { toast(BX_LOCKED, null, null, true); return; }
+    pick('Add a service',
+      '<label class="f">Service *<input id="ba-item" autocomplete="off" placeholder="e.g. Photographer"></label>' +
+      '<div class="two" style="margin-top:10px"><label class="f">Category<input id="ba-cat" list="bx-cats" autocomplete="off"></label><label class="f">Name<input id="ba-vendor" autocomplete="off" placeholder="The vendor"></label></div>' +
+      '<div class="two" style="margin-top:10px"><label class="f">Cost<span class="p-amt"><input id="ba-unit" inputmode="decimal" autocomplete="off"><select id="ba-cur" aria-label="Currency"><option>€</option><option>₪</option></select></span></label><label class="f">Quantity<input id="ba-qty" inputmode="decimal" autocomplete="off" value="1"></label></div>',
+      function () {
+        var item = $('ba-item').value.trim();
+        if (!item) { $('pick-err').textContent = 'Write the service.'; $('pick-err').hidden = false; return false; }
+        var vals = { category: $('ba-cat').value.trim(), vendor: $('ba-vendor').value.trim(), cur: $('ba-cur').value, unit: $('ba-unit').value.trim(), qty: $('ba-qty').value.trim() };
+        var bad = ['unit', 'qty'].filter(function (k) { return vals[k] && bxFix(k, vals[k]).err; })[0];
+        if (bad) { $('pick-err').textContent = bxFix(bad, vals[bad]).err; $('pick-err').hidden = false; return false; }
+        bxAddLines([Object.assign({ item: item }, vals)]);
+      });
+  }
+  // add whole lines (Add Service, Import): the service first, then its details – in order, into the sheet
+  function bxAddLines(rows) {
+    var L = bxLines(), n = 0;
+    rows.forEach(function (o) {
+      if (!o.item) return;
+      var l = { item: o.item, category: '', vendor: '', cur: '', unit: 0, qty: 0, total: 0, ok: false, row: 0, _pending: true, _chk: o.item };
+      L.push(l); BX.q.push({ l: l, op: 'add', value: o.item }); n++;
+      [['category', o.category], ['vendor', o.vendor], ['cur', o.cur], ['unit', o.unit], ['qty', o.qty], ['ok', o.ok]].forEach(function (p) {
+        if (p[1] == null || p[1] === '' || p[1] === false) return;
+        var fx = bxFix(p[0], p[1]); if (fx.err || (p[0] === 'cur' && fx.v === '€')) return;
+        bxSet(l, p[0], fx.v); BX.q.push({ l: l, field: bxCol(p[0]).f, value: fx.v, check: o.item });
+      });
+    });
+    if (!n) return;
+    BX.filters = {}; BX.search = ''; bxTotals(); bxRedraw(); bxRun();
+    toast(n === 1 ? 'Added “' + rows[0].item + '”' : 'Adding ' + n + ' services…');
+  }
+
+  // ---------- Import services (Excel / CSV) ----------
+  var BX_IMP = { item: ['service', 'item', 'שירות', 'פריט', 'description'], category: ['category', 'קטגוריה', 'סוג'], vendor: ['name', 'vendor', 'supplier', 'ספק', 'שם'],
+    cur: ['currency', 'מטבע'], unit: ['cost', 'price', 'unit', 'מחיר', 'עלות'], qty: ['quantity', 'qty', 'כמות'], ok: ['confirmed', 'ok', 'מאושר'] };
+  function bxImportOpen() {
+    if (bxRO()) { toast(BX_LOCKED, null, null, true); return; }
+    pick('Import services', '<p class="imp-p">Choose an Excel (.xlsx) or CSV file with a header row – Service, Category, Name, Currency, Cost, Quantity. Each row becomes a new service in the sheet.</p>' +
+      '<input type="file" id="bxi-file" accept=".xlsx,.xls,.csv" style="margin-top:10px"><p class="meta" id="bxi-sum" style="margin-top:10px"></p>', function () {
+        if (!BX.impRows || !BX.impRows.length) { $('pick-err').textContent = 'Choose a file first.'; $('pick-err').hidden = false; return false; }
+        bxAddLines(BX.impRows); BX.impRows = null;
+      });
+    BX.impRows = null; $('pick-ok').textContent = 'Import'; loadXlsx().catch(function () {});
+    $('bxi-file').addEventListener('change', function () {
+      var file = this.files[0]; if (!file) return; var isCsv = /\.csv$/i.test(file.name);
+      loadXlsx().then(function () { return isCsv ? file.text() : file.arrayBuffer(); }).then(function (data) {
+        var wb = isCsv ? XLSX.read(data, { type: 'string' }) : XLSX.read(data, { type: 'array' });
+        var rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, raw: false, defval: '' }).map(function (r) { return r.map(function (v) { return String(v == null ? '' : v).trim(); }); }).filter(function (r) { return r.some(Boolean); });
+        var head = (rows[0] || []).map(function (x) { return x.toLowerCase(); }), map = {};
+        Object.keys(BX_IMP).forEach(function (k) { var i = head.findIndex(function (h) { return BX_IMP[k].some(function (w) { return h === w; }); }); if (i < 0) i = head.findIndex(function (h) { return BX_IMP[k].some(function (w) { return w.length > 2 && h.indexOf(w) > -1; }); }); if (i > -1) map[k] = i; });
+        if (map.item == null) throw new Error('no service column');
+        BX.impRows = rows.slice(1).map(function (r) { var o = {}; Object.keys(map).forEach(function (k) { o[k] = r[map[k]]; }); if (o.ok != null) o.ok = bxFix('ok', o.ok).v; return o; }).filter(function (o) { return o.item; });
+        $('bxi-sum').textContent = BX.impRows.length + ' services found · columns: ' + Object.keys(map).map(function (k) { return bxLabel(bxCol(k)); }).join(', ');
+        $('pick-err').hidden = true;
+      }).catch(function () { BX.impRows = null; $('pick-err').textContent = 'Couldn’t read this file. It needs a header row with a “Service” column.'; $('pick-err').hidden = false; });
+    });
+  }
+
+  // ---------- export (Excel / PDF) and the summary ----------
+  function bxExportName() { return ($('couple').textContent || 'Budget').trim() + ' – Budget'; }
+  function bxExportCsv() {
+    var cols = bxCols(), list = bxList().map(function (i) { return bxLines()[i]; });
+    var cell = function (v) { v = String(v == null ? '' : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+    var csv = [['#'].concat(cols.map(bxLabel)).join(',')].concat(list.map(function (l) {
+      return [l.row || ''].concat(cols.map(function (c) { return cell(c.k === 'ok' ? (l.ok ? 'Yes' : '') : c.k === 'cur' ? bgSym(l.cur) : bxRaw(l, c.k)); })).join(',');
+    })).join('\r\n');
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' }));
+    a.download = bxExportName() + '.csv'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+    toast('Exported ' + list.length + ' services');
+  }
+  function bxTotalsOf(list) { var o = { e: 0, i: 0, ok: 0 }; list.forEach(function (l) { if (l.cur === '₪') o.i += bgNum(l.total); else o.e += bgNum(l.total); if (l.ok) o.ok++; }); return o; }
+  function bxExportPdf() {
+    var cols = bxCols(), list = bxList().map(function (i) { return bxLines()[i]; }), v = bxCurView(), D = BG.data, I = bgIls();
+    var w = window.open('', '_blank');
+    if (!w) { toast('Allow pop-ups for this site to create the PDF.', null, null, true); return; }
+    var T = bxTotalsOf(list), box = function (label, value, cls) { return '<div class="box ' + (cls || '') + '"><div class="v">' + value + '</div><div class="k">' + esc(label) + '</div></div>'; };
+    var summary = '<div class="boxes">' + box('Services in this report', list.length, 'main') + box('Total', bgMoney(T.e)) + (T.i ? box('Total in shekels', bgMoney(T.i, '₪')) : '') +
+      box('Paid', bgMoney(D.paid)) + (I.on ? box('Paid in shekels', bgMoney(I.paid, '₪')) : '') + box('Confirmed', T.ok + ' of ' + list.length) + '</div>';
+    var byCat = {}; list.forEach(function (l) { var k = l.category || 'No category'; byCat[k] = byCat[k] || { e: 0, i: 0, n: 0 }; byCat[k].n++; if (l.cur === '₪') byCat[k].i += bgNum(l.total); else byCat[k].e += bgNum(l.total); });
+    var extra = '<div class="sum"><h3>By category</h3><table class="mini">' + Object.keys(byCat).map(function (k) { var c = byCat[k]; return '<tr><td>' + esc(k) + '</td><td class="r">' + c.n + '</td><td class="r">' + bgMoney(c.e) + (c.i ? ' + ' + bgMoney(c.i, '₪') : '') + '</td></tr>'; }).join('') + '</table></div>';
+    var now = new Date(), stamp = now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear() + ' ' + ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+    var table = '<table class="grid"><thead><tr><th>#</th>' + cols.map(function (c) { return '<th' + (c.num ? ' class="r"' : '') + '>' + esc(bxHead(c)) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      list.map(function (l) { return '<tr><td>' + (l.row || '') + '</td>' + cols.map(function (c) { return '<td dir="auto"' + (c.num ? ' class="r"' : '') + '>' + esc(c.k === 'ok' ? (l.ok ? '✓' : '') : bxShown(l, c.k)) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table>';
+    var filters = [BX.search.trim() && 'Search: “' + BX.search.trim() + '”', Object.keys(BX.filters).length && Object.keys(BX.filters).length + ' column filter(s)'].filter(Boolean).join(' · ');
+    var html = '<!doctype html><html><head><meta charset="utf-8"><title>' + esc(bxExportName()) + '</title>' +
+      '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Cormorant+Garamond:wght@600&display=swap">' +
+      '<style>@page{size:A4 landscape;margin:12mm}*{box-sizing:border-box}body{margin:0;font:9.5pt/1.35 Assistant,Arial,sans-serif;color:#1F1F21;-webkit-print-color-adjust:exact;print-color-adjust:exact}' +
+      '.head{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #2E3A9E;padding-bottom:6px;margin-bottom:10px}' +
+      '.couple{font:600 22pt/1 "Cormorant Garamond",Georgia,serif;color:#2E3A9E}.meta{color:#4A4A50;font-size:9.5pt;margin-top:4px}.right{text-align:right;color:#4A4A50;font-size:9pt}.right b{color:#1F1F21;font-size:11pt}' +
+      '.boxes{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}.box{border:1px solid #D6D4CE;border-radius:4px;padding:5px 10px;min-width:90px}.box .v{font-size:14pt;font-weight:700}.box .k{font-size:8pt;color:#4A4A50;text-transform:uppercase;letter-spacing:.04em}' +
+      '.box.main{background:#2E3A9E;border-color:#2E3A9E;color:#FFF}.box.main .k{color:#E6E8F7}.sums{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px}.sum h3{margin:0 0 3px;font-size:9.5pt}' +
+      '.mini{border-collapse:collapse}.mini td{padding:1px 12px 1px 0;border-bottom:1px solid #EFECE6}.r{text-align:right;font-variant-numeric:tabular-nums}' +
+      '.grid{width:100%;border-collapse:collapse}.grid th{background:#F1EFEA;text-align:left;font-size:8.5pt;padding:4px 6px;border:1px solid #D6D4CE}.grid th.r{text-align:right}.grid td{padding:3px 6px;border:1px solid #E4E1DA;vertical-align:top}' +
+      '.grid thead{display:table-header-group}.grid tr{page-break-inside:avoid}</style></head><body>' +
+      '<div class="head"><div><div class="couple">' + esc($('couple').textContent) + '</div><div class="meta">' + esc($('when').textContent) + '</div></div>' +
+      '<div class="right"><b>' + esc(BX.missing ? 'Missing info' : v ? v.name : 'Budget') + '</b>' + (filters ? '<br>' + esc(filters) : '') + '<br>Created ' + stamp + '</div></div>' +
+      summary + '<div class="sums">' + extra + '</div>' + table +
+      '<script>document.fonts.ready.then(function(){setTimeout(function(){window.print();},200);});<\/script></body></html>';
+    w.document.open(); w.document.write(html); w.document.close();
+  }
+  function bxSummary() {
+    var d = document.getElementById('sumv'), L = bxLines().filter(function (l) { return l.item; }), D = BG.data, I = bgIls();
+    if (!d) { d = document.createElement('div'); d.id = 'sumv'; document.body.appendChild(d); d.addEventListener('click', function (e) { e.stopPropagation(); if (e.target === d || e.target.closest('[data-sv="close"]')) d.hidden = true; }); }
+    var T = bxTotalsOf(L), byCat = {}, byVen = {};
+    L.forEach(function (l) {
+      var k = l.category || 'No category'; byCat[k] = byCat[k] || { e: 0, i: 0 }; if (l.cur === '₪') byCat[k].i += bgNum(l.total); else byCat[k].e += bgNum(l.total);
+    });
+    (D.vendors || []).forEach(function (v) { if (v.name !== BGK_NV) byVen[v.name] = v; });
+    var money = function (e, i) { return (e || !i ? bgMoney(e) : '') + (i ? (e ? ' + ' : '') + bgMoney(i, '₪') : ''); };
+    var B = [
+      { t: 'Totals', rows: [['Services', String(L.length)], ['Confirmed', T.ok + ' of ' + L.length], ['Total', money(T.e, T.i)], ['Paid', money(bgNum(D.paid), I.paid)], ['Left to pay', money(bgNum(D.total) - bgNum(D.paid), I.total - I.paid)]] },
+      { t: 'By category', rows: Object.keys(byCat).map(function (k) { return [k, money(byCat[k].e, byCat[k].i)]; }) },
+      { t: 'Vendors – left to pay', rows: Object.keys(byVen).map(function (k) { var v = byVen[k]; return [k, bgMoney(v.balance, v.cur)]; }) }
+    ];
+    var txt = B.map(function (b) { return b.t + '\n' + b.rows.map(function (r) { return '  ' + r[0] + ': ' + r[1]; }).join('\n'); }).join('\n\n');
+    d.innerHTML = '<div class="sv-in"><div class="sv-h"><b>Budget summary · ' + esc($('couple').textContent) + '</b><span class="grow"></span><button type="button" class="btn" data-sv="copy">Copy</button><button type="button" class="btn" data-sv="close">Close</button></div><div class="sv-b">' +
+      B.map(function (b) { return '<section><h3>' + esc(b.t) + '</h3>' + b.rows.map(function (r) { return '<div class="sv-r"><span dir="auto">' + esc(r[0]) + '</span><b>' + esc(r[1]) + '</b></div>'; }).join('') + '</section>'; }).join('') +
+      '<p class="sv-f">Euros and shekels are counted separately. Updates by itself.</p></div></div>';
+    d.hidden = false;
+    d.querySelector('[data-sv="copy"]').onclick = function () { var b = this; (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () { b.textContent = 'Copied'; }).catch(function () {}); };
+  }
+
+  // ---------- the "More" menu (like the guests table's) ----------
+  function bxMore(btn) {
+    var admin = !!(S.admin && BG.sheet), ro = bxRO();
+    if (!moreMenu.hidden && moreMenu.dataset.bx) { moreMenu.hidden = true; moreMenu.dataset.bx = ''; return; }
+    moreMenu.innerHTML = (ro ? '' : '<button type="button" role="menuitem" data-bxm="add">+ Add Service</button><button type="button" role="menuitem" data-bxm="import">Import Services</button>') +
+      '<button type="button" role="menuitem" data-bxm="csv">Export to Excel (CSV)</button><button type="button" role="menuitem" data-bxm="pdf">Export PDF report</button>' +
+      '<button type="button" role="menuitem" data-bxm="summary">Summary</button><button type="button" role="menuitem" data-bxm="trash">Deleted services</button>' +
+      (admin ? '<div class="mm-sep"></div><button type="button" role="menuitem" data-bxm="history">Change history</button>' : '');
+    moreMenu.dataset.bx = '1';
+    var r = btn.getBoundingClientRect();
+    moreMenu.hidden = false; moreMenu.style.top = (r.bottom + 4) + 'px';
+    moreMenu.style.left = Math.max(8, Math.min(r.right - moreMenu.offsetWidth, innerWidth - moreMenu.offsetWidth - 8)) + 'px';
+  }
+  moreMenu.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-bxm]'); if (!b) return;
+    moreMenu.hidden = true; moreMenu.dataset.bx = '';
+    var a = b.dataset.bxm;
+    if (a === 'add') bxAddOpen();
+    else if (a === 'import') bxImportOpen();
+    else if (a === 'csv') bxExportCsv();
+    else if (a === 'pdf') bxExportPdf();
+    else if (a === 'summary') bxSummary();
+    else if (a === 'trash') { BX.trash = true; BX.panel = null; bxTrashLoad(); }
+    else if (a === 'history') { BX.chOpen = true; bxChanges(); bxRedraw(); }
+    else if (a === 'groupby') { BX.groupBy = !BX.groupBy; bxRedraw(); }
+    else if (a === 'columns') bxColumnsOpen();
+  });
+  document.addEventListener('click', function (e) { if (moreMenu.dataset.bx && !moreMenu.hidden && !moreMenu.contains(e.target) && !e.target.closest('[data-bxa="more"],[data-bxa="view"]')) { moreMenu.hidden = true; moreMenu.dataset.bx = ''; } });
+
+  // ---------- the toolbar, views, bulk actions ----------
+  $('budget').addEventListener('input', function (e) {
+    if (e.target.id !== 'bxq') return;
+    BX.search = e.target.value; clearTimeout(BX.qt);
+    BX.qt = setTimeout(function () { bxRedraw(); var s = $('bxq'); if (s) { s.focus(); s.setSelectionRange(s.value.length, s.value.length); } }, 200);
+  });
+  $('budget').addEventListener('dblclick', function (e) { var t = e.target.closest('[data-bxview]'); if (t && t.dataset.bxview) { var v = (BX.prefs.views || []).filter(function (x) { return x.name === t.dataset.bxview; })[0]; if (v) bxViewOpen(v); } });
+  $('budget').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-bxa], [data-bxview], [data-bxmiss], [data-bxnewview], [data-bxbulk], [data-bxrestore]'); if (!b) return;
+    if (b.dataset.bxview != null) { bxUseView(b.dataset.bxview); return; }
+    if (b.dataset.bxmiss) { BX.missing = true; BX.view = ''; BX.chgOnly = false; BX.filters = {}; BX.a = BX.b = BX.c = null; BX.extra = []; bxRedraw(); return; }
+    if (b.dataset.bxnewview) { bxViewOpen(null); return; }
+    if (b.dataset.bxrestore) {
+      b.disabled = true; b.textContent = 'Putting back…'; BG.saving = true;
+      bxCall({ action: 'budgetRestore', id: +b.dataset.bxrestore }).then(function (r) {
+        BG.saving = false;
+        if (!r.ok) { b.disabled = false; b.textContent = 'Put back'; toast(r.error || 'Couldn’t put it back.', null, null, true); return; }
+        toast('Put back in the budget.'); bxTrashLoad(); load(true);
+      }); return;
+    }
+    if (b.dataset.bxbulk) {
+      var lis = bxWholeRows(), k = b.dataset.bxbulk;
+      if (k === 'clear') { BX.a = BX.b = BX.c = null; BX.extra = []; bxPaint(); return; }
+      if (k === 'delete') { bxDel(lis); return; }
+      if (k === 'ok' || k === 'unok') { bxApply(lis.map(function (li) { return { li: li, k: 'ok', v: k === 'ok' }; })); return; }
+      if (k === 'category') {
+        pick(lis.length + ' services · category', '<label class="f">Category<input id="pick-in" list="bx-cats" autocomplete="off"></label>', function () { var v = $('pick-in').value.trim(); bxApply(lis.map(function (li) { return { li: li, k: 'category', v: v }; })); });
+        return;
+      }
+      if (k === 'cur') {
+        pick(lis.length + ' services · currency', '<label class="f">Currency<select id="pick-in"><option>€</option><option>₪</option></select></label>', function () { var v = $('pick-in').value; bxApply(lis.map(function (li) { return { li: li, k: 'cur', v: v }; })); });
+        return;
+      }
+      return;
+    }
+    var a = b.dataset.bxa;
+    if (a === 'add') bxAddOpen();
+    else if (a === 'groupby') { BX.groupBy = !BX.groupBy; bxRedraw(); }
+    else if (a === 'columns') bxColumnsOpen();
+    else if (a === 'chg') { BX.chgOnly = !BX.chgOnly; BX.a = BX.b = BX.c = null; BX.extra = []; bxRedraw(); }
+    else if (a === 'seenall') { BX.chgOnly = false; bxSeen('all'); }
+    else if (a === 'more') { e.stopPropagation(); bxMore(b); }
+    else if (a === 'view') {
+      e.stopPropagation();
+      if (!moreMenu.hidden && moreMenu.dataset.bx) { moreMenu.hidden = true; moreMenu.dataset.bx = ''; return; }
+      var cv = bxCurView();
+      moreMenu.innerHTML = '<button type="button" role="menuitem" data-bxm="groupby">' + (BX.groupBy ? '✓ ' : '') + 'Group by category</button>' +
+        '<button type="button" role="menuitem" data-bxm="columns">' + (BX.missing ? 'What to check' : cv ? 'Edit View' : 'Columns') + '…</button>';
+      moreMenu.dataset.bx = '1';
+      var r = b.getBoundingClientRect(); moreMenu.hidden = false; moreMenu.style.top = (r.bottom + 4) + 'px';
+      moreMenu.style.left = Math.max(8, Math.min(r.right - moreMenu.offsetWidth, innerWidth - moreMenu.offsetWidth - 8)) + 'px';
+    }
+    else if (a === 'pclose') { BX.panel = null; bxRedraw(); }
+    else if (a === 'pdel') { var li = bxLiOfRow(BX.panel); BX.panel = null; if (li > -1) bxDel([li]); else bxRedraw(); }
+    else if (a === 'trashback') { BX.trash = false; bxRedraw(); }
+  });
+
   // ---------- selection (the same model as the guests table: a = where it started, b = the far corner, c = the active cell) ----------
   function bxR() { return Array.prototype.map.call($('budget').querySelectorAll('#bx tbody tr[data-bxl]'), function (tr) { return Number(tr.dataset.bxl); }); }
   function bxC() { return Array.prototype.map.call($('budget').querySelectorAll('#bx thead th[data-bxk]'), function (th) { return th.dataset.bxk; }); }
@@ -4520,7 +5015,9 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function bxTd(li, k) { return $('budget').querySelector('#bx tr[data-bxl="' + li + '"] td[data-k="' + k + '"]'); }
   function bxOn() {
     if (!BX.c || BX.edit || !bxGrid() || !$('bx') || !$('bx').offsetParent) return false;
-    if (!$('menu').hidden || !$('xmenu').hidden || !$('dlg-pay').hidden || !$('bgk-sheet').hidden || (BXF.el && !BXF.el.hidden)) return false;
+    if (!$('menu').hidden || !$('xmenu').hidden || !$('dlg-pay').hidden || !$('dlg2').hidden || !$('bgk-sheet').hidden || (BXF.el && !BXF.el.hidden) || !moreMenu.hidden) return false;
+    var sv = document.getElementById('sumv'); if (sv && !sv.hidden) return false;
+    if (BX.trash) return false;
     var a = document.activeElement;
     return !(a && (/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) || a.isContentEditable));
   }
@@ -4533,7 +5030,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     wrap.appendChild(d); return d;
   }
   function bxPaint() {
-    var tb = $('bx'); if (!tb) return;
+    var tb = $('bx'); bxFreeze(); if (!tb) return;
     Array.prototype.forEach.call(tb.querySelectorAll('.sel, .act, .selh'), function (el) { el.classList.remove('sel', 'act', 'selh'); });
     Array.prototype.forEach.call($('budget').querySelectorAll('.bx-wrap .gov'), function (el) { el.remove(); });
     var s = bxRects(), cols = {}, rows = {};
@@ -4547,7 +5044,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var last = s.list[s.list.length - 1];
     if (last) { var box = bxOverlay('box', last, s); if (box && !bxRO() && !BX.extra.length) { var h = document.createElement('span'); h.className = 'bfh'; h.title = 'Drag to fill'; box.appendChild(h); } }
     if (BX.copy) { var cq = bxRect(BX.copy.a, BX.copy.b, s.R, s.C); if (cq) bxOverlay('cp', cq, s); }
-    bxBar();
+    bxBar(); bxSubbar();
   }
   // The bar under the table: like Excel's status bar.
   function bxBar() {
@@ -4899,7 +5396,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       var keys = targets().map(function (t) { return t.dataset.bxk; }), from = keys.indexOf(k);
       if (drop === null || drop === from || drop === from + 1) return;
       keys.splice(drop > from ? drop - 1 : drop, 0, keys.splice(from, 1)[0]);
-      BX.order = keys; bxStore('kai-budget-cols', keys); bxRedraw();
+      bxSaveOrder(keys); bxRedraw();
     }
     document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
   }
@@ -4931,7 +5428,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       if (lk === 'r') { stop(); bxFill('r'); return; }
       if (lk === 'a') { stop(); bxSelectAll(); return; }
       if (k === ' ' || e.code === 'Space') { stop(); var q0 = s.list[s.list.length - 1]; BX.extra = []; BX.a = { li: R[0], k: C[q0 ? q0.c0 : cur.c] }; BX.b = { li: R[R.length - 1], k: C[q0 ? q0.c1 : cur.c] }; bxPaint(); return; }
-      if (k === '+' || (k === '=' && e.shiftKey)) { stop(); bxAdd(); return; }
+      if (lk === 'f') { stop(); var qq = $('bxq'); if (qq) { qq.focus(); qq.select(); } return; }
+      if (k === '+' || (k === '=' && e.shiftKey)) { stop(); bxAddOpen(); return; }
       if (k === '-') { stop(); bxDel(bxSelLines()); return; }
       return;   // Ctrl+C / X / V come as copy / cut / paste events
     }
@@ -4947,7 +5445,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (th) {   // a column header: how its cells line up
       e.preventDefault();
       var k = th.dataset.bxk, c = bxCol(k), cur = BX.align[k] || '';
-      var m = openX('<div class="mh">' + esc(c.label || c.t) + ' · Align</div>' + [['', 'Automatic'], ['l', 'Left'], ['c', 'Center'], ['r', 'Right']].map(function (o) {
+      var ren = S.admin ? '<button type="button" class="mi" data-bxren="' + k + '">Rename column…</button>' + ((BX.prefs.labels || {})[k] ? '<button type="button" class="mi" data-bxunren="' + k + '">Reset name to “' + esc(c.label || c.t) + '”</button>' : '') + '<hr>' : '';
+      var m = openX(ren + '<div class="mh">' + esc(bxLabel(c)) + ' · Align</div>' + [['', 'Automatic'], ['l', 'Left'], ['c', 'Center'], ['r', 'Right']].map(function (o) {
         return '<button type="button" class="mi' + (o[0] === cur ? ' cur' : '') + '" data-bxal="' + o[0] + '" data-k="' + k + '">' + o[1] + (o[0] === cur ? '<em>✓</em>' : '') + '</button>';
       }).join(''));
       m.style.right = 'auto';
@@ -4967,8 +5466,9 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     m.innerHTML = (ro ? '' : mi('cut', 'Cut', 'Ctrl+X')) + mi('copy', 'Copy', 'Ctrl+C') + (ro ? '' : mi('paste', 'Paste', 'Ctrl+V')) + '<hr>' +
       (ro ? '' : mi('filld', 'Fill down', 'Ctrl+D') + mi('fillr', 'Fill right', 'Ctrl+R') + mi('clear', 'Clear contents', 'Delete') + '<hr>') +
       mi('sorta', 'Sort A → Z') + mi('sortz', 'Sort Z → A') + mi('fval', 'Filter by this value') + '<hr>' +
-      '<div class="mh">' + (many ? lis.length + ' selected lines' : esc(l.item || 'New line') + (l.row ? ' · row ' + l.row : '')) + '</div>' +
-      (ro ? '' : mi('add', 'Add a line', 'Ctrl+Shift++') + '<hr>' + mi('delete', many ? 'Delete ' + lis.length + ' lines' : 'Delete line', 'Ctrl+−', 'del'));
+      '<div class="mh">' + (many ? lis.length + ' selected services' : esc(l.item || 'New service') + (l.row ? ' · row ' + l.row : '')) + '</div>' +
+      (many || !l.row ? '' : mi('open', 'Open details')) +
+      (ro ? '' : mi('ok', many ? 'Mark ' + lis.length + ' as confirmed' : l.ok ? 'Mark as not confirmed' : 'Mark as confirmed') + mi('add', 'Add Service', 'Ctrl+Shift++') + '<hr>' + mi('delete', many ? 'Delete ' + lis.length + ' services' : 'Delete service', 'Ctrl+−', 'del'));
     m.hidden = false; $('scrim').hidden = false;
     var w = m.offsetWidth, h = m.offsetHeight;
     m.style.left = Math.max(8, Math.min(e.clientX, window.innerWidth - w - 8)) + 'px';
@@ -4985,10 +5485,19 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (a === 'clear') { bxClear(); return; }
     if (a === 'sorta' || a === 'sortz') { if (BX.c) { BX.sort = { k: BX.c.k, dir: a === 'sorta' ? 1 : -1 }; bxRedraw(); } return; }
     if (a === 'fval') { if (BX.c) { var l = bxLines()[BX.c.li]; BX.filters[BX.c.k] = [l ? bxShown(l, BX.c.k) : '']; bxRedraw(); } return; }
-    if (a === 'add') { bxAdd(); return; }
+    if (a === 'add') { bxAddOpen(); return; }
+    if (a === 'open') { if (BX.c) bxOpen(BX.c.li); return; }
+    if (a === 'ok') { var sl = bxSelLines(), L0 = bxLines(), to = sl.length > 1 ? true : !(L0[sl[0]] && L0[sl[0]].ok); bxApply(sl.map(function (li) { return { li: li, k: 'ok', v: to }; })); return; }
     if (a === 'delete') { bxDel(bxSelLines()); return; }
   });
   $('xmenu').addEventListener('click', function (e) {
+    var rb = e.target.closest('[data-bxren],[data-bxunren]');
+    if (rb) {
+      closeX(); var lab = Object.assign({}, BX.prefs.labels || {}), rk = rb.dataset.bxren || rb.dataset.bxunren, rc = bxCol(rk);
+      if (rb.dataset.bxunren) { delete lab[rk]; bxPrefSave('labels', lab); bxRedraw(); return; }
+      pick('Rename column', '<label class="f">Name<input id="pick-in" maxlength="30" value="' + esc(bxLabel(rc)) + '" autocomplete="off"></label><p class="meta" style="margin-top:8px;font-size:13px;color:var(--soft)">Only the name on this page. The sheet keeps “' + esc(rc.label || rc.t) + '”.</p>', function () { var v = $('pick-in').value.trim(); if (v && v !== (rc.label || rc.t)) lab[rk] = v; else delete lab[rk]; bxPrefSave('labels', lab); bxRedraw(); });
+      return;
+    }
     var b = e.target.closest('[data-bxal]'); if (!b) return;
     if (b.dataset.bxal) BX.align[b.dataset.k] = b.dataset.bxal; else delete BX.align[b.dataset.k];
     bxStore('kai-budget-align', BX.align); closeX(); bxRedraw();
@@ -5035,7 +5544,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     vals.forEach(function (v) { sel[v] = !cur || cur.indexOf(v) > -1; });
     BXF.k = k; BXF.vals = vals; BXF.sel = sel; BXF.counts = counts;
     var asc = c.num ? 'Sort smallest → largest' : 'Sort A → Z', dsc = c.num ? 'Sort largest → smallest' : 'Sort Z → A', s = BX.sort;
-    BXF.el.innerHTML = '<div class="fp-h">' + esc(c.label || c.t) + '</div>' +
+    BXF.el.innerHTML = '<div class="fp-h">' + esc(bxLabel(c)) + '</div>' +
       '<div class="fp-sort"><button type="button" class="linkbtn" data-bfsort="1">' + asc + (s.k === k && s.dir > 0 ? ' ✓' : '') + '</button><button type="button" class="linkbtn" data-bfsort="-1">' + dsc + (s.k === k && s.dir < 0 ? ' ✓' : '') + '</button></div>' +
       '<input type="search" class="bxfq" placeholder="Search…" autocomplete="off">' +
       '<div class="fp-tools"><button type="button" class="linkbtn" data-bfp="all">Select all</button><button type="button" class="linkbtn" data-bfp="none">Clear</button></div>' +
