@@ -640,30 +640,40 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .bx-box b { display: block; font-size: 19px; margin: 1px 0; }
 .bx-box b.gold { color: #C9A46A; }
 .bx-box i { font-style: normal; font-size: 11.5px; color: #C9D1DC; }
-#bx thead th { background: #2F3E55; color: #FFFFFF; border-right: 1px solid #4A5A73; }
-#bx thead th button, #bx thead th .fbtn { color: #FFFFFF; }
-#bx thead th.corner { background: #24324A; }
-:where(#bx) td { border-right: 1px solid #E2DDD2; border-bottom: 1px solid #E2DDD2; }
-:where(#bx tbody tr:nth-child(even of [data-bxl])) td { background: #F4F1EA; }
-#bx tfoot td { background: #E9E3D6; border-top: 1.5px solid #CFC8BA; }
-#bx tfoot tr.ils td { background: #FFFFFF; border-top: 0; font-weight: 400; color: #8A857B; font-size: 12.5px; }
+#bx { background: #FFFFFF; }
+#bx thead th { background: #FFFFFF; color: #8A857B; font-size: 12px; font-weight: 600; border-right: 0; border-bottom: 1px solid #ECE8E0; }
+#bx thead th button { color: #8A857B; }
+#bx thead th.corner { background: #FFFFFF; }
+:where(#bx) td { border-right: 0; border-bottom: 1px solid #F1EEE7; }
+:where(#bx tbody tr:nth-child(even of [data-bxl])) td { background: #FFFFFF; }
+#bx tfoot { display: none; }
 #bx td.al-r .c { font-variant-numeric: tabular-nums; }
-.bx-vs { order: 3; align-self: flex-start; margin-top: 6px; }
-.bx-vs h4 { margin: 0 0 6px; font-size: 11px; letter-spacing: .08em; color: #8A857B; text-transform: uppercase; }
-.bx-vs table { border-collapse: collapse; border-spacing: 0; table-layout: auto; width: auto; min-width: 0; background: #FFFFFF; font-size: 13px; }
-.bx-vs th { position: static; }
-.bx-vs th { background: #2F3E55; color: #FFFFFF; font-weight: 600; text-align: left; padding: 7px 10px; border: 1px solid #4A5A73; white-space: nowrap; }
-.bx-vs td { padding: 6px 10px; border: 1px solid #E2DDD2; white-space: nowrap; }
-.bx-vs .r { text-align: right; }
-.bx-vs .b { font-weight: 700; }
-.bx-vs tbody tr:nth-child(even) td { background: #F4F1EA; }
-.bx-vs tr.sum td { background: #E9E3D6; font-weight: 700; }
-.bx-vs tr.sum td.ils { font-weight: 400; color: #8A857B; font-size: 12px; }
-.vs-st { font-size: 11.5px; padding: 2px 8px; border-radius: 10px; }
-.vs-st.no { background: #F8E6E2; color: #9A4E40; }
-.vs-st.part { background: #FBF3DD; color: #8A6A1F; }
-.vs-st.ok { background: #E9F1EA; color: #2B7A3D; }
-@media (max-width: 759px) { .bx-vs { display: none; } }
+#bx td[data-k="vendor"] .c, #bx td[data-k="paid"] .c { color: #8A857B; }
+#budget .bx-wrap { border: 0; border-radius: 12px; box-shadow: 0 1px 0 #E7E3DA; }
+@media (min-width: 760px) {
+  #budget:has(#bx) .layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 22px; align-items: start; }
+  #budget:has(#bx) .layout > .bx-panel { grid-column: 2; }
+}
+.bx-side { position: sticky; top: 16px; display: flex; flex-direction: column; gap: 14px; }
+.bx-sbox { background: #2F3E55; color: #FFFFFF; border-radius: 14px; padding: 18px 20px; }
+.bx-sbox small { display: block; color: #C9D1DC; font-size: 12px; }
+.bx-sbox > b { display: block; font-size: 30px; font-weight: 700; margin: 4px 0 0; font-variant-numeric: tabular-nums; }
+.bx-sbox > i { font-style: normal; color: #C9D1DC; font-size: 12px; }
+.bx-sbox hr { border: 0; border-top: 1px solid #4A5A73; margin: 14px 0 6px; }
+.bx-sbox .r2 { display: flex; justify-content: space-between; align-items: baseline; margin: 8px 0; font-size: 15px; }
+.bx-sbox .r2 span:last-child { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+.bx-sbox .r2 em { display: block; font-style: normal; font-size: 12px; color: #C9D1DC; font-weight: 400; }
+.bx-sbox .gold { color: #E2C58F; }
+.bx-vbox { background: #FFFFFF; border: 1px solid #ECE8E0; border-radius: 14px; padding: 14px 18px; }
+.bx-vbox small { display: block; color: #8A857B; font-size: 12px; margin-bottom: 4px; }
+.bx-vr { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid #F1EEE7; font-size: 13.5px; }
+.bx-vr:last-of-type { border-bottom: 0; }
+.bx-vr span:nth-child(2) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bx-vr .n { font-variant-numeric: tabular-nums; }
+.bx-dot { width: 8px; height: 8px; border-radius: 50%; }
+.bx-dot.no { background: #C9624E; } .bx-dot.part { background: #D9A93A; } .bx-dot.ok { background: #3E8E52; }
+.bx-vnote { margin-top: 6px; font-size: 12px; color: #8A857B; }
+@media (max-width: 759px) { .bx-side { display: none; } }
 .bx td.num .c { color: var(--text); }
 .bx td.mut .c { color: var(--muted); }
 .bx td.b .c { font-weight: 700; }
@@ -4375,14 +4385,14 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   var BX_COLS = [
     { k: 'ok', f: 'ok', t: '✓', label: 'Confirmed', w: 44 },
     { k: 'category', f: 'category', t: 'Category', w: 170 },
-    { k: 'item', f: 'service', t: 'Service', w: 290 },
-    { k: 'vendor', f: 'name', t: 'Name', w: 140 },
+    { k: 'item', f: 'service', t: 'Service', w: 260 },
+    { k: 'vendor', f: 'name', t: 'Vendor', label: 'Name (vendor)', w: 140 },
     { k: 'unit', f: 'cost', t: 'Cost', w: 100, num: true },
     { k: 'qty', f: 'qty', t: 'Quantity', w: 84, num: true },
     { k: 'total', t: 'Total price', w: 112, num: true, ro: true },
     { k: 'paid', f: 'paid', t: 'Paid', w: 100, num: true, adm: true },
-    { k: 'balance', t: 'Balance', w: 108, num: true, ro: true },
-    { k: 'note', f: 'notes', t: 'Notes (only you)', label: 'Notes', w: 150, adm: true, priv: true },
+    { k: 'balance', t: 'Left', label: 'Left to pay', w: 108, num: true, ro: true },
+    { k: 'note', f: 'notes', t: 'Notes (only you)', label: 'Notes', w: 140, adm: true, priv: true },
     { k: 'cur', f: 'currency', t: '€/₪', label: 'Currency', w: 64, opts: ['€', '₪'] }
   ];
   // Paid: only Noam changes it (the couple sees it). Notes: only Noam sees them.
@@ -4484,7 +4494,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     keys.forEach(function (k) { if (o.indexOf(k) < 0) o.push(k); });
     return o;
   }
-  function bxHidden() { return (BX.prefs.cols && BX.prefs.cols.hidden) || ['category']; }
+  function bxHidden() { return (BX.prefs.cols && BX.prefs.cols.hidden) || ['category', 'cur']; }
   // the columns on screen, in order
   function bxCols() {
     var v = bxCurView();
@@ -4560,7 +4570,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var sumLine = function (sym, p, t) { var pc = t ? Math.round(100 * p / t) : 0; return (I.on ? '<span class="bx-sym">' + sym + '</span>' : '') + '<span class="bx-bar" title="' + pc + '% paid"><i style="width:' + Math.min(pc, 100) + '%"></i></span>' +
       '<span class="bx-sum">' + bgMoney(p, sym) + ' paid of <b>' + bgMoney(t, sym) + '</b> · <b>' + bgMoney(t - p, sym) + '</b> left</span>'; };
     var cell = function (lbl, e, i, cls) { return '<div><small>' + lbl + '</small><b' + (cls ? ' class="' + cls + '"' : '') + '>' + bgMoney(e) + '</b>' + (I.on ? '<i>+ ' + bgMoney(i, '₪') + '</i>' : '') + '</div>'; };
-    var h = '<div class="bx-top"><div class="bx-box">' + cell('TOTAL COST', total, I.total) + cell('TOTAL PAID', paid, I.paid) + cell('BALANCE', total - paid, I.total - I.paid, 'gold') + '</div><span class="grow"></span>' +
+    var h = '<div class="bx-top"><h1>Budget</h1><span class="grow"></span>' +
       '<span class="bx-saved" id="bx-saved">' + esc(BX.saved) + '</span><span class="bx-conf">' + conf + ' of ' + named.length + ' services confirmed</span>';
     if (admin) h += '<button type="button" class="bx-lock' + (BX.can ? ' on' : '') + '" data-bxlock="1" role="switch" aria-checked="' + BX.can + '" title="' + (BX.can ? 'The couple can change this budget. Click to lock it.' : 'The budget is locked – the couple can only look. Click to let them make changes.') + '"><i></i>' + (BX.can ? 'Couple can edit' : 'Locked for the couple') + '</button>';
     if (ro) h += '<span class="bx-ro">🔒 View only</span>';
@@ -4641,7 +4651,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     };
     h += '</tbody><tfoot><tr>' + foot([total, paid], '€', 'Total') + '</tr>' + (I.on ? '<tr class="ils">' + foot([I.total, I.paid], '₪', 'in shekels') + '</tr>' : '') + '</tfoot></table>' +
       (list.length ? '' : '<div class="empty">' + (BX.missing ? 'Nothing missing – every service has its details.' : BX.chgOnly ? 'No changes to review.' : L.length ? 'No services match these filters.' : 'No services yet.') + '</div>') +
-      '<div class="selbar" id="bxselbar" hidden></div></div>' + (BX.panel != null ? bxPanelHtml() : '') + '</div>' + bxVendSum(total, paid, I);
+      '<div class="selbar" id="bxselbar" hidden></div></div>' + (BX.panel != null ? bxPanelHtml() : bxSide(total, paid, I)) + '</div>';
     if (ro) h += '<div class="bx-under"><span class="bx-tip">Noam has locked the budget for changes. Ask him if you want to change something.</span></div>';
     h += '<datalist id="bx-cats">' + (function () { var o = {}; L.forEach(function (l) { if (l.category) o[l.category] = 1; }); return Object.keys(o).map(function (k) { return '<option value="' + esc(k) + '">'; }).join(''); })() + '</datalist>';
     return h + bxChPanel(admin);
@@ -4658,6 +4668,22 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       h += '<tr><td>' + esc(v.name) + '</td><td class="r">' + m(t, v.cur) + '</td><td class="r">' + m(p, v.cur) + '</td><td class="r b">' + m(b, v.cur) + '</td><td><span class="vs-st ' + (st === 'Paid' ? 'ok' : st === 'Not paid' ? 'no' : 'part') + '">' + st + '</span></td></tr>';
     });
     return h + '</tbody></table></aside>';
+  }
+  function bxSide(total, paid, I) {
+    var V = (BG.data.vendors || []).filter(function (v) { return v.name && v.name !== BGK_NV && bgNum(v.total); });
+    var sh = function (n) { return I.on ? '<em>' + bgMoney(n, '₪') + '</em>' : ''; };
+    var h = '<aside class="bx-side" aria-label="Summary"><div class="bx-sbox"><small>Total cost</small><b>' + bgMoney(total) + '</b>' + (I.on ? '<i>+ ' + bgMoney(I.total, '₪') + '</i>' : '') + '<hr>' +
+      '<div class="r2"><span>Paid</span><span>' + bgMoney(paid) + sh(I.paid) + '</span></div>' +
+      '<div class="r2"><span>Left to pay</span><span class="gold">' + bgMoney(total - paid) + sh(I.total - I.paid) + '</span></div></div>';
+    if (V.length) {
+      h += '<div class="bx-vbox"><small>Vendors</small>';
+      V.forEach(function (v) {
+        var t = bgNum(v.total), p = bgNum(v.paid), b = v.balance != null ? bgNum(v.balance) : t - p, c = p <= 0 ? 'no' : b <= 0 ? 'ok' : 'part';
+        h += '<div class="bx-vr" title="' + esc(v.name) + ': ' + bgMoney(t, v.cur) + ' · paid ' + bgMoney(p, v.cur) + '"><span class="bx-dot ' + c + '"></span><span>' + esc(v.name) + '</span><span class="n">' + (b ? bgMoney(b, v.cur) : 'Paid') + '</span></div>';
+      });
+      h += '<div class="bx-vnote">left to pay per vendor</div></div>';
+    }
+    return h + '</aside>';
   }
   // whole rows selected (by their number): the "selected services" for the bulk actions
   function bxWholeRows() {
