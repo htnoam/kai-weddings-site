@@ -595,6 +595,69 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .bgk-up:hover { border-color: var(--ink); color: var(--ink); }
 .bgk-none { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; color: var(--soft); font-size: 14px; }
 .bg-top .btn.primary { height: 32px; }
+/* Computers: the budget as a spreadsheet (like the guests table) */
+.bg:has(.bx-top) { gap: 10px; }
+.bx-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.bx-top h1 { margin: 0; font-size: 20px; }
+.bx-bar { flex: 0 1 260px; min-width: 80px; height: 8px; border-radius: 4px; background: #E4E1DA; overflow: hidden; }
+.bx-bar i { display: block; height: 100%; background: var(--ok); }
+.bx-sum { font-size: 14.5px; color: var(--muted); white-space: nowrap; }
+.bx-sum b { color: var(--text); }
+.bx-conf { font-size: 13px; color: var(--soft); white-space: nowrap; }
+.bx-saved { font-size: 12.5px; color: var(--ok); white-space: nowrap; }
+.bx-top .btn { height: 32px; }
+.bx-chb b { display: inline-block; min-width: 18px; height: 18px; line-height: 18px; border-radius: 9px; background: #F5C542; color: #3A2E00; font-size: 11.5px; text-align: center; margin-left: 4px; padding: 0 4px; }
+.bx-tabs { margin-bottom: -11px; }
+.bx-tabs .vt small { font-weight: 500; color: var(--soft); margin-left: 2px; }
+.bx-pane { display: flex; flex-direction: column; gap: 10px; padding-top: 4px; }
+.bx-pane > .bgk-h { display: none; }
+.bx-wrap { flex: none; max-width: 100%; width: fit-content; align-self: flex-start; border-radius: 0 4px 4px 4px; }
+.bx td.num .c { color: var(--text); }
+.bx td .c { height: 31px; line-height: 31px; }
+.bx tbody tr.z td { background: #F7F6F2; }
+.bx tbody tr:hover td { background: #F1EFEA; }
+.bx td.mut .c { color: var(--muted); }
+.bx td.b .c { font-weight: 700; }
+.bx td.ro .c { color: var(--text); }
+.bx td.ed { cursor: cell; }
+.bx th.r button { text-align: right; padding-right: 10px; }
+.bx tfoot td { background: #F1EFEA; border-top: 1px solid var(--line); font-weight: 700; }
+.bx tfoot td .c { height: 33px; line-height: 33px; }
+.bx tfoot td:nth-child(4) { padding-left: 8px; }
+.bx td.chk .rn { line-height: 31px; }
+.bx td.act { background: #FFFFFF !important; box-shadow: inset 0 0 0 2px var(--ink) !important; }
+.bx th.selh { background: #DCE3F7 !important; color: var(--ink) !important; }
+.bx td.chk.selh { background: #DCE3F7 !important; }
+.bx td.chk.selh .rn { color: var(--ink); font-weight: 700; }
+.bx td.chk { position: relative; }
+.bx .bx-x { display: none; position: absolute; inset: 3px 8px; border: none; border-radius: 4px; background: #F6E3E3; color: var(--bad); font-size: 16px; font-weight: 700; line-height: 1; cursor: pointer; }
+.bx tbody tr:hover .bx-x { display: block; }
+.bx td.okc .c { text-align: center; padding: 0; }
+.bx-ck { display: inline-block; width: 17px; height: 17px; line-height: 15px; border: 1.5px solid #B9B6AE; border-radius: 4px; background: #FFFFFF; color: #FFFFFF; font-size: 12px; font-weight: 800; vertical-align: middle; cursor: pointer; }
+.bx-ck.on { background: #2B7A3D; border-color: #2B7A3D; }
+.bx td.chg, .bx tbody tr td.chg { background: #FFF2CC !important; }
+.bx td.chg.act { background: #FFF2CC !important; }
+.bx tr.bx-delq td { background: #FDF1F1 !important; }
+.bx tr.bx-delq .c { display: flex; align-items: center; gap: 8px; height: auto; padding: 5px 10px; color: var(--bad); font-weight: 600; }
+.btn.sm { height: 26px; padding: 0 10px; font-size: 12.5px; }
+.bx-under { display: flex; align-items: center; gap: 16px; }
+.bx-add { font-size: 14px; font-weight: 600; color: var(--ink); text-decoration: none; padding: 4px 0; }
+.bx-tip { font-size: 12.5px; color: var(--soft); }
+.bx-ch { position: fixed; top: 0; right: 0; bottom: 0; width: 380px; max-width: 92vw; z-index: 40; background: var(--surface); border-left: 1px solid var(--line); box-shadow: -12px 0 30px -18px rgba(0,0,0,.35); display: flex; flex-direction: column; }
+.bx-chh { display: flex; align-items: center; gap: 8px; padding: 14px 16px; border-bottom: 1px solid var(--hair); }
+.bx-chh b { font-size: 16px; }
+.bx-chh .x { border: none; background: none; font-size: 22px; line-height: 1; color: var(--soft); padding: 0 4px; cursor: pointer; }
+.bx-chl { overflow-y: auto; padding: 8px 16px 20px; display: flex; flex-direction: column; }
+.bx-chl .mut { color: var(--soft); font-size: 14px; }
+.bx-ci { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; align-items: center; padding: 10px 8px; border-bottom: 1px solid var(--row-line); font-size: 13.5px; }
+.bx-ci.new { background: #FFF8E1; border-radius: 6px; }
+.bx-ci.undone .bx-cw { text-decoration: line-through; color: var(--soft); }
+.bx-cm { grid-column: 1; font-size: 12px; color: var(--soft); }
+.bx-cm b { color: var(--text); }
+.bx-cw { grid-column: 1; }
+.bx-cw .mut { font-size: 13.5px; }
+.bx-ci .btn, .bx-cu { grid-column: 2; grid-row: 1 / span 2; }
+.bx-cu { font-size: 12px; color: var(--soft); }
 .drop { border: 1.5px dashed var(--line); border-radius: 8px; padding: 12px 14px; font-size: 14px; color: var(--muted); background: #FAF9F6; outline: none; }
 .drop.over, .drop:focus { border-color: var(--ink); background: #F1F0FA; }
 .drop b { color: var(--text); }
@@ -3913,7 +3976,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function bgRender() {
     var box = $('budget'); if (!BG.data) { box.innerHTML = ''; return; }
     if (BG.data.source === 'grid') { gridRender(); return; }
-    if (BG.data.source === 'sheet') { box.innerHTML = BG.data.format === 'kai' ? bgKaiHtml() : bgSheetHtml(); return; }
+    if (BG.data.source === 'sheet') { box.innerHTML = BG.data.format === 'kai' ? bgKaiHtml() : bgSheetHtml(); if (BG.data.format === 'kai') bxPaint(); return; }
     var K = bgCalc(), admin = S.admin, h = '';
     box.classList.toggle('wide', !!admin && BG.view === 'table');
     var C = K.C;
@@ -4222,6 +4285,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       h += '</tbody><tfoot><tr><td>Total</td><td class="m-hide"></td><td></td><td class="m-hide"></td><td class="m-hide"></td><td class="r">' + bgMoney(total) + '</td><td class="m-hide"></td></tr></tfoot></table></div>';
     }
     // Vendors
+    var iV = h.length;
     var vs = vend.filter(function (v) { return bgNum(v.total) || bgNum(v.paid) || v.name !== BGK_NV; });
     h += '<h2 class="bgk-h">Vendors</h2>';
     if (!vs.length) h += '<div class="bgk-none">No vendors yet' + (admin ? ' – add their names in the sheet’s Name column.' : '.') + '</div>';
@@ -4237,6 +4301,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       h += '</tbody></table></div>';
     }
     // Payments
+    var iP = h.length;
     h += '<h2 class="bgk-h">Payments' + (pays.length ? ' <small>' + pays.length + '</small>' : '') + '</h2>';
     if (!pays.length) h += '<div class="bgk-none">No payments yet.</div>';
     else {
@@ -4248,10 +4313,339 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       });
       h += '</tbody></table></div>';
     }
+    // Computers: the services as a spreadsheet the couple can edit, with Vendors and Payments in tabs
+    if (window.innerWidth >= 760) return bxHtml(h.slice(iV, iP), h.slice(iP));
     return h + '<p class="bg-foot">Prepared by KAI Event Planners' + (D.synced ? ' · updated ' + esc(bgAgo(D.synced)) : '') + '.</p>';
   }
+  // ----- Computers: the budget as a spreadsheet, like the guests table. The couple and Noam edit it right here: every change
+  // goes straight into the Google Sheet (through budget-hub, one at a time) and is logged, so Noam sees what the couple changed
+  // (yellow cells with who / when / what it was, a Changes list with Undo). -----
+  var BX = { tab: 'services', sel: null, edit: null, q: [], busy: false, sort: null, widths: {}, changes: null, chOpen: false, del: null, hi: {}, saved: '' };
+  try { BX.widths = JSON.parse(localStorage.getItem('kai-budget-widths') || '{}') || {}; } catch (e) {}
+  var BX_COLS = [
+    { k: 'ok', f: 'ok', t: '✓', w: 44 },
+    { k: 'category', f: 'category', t: 'Category', w: 170 },
+    { k: 'item', f: 'service', t: 'Service', w: 340 },
+    { k: 'vendor', f: 'name', t: 'Name', w: 180 },
+    { k: 'unit', f: 'cost', t: 'Cost', w: 110, num: true },
+    { k: 'qty', f: 'qty', t: 'Quantity', w: 100, num: true },
+    { k: 'total', t: 'Total price', w: 130, num: true, ro: true }
+  ];
+  var BX_FL = { ok: 'Confirmed', category: 'Category', service: 'Service', name: 'Name', cost: 'Cost', qty: 'Quantity', add: 'Added a line', 'delete': 'Deleted a line' };
+  function bxW(c) { return BX.widths[c.k] || c.w; }
+  function bxLines() { return (BG.data && BG.data.lines) || []; }
+  function bxOrder() {
+    var L = bxLines(), o = L.map(function (l, i) { return i; }), s = BX.sort; if (!s) return o;
+    var c = BX_COLS.filter(function (x) { return x.k === s.k; })[0];
+    return o.sort(function (a, b) {
+      var x = L[a][s.k], y = L[b][s.k];
+      if (!c.num && c.k !== 'ok' && !x !== !y) return x ? -1 : 1;   // empty cells last
+      var r = c.num ? bgNum(x) - bgNum(y) : c.k === 'ok' ? (x ? 1 : 0) - (y ? 1 : 0) : String(x || '').localeCompare(String(y || ''), undefined, { sensitivity: 'base' });
+      return (s.d === 'desc' ? -r : r) || a - b;
+    });
+  }
+  function bxCellText(l, c) {
+    if (c.k === 'unit' || c.k === 'total') { var n = bgNum(l[c.k]); return n ? bgMoney(n) : (c.k === 'total' && l.item ? '–' : ''); }
+    if (c.k === 'qty') return bgNum(l.qty) ? String(bgNum(l.qty)) : '';
+    return String(l[c.k] == null ? '' : l[c.k]);
+  }
+  function bxWhen(iso) { var d = new Date(iso); if (isNaN(d)) return ''; var p = function (n) { return ('0' + n).slice(-2); }; return p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()); }
+  function bxVal(f, v) { if (f === 'ok') return String(v) === 'true' ? '✓ ticked' : 'not ticked'; if (f === 'cost') return v === '' || v == null ? 'empty' : bgMoney(v); return v === '' || v == null ? 'empty' : String(v); }
+  // which cells the couple changed and Noam hasn't looked at yet (Noam editing the same cell clears it, as in the sheet)
+  function bxHi() {
+    var hi = {}, ch = (BX.changes || []).slice().reverse();
+    ch.forEach(function (c) {
+      if (c.undone || /^undo /.test(c.field)) return;
+      var key = c.sheet_row + '|' + c.field;
+      if (c.by_admin) { delete hi[key]; return; }
+      if (!c.seen && c.field !== 'delete') hi[key] = c;
+    });
+    BX.hi = hi; return hi;
+  }
+  function bxHtml(vendorsH, paysH) {
+    var D = BG.data, L = bxLines(), admin = !!(S.admin && BG.sheet), url = 'https://docs.google.com/spreadsheets/d/' + encodeURIComponent(BG.sheet) + '/edit';
+    var total = bgNum(D.total), paid = bgNum(D.paid), left = total - paid, pct = total ? Math.round(100 * paid / total) : 0;
+    var named = L.filter(function (l) { return l.item; }), conf = named.filter(function (l) { return l.ok; }).length;
+    if (admin && BX.changes === null && !BX.chAsked) { BX.chAsked = true; setTimeout(bxChanges, 0); }
+    var hi = admin ? bxHi() : {}, nNew = admin ? (BX.changes || []).filter(function (c) { return !c.by_admin && !c.seen && !c.undone; }).length : 0;
+    var h = '<div class="bx-top"><h1>Budget</h1><span class="bx-bar" title="' + pct + '% paid"><i style="width:' + Math.min(pct, 100) + '%"></i></span>' +
+      '<span class="bx-sum">' + bgEur(paid) + ' paid of <b>' + bgEur(total) + '</b> · <b>' + bgEur(left) + '</b> left</span><span class="grow"></span>' +
+      '<span class="bx-saved" id="bx-saved">' + esc(BX.saved) + '</span><span class="bx-conf">' + conf + ' of ' + named.length + ' services confirmed</span>';
+    if (admin) h += '<button type="button" class="btn bx-chb' + (nNew ? ' new' : '') + '" data-bxch="open">Changes' + (nNew ? ' <b>' + nNew + '</b>' : '') + '</button>' +
+      '<a class="bg-gs" href="' + url + '" target="_blank" rel="noopener" title="The same budget in Google Sheets. Changes here go straight into the sheet.">Google Sheet ↗</a>' +
+      '<button type="button" class="btn primary" data-bgk="pay">+ Record payment</button>';
+    h += '</div>';
+    var nv = (D.vendors || []).filter(function (v) { return v.name !== BGK_NV; }).length, np = (D.payments || []).length;
+    h += '<div class="vtabs bx-tabs" role="tablist">' + [['services', 'Services', named.length], ['vendors', 'Vendors', nv], ['payments', 'Payments', np]].map(function (t) {
+      return '<button type="button" role="tab" class="vt' + (BX.tab === t[0] ? ' on' : '') + '" aria-selected="' + (BX.tab === t[0]) + '" data-bxt="' + t[0] + '">' + t[1] + ' <small>' + t[2] + '</small></button>';
+    }).join('') + '</div>';
+    if (BX.tab === 'vendors') return h + '<div class="bx-pane">' + vendorsH + '</div>' + bxChPanel(admin);
+    if (BX.tab === 'payments') return h + '<div class="bx-pane">' + paysH + '</div>' + bxChPanel(admin);
+    // the spreadsheet
+    var tw = 48; BX_COLS.forEach(function (c) { tw += bxW(c); });
+    h += '<div class="tablewrap bx-wrap"><table class="bx" id="bx" style="width:' + tw + 'px;min-width:0"><thead><tr><th class="chk corner" style="width:48px">#</th>';
+    BX_COLS.forEach(function (c) {
+      var s = BX.sort && BX.sort.k === c.k ? BX.sort.d : '';
+      h += '<th data-bxk="' + c.k + '" style="width:' + bxW(c) + 'px"' + (c.num ? ' class="r"' : '') + (s ? ' aria-sort="' + (s === 'asc' ? 'ascending' : 'descending') + '"' : '') + '>' +
+        '<button type="button" data-bxs="' + c.k + '" title="Sort">' + c.t + (s ? (s === 'asc' ? ' ▲' : ' ▼') : '') + '</button><span class="rz" data-bz="' + c.k + '" title="Drag to resize · double-click to reset"></span></th>';
+    });
+    h += '</tr></thead><tbody>';
+    bxOrder().forEach(function (li, n) {
+      var l = L[li];
+      if (BX.del === l) {
+        h += '<tr data-bxl="' + li + '" class="bx-delq"><td class="chk"><span class="rn">' + (l.row || '') + '</span></td><td colspan="' + BX_COLS.length + '"><div class="c">Delete “' + esc(l.item || 'this line') + '” from the budget? ' +
+          '<button type="button" class="btn danger sm" data-bxdel="yes">Delete</button> <button type="button" class="btn sm" data-bxdel="no">Cancel</button></div></td></tr>';
+        return;
+      }
+      var added = hi[l.row + '|add'];
+      h += '<tr data-bxl="' + li + '"' + (n % 2 ? ' class="z"' : '') + '><td class="chk' + (added ? ' chg' : '') + '"' + (added ? ' title="' + esc('Added by ' + added.by_name + ' · ' + bxWhen(added.at)) + '"' : '') + '>' +
+        '<span class="rn">' + (l.row || '') + '</span><button type="button" class="bx-x" data-bxdel="ask" title="Delete this line" aria-label="Delete this line">×</button></td>';
+      BX_COLS.forEach(function (c, ci) {
+        var cg = c.f && hi[l.row + '|' + c.f], tip = cg ? 'Changed by ' + cg.by_name + ' · ' + bxWhen(cg.at) + '\nWas: ' + bxVal(c.f, cg.old_value) : '';
+        var cls = (c.ro ? 'ro' : 'ed') + (c.num ? ' num' : '') + (cg ? ' chg' : '') + (c.k === 'total' ? ' b' : '') + (c.k === 'ok' ? ' okc' : '') + (c.k === 'category' ? ' mut' : '');
+        var inner = c.k === 'ok' ? '<span class="bx-ck' + (l.ok ? ' on' : '') + '" role="checkbox" aria-checked="' + !!l.ok + '" aria-label="Confirmed">' + (l.ok ? '✓' : '') + '</span>' : esc(bxCellText(l, c));
+        h += '<td data-bxc="' + ci + '" class="' + cls + '"' + (tip ? ' title="' + esc(tip) + '"' : '') + '><div class="c">' + inner + '</div></td>';
+      });
+      h += '</tr>';
+    });
+    h += '</tbody><tfoot><tr><td class="chk"></td><td></td><td></td><td>Total</td><td></td><td></td><td></td><td class="num b"><div class="c">' + bgMoney(total) + '</div></td></tr></tfoot></table></div>';
+    h += '<div class="bx-under"><button type="button" class="linkbtn bx-add" data-bxadd="1">+ Add a service</button><span class="bx-tip">Click a cell and type to change it · Enter or Tab to save · Esc to cancel · drag a column’s edge to make it wider</span></div>';
+    h += '<datalist id="bx-cats">' + (function () { var s = {}; L.forEach(function (l) { if (l.category) s[l.category] = 1; }); return Object.keys(s).map(function (k) { return '<option value="' + esc(k) + '">'; }).join(''); })() + '</datalist>';
+    return h + bxChPanel(admin);
+  }
+  // Noam: the list of changes (newest first), each with Undo
+  function bxChPanel(admin) {
+    if (!admin || !BX.chOpen) return '';
+    var ch = BX.changes, h = '<aside class="bx-ch" aria-label="Changes"><div class="bx-chh"><b>Changes</b><span class="grow"></span>' +
+      '<button type="button" class="linkbtn" data-bxch="seen">Mark all as seen</button><button type="button" class="x" data-bxch="close" aria-label="Close">×</button></div><div class="bx-chl">';
+    if (!ch) h += '<p class="mut">Loading…</p>';
+    else if (!ch.length) h += '<p class="mut">No changes yet. When the couple changes something here it shows up in this list, and the cell turns yellow.</p>';
+    else ch.forEach(function (c) {
+      var u = /^undo /.test(c.field), f = u ? c.field.slice(5) : c.field, what;
+      if (u) what = 'Undid: ' + (BX_FL[f] || f) + (f === 'add' || f === 'delete' ? '' : ' → ' + bxVal(f, c.new_value));
+      else if (f === 'add') what = 'Added “' + c.new_value + '”';
+      else if (f === 'delete') what = 'Deleted “' + c.item + '”';
+      else what = BX_FL[f] + ': ' + bxVal(f, c.old_value) + ' → ' + bxVal(f, c.new_value);
+      h += '<div class="bx-ci' + (c.undone ? ' undone' : '') + (!c.by_admin && !c.seen && !c.undone ? ' new' : '') + '"><div class="bx-cm"><b>' + esc(c.by_name || '') + '</b> · ' + esc(bxWhen(c.at)) + ' · row ' + c.sheet_row + '</div>' +
+        '<div class="bx-cw">' + (f !== 'add' && f !== 'delete' && c.item ? '<span class="mut">' + esc(c.item) + ' · </span>' : '') + esc(what) + '</div>' +
+        (u ? '' : c.undone ? '<span class="bx-cu">Undone</span>' : '<button type="button" class="btn sm" data-bxundo="' + c.id + '">Undo</button>') + '</div>';
+    });
+    return h + '</div></aside>';
+  }
+  function bxCall(body) {
+    return KAI.ready().then(function () { return KAI.sb.functions.invoke('budget-hub', { body: Object.assign({ slug: EVENT }, body) }); })
+      .then(function (r) { var res = r && r.data || {}; if (r.error && !r.data) res = { ok: false, error: 'Couldn’t reach the server. Check your connection.' }; return res; });
+  }
+  function bxChanges() {
+    if (!S.admin || !BG.sheet) return;
+    bxCall({ action: 'budgetChanges' }).then(function (r) { if (r.ok) { BX.changes = r.changes || []; bxRedraw(); } });
+  }
+  function bxSavedTxt(t) { BX.saved = t; var s = $('bx-saved'); if (s) s.textContent = t; }
+  function bxRedraw() {
+    if (SECT !== 'budget' || !BG.data || BG.data.format !== 'kai' || window.innerWidth < 760 || BX.edit) return;
+    var w = $('budget').querySelector('.bx-wrap'), sx = w ? w.scrollLeft : 0, sy = window.scrollY;
+    bgRender();
+    w = $('budget').querySelector('.bx-wrap'); if (w) w.scrollLeft = sx; window.scrollTo(window.scrollX, sy);
+    bxPaint();
+  }
+  function bxTd(li, ci) { return $('budget').querySelector('tr[data-bxl="' + li + '"] td[data-bxc="' + ci + '"]'); }
+  function bxPaint() {
+    Array.prototype.forEach.call($('budget').querySelectorAll('#bx .act, #bx .selh'), function (el) { el.classList.remove('act', 'selh'); });
+    if (!BX.sel) return;
+    var td = bxTd(BX.sel.li, BX.sel.ci); if (!td) { BX.sel = null; return; }
+    td.classList.add('act');
+    var th = $('budget').querySelector('#bx thead th[data-bxk="' + BX_COLS[BX.sel.ci].k + '"]'); if (th) th.classList.add('selh');
+    var rn = td.parentNode.querySelector('td.chk'); if (rn) rn.classList.add('selh');
+  }
+  function bxSelect(li, ci, scroll) {
+    BX.sel = { li: li, ci: ci }; bxPaint();
+    var td = bxTd(li, ci); if (td && scroll) td.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }
+  function bxMove(dr, dc) {
+    if (!BX.sel) return; var o = bxOrder(), r = o.indexOf(BX.sel.li), c = BX.sel.ci;
+    c = Math.max(0, Math.min(BX_COLS.length - 1, c + dc)); r = Math.max(0, Math.min(o.length - 1, r + dr));
+    if (o.length) bxSelect(o[r], c, true);
+  }
+  function bxStartEdit(li, ci, first) {
+    var c = BX_COLS[ci], l = bxLines()[li]; if (!c || c.ro || !l) return;
+    if (c.k === 'ok') { bxCommit(li, ci, !l.ok); return; }
+    var td = bxTd(li, ci); if (!td) return;
+    BX.edit = { li: li, ci: ci };
+    var v = first != null ? first : c.num ? (bgNum(l[c.k]) ? String(bgNum(l[c.k])) : '') : String(l[c.k] || '');
+    td.innerHTML = '<input class="cell" ' + (c.num ? 'inputmode="decimal" ' : '') + (c.k === 'category' ? 'list="bx-cats" ' : '') + 'aria-label="' + esc(c.t) + '">';
+    var inp = td.firstChild; inp.value = v; inp.focus(); if (first == null) inp.select(); else inp.setSelectionRange(v.length, v.length);
+    var done = false;
+    function end(save, dr, dc) {
+      if (done) return; done = true; BX.edit = null;
+      var val = inp.value;
+      if (save) bxCommit(li, ci, val); else if (l._new && !l.item) bxDropNew(l); else bxRedraw();
+      if (dr || dc) bxMove(dr, dc);
+    }
+    inp.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); end(true, e.shiftKey ? -1 : 1, 0); }
+      else if (e.key === 'Tab') { e.preventDefault(); end(true, 0, e.shiftKey ? -1 : 1); }
+      else if (e.key === 'Escape') { e.preventDefault(); end(false); }
+      e.stopPropagation();
+    });
+    inp.addEventListener('blur', function () { end(true); });
+  }
+  function bxDropNew(l) { var L = bxLines(), i = L.indexOf(l); if (i >= 0) L.splice(i, 1); BX.sel = null; bxRedraw(); }
+  function bxTotals() {
+    var t = 0; bxLines().forEach(function (l) { t += bgNum(l.total); }); BG.data.total = Math.round(t * 100) / 100;
+  }
+  function bxCommit(li, ci, raw) {
+    var c = BX_COLS[ci], l = bxLines()[li]; if (!c || !l) return;
+    var val = raw, old = l[c.k];
+    if (c.num) {
+      var s = String(raw).replace(/[€\s,]/g, '');
+      if (s !== '' && !isFinite(parseFloat(s))) { toast('Type a number.', null, null, true); bxRedraw(); return; }
+      val = s === '' ? '' : String(parseFloat(s));
+      if ((val === '' ? 0 : +val) === bgNum(old) && (val !== '' || !bgNum(old))) { bxRedraw(); return; }
+    } else if (c.k !== 'ok') {
+      val = String(raw).trim();
+      if (val === String(old || '')) { if (l._new && !val) bxDropNew(l); else bxRedraw(); return; }
+      if (c.k === 'item' && !val) { toast('A service needs a name. To remove the line, use × next to its number.', null, null, true); bxRedraw(); return; }
+    }
+    var check = l.item || '';
+    if (l._new && c.k === 'item') {
+      delete l._new; l.item = val; l._pending = true;
+      BX.q.push({ l: l, op: 'add', value: val });
+    } else {
+      if (l._new) { toast('First give the service a name.', null, null, true); bxRedraw(); return; }
+      l[c.k] = c.num ? (val === '' ? 0 : +val) : val;
+      if (c.num) l.total = Math.round(bgNum(l.unit) * bgNum(l.qty) * 100) / 100;
+      BX.q.push({ l: l, field: c.f, value: c.k === 'ok' ? !!val : val, check: check });
+    }
+    bxTotals(); bxRedraw(); bxRun();
+  }
+  function bxRun() {
+    if (BX.busy || !BX.q.length) return;
+    var j = BX.q[0]; BX.busy = true; BG.saving = true; bxSavedTxt('Saving…');
+    var body = j.op === 'add' ? { action: 'budgetEdit', op: 'add', value: j.value } : { action: 'budgetEdit', op: j.op || '', row: j.l.row, field: j.field, value: j.value, check: j.check };
+    bxCall(body).then(function (res) {
+      BX.q.shift(); BX.busy = false;
+      if (!res.ok) {
+        BX.q = []; BG.saving = false; bxSavedTxt('');
+        toast(res.error || 'Couldn’t save that change. Try again.', null, null, true);
+        load(true); return;
+      }
+      if (j.op === 'add') { j.l.row = res.row; delete j.l._pending; }
+      if (BX.q.length) { bxRun(); return; }
+      BG.saving = false; bxSavedTxt('✓ Saved in the sheet');
+      if (S.admin) bxChanges();
+      load(true);
+    }, function () {
+      BX.q = []; BX.busy = false; BG.saving = false; bxSavedTxt('');
+      toast('Couldn’t save – check your connection. The page will reload the budget.', null, null, true); load(true);
+    });
+  }
+  // clicks, double-clicks, resizing and keys on the spreadsheet
+  $('budget').addEventListener('mousedown', function (e) {
+    var rz = e.target.closest('[data-bz]');
+    if (rz) {
+      e.preventDefault(); e.stopPropagation();
+      var th = rz.parentNode, k = rz.dataset.bz, x0 = e.clientX, w0 = th.offsetWidth, tb = $('bx'), t0 = tb.offsetWidth;
+      rz.classList.add('on'); BX.resizing = true;
+      var move = function (ev) { var w = Math.max(40, Math.round(w0 + ev.clientX - x0)); th.style.width = w + 'px'; tb.style.width = (t0 + w - w0) + 'px'; BX.widths[k] = w; };
+      var up = function () {
+        document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); rz.classList.remove('on');
+        setTimeout(function () { BX.resizing = false; }, 0);
+        try { localStorage.setItem('kai-budget-widths', JSON.stringify(BX.widths)); } catch (x) {}
+      };
+      document.addEventListener('mousemove', move); document.addEventListener('mouseup', up); return;
+    }
+    var td = e.target.closest('#bx tbody td[data-bxc]'); if (!td || e.target.closest('input')) return;
+    var li = +td.parentNode.dataset.bxl, ci = +td.dataset.bxc;
+    if (e.target.closest('.bx-ck')) { e.preventDefault(); bxSelect(li, ci); bxStartEdit(li, ci); return; }
+    e.preventDefault(); if (document.activeElement && document.activeElement.blur && $('budget').contains(document.activeElement)) document.activeElement.blur();
+    bxSelect(li, ci);
+  });
+  $('budget').addEventListener('dblclick', function (e) {
+    var rz = e.target.closest('[data-bz]');
+    if (rz) { delete BX.widths[rz.dataset.bz]; try { localStorage.setItem('kai-budget-widths', JSON.stringify(BX.widths)); } catch (x) {} bxRedraw(); return; }
+    var td = e.target.closest('#bx tbody td[data-bxc]'); if (!td || BX.edit || e.target.closest('.bx-ck')) return;
+    bxStartEdit(+td.parentNode.dataset.bxl, +td.dataset.bxc);
+  });
+  $('budget').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-bxt], [data-bxs], [data-bxadd], [data-bxdel], [data-bxch], [data-bxundo]'); if (!b || BX.resizing) return;
+    if (b.dataset.bxt) { BX.tab = b.dataset.bxt; BX.sel = null; bxRedraw(); return; }
+    if (b.dataset.bxs) {
+      var k = b.dataset.bxs, s = BX.sort;
+      BX.sort = !s || s.k !== k ? { k: k, d: 'asc' } : s.d === 'asc' ? { k: k, d: 'desc' } : null; bxRedraw(); return;
+    }
+    if (b.dataset.bxadd) {
+      var L = bxLines(), l = { item: '', category: '', vendor: '', unit: 0, qty: 0, total: 0, ok: false, row: 0, _new: true };
+      L.push(l); BX.sort = null; bxRedraw();
+      var li = L.length - 1; bxSelect(li, 2, true); bxStartEdit(li, 2); return;
+    }
+    if (b.dataset.bxdel) {
+      var tr = b.closest('tr[data-bxl]'), ln = tr && bxLines()[+tr.dataset.bxl];
+      if (b.dataset.bxdel === 'ask') { if (ln && ln._new) { bxDropNew(ln); return; } BX.del = ln; BX.sel = null; bxRedraw(); return; }
+      var dl = BX.del; BX.del = null;
+      if (b.dataset.bxdel === 'yes' && dl) {
+        var L2 = bxLines(); L2.splice(L2.indexOf(dl), 1); bxTotals();
+        BX.q.push({ l: dl, op: 'delete', check: dl.item || '' }); bxRun();
+      }
+      bxRedraw(); return;
+    }
+    if (b.dataset.bxch === 'open') { BX.chOpen = !BX.chOpen; if (BX.chOpen) bxChanges(); bxRedraw(); return; }
+    if (b.dataset.bxch === 'close') { BX.chOpen = false; bxRedraw(); return; }
+    if (b.dataset.bxch === 'seen') {
+      (BX.changes || []).forEach(function (c) { c.seen = true; }); bxRedraw();
+      bxCall({ action: 'budgetSeen' }).then(function (r) { if (!r.ok) toast(r.error || 'Couldn’t save.', null, null, true); }); return;
+    }
+    if (b.dataset.bxundo) {
+      b.disabled = true; b.textContent = 'Undoing…'; BG.saving = true;
+      bxCall({ action: 'budgetUndo', id: +b.dataset.bxundo }).then(function (r) {
+        BG.saving = false;
+        if (!r.ok) { b.disabled = false; b.textContent = 'Undo'; toast(r.error || 'Couldn’t undo that.', null, null, true); return; }
+        toast('Undone – the sheet is back as it was.'); bxChanges(); load(true);
+      }); return;
+    }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (SECT !== 'budget' || !BX.sel || BX.edit || window.innerWidth < 760 || !BG.data || BG.data.format !== 'kai' || BX.tab !== 'services') return;
+    var a = document.activeElement; if (a && /INPUT|SELECT|TEXTAREA/.test(a.tagName)) return;
+    if (!$('dlg-pay').hidden) return;
+    var k = e.key, mod = e.ctrlKey || e.metaKey;
+    if (mod && (k === 'c' || k === 'C')) {
+      var l = bxLines()[BX.sel.li], c = BX_COLS[BX.sel.ci];
+      var t = c.k === 'ok' ? (l.ok ? 'TRUE' : 'FALSE') : c.num ? (bgNum(l[c.k]) ? String(bgNum(l[c.k])) : '') : String(l[c.k] || '');
+      try { navigator.clipboard.writeText(t); toast('Copied.'); } catch (x) {}
+      e.preventDefault(); return;
+    }
+    if (mod) return;
+    if (k === 'ArrowDown') { e.preventDefault(); bxMove(1, 0); }
+    else if (k === 'ArrowUp') { e.preventDefault(); bxMove(-1, 0); }
+    else if (k === 'ArrowRight' || (k === 'Tab' && !e.shiftKey)) { e.preventDefault(); bxMove(0, 1); }
+    else if (k === 'ArrowLeft' || (k === 'Tab' && e.shiftKey)) { e.preventDefault(); bxMove(0, -1); }
+    else if (k === 'Enter' || k === 'F2') { e.preventDefault(); bxStartEdit(BX.sel.li, BX.sel.ci); }
+    else if (k === ' ' && BX_COLS[BX.sel.ci].k === 'ok') { e.preventDefault(); bxStartEdit(BX.sel.li, BX.sel.ci); }
+    else if (k === 'Escape') { BX.sel = null; bxPaint(); }
+    else if (k === 'Delete' || k === 'Backspace') {
+      var cc = BX_COLS[BX.sel.ci]; e.preventDefault();
+      if (cc.ro || cc.k === 'ok') return;
+      if (cc.k === 'item') { toast('To remove a whole line, use × next to its number.'); return; }
+      bxCommit(BX.sel.li, BX.sel.ci, '');
+    }
+    else if (k.length === 1 && BX_COLS[BX.sel.ci].k !== 'ok' && !BX_COLS[BX.sel.ci].ro) { e.preventDefault(); bxStartEdit(BX.sel.li, BX.sel.ci, k); }
+  });
+  document.addEventListener('paste', function (e) {
+    if (SECT !== 'budget' || !BX.sel || BX.edit || window.innerWidth < 760 || BX.tab !== 'services') return;
+    var a = document.activeElement; if (a && /INPUT|SELECT|TEXTAREA/.test(a.tagName)) return;
+    var t = (e.clipboardData && e.clipboardData.getData('text/plain') || '').replace(/\r?\n$/, '');
+    if (!t || /[\t\n]/.test(t)) { if (t) toast('Paste one cell at a time.', null, null, true); return; }
+    var c = BX_COLS[BX.sel.ci]; if (c.ro) return; e.preventDefault();
+    bxCommit(BX.sel.li, BX.sel.ci, c.k === 'ok' ? /^(true|yes|1|✓|v|x)$/i.test(t.trim()) : t);
+  });
+  document.addEventListener('mousedown', function (e) {
+    if (BX.sel && !e.target.closest('#bx') && !e.target.closest('#toast')) { BX.sel = null; bxPaint(); }
+  });
+  // crossing between phone and computer width: switch between the cards and the spreadsheet
+  (function () { var wide = window.innerWidth >= 760; window.addEventListener('resize', function () { var w = window.innerWidth >= 760; if (w !== wide) { wide = w; if (SECT === 'budget' && BG.data && BG.data.format === 'kai' && !BX.edit) bgRender(); } }); })();
+
   // The payment / receipt / contract dialog
-  var PAY = { mode: 'pay', row: 0, vendor: '', file: null, busy: false, ocr: 0 };
+  var PAY ={ mode: 'pay', row: 0, vendor: '', file: null, busy: false, ocr: 0 };
   function payToday() { var d = new Date(); return ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + '/' + d.getFullYear(); }
   function payOpen(mode, o) {
     o = o || {}; PAY.mode = mode; PAY.row = o.row || 0; PAY.vendor = o.vendor || ''; PAY.file = null; PAY.busy = false;
