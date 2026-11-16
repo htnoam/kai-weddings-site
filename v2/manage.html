@@ -602,6 +602,8 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .bx-top h1 { margin: 0; font-size: 20px; }
 .bx-bar { flex: 0 1 140px; min-width: 60px; height: 8px; border-radius: 4px; background: #E4E1DA; overflow: hidden; }
 .bx-bar i { display: block; height: 100%; background: var(--ok); }
+.bx-sums { display: grid; grid-template-columns: auto 110px auto; gap: 3px 8px; align-items: center; }
+.bx-sym { font-weight: 800; color: var(--ink); text-align: center; }
 .bx-sum { font-size: 14.5px; color: var(--muted); white-space: nowrap; }
 .bx-sum b { color: var(--text); }
 .bx-conf { font-size: 13px; color: var(--soft); white-space: nowrap; }
@@ -649,6 +651,9 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .bx-cw .mut { font-size: 13.5px; }
 .bx-ci .btn, .bx-cu { grid-column: 2; grid-row: 1 / span 2; }
 .bx-cu { font-size: 12px; color: var(--soft); }
+.p-amt { display: flex; gap: 6px; }
+.p-amt input { flex: 1 1 auto; min-width: 0; }
+.p-amt select { flex: none; width: 62px; }
 .drop { border: 1.5px dashed var(--line); border-radius: 8px; padding: 12px 14px; font-size: 14px; color: var(--muted); background: #FAF9F6; outline: none; }
 .drop.over, .drop:focus { border-color: var(--ink); background: #F1F0FA; }
 .drop b { color: var(--text); }
@@ -1424,7 +1429,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     <div id="pay-fields" style="display:flex;flex-direction:column;gap:14px">
       <label class="f">Vendor *<select id="p-vendor"></select></label>
       <div class="two">
-        <label class="f">Amount (€) *<input id="p-amount" inputmode="decimal" autocomplete="off" placeholder="0"></label>
+        <label class="f">Amount *<span class="p-amt"><input id="p-amount" inputmode="decimal" autocomplete="off" placeholder="0"><select id="p-cur" aria-label="Currency"><option value="€">€</option><option value="₪">₪</option></select></span></label>
         <label class="f">Date *<input id="p-date" inputmode="numeric" autocomplete="off" placeholder="dd/mm/yyyy"></label>
       </div>
       <div class="two">
@@ -4247,21 +4252,24 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   // ----- KAI budget template (Google Sheet): services, vendors, payments. Noam records payments, receipts and contracts here;
   // the Hub writes them into the sheet (and the files into the couple's folder) and the page refreshes. -----
   var BGK_NV = 'No vendor yet';
-  function bgMoney(n) { n = bgNum(n); return n % 1 ? '€' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : bgEur(n); }
+  // Lines, vendors and payments are in euros, or in shekels when the sheet's Currency says ₪. The two are never converted or mixed.
+  function bgSym(c) { return c === '₪' ? '₪' : '€'; }
+  function bgMoney(n, cur) { n = bgNum(n); var a = Math.abs(n); return (n < 0 ? '-' : '') + bgSym(cur) + (a % 1 ? a.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : Math.round(a).toLocaleString('en-US')); }
+  function bgIls() { var D = BG.data || {}; return { total: bgNum(D.totalIls), paid: bgNum(D.paidIls), on: !!(bgNum(D.totalIls) || bgNum(D.paidIls) || (D.lines || []).some(function (l) { return l.cur === '₪'; })) }; }
   function bgKaiHtml() {
     var D = BG.data, admin = !!(S.admin && BG.sheet), url = 'https://docs.google.com/spreadsheets/d/' + encodeURIComponent(BG.sheet) + '/edit';
     var lines = D.lines || [], vend = D.vendors || [], pays = D.payments || [];
     var total = bgNum(D.total), paid = bgNum(D.paid), left = total - paid, pct = total ? Math.round(100 * paid / total) : 0, conf = lines.filter(function (l) { return l.ok; }).length;
-    var stc = function (s) { return s === 'Paid' ? 3 : s === 'Partly paid' ? 2 : 0; };
+    var stc = function (s) { return s === 'Paid' ? 3 : s === 'Partly paid' ? 2 : 0; }, I = bgIls();
     var h = '<div class="bg-top"><h1>Budget</h1>' + (admin ? '<span class="bg-src">your Google Sheet</span>' : '') + '<span class="grow"></span>';
     if (admin) h += '<span class="bg-chip ok">✓ The couple’s page updated ' + esc(bgAgo(D.synced)) + '</span>' +
       '<a class="bg-gs" href="' + url + '" target="_blank" rel="noopener" title="You edit the budget in Google Sheets. This page (what the couple sees) is rebuilt from it every 5 minutes.">Edit in Google Sheets ↗</a>' +
       '<button type="button" class="btn primary" data-bgk="pay">+ Record payment</button>';
     h += '</div>';
     h += '<div class="bg-cards k">' +
-      '<div class="bg-card"><span>Total</span><b>' + bgEur(total) + '</b><small>' + lines.length + ' services</small></div>' +
-      '<div class="bg-card"><span>Paid</span><b class="ok">' + bgEur(paid) + '</b><span class="bar"><i style="width:' + Math.min(pct, 100) + '%"></i></span></div>' +
-      '<div class="bg-card"><span>Left to pay</span><b>' + bgEur(left) + '</b><small>' + pct + '% paid</small></div>' +
+      '<div class="bg-card"><span>Total</span><b>' + bgEur(total) + '</b><small>' + (I.on ? '+ ' + bgMoney(I.total, '₪') : lines.length + ' services') + '</small></div>' +
+      '<div class="bg-card"><span>Paid</span><b class="ok">' + bgEur(paid) + '</b>' + (I.on ? '<small>+ ' + bgMoney(I.paid, '₪') + '</small>' : '<span class="bar"><i style="width:' + Math.min(pct, 100) + '%"></i></span>') + '</div>' +
+      '<div class="bg-card"><span>Left to pay</span><b>' + bgEur(left) + '</b><small>' + (I.on ? '+ ' + bgMoney(I.total - I.paid, '₪') : pct + '% paid') + '</small></div>' +
       '<div class="bg-card"><span>Confirmed</span><b>' + conf + ' <small style="font-size:15px">of ' + lines.length + '</small></b><small>services booked</small></div></div>';
     // Services
     h += '<h2 class="bgk-h">Services</h2>';
@@ -4271,10 +4279,10 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       lines.forEach(function (l, li) {
         var u = bgNum(l.unit), q = bgNum(l.qty), t = bgNum(l.total);
         h += '<tr data-bgl="' + li + '"><td>' + esc(l.item) + '</td><td class="m-hide mut">' + esc(l.category || '') + '</td><td>' + (l.vendor ? esc(l.vendor) : '<span class="mut">–</span>') + '</td>' +
-          '<td class="r m-hide">' + (u ? bgMoney(u) : '') + '</td><td class="r m-hide">' + (q || '') + '</td><td class="r b">' + (t ? bgMoney(t) : '<span class="mut">–</span>') + '</td>' +
+          '<td class="r m-hide">' + (u ? bgMoney(u, l.cur) : '') + '</td><td class="r m-hide">' + (q || '') + '</td><td class="r b">' + (t ? bgMoney(t, l.cur) : '<span class="mut">–</span>') + '</td>' +
           '<td class="m-hide">' + (l.ok ? '<span class="bg-pill st-3">Confirmed</span>' : '') + '</td></tr>';
       });
-      h += '</tbody><tfoot><tr><td>Total</td><td class="m-hide"></td><td></td><td class="m-hide"></td><td class="m-hide"></td><td class="r">' + bgMoney(total) + '</td><td class="m-hide"></td></tr></tfoot></table></div>';
+      h += '</tbody><tfoot><tr><td>Total</td><td class="m-hide"></td><td></td><td class="m-hide"></td><td class="m-hide"></td><td class="r">' + bgMoney(total) + (I.on ? '<br>' + bgMoney(I.total, '₪') : '') + '</td><td class="m-hide"></td></tr></tfoot></table></div>';
     }
     // Vendors
     var iV = h.length;
@@ -4287,7 +4295,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
         var nv = v.name === BGK_NV, ct = '';
         if (!nv) ct = admin ? (v.contract ? '<a class="bgk-a" href="' + esc(v.contract) + '" target="_blank" rel="noopener">Open ↗</a> <button type="button" class="linkbtn" data-bgk="contract" data-v="' + esc(v.name) + '">replace</button>'
           : '<button type="button" class="bgk-up" data-bgk="contract" data-v="' + esc(v.name) + '">📎 Add contract</button>') : (v.hasContract ? '✓' : '');
-        h += '<tr data-bgv="' + esc(v.name) + '"' + (nv ? ' class="nv"' : '') + '><td>' + esc(v.name) + '</td><td class="r b">' + bgMoney(v.total) + '</td><td class="r ok m-hide">' + (bgNum(v.paid) ? bgMoney(v.paid) : '–') + '</td><td class="r">' + bgMoney(v.balance) + '</td>' +
+        h += '<tr data-bgv="' + esc(v.name) + '"' + (nv ? ' class="nv"' : '') + '><td>' + esc(v.name) + '</td><td class="r b">' + bgMoney(v.total, v.cur) + '</td><td class="r ok m-hide">' + (bgNum(v.paid) ? bgMoney(v.paid, v.cur) : '–') + '</td><td class="r">' + bgMoney(v.balance, v.cur) + '</td>' +
           '<td class="m-hide">' + (nv ? '' : '<span class="bg-pill st-' + stc(v.status) + '">' + esc(v.status) + '</span>') + '</td><td>' + ct + '</td></tr>';
       });
       h += '</tbody></table></div>';
@@ -4299,9 +4307,9 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     else {
       h += '<div class="bg-ct k"><table><thead><tr><th>Date</th><th>Vendor</th><th class="r">Amount</th><th class="m-hide">Paid by</th>' + (admin ? '<th class="m-hide">Method</th><th>Receipt</th><th class="m-hide">Note</th>' : '') + '</tr></thead><tbody>';
       pays.slice().reverse().forEach(function (x) {
-        h += '<tr data-bgp="' + pays.indexOf(x) + '"><td>' + esc(x.date || '') + '</td><td>' + esc(x.vendor) + '</td><td class="r b">' + bgMoney(x.amount) + '</td><td class="m-hide">' + esc(x.by || '') + '</td>' +
+        h += '<tr data-bgp="' + pays.indexOf(x) + '"><td>' + esc(x.date || '') + '</td><td>' + esc(x.vendor) + '</td><td class="r b">' + bgMoney(x.amount, x.cur) + '</td><td class="m-hide">' + esc(x.by || '') + '</td>' +
           (admin ? '<td class="m-hide">' + esc(x.method || '') + '</td><td>' + (x.receipt ? '<a class="bgk-a" href="' + esc(x.receipt) + '" target="_blank" rel="noopener">Receipt ↗</a>'
-            : '<button type="button" class="bgk-up" data-bgk="receipt" data-row="' + x.row + '" data-w="' + esc((x.date ? x.date + ' · ' : '') + x.vendor + ' · ' + bgMoney(x.amount)) + '">📎 Add receipt</button>') + '</td><td class="m-hide mut">' + esc(x.note || '') + '</td>' : '') + '</tr>';
+            : '<button type="button" class="bgk-up" data-bgk="receipt" data-row="' + x.row + '" data-w="' + esc((x.date ? x.date + ' · ' : '') + x.vendor + ' · ' + bgMoney(x.amount, x.cur)) + '">📎 Add receipt</button>') + '</td><td class="m-hide mut">' + esc(x.note || '') + '</td>' : '') + '</tr>';
       });
       h += '</tbody></table></div>';
     }
@@ -4324,11 +4332,12 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     { k: 'category', f: 'category', t: 'Category', w: 170 },
     { k: 'item', f: 'service', t: 'Service', w: 340 },
     { k: 'vendor', f: 'name', t: 'Name', w: 180 },
+    { k: 'cur', f: 'currency', t: 'Currency', w: 86, opts: ['€', '₪'] },
     { k: 'unit', f: 'cost', t: 'Cost', w: 110, num: true },
     { k: 'qty', f: 'qty', t: 'Quantity', w: 100, num: true },
     { k: 'total', t: 'Total price', w: 130, num: true, ro: true }
   ];
-  var BX_FL = { ok: 'Confirmed', category: 'Category', service: 'Service', name: 'Name', cost: 'Cost', qty: 'Quantity', add: 'Added a line', 'delete': 'Deleted a line' };
+  var BX_FL = { ok: 'Confirmed', category: 'Category', service: 'Service', name: 'Name', currency: 'Currency', cost: 'Cost', qty: 'Quantity', add: 'Added a line', 'delete': 'Deleted a line' };
   var BX_LOCKED = 'Noam has locked the budget for changes.';
   function bxCol(k) { return BX_COLS.filter(function (c) { return c.k === k; })[0]; }
   function bxColByF(f) { return BX_COLS.filter(function (c) { return c.f === f; })[0]; }
@@ -4338,7 +4347,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     return o.map(bxCol);
   }
   function bxW(c) { return BX.widths[c.k] || c.w; }
-  function bxAl(k) { if (BX.align[k]) return BX.align[k]; var c = bxCol(k); return c.k === 'ok' ? 'c' : c.num ? 'r' : 'a'; }
+  function bxAl(k) { if (BX.align[k]) return BX.align[k]; var c = bxCol(k); return c.k === 'ok' || c.k === 'cur' ? 'c' : c.num ? 'r' : 'a'; }
   function bxRO() { return !S.admin && BX.can === false; }   // Noam locked the budget: the couple can only look
   function bxLines() { return (BG.data && BG.data.lines) || []; }
   function bxLiOfRow(row) { var L = bxLines(); for (var i = 0; i < L.length; i++) if (L[i].row === row) return i; return -1; }
@@ -4346,12 +4355,13 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function bxRaw(l, k) {
     var c = bxCol(k); if (!l || !c) return '';
     if (k === 'ok') return l.ok ? 'TRUE' : 'FALSE';
+    if (k === 'cur') return bgSym(l.cur);
     if (c.num) return bgNum(l[k]) ? String(bgNum(l[k])) : '';
     return String(l[k] == null ? '' : l[k]);
   }
   function bxShown(l, k) {
     if (k === 'ok') return l.ok ? 'Confirmed' : 'Not confirmed';
-    if (k === 'unit' || k === 'total') { var n = bgNum(l[k]); return n ? bgMoney(n) : (k === 'total' && l.item ? '–' : ''); }
+    if (k === 'unit' || k === 'total') { var n = bgNum(l[k]); return n ? bgMoney(n, l.cur) : (k === 'total' && l.item ? '–' : ''); }
     return bxRaw(l, k);
   }
   function bxPass(l, skip) {
@@ -4366,12 +4376,13 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       if (s.k === 'row') { r = (x.row || 1e9) - (y.row || 1e9); return (s.dir < 0 ? -r : r) || a - b; }
       var c = bxCol(s.k), vx = x[s.k], vy = y[s.k];
       if (!c.num && c.k !== 'ok' && !vx !== !vy) return vx ? -1 : 1;   // empty cells last
+      if (c.k === 'cur') { vx = bgSym(vx); vy = bgSym(vy); }
       r = c.num ? bgNum(vx) - bgNum(vy) : c.k === 'ok' ? (vx ? 1 : 0) - (vy ? 1 : 0) : String(vx || '').localeCompare(String(vy || ''), undefined, { sensitivity: 'base', numeric: true });
       return (s.dir < 0 ? -r : r) || (x.row || 1e9) - (y.row || 1e9);
     });
   }
   function bxWhen(iso) { var d = new Date(iso); if (isNaN(d)) return ''; var p = function (n) { return ('0' + n).slice(-2); }; return p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()); }
-  function bxVal(f, v) { if (f === 'ok') return String(v) === 'true' ? '✓ ticked' : 'not ticked'; if (f === 'cost') return v === '' || v == null ? 'empty' : bgMoney(v); return v === '' || v == null ? 'empty' : String(v); }
+  function bxVal(f, v, cur) { if (f === 'ok') return String(v) === 'true' ? '✓ ticked' : 'not ticked'; if (f === 'currency') return bgSym(v); if (f === 'cost') return v === '' || v == null ? 'empty' : bgMoney(v, cur); return v === '' || v == null ? 'empty' : String(v); }
   // which cells the couple changed and Noam hasn't marked as seen (Noam editing the same cell clears it, as in the sheet)
   function bxHi() {
     var hi = {}, ch = (BX.changes || []).slice().reverse();
@@ -4391,9 +4402,11 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var total = bgNum(D.total), paid = bgNum(D.paid), left = total - paid, pct = total ? Math.round(100 * paid / total) : 0;
     var named = L.filter(function (l) { return l.item; }), conf = named.filter(function (l) { return l.ok; }).length;
     if (admin && BX.changes === null && !BX.chAsked) { BX.chAsked = true; setTimeout(bxChanges, 0); }
+    var I = bgIls();
     var hi = admin ? bxHi() : {}, nNew = admin ? (BX.changes || []).filter(function (c) { return !c.by_admin && !c.seen && !c.undone; }).length : 0;
-    var h = '<div class="bx-top"><h1>Budget</h1><span class="bx-bar" title="' + pct + '% paid"><i style="width:' + Math.min(pct, 100) + '%"></i></span>' +
-      '<span class="bx-sum">' + bgEur(paid) + ' paid of <b>' + bgEur(total) + '</b> · <b>' + bgEur(left) + '</b> left</span><span class="grow"></span>' +
+    var sumLine = function (sym, p, t) { var pc = t ? Math.round(100 * p / t) : 0; return (I.on ? '<span class="bx-sym">' + sym + '</span>' : '') + '<span class="bx-bar" title="' + pc + '% paid"><i style="width:' + Math.min(pc, 100) + '%"></i></span>' +
+      '<span class="bx-sum">' + bgMoney(p, sym) + ' paid of <b>' + bgMoney(t, sym) + '</b> · <b>' + bgMoney(t - p, sym) + '</b> left</span>'; };
+    var h = '<div class="bx-top"><h1>Budget</h1>' + (I.on ? '<span class="bx-sums">' + sumLine('€', paid, total) + sumLine('₪', I.paid, I.total) + '</span>' : sumLine('€', paid, total)) + '<span class="grow"></span>' +
       '<span class="bx-saved" id="bx-saved">' + esc(BX.saved) + '</span><span class="bx-conf">' + conf + ' of ' + named.length + ' services confirmed</span>';
     if (admin) h += '<button type="button" class="bx-lock' + (BX.can ? ' on' : '') + '" data-bxlock="1" role="switch" aria-checked="' + BX.can + '" title="' + (BX.can ? 'The couple can change this budget. Click to lock it.' : 'The budget is locked – the couple can only look. Click to let them make changes.') + '"><i></i>' + (BX.can ? 'Couple can edit' : 'Locked for the couple') + '</button>';
     if (bxRO()) h += '<span class="bx-ro">🔒 View only</span>';
@@ -4438,7 +4451,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       h += '</tr>';
     });
     h += '</tbody><tfoot><tr><td class="chk"></td>' + cols.map(function (c, i) {
-      if (c.k === 'total') return '<td class="al-r b"><div class="c">' + bgMoney(total) + '</div></td>';
+      if (c.k === 'total') return '<td class="al-r b"><div class="c">' + bgMoney(total) + '</div>' + (I.on ? '<div class="c">' + bgMoney(I.total, '₪') + '</div>' : '') + '</td>';
       return '<td>' + (c.k === 'item' || (i === 1 && !cols.some(function (x) { return x.k === 'item'; })) ? '<div class="c">Total</div>' : '') + '</td>';
     }).join('') + '</tr></tfoot></table>' +
       (list.length ? '' : '<div class="empty">' + (fk.length ? 'No lines match these filters.' : 'No lines yet.') + '</div>') +
@@ -4456,11 +4469,11 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (!ch) h += '<p class="mut">Loading…</p>';
     else if (!ch.length) h += '<p class="mut">No changes yet. When the couple changes something here it shows up in this list, and the cell is marked.</p>';
     else ch.forEach(function (c) {
-      var u = /^undo /.test(c.field), f = u ? c.field.slice(5) : c.field, what;
-      if (u) what = 'Undid: ' + (BX_FL[f] || f) + (f === 'add' || f === 'delete' ? '' : ' → ' + bxVal(f, c.new_value));
+      var u = /^undo /.test(c.field), f = u ? c.field.slice(5) : c.field, what, cl = bxLines()[bxLiOfRow(c.sheet_row)], cur = cl && cl.cur;
+      if (u) what = 'Undid: ' + (BX_FL[f] || f) + (f === 'add' || f === 'delete' ? '' : ' → ' + bxVal(f, c.new_value, cur));
       else if (f === 'add') what = 'Added “' + c.new_value + '”';
       else if (f === 'delete') what = 'Deleted “' + c.item + '”';
-      else what = BX_FL[f] + ': ' + bxVal(f, c.old_value) + ' → ' + bxVal(f, c.new_value);
+      else what = BX_FL[f] + ': ' + bxVal(f, c.old_value, cur) + ' → ' + bxVal(f, c.new_value, cur);
       h += '<div class="bx-ci' + (c.undone ? ' undone' : '') + (!c.by_admin && !c.seen && !c.undone ? ' new' : '') + '"><div class="bx-cm"><b>' + esc(c.by_name || '') + '</b> · ' + esc(bxWhen(c.at)) + ' · row ' + c.sheet_row + '</div>' +
         '<div class="bx-cw">' + (f !== 'add' && f !== 'delete' && c.item ? '<span class="mut">' + esc(c.item) + ' · </span>' : '') + esc(what) + '</div>' +
         (u ? '' : c.undone ? '<span class="bx-cu">Undone</span>' : '<button type="button" class="btn sm" data-bxundo="' + c.id + '">Undo</button>') + '</div>';
@@ -4543,7 +4556,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (cells.length < 2) { bar.hidden = true; return; }
     var vals = cells.map(function (x) { return bxRaw(L[x.li], x.k); }).filter(function (v) { return v !== '' && v !== 'FALSE'; });
     var nums = vals.filter(function (v) { return /^-?\d+(\.\d+)?$/.test(v); }).map(Number), html = '';
-    var money = cells.some(function (x) { return x.k === 'unit' || x.k === 'total'; }), fmt = function (n) { n = Math.round(n * 100) / 100; return money ? bgMoney(n) : String(n); };
+    var curs = {}; cells.forEach(function (x) { if (x.k === 'unit' || x.k === 'total') curs[bgSym(L[x.li].cur)] = 1; });
+    var ck = Object.keys(curs), money = ck.length === 1, fmt = function (n) { n = Math.round(n * 100) / 100; return money ? bgMoney(n, ck[0]) : String(n); };
     if (nums.length) { var sum = nums.reduce(function (t, n) { return t + n; }, 0); html += '<span>Average: <b>' + fmt(sum / nums.length) + '</b></span>'; }
     html += '<span>Count: <b>' + vals.length + '</b></span>';
     if (nums.length) html += '<span>Sum: <b>' + fmt(nums.reduce(function (t, n) { return t + n; }, 0)) + '</b></span>';
@@ -4595,6 +4609,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function bxFix(k, v) {
     var c = bxCol(k); if (!c || c.ro) return { err: 'skip' };
     if (k === 'ok') return { v: typeof v === 'boolean' ? v : /^(true|yes|y|1|✓|v|x|confirmed|כן)$/i.test(String(v).trim()) };
+    if (k === 'cur') { var cv = String(v == null ? '' : v).trim().toLowerCase(); if (!cv || /^(€|eur|euro|euros|e|יורו)$/.test(cv)) return { v: '€' }; if (/^(₪|ils|nis|shekel|shekels|sh|ש"ח|ש״ח|שח|שקל|שקלים)$/.test(cv)) return { v: '₪' }; return { err: '“' + v + '” isn’t a currency here – use € or ₪.' }; }
     v = String(v == null ? '' : v).replace(/\r/g, '').trim();
     if (c.num) {
       var n = v.replace(/[€₪$\s,]/g, '');
@@ -4608,10 +4623,11 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function bxSet(l, k, v) {
     var c = bxCol(k);
     if (k === 'ok') l.ok = !!v;
+    else if (k === 'cur') l.cur = v === '₪' ? '₪' : '';
     else if (c.num) { l[k] = v === '' ? 0 : +v; l.total = Math.round(bgNum(l.unit) * bgNum(l.qty) * 100) / 100; }
     else l[k] = v;
   }
-  function bxTotals() { var t = 0; bxLines().forEach(function (l) { t += bgNum(l.total); }); BG.data.total = Math.round(t * 100) / 100; }
+  function bxTotals() { var t = 0, ti = 0; bxLines().forEach(function (l) { if (l.cur === '₪') ti += bgNum(l.total); else t += bgNum(l.total); }); BG.data.total = Math.round(t * 100) / 100; BG.data.totalIls = Math.round(ti * 100) / 100; }
   // items: { li or row, k, v }
   function bxApply(items, quiet) {
     if (bxRO()) { toast(BX_LOCKED, null, null, true); return; }
@@ -4720,15 +4736,20 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (c.ro) return;
     if (k === 'ok') { bxApply([{ li: li, k: 'ok', v: !l.ok }]); return; }
     BX.edit = { li: li, k: k };
-    var box = td.querySelector('.c'), el = document.createElement('input');
-    el.className = 'cell'; el.value = opts.text != null ? opts.text : bxRaw(l, k);
+    var box = td.querySelector('.c'), el;
+    if (c.opts) {
+      el = document.createElement('select'); el.className = 'cell';
+      c.opts.forEach(function (o) { var op = document.createElement('option'); op.value = o; op.textContent = o; if (o === bxRaw(l, k)) op.selected = true; el.appendChild(op); });
+      if (opts.text) { var fx0 = bxFix(k, opts.text); if (!fx0.err) el.value = fx0.v; }
+    } else { el = document.createElement('input'); el.className = 'cell'; el.value = opts.text != null ? opts.text : bxRaw(l, k); }
     if (c.num) el.inputMode = 'decimal';
     if (k === 'category') el.setAttribute('list', 'bx-cats');
     el.setAttribute('aria-label', c.label || c.t);
     box.innerHTML = ''; box.appendChild(el); el.focus();
-    if (opts.text != null || opts.end) { try { el.setSelectionRange(el.value.length, el.value.length); } catch (x) {} } else el.select();
+    if (!c.opts) { if (opts.text != null || opts.end) { try { el.setSelectionRange(el.value.length, el.value.length); } catch (x) {} } else el.select(); }
+    if (c.opts && opts.open) { try { el.showPicker(); } catch (x) {} }
     // Started by typing: the arrow keys save and move, like Excel. Started with F2 / double-click: they move inside the text.
-    var done = false, typed = opts.text != null;
+    var done = false, typed = opts.text != null && !c.opts;
     function finish(save, mv) {
       if (done) return; done = true; BX.edit = null;
       var v = el.value;
@@ -4745,6 +4766,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       e.stopPropagation();
     });
     el.addEventListener('blur', function () { finish(true); });
+    if (c.opts) el.addEventListener('change', function () { if (!opts.text) finish(true); });
   }
   function bxDropNew(l) { var L = bxLines(), i = L.indexOf(l); if (i >= 0) L.splice(i, 1); BX.a = BX.b = BX.c = null; BX.extra = []; bxRedraw(); }
   function bxAdd() {
@@ -4775,7 +4797,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       if (!o.item) return;
       var l = { item: o.item, category: '', vendor: '', unit: 0, qty: 0, total: 0, ok: false, row: 0, _pending: true, _chk: o.item };
       L.push(l); BX.q.push({ l: l, op: 'add', value: o.item });
-      [['category', o.category], ['vendor', o.vendor], ['unit', o.unit], ['qty', o.qty], ['ok', o.ok]].forEach(function (p) {
+      [['category', o.category], ['vendor', o.vendor], ['cur', o.cur === '₪' ? '₪' : ''], ['unit', o.unit], ['qty', o.qty], ['ok', o.ok]].forEach(function (p) {
         if (!p[1]) return; bxSet(l, p[0], p[1]);
         BX.q.push({ l: l, field: bxCol(p[0]).f, value: p[0] === 'ok' ? true : p[1], check: o.item });
       });
@@ -4891,6 +4913,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var arrow = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] }[k];
     var td = bxTd(BX.c.li, BX.c.k), edit = td && td.classList.contains('ed'), isOk = BX.c.k === 'ok';
     var stop = function () { e.preventDefault(); e.stopPropagation(); };
+    if (arrow && e.altKey && k === 'ArrowDown') { stop(); if (edit) bxStartEdit(td, { open: true }); return; }
     if (arrow) { stop(); var base = e.shiftKey ? far : cur, t = ctrl ? bxJump(R, C, base.r, base.c, arrow[0], arrow[1]) : { r: base.r + arrow[0], c: base.c + arrow[1] }; bxGo(t.r, t.c, e.shiftKey, R, C); return; }
     if (k === 'Home') { stop(); bxGo(ctrl ? 0 : (e.shiftKey ? far : cur).r, 0, e.shiftKey, R, C); return; }
     if (k === 'End') { stop(); bxGo(ctrl ? R.length - 1 : (e.shiftKey ? far : cur).r, C.length - 1, e.shiftKey, R, C); return; }
@@ -5045,7 +5068,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var t = $('chgtip');
     t.innerHTML = !c
       ? '<div class="t">New line</div><div class="ln">Added by the couple</div><div class="who">' + esc(e.by_name || '') + ' · ' + esc(bxWhen(e.at)) + '</div>'
-      : '<div class="t">Changed by the couple</div><div class="ln"><s>' + esc(bxVal(e.field, e.old_value)) + '</s> → <b>' + esc(bxVal(e.field, e.new_value)) + '</b></div><div class="who">' + esc(e.by_name || '') + ' · ' + esc(bxWhen(e.at)) + '</div>';
+      : '<div class="t">Changed by the couple</div><div class="ln"><s>' + esc(bxVal(e.field, e.old_value, l.cur)) + '</s> → <b>' + esc(bxVal(e.field, e.new_value, l.cur)) + '</b></div><div class="who">' + esc(e.by_name || '') + ' · ' + esc(bxWhen(e.at)) + '</div>';
     t.innerHTML += '<button type="button" data-bxseen="' + e.ids.join(',') + '">✓ Seen</button>';
     t.hidden = false; tipTd = td;
     var r = td.getBoundingClientRect();
@@ -5110,10 +5133,14 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       $('p-vendor').innerHTML = '<option value="">' + (names.length ? 'Choose…' : 'No vendors yet – add them in the sheet') + '</option>' + names.map(function (n) { return '<option>' + esc(n) + '</option>'; }).join('');
       $('p-amount').value = ''; $('p-date').value = payToday(); $('p-by').value = ''; $('p-method').value = ''; $('p-note').value = '';
       if (o.vendor) $('p-vendor').value = o.vendor;
+      payCurFor($('p-vendor').value);
     }
     payShowFile(); $('p-err').hidden = true; $('p-auto').hidden = true; PAY.ocr = 0; payAutoClear(); $('dlg-pay').hidden = false;
     setTimeout(function () { (pay ? $('p-vendor') : $('p-drop')).focus(); }, 30);
   }
+  // the currency follows the vendor (a vendor paid in shekels), and can be changed
+  function payCurFor(name) { var v = (BG.data.vendors || []).filter(function (x) { return x.name === name; })[0]; $('p-cur').value = v && v.cur === '₪' ? '₪' : '€'; $('p-cur').classList.remove('auto'); }
+  $('p-vendor').addEventListener('change', function () { payCurFor(this.value); });
   function payShowFile() {
     var f = PAY.file; $('p-empty').hidden = !!f; $('p-has').hidden = !f;
     $('p-thumb').src = f && f.preview || ''; $('p-fname').textContent = f ? f.name : '';
@@ -5146,7 +5173,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function payTake(f) { if (!f) return; payErr(''); payReadFile(f).then(function (x) { PAY.file = x; payShowFile(); if (PAY.mode === 'pay') payOcr(x); }, function (e) { payErr(e.message); }); }
   // ----- Reading the receipt: Google reads the text (Hub › budgetOcr), and the form is filled from it. Noam checks before saving. -----
   function payAuto(t, ok) { var a = $('p-auto'); a.hidden = !t; a.className = 'pay-auto' + (ok ? ' ok' : ''); a.innerHTML = t; }
-  function payAutoClear() { ['p-vendor', 'p-amount', 'p-date', 'p-method', 'p-note'].forEach(function (id) { $(id).classList.remove('auto'); }); }
+  function payAutoClear() { ['p-vendor', 'p-amount', 'p-cur', 'p-date', 'p-method', 'p-note'].forEach(function (id) { $(id).classList.remove('auto'); }); }
   ['p-vendor', 'p-amount', 'p-date', 'p-method', 'p-note'].forEach(function (id) { $(id).addEventListener('input', function () { this.classList.remove('auto'); }); $(id).addEventListener('change', function () { this.classList.remove('auto'); }); });
   // "10.665,00" / "10,665.00" / "10 665" / "1234.5" → a number
   function payNum(t) {
@@ -5163,12 +5190,15 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     // amount: a number next to EUR / € / Amount / Total / סכום / סה"כ – the biggest one; otherwise the biggest number with cents
     var NUM = /\d{1,3}(?:[.,\s ]\d{3})+(?:[.,]\d{1,2})?|\d+(?:[.,]\d{1,2})?/g, best = 0;
     lines.forEach(function (ln, i) {
-      var key = /(€|eur\b|euro|amount|total|sum|paid|סכום|סה"כ|סה״כ|לתשלום|שולם)/i.test(ln) || (i > 0 && /^(amount|total|סכום|סה"כ)\s*:?\s*$/i.test(lines[i - 1].trim()));
+      var key = /(€|eur\b|euro|₪|\bils\b|\bnis\b|ש"ח|ש״ח|שקל|amount|total|sum|paid|סכום|סה"כ|סה״כ|לתשלום|שולם)/i.test(ln) || (i > 0 && /^(amount|total|סכום|סה"כ)\s*:?\s*$/i.test(lines[i - 1].trim()));
       if (!key || /(phone|tel|iban|card|ending|ref|booking|number|טלפון)/i.test(ln)) return;
       (ln.replace(/\b20\d{2}-\d{2}-\d{2}\b|\b\d{1,2}[\/.\-]\d{1,2}[\/.\-]\d{2,4}\b|\b\d{1,2}:\d{2}\b/g, ' ').match(NUM) || []).forEach(function (m) { var n = payNum(m); if (n > best && n < 1e7) best = n; });
     });
     if (!best) (T.match(/\d{1,3}(?:[.,\s]\d{3})*[.,]\d{2}(?!\d)/g) || []).forEach(function (m) { var n = payNum(m); if (n > best && n < 1e7) best = n; });
     if (best) out.amount = Math.round(best * 100) / 100;
+    // currency: shekels when the receipt says so, otherwise euros if it says so
+    var ils = /₪|\bils\b|\bnis\b|ש"ח|ש״ח|שקל/i.test(T), eur = /€|\beur\b|euro/i.test(T);
+    if (ils && !eur) out.cur = '₪'; else if (eur && !ils) out.cur = '€';
     // date → dd/mm/yyyy
     var p2 = function (n) { return ('0' + n).slice(-2); }, ok = function (d, m, y) { if (y < 100) y += 2000; return d >= 1 && d <= 31 && m >= 1 && m <= 12 && y >= 2020 && y <= 2040 ? p2(d) + '/' + p2(m) + '/' + y : ''; }, mt;
     if ((mt = /\b(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4}|\d{2})\b/.exec(T))) out.date = ok(+mt[1], +mt[2], +mt[3]);
@@ -5205,6 +5235,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       var f = payParse(res.text), got = [];
       var put = function (elId, v, empty) { var el = $(elId); if (v == null || v === '' || !empty(el)) return; el.value = v; if (el.value === String(v)) { el.classList.add('auto'); got.push(elId); } };
       put('p-vendor', f.vendor, function (el) { return !el.value; });
+      if (got.indexOf('p-vendor') > -1) payCurFor(f.vendor);
+      put('p-cur', f.cur, function (el) { return el.value !== f.cur; });
       put('p-amount', f.amount != null ? String(f.amount) : '', function (el) { return !el.value.trim(); });
       put('p-date', f.date, function (el) { return !el.value.trim() || el.value === payToday(); });
       put('p-method', f.method, function (el) { return !el.value; });
@@ -5256,12 +5288,12 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     e.preventDefault(); if (PAY.busy) return;
     var body = { slug: EVENT };
     if (PAY.mode === 'pay') {
-      var amt = parseFloat(String($('p-amount').value).replace(/[€,\s]/g, '')), dt = $('p-date').value.trim();
+      var amt = parseFloat(String($('p-amount').value).replace(/[€₪,\s]/g, '')), dt = $('p-date').value.trim();
       if (!$('p-vendor').value) return payErr('Choose the vendor.');
       if (!(amt > 0)) return payErr('Type the amount.');
       var m = /^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})$/.exec(dt); if (!m) return payErr('Write the date as dd/mm/yyyy.');
       dt = ('0' + m[1]).slice(-2) + '/' + ('0' + m[2]).slice(-2) + '/' + m[3];
-      body.action = 'budgetPay'; body.vendor = $('p-vendor').value; body.amount = amt; body.date = dt;
+      body.action = 'budgetPay'; body.vendor = $('p-vendor').value; body.amount = amt; body.currency = $('p-cur').value; body.date = dt;
       body.by = $('p-by').value; body.method = $('p-method').value; body.note = $('p-note').value.trim();
     } else {
       if (!PAY.file) return payErr(PAY.mode === 'contract' ? 'Add the contract file.' : 'Add the receipt.');
@@ -5313,7 +5345,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   })();
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('bgk-sheet').hidden && $('dlg-pay').hidden) bgkClose(); });
   function bgkVend(name) { return (BG.data.vendors || []).filter(function (v) { return v.name === (name || BGK_NV); })[0] || null; }
-  function bgkTrio(v) { return '<div class="bgk-trio"><div>Total<b>' + bgMoney(v.total) + '</b></div><div>Paid<b class="ok">' + bgMoney(v.paid) + '</b></div><div>Left<b>' + bgMoney(v.balance) + '</b></div></div>'; }
+  function bgkTrio(v) { return '<div class="bgk-trio"><div>Total<b>' + bgMoney(v.total, v.cur) + '</b></div><div>Paid<b class="ok">' + bgMoney(v.paid, v.cur) + '</b></div><div>Left<b>' + bgMoney(v.balance, v.cur) + '</b></div></div>'; }
   function bgkBtns(name) {
     if (!S.admin || !BG.sheet || !name || name === BGK_NV) return '';
     var v = bgkVend(name) || {};
@@ -5323,9 +5355,9 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function bgkStat(s) { return '<span class="bg-pill st-' + (s === 'Paid' ? 3 : s === 'Partly paid' ? 2 : 0) + '">' + esc(s) + '</span>'; }
   function bgkLineHtml(i) {
     var l = (BG.data.lines || [])[i]; if (!l) return '';
-    var u = bgNum(l.unit), q = bgNum(l.qty), t = bgNum(l.total), v = bgkVend(l.vendor), calc = u && q && Math.abs(u * q - t) < 0.01 ? bgMoney(u) + ' × ' + q : '';
+    var u = bgNum(l.unit), q = bgNum(l.qty), t = bgNum(l.total), v = bgkVend(l.vendor), calc = u && q && Math.abs(u * q - t) < 0.01 ? bgMoney(u, l.cur) + ' × ' + q : '';
     var h = '<h3>' + esc(l.item) + '</h3>' + (l.category ? '<div class="bgk-sub">' + esc(l.category) + '</div>' : '') + (l.ok ? '<span class="bg-pill st-3">✓ Confirmed</span>' : '');
-    h += '<div class="bgk-calc"><span>' + calc + '</span><b>' + (t ? bgMoney(t) : '–') + '</b></div>';
+    h += '<div class="bgk-calc"><span>' + calc + '</span><b>' + (t ? bgMoney(t, l.cur) : '–') + '</b></div>';
     h += '<div class="bgk-kv"><span>Vendor</span>' + (l.vendor ? '<button type="button" class="bgk-lnk" data-bgvn="' + esc(l.vendor) + '">' + esc(l.vendor) + ' ›</button>' : '<b class="mut">No vendor yet</b>') +
       (l.note ? '<span>Notes</span><span>' + esc(l.note) + '</span>' : '') + '</div>';
     if (v && l.vendor) h += '<div class="bgk-sec">' + esc(l.vendor) + ' – all services</div>' + bgkTrio(v);
@@ -5335,16 +5367,16 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var v = bgkVend(name); if (!v) return '';
     var ls = (BG.data.lines || []).filter(function (l) { return (l.vendor || BGK_NV) === v.name; }), ps = (BG.data.payments || []).filter(function (x) { return (x.vendor || BGK_NV) === v.name; });
     var h = '<h3>' + esc(v.name) + '</h3><div class="bgk-sub">' + ls.length + ' service' + (ls.length === 1 ? '' : 's') + (v.name !== BGK_NV ? ' · ' + bgkStat(v.status) : '') + (!S.admin && v.hasContract ? ' · contract ✓' : '') + '</div>' + bgkTrio(v);
-    if (ps.length) { h += '<div class="bgk-sec">Payments</div>'; ps.slice().reverse().forEach(function (x) { h += '<div class="bgk-li"><span>' + esc(x.date || '') + '<small>' + esc([x.method, x.by].filter(Boolean).join(' · ')) + '</small></span><b>' + bgMoney(x.amount) + '</b></div>'; }); }
-    if (ls.length) { h += '<div class="bgk-sec">Services</div>'; ls.forEach(function (l) { var u = bgNum(l.unit), q = bgNum(l.qty), t = bgNum(l.total); h += '<div class="bgk-li"><span>' + esc(l.item) + (u && q && Math.abs(u * q - t) < 0.01 ? '<small>' + bgMoney(u) + ' × ' + q + '</small>' : '') + '</span><b>' + (t ? bgMoney(t) : '–') + '</b></div>'; }); }
+    if (ps.length) { h += '<div class="bgk-sec">Payments</div>'; ps.slice().reverse().forEach(function (x) { h += '<div class="bgk-li"><span>' + esc(x.date || '') + '<small>' + esc([x.method, x.by].filter(Boolean).join(' · ')) + '</small></span><b>' + bgMoney(x.amount, x.cur) + '</b></div>'; }); }
+    if (ls.length) { h += '<div class="bgk-sec">Services</div>'; ls.forEach(function (l) { var u = bgNum(l.unit), q = bgNum(l.qty), t = bgNum(l.total); h += '<div class="bgk-li"><span>' + esc(l.item) + (u && q && Math.abs(u * q - t) < 0.01 ? '<small>' + bgMoney(u, l.cur) + ' × ' + q + '</small>' : '') + '</span><b>' + (t ? bgMoney(t, l.cur) : '–') + '</b></div>'; }); }
     return h + bgkBtns(v.name);
   }
   function bgkPayHtml(i) {
     var x = (BG.data.payments || [])[i]; if (!x) return '';
-    var h = '<div class="bgk-sub">Payment' + (x.date ? ' · ' + esc(x.date) : '') + '</div><div class="bgk-big">' + bgMoney(x.amount) + '</div><div class="bgk-sub">to <button type="button" class="bgk-lnk" data-bgvn="' + esc(x.vendor || BGK_NV) + '">' + esc(x.vendor || BGK_NV) + ' ›</button></div>';
+    var h = '<div class="bgk-sub">Payment' + (x.date ? ' · ' + esc(x.date) : '') + '</div><div class="bgk-big">' + bgMoney(x.amount, x.cur) + '</div><div class="bgk-sub">to <button type="button" class="bgk-lnk" data-bgvn="' + esc(x.vendor || BGK_NV) + '">' + esc(x.vendor || BGK_NV) + ' ›</button></div>';
     h += '<div class="bgk-kv">' + (x.by ? '<span>Paid by</span><b>' + esc(x.by) + '</b>' : '') + (x.method ? '<span>Method</span><b>' + esc(x.method) + '</b>' : '') + (x.note ? '<span>Note</span><span>' + esc(x.note) + '</span>' : '') + '</div>';
     if (S.admin && BG.sheet) h += '<div class="bgk-sec">Receipt (only you)</div>' + (x.receipt ? '<a class="btn" href="' + esc(x.receipt) + '" target="_blank" rel="noopener">Open the receipt ↗</a>'
-      : '<button type="button" class="btn" data-bgk="receipt" data-row="' + x.row + '" data-w="' + esc((x.date ? x.date + ' · ' : '') + x.vendor + ' · ' + bgMoney(x.amount)) + '">📎 Add receipt</button>');
+      : '<button type="button" class="btn" data-bgk="receipt" data-row="' + x.row + '" data-w="' + esc((x.date ? x.date + ' · ' : '') + x.vendor + ' · ' + bgMoney(x.amount, x.cur)) + '">📎 Add receipt</button>');
     return h;
   }
   function bgSheetHtml() {
