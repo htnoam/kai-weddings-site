@@ -624,10 +624,12 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .bx-wrap { max-width: 100%; }
 /* computers: the services table fills the screen and scrolls inside, like the guests table */
 @media (min-width: 760px) {
-  #budget:has(#bx) { flex: 1 1 auto; min-height: 0; }
-  #budget:has(#bx) .layout { order: 1; flex: 1 1 auto; min-height: 0; align-items: stretch; }
+  body:has(#bx) { height: auto; min-height: 100%; }
+  body:has(#bx) .wrap { flex: none; min-height: 0; }
+  #budget:has(#bx) { max-width: none; }
+  #budget:has(#bx) .layout { order: 1; flex: none; align-items: flex-start; }
   #budget:has(#bx) .tabrow { order: 2; }
-  #budget .bx-wrap { border-radius: 4px 4px 0 0; }
+  #budget .bx-wrap { border-radius: 4px 4px 0 0; max-height: none; overflow-y: visible; }
 }
 .bx-under { order: 3; }
 /* the Google Sheet's look: navy headers, sand stripes, thin lines, navy totals box */
@@ -646,7 +648,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 #bx tfoot td { background: #E9E3D6; border-top: 1.5px solid #CFC8BA; }
 #bx tfoot tr.ils td { background: #FFFFFF; border-top: 0; font-weight: 400; color: #8A857B; font-size: 12.5px; }
 #bx td.al-r .c { font-variant-numeric: tabular-nums; }
-.bx-vs { flex: 0 0 auto; align-self: flex-start; margin-left: 18px; }
+.bx-vs { order: 3; align-self: flex-start; margin-top: 6px; }
 .bx-vs h4 { margin: 0 0 6px; font-size: 11px; letter-spacing: .08em; color: #8A857B; text-transform: uppercase; }
 .bx-vs table { border-collapse: collapse; border-spacing: 0; table-layout: auto; width: auto; min-width: 0; background: #FFFFFF; font-size: 13px; }
 .bx-vs th { position: static; }
@@ -661,7 +663,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .vs-st.no { background: #F8E6E2; color: #9A4E40; }
 .vs-st.part { background: #FBF3DD; color: #8A6A1F; }
 .vs-st.ok { background: #E9F1EA; color: #2B7A3D; }
-@media (max-width: 1250px) { .bx-vs { display: none; } }
+@media (max-width: 759px) { .bx-vs { display: none; } }
 .bx td.num .c { color: var(--text); }
 .bx td.mut .c { color: var(--muted); }
 .bx td.b .c { font-weight: 700; }
@@ -4367,7 +4369,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   // straight into the Google Sheet (through budget-hub, in order) and is logged, so Noam sees what the couple changed. -----
   var BX = { can: true, tab: 'services', edit: null, q: [], busy: false, sort: { k: 'row', dir: 1 }, widths: {}, order: null, align: {}, filters: {},
     changes: null, chOpen: false, hi: {}, saved: '', a: null, b: null, c: null, extra: [], copy: null, undo: [], redo: [], menuCut: false };
-  try { BX.widths = JSON.parse(localStorage.getItem('kai-budget-widths') || '{}') || {}; } catch (e) {}
+  try { BX.widths = JSON.parse(localStorage.getItem('kai-budget-widths2') || '{}') || {}; } catch (e) {}
   try { BX.align = JSON.parse(localStorage.getItem('kai-budget-align') || '{}') || {}; } catch (e) {}
   function bxStore(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (x) {} }
   var BX_COLS = [
@@ -4639,7 +4641,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     };
     h += '</tbody><tfoot><tr>' + foot([total, paid], '€', 'Total') + '</tr>' + (I.on ? '<tr class="ils">' + foot([I.total, I.paid], '₪', 'in shekels') + '</tr>' : '') + '</tfoot></table>' +
       (list.length ? '' : '<div class="empty">' + (BX.missing ? 'Nothing missing – every service has its details.' : BX.chgOnly ? 'No changes to review.' : L.length ? 'No services match these filters.' : 'No services yet.') + '</div>') +
-      '<div class="selbar" id="bxselbar" hidden></div></div>' + (BX.panel != null ? bxPanelHtml() : bxVendSum(total, paid, I)) + '</div>';
+      '<div class="selbar" id="bxselbar" hidden></div></div>' + (BX.panel != null ? bxPanelHtml() : '') + '</div>' + bxVendSum(total, paid, I);
     if (ro) h += '<div class="bx-under"><span class="bx-tip">Noam has locked the budget for changes. Ask him if you want to change something.</span></div>';
     h += '<datalist id="bx-cats">' + (function () { var o = {}; L.forEach(function (l) { if (l.category) o[l.category] = 1; }); return Object.keys(o).map(function (k) { return '<option value="' + esc(k) + '">'; }).join(''); })() + '</datalist>';
     return h + bxChPanel(admin);
@@ -5400,7 +5402,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       var th = rz.parentNode, k = rz.dataset.bz, x0 = e.clientX, w0 = th.offsetWidth, tb = $('bx'), t0 = tb.offsetWidth;
       rz.classList.add('on'); BX.resizing = true;
       var mv = function (ev) { var w = Math.max(40, Math.round(w0 + ev.clientX - x0)); th.style.width = w + 'px'; tb.style.width = (t0 + w - w0) + 'px'; BX.widths[k] = w; };
-      var upr = function () { document.removeEventListener('mousemove', mv); document.removeEventListener('mouseup', upr); rz.classList.remove('on'); setTimeout(function () { BX.resizing = false; }, 0); bxStore('kai-budget-widths', BX.widths); bxPaint(); };
+      var upr = function () { document.removeEventListener('mousemove', mv); document.removeEventListener('mouseup', upr); rz.classList.remove('on'); setTimeout(function () { BX.resizing = false; }, 0); bxStore('kai-budget-widths2', BX.widths); bxPaint(); };
       document.addEventListener('mousemove', mv); document.addEventListener('mouseup', upr); return;
     }
     if (e.target.classList.contains('bfh')) { bxFillDrag(e); return; }
@@ -5426,7 +5428,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   });
   $('budget').addEventListener('dblclick', function (e) {
     var rz = e.target.closest('[data-bz]');
-    if (rz) { delete BX.widths[rz.dataset.bz]; bxStore('kai-budget-widths', BX.widths); bxRedraw(); return; }
+    if (rz) { delete BX.widths[rz.dataset.bz]; bxStore('kai-budget-widths2', BX.widths); bxRedraw(); return; }
     var td = e.target.closest('#bx tbody td.ed'); if (!td || td.querySelector('.cell') || e.target.closest('.bx-ck')) return;
     bxStartEdit(td, { end: true });
   });
