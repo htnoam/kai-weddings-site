@@ -3996,7 +3996,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   var LIVE = { ver: null, wait: false };
   function ping() {
     liveJoin();
-    if (document.visibilityState !== 'visible' || LIVE.wait || $('app').hidden) return;
+    if (document.visibilityState !== 'visible' || LIVE.wait || ($('app').hidden && SECT !== 'budget')) return;   // the budget page also picks up changes made in the Google Sheet
     LIVE.wait = true;
     api('ping', { name: S.who }).then(function (res) {
       showOnline(res.online || []);
