@@ -402,6 +402,23 @@ tbody tr.flash td { animation: rowflash 2.6s ease-out; }
 .gov .fh, .gov .bfh { position: absolute; right: -5px; bottom: -5px; width: 8px; height: 8px; background: var(--ink); border: 1px solid #FFFFFF; pointer-events: auto; cursor: crosshair; }
 .selbar { position: sticky; left: 0; bottom: 0; z-index: 4; display: flex; justify-content: flex-end; gap: 22px; padding: 6px 16px; background: #FAF9F7; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--soft); }
 .selbar b { color: var(--text, #2B2B30); font-weight: 600; }
+/* computers: the guest list scrolls with the page (no box). Its header stays on top while scrolling,
+   and a sideways scrollbar is always at the bottom of the screen (code: gPage) */
+@media (min-width: 760px) {
+  body:has(#app:not([hidden])) { height: auto; min-height: 100%; }
+  body:has(#app:not([hidden])) .wrap { flex: none; min-height: 0; }
+  #app:not([hidden]) .layout { flex: none; }
+  #app .tablewrap { max-height: none; overflow-x: auto; overflow-y: hidden; }
+  #app .tabrow { position: sticky; bottom: 0; z-index: 6; }
+}
+#grid thead th { transform: translateY(var(--hy, 0px)); }
+.hbar { position: fixed; z-index: 7; height: 14px; overflow-x: scroll; overflow-y: hidden; background: #FAF9F7; border-top: 1px solid var(--line); }
+.hbar[hidden] { display: none; }
+.hbar > div { height: 1px; }
+.hbar::-webkit-scrollbar { height: 13px; }
+.hbar::-webkit-scrollbar-track { background: #FAF9F7; }
+.hbar::-webkit-scrollbar-thumb { background: #C9C4BA; border-radius: 7px; border: 3px solid #FAF9F7; }
+.hbar::-webkit-scrollbar-thumb:hover { background: #A9A397; }
 .menu .kb { float: right; color: var(--soft); font-size: 12px; margin-left: 18px; }
 .fp-sort { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 2px 0 8px; border-bottom: 1px solid var(--hair); margin-bottom: 8px; }
 /* the couple's rows (guests 1 and 2): light cream */
@@ -632,6 +649,76 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
   #budget .bx-wrap { border-radius: 4px 4px 0 0; max-height: none; overflow-y: visible; }
 }
 .bx-under { order: 3; }
+/* the budget page (view only), 17 Nov 2026 */
+#budget:has(.bv) { max-width: 1240px; width: 100%; margin: 0 auto; }
+@media (min-width: 760px) { body:has(#budget:not([hidden]) .bv) { height: auto; min-height: 100%; } body:has(#budget:not([hidden]) .bv) .wrap { flex: none; min-height: 0; } }
+.bv { display: flex; flex-direction: column; gap: 18px; color: #1D2433; font-variant-numeric: tabular-nums; }
+.bv-top { display: flex; align-items: baseline; gap: 12px; }
+.bv-top h1 { margin: 0; font-size: 26px; font-weight: 700; }
+.bv-sub { color: #7A8499; font-size: 13px; }
+.bv-gs { font-size: 13px; font-weight: 600; color: #2E3A9E; text-decoration: none; border: 1px solid #DCE0EA; border-radius: 8px; padding: 6px 12px; background: #FFFFFF; }
+.bv-cards { display: flex; gap: 16px; }
+.bv-cur, .bv-box { background: #FFFFFF; border-radius: 16px; box-shadow: 0 1px 2px rgba(20,30,50,.04), 0 8px 24px -14px rgba(20,30,50,.14); }
+.bv-cur { flex: 1 1 0; display: flex; align-items: center; gap: 18px; padding: 14px 20px; }
+.bv-rw { position: relative; flex: none; width: 64px; height: 64px; }
+.bv-rg { transform: rotate(-90deg); display: block; }
+.bv-rw > b { position: absolute; inset: 0; display: grid; place-items: center; font-size: 14px; }
+.bv-cd { display: grid; grid-template-columns: auto auto; column-gap: 26px; row-gap: 2px; align-items: baseline; }
+.bv-lab { grid-column: 1 / -1; font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: #7A8499; }
+.bv-tot { grid-row: 2 / 4; font-size: 26px; font-weight: 700; align-self: center; }
+.bv-kv { display: flex; align-items: center; gap: 7px; color: #4A5468; font-size: 13px; white-space: nowrap; }
+.bv-kv b { margin-left: auto; padding-left: 12px; color: #1D2433; }
+.bv-kv i { width: 8px; height: 8px; border-radius: 3px; background: #E3E8F0; }
+.bv-main { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 18px; align-items: start; }
+.bv-box { padding: 18px 20px; }
+.bv-box h3 { margin: 0; font-size: 15px; }
+.bv-vend { position: sticky; top: 16px; }
+.bv-vend h3 { margin-bottom: 6px; }
+.bv-v { padding: 10px 0; border-top: 1px solid #F0F2F6; }
+.bv-v:first-of-type { border-top: 0; }
+.bv-vt { display: flex; justify-content: space-between; gap: 10px; }
+.bv-vt span { color: #4A5468; font-size: 13px; white-space: nowrap; }
+.bv-v small { display: block; color: #7A8499; font-size: 12px; margin-top: 2px; }
+.bv-pb { height: 6px; background: #EEF1F6; border-radius: 3px; overflow: hidden; margin-top: 8px; }
+.bv-pb i { display: block; height: 100%; border-radius: 3px; }
+.bv-lh { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.bv-seg { display: inline-flex; background: #F1F3F7; border-radius: 10px; padding: 3px; }
+.bv-seg button { border: 0; background: transparent; padding: 6px 12px; border-radius: 8px; font: inherit; font-size: 12.5px; font-weight: 600; color: #7A8499; cursor: pointer; }
+.bv-seg button[aria-pressed="true"] { background: #FFFFFF; color: #1D2433; box-shadow: 0 1px 2px rgba(20,30,50,.12); }
+.bv-t { width: 100%; border-collapse: collapse; table-layout: auto; min-width: 0; font-size: 13.5px; }
+.bv-t th { position: static; background: none; border: 0; text-align: left; font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: #7A8499; padding: 8px 10px; }
+.bv-t td { padding: 11px 10px; border-top: 1px solid #F0F2F6; border-right: 0; vertical-align: middle; height: auto; }
+.bv-t .n { text-align: right; white-space: nowrap; }
+.bv-t td small { display: block; color: #7A8499; font-size: 12px; margin-top: 1px; }
+.bv-t .bv-ph { display: none; }
+.bv-mut { color: #A0A8B8; }
+.bv-t small.bv-ok { color: #1F8A4C; } .bv-t small.bv-part { color: #A86B00; }
+.bv-tag { display: inline-block; font-size: 11.5px; font-weight: 700; padding: 3px 9px; border-radius: 20px; white-space: nowrap; }
+.bv-tag.ok { background: #E3F5EA; color: #1F8A4C; } .bv-tag.part { background: #FFF3DC; color: #A86B00; } .bv-tag.no { background: #F1F3F7; color: #7A8499; }
+.bv-hero, .bv-pair { display: none; }
+.bv-foot { color: #A0A8B8; font-size: 12px; margin: 0; }
+.bv-empty { color: #7A8499; }
+@media (max-width: 1000px) and (min-width: 760px) { .bv-main { grid-template-columns: 1fr; } .bv-vend { position: static; } }
+@media (max-width: 759px) {
+  .bv { gap: 14px; }
+  .bv-cards { display: none; }
+  .bv-hero { display: block; background: #24314A; color: #FFFFFF; border-radius: 22px; padding: 20px; text-align: center; }
+  .bv-hr { position: relative; width: 150px; height: 150px; margin: 4px auto 10px; }
+  .bv-hr > div { position: absolute; inset: 0; display: grid; place-content: center; }
+  .bv-hr b { font-size: 24px; font-weight: 600; }
+  .bv-hero small { color: #AEB8CC; font-size: 12px; }
+  .bv-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .bv-pair > div { background: #FFFFFF; border-radius: 16px; padding: 12px 14px; }
+  .bv-pair small { color: #7A8499; font-size: 12px; } .bv-pair b { display: block; font-size: 17px; margin-top: 2px; } .bv-pair em { font-style: normal; color: #7A8499; font-size: 12px; }
+  .bv-main { display: flex; flex-direction: column-reverse; align-items: stretch; gap: 14px; }
+  .bv-vend { position: static; }
+  .bv-box { padding: 14px 16px; }
+  .bv-lh { flex-direction: column; align-items: stretch; }
+  .bv-seg button { flex: 1; }
+  .bv-t thead, .bv-t .bv-vn, .bv-t .bv-p, .bv-t .bv-l, .bv-t .bv-s { display: none; }
+  .bv-t .bv-ph { display: block; }
+  .bv-t td { padding: 11px 2px; }
+}
 /* the Google Sheet's look: navy headers, sand stripes, thin lines, navy totals box */
 .bx-box { display: flex; background: #2F3E55; color: #FFFFFF; border-radius: 8px; overflow: hidden; }
 .bx-box > div { padding: 8px 22px; text-align: center; border-right: 1px solid #4A5A73; }
@@ -2550,8 +2637,36 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (r.top < top) wrap.scrollTop -= top - r.top; else if (r.bottom > w.bottom - 34) wrap.scrollTop += r.bottom - w.bottom + 34;
     if (PIN.indexOf(k) < 0) { if (r.left < w.left + fr) wrap.scrollLeft -= w.left + fr - r.left; else if (r.right > w.right) wrap.scrollLeft += r.right - w.right; }
     r = td.getBoundingClientRect();
-    if (r.bottom > window.innerHeight - 10 || r.top < 0) td.scrollIntoView({ block: 'nearest' });
+    var hb = th.getBoundingClientRect().bottom, lim = window.innerHeight - gPage.under() - 10;
+    if (r.top < Math.max(0, hb)) window.scrollBy(0, r.top - Math.max(0, hb)); else if (r.bottom > lim) window.scrollBy(0, r.bottom - lim);
   }
+  // Computers: the guest list scrolls with the page. Keeps the header on top and a sideways scrollbar at the bottom of the screen.
+  var gPage = (function () {
+    var bar = document.createElement('div'); bar.className = 'hbar'; bar.hidden = true; bar.innerHTML = '<div></div>'; document.body.appendChild(bar);
+    var wrap = function () { return document.querySelector('#app .tablewrap'); };
+    var tab = function () { var t = document.querySelector('#app .tabrow'); return t && t.offsetParent ? t.getBoundingClientRect().height : 0; };
+    var on = function () { var w = wrap(); return window.innerWidth >= 760 && !$('app').hidden && w && w.offsetParent; };
+    var place = function () {
+      var w = wrap(), ok = on(), r = ok && w.getBoundingClientRect(), th = $('thead'), tb = tab();
+      $('grid').style.setProperty('--hy', (ok ? Math.max(0, Math.min(-r.top, r.height - th.offsetHeight - 60)) : 0) + 'px');
+      var need = ok && w.scrollWidth > w.clientWidth + 1 && r.bottom > window.innerHeight - tb && r.top < window.innerHeight - tb - 80;
+      bar.hidden = !need;
+      if (need) { bar.style.left = r.left + 'px'; bar.style.width = r.width + 'px'; bar.style.bottom = tb + 'px'; bar.firstChild.style.width = w.scrollWidth + 'px'; if (Math.abs(bar.scrollLeft - w.scrollLeft) > 1) bar.scrollLeft = w.scrollLeft; }
+      var sb = $('selbar');
+      if (sb) {   // the count / sum bar under the table: also kept at the bottom of the screen (its place in the table stays, so nothing jumps)
+        var fix = ok && !sb.hidden && r.bottom > window.innerHeight - tb, sh = sb.offsetHeight;
+        sb.style.position = fix ? 'fixed' : ''; sb.style.left = fix ? r.left + 1 + 'px' : ''; sb.style.width = fix ? r.width - 2 + 'px' : ''; sb.style.bottom = fix ? tb + (need ? 14 : 0) + 'px' : '';
+        w.style.paddingBottom = fix ? sh + 'px' : '';
+      }
+    };
+    var q = false, later = function () { if (q) return; q = true; requestAnimationFrame(function () { q = false; place(); }); };
+    bar.addEventListener('scroll', function () { var w = wrap(); if (w && Math.abs(w.scrollLeft - bar.scrollLeft) > 1) w.scrollLeft = bar.scrollLeft; });
+    document.addEventListener('scroll', function (e) { var w = wrap(); if (e.target === w) { if (!bar.hidden && Math.abs(bar.scrollLeft - w.scrollLeft) > 1) bar.scrollLeft = w.scrollLeft; } else if (e.target === document) later(); }, true);
+    window.addEventListener('resize', later);
+    if (window.ResizeObserver) { var ro = new ResizeObserver(later); var w0 = wrap(); if (w0) { ro.observe(w0); ro.observe($('grid')); } }
+    if (window.MutationObserver) { new MutationObserver(later).observe($('app'), { attributes: true, attributeFilter: ['hidden'] }); new MutationObserver(later).observe($('selbar'), { attributes: true, attributeFilter: ['hidden'] }); }
+    return { place: later, under: function () { var sb = $('selbar'); return on() ? tab() + (bar.hidden ? 0 : 14) + (sb && sb.style.position === 'fixed' ? sb.offsetHeight : 0) : 0; } };
+  })();
   function gGo(r, c, extend, R, C) {
     r = Math.max(0, Math.min(R.length - 1, r)); c = Math.max(0, Math.min(C.length - 1, c));
     var p = { no: R[r], k: C[c] };
@@ -4037,7 +4152,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function bgRender() {
     var box = $('budget'); if (!BG.data) { box.innerHTML = ''; return; }
     if (BG.data.source === 'grid') { gridRender(); return; }
-    if (BG.data.source === 'sheet') { box.innerHTML = BG.data.format === 'kai' ? bgKaiHtml() : bgSheetHtml(); if (BG.data.format === 'kai') bxPaint(); return; }
+    if (BG.data.source === 'sheet') { box.innerHTML = BG.data.format === 'kai' ? bvHtml() : bgSheetHtml(); return; }
     var K = bgCalc(), admin = S.admin, h = '';
     box.classList.toggle('wide', !!admin && BG.view === 'table');
     var C = K.C;
@@ -4320,6 +4435,71 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function bgSym(c) { return c === '₪' ? '₪' : '€'; }
   function bgMoney(n, cur) { n = bgNum(n); var a = Math.abs(n); return (n < 0 ? '-' : '') + bgSym(cur) + (a % 1 ? a.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : Math.round(a).toLocaleString('en-US')); }
   function bgIls() { var D = BG.data || {}; return { total: bgNum(D.totalIls), paid: bgNum(D.paidIls), on: !!(bgNum(D.totalIls) || bgNum(D.paidIls) || (D.lines || []).some(function (l) { return l.cur === '₪'; })) }; }
+  // ----- The budget page (17 Nov 2026): view only, for Noam and the couple. Everything is changed in the Google Sheet. -----
+  // Euros and shekels are never added together. Computers: two small summary cards, the services table, vendors on the side.
+  // Phones: a summary card, the vendors, then the services (All / Left to pay / Paid).
+  var BV = { f: 'all' };
+  function bvRing(p, size, stroke, bg, fg) {
+    var r = (size - stroke) / 2, c = 2 * Math.PI * r, d = Math.max(0, Math.min(100, p)) / 100 * c;
+    return '<svg class="bv-rg" width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" aria-hidden="true"><circle cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r + '" fill="none" stroke="' + bg + '" stroke-width="' + stroke + '"/>' +
+      (d ? '<circle cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r + '" fill="none" stroke="' + fg + '" stroke-width="' + stroke + '" stroke-linecap="round" stroke-dasharray="' + d + ' ' + c + '"/>' : '') + '</svg>';
+  }
+  function bvHtml() {
+    var D = BG.data, admin = !!(S.admin && BG.sheet), url = 'https://docs.google.com/spreadsheets/d/' + encodeURIComponent(BG.sheet) + '/edit';
+    var L = (D.lines || []).filter(function (l) { return l.item && bgNum(l.total); }).map(function (l) {
+      var t = bgNum(l.total), pd = bgNum(l.paid), v = String(l.vendor || '').trim();
+      return { item: l.item, vendor: /^(na|n\/a|-)$/i.test(v) ? '' : v, cat: l.category ? String(l.category).toLowerCase().replace(/(^|\s|&\s)\S/g, function (x) { return x.toUpperCase(); }) : '', cur: l.cur === '₪' ? '₪' : '', total: t, paid: pd, left: t - pd };
+    });
+    var M = function (n, c) { return bgMoney(n, c); };
+    var sum = function (ls, c, k) { return ls.reduce(function (a, l) { return a + (l.cur === c ? l[k] : 0); }, 0); };
+    var tot = function (ls) { return { e: sum(ls, '', 'total'), ep: sum(ls, '', 'paid'), i: sum(ls, '₪', 'total'), ip: sum(ls, '₪', 'paid') }; };
+    var both = function (e, i) { return [e ? M(e, '') : '', i ? M(i, '₪') : ''].filter(Boolean).join(' + '); };
+    var pc = function (a, b) { return b ? Math.round(100 * a / b) : 0; };
+    var st = function (l) { return !l.paid ? ['Not paid', 'no'] : l.left > 0.005 ? ['Partly paid', 'part'] : ['Paid', 'ok']; };
+    var T = tot(L), E = '#4F6BED', IL = '#14A38B';
+    var vmap = {}, V = [];
+    L.forEach(function (l) { var k = l.vendor || 'Not booked yet'; if (!vmap[k]) { vmap[k] = []; V.push(k); } vmap[k].push(l); });
+    V = V.map(function (k) { var t = tot(vmap[k]); t.name = k; t.n = vmap[k].length; t.p = pc(t.ep + t.ip / 3.9, t.e + t.i / 3.9); return t; })
+      .sort(function (a, b) { return (a.name === 'Not booked yet') - (b.name === 'Not booked yet') || (b.e - b.ep + (b.i - b.ip) / 3.9) - (a.e - a.ep + (a.i - a.ip) / 3.9); });
+    var shown = L.filter(function (l) { return BV.f === 'all' || (BV.f === 'left' ? l.left > 0.005 : l.paid > 0); });
+    var card = function (lab, t, p, c, col) {
+      return '<div class="bv-cur"><div class="bv-rw">' + bvRing(pc(p, t), 64, 7, '#EEF1F6', col) + '<b>' + pc(p, t) + '%</b></div><div class="bv-cd">' +
+        '<span class="bv-lab">' + lab + '</span><b class="bv-tot">' + M(t, c) + '</b>' +
+        '<span class="bv-kv"><i style="background:' + col + '"></i>Paid <b>' + M(p, c) + '</b></span><span class="bv-kv"><i></i>Left to pay <b>' + M(t - p, c) + '</b></span></div></div>';
+    };
+    var h = '<div class="bv">';
+    h += '<div class="bv-top"><h1>Budget</h1><span class="bv-sub">' + (D.synced ? 'Updated ' + esc(bgAgo(D.synced)) : '') + '</span><span class="grow"></span>' +
+      (admin ? '<a class="bv-gs" href="' + url + '" target="_blank" rel="noopener">Edit in Google Sheets ↗</a>' : '') + '</div>';
+    if (!L.length) return h + '<p class="bv-empty">Nothing in the budget yet.</p></div>';
+    // phones: one summary card
+    h += '<div class="bv-hero"><div class="bv-hr">' + bvRing(pc(T.ep, T.e) || pc(T.ip, T.i), 150, 10, '#3A4865', '#D8B878') +
+      '<div><small>Left to pay</small><b>' + (both(T.e - T.ep, T.i - T.ip) ? (T.e ? M(T.e - T.ep, '') : M(T.i - T.ip, '₪')) : '–') + '</b>' + (T.e && T.i ? '<small>+ ' + M(T.i - T.ip, '₪') + '</small>' : '') + '</div></div>' +
+      '<small>' + (T.e ? pc(T.ep, T.e) + '% of the euro budget is paid' : pc(T.ip, T.i) + '% is paid') + '</small></div>' +
+      '<div class="bv-pair"><div><small>Total</small><b>' + (T.e ? M(T.e, '') : M(T.i, '₪')) + '</b>' + (T.e && T.i ? '<em>+ ' + M(T.i, '₪') + '</em>' : '') + '</div>' +
+      '<div><small>Paid</small><b>' + (T.e ? M(T.ep, '') : M(T.ip, '₪')) + '</b>' + (T.e && T.i ? '<em>+ ' + M(T.ip, '₪') + '</em>' : '') + '</div></div>';
+    // computers: one small card per currency
+    h += '<div class="bv-cards">' + (T.e ? card('Euro budget', T.e, T.ep, '', E) : '') + (T.i ? card('Shekel budget', T.i, T.ip, '₪', IL) : '') + '</div>';
+    var vend = '<section class="bv-box bv-vend"><h3>Vendors</h3>' + V.map(function (v) {
+      var lf = both(v.e - v.ep, v.i - v.ip);
+      return '<div class="bv-v"><div class="bv-vt"><b>' + esc(v.name) + '</b><span>' + esc(both(v.e, v.i)) + '</span></div><small>' + (lf ? esc(lf) + ' left' : 'Paid in full ✓') + '</small>' +
+        '<div class="bv-pb"><i style="width:' + v.p + '%;background:' + (v.i && !v.e ? IL : E) + '"></i></div></div>';
+    }).join('') + '</section>';
+    var seg = '<div class="bv-seg" role="group" aria-label="Show">' + [['all', 'All'], ['left', 'Left to pay'], ['paid', 'Paid']].map(function (x) { return '<button type="button" data-bvf="' + x[0] + '" aria-pressed="' + (BV.f === x[0]) + '">' + x[1] + '</button>'; }).join('') + '</div>';
+    var list = '<section class="bv-box bv-list"><div class="bv-lh"><h3>Services</h3>' + seg + '</div>' +
+      '<table class="bv-t"><thead><tr><th>Service</th><th>Vendor</th><th class="n">Cost</th><th class="n">Paid</th><th class="n">Left</th><th class="n">Status</th></tr></thead><tbody>' +
+      (shown.length ? shown.map(function (l) {
+        var s2 = st(l);
+        return '<tr><td><b>' + esc(l.item) + '</b>' + (l.cat ? '<small>' + esc(l.cat) + '</small>' : '') + '<small class="bv-ph">' + esc(l.vendor || 'Not booked yet') + '</small></td>' +
+          '<td class="bv-vn">' + (l.vendor ? esc(l.vendor) : '<span class="bv-mut">—</span>') + '</td><td class="n bv-c">' + M(l.total, l.cur) + '<small class="bv-ph bv-' + s2[1] + '">' + (s2[1] === 'part' ? M(l.paid, l.cur) + ' paid' : s2[0]) + '</small></td><td class="n bv-p">' + (l.paid ? M(l.paid, l.cur) : '—') + '</td>' +
+          '<td class="n bv-l"><b>' + M(l.left, l.cur) + '</b></td><td class="n bv-s"><span class="bv-tag ' + s2[1] + '">' + s2[0] + '</span></td></tr>';
+      }).join('') : '<tr><td colspan="6" class="bv-mut">Nothing here.</td></tr>') + '</tbody></table></section>';
+    h += '<div class="bv-main">' + list + vend + '</div>';
+    return h + '<p class="bv-foot">Prepared by KAI Event Planners.</p></div>';
+  }
+  $('budget').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-bvf]'); if (!b) return;
+    BV.f = b.dataset.bvf; var y = window.scrollY; bgRender(); window.scrollTo(window.scrollX, y);
+  });
   function bgKaiHtml() {
     var D = BG.data, admin = !!(S.admin && BG.sheet), url = 'https://docs.google.com/spreadsheets/d/' + encodeURIComponent(BG.sheet) + '/edit';
     var lines = D.lines || [], vend = D.vendors || [], pays = D.payments || [];
