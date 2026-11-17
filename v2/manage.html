@@ -683,10 +683,17 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .bv-db { background: #F6F7FA; border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 2px; }
 .bv-db b { font-size: 28px; }
 .bv-db small { color: #7A8499; font-size: 13px; }
-.bv-dp .bv-pb { margin-top: 0; height: 8px; }
+.bv-calc { background: #F6F7FA; border-radius: 14px; padding: 8px 16px; }
+.bv-cl { display: grid; grid-template-columns: 18px 1fr auto; align-items: baseline; gap: 8px; padding: 9px 0; font-size: 14.5px; color: #4A5468; border-top: 1px solid #EBEEF3; }
+.bv-cl:first-child { border-top: 0; }
+.bv-cl b { color: #1D2433; font-size: 16px; }
+.bv-sg { color: #A0A8B8; font-weight: 700; text-align: center; }
+.bv-cl.tot { border-top: 1.5px solid #D5DAE3; } .bv-cl.tot b { font-size: 18px; }
+.bv-cl.ok b { color: #1F8A4C; }
+.bv-cl.left { border-top: 1.5px solid #D5DAE3; } .bv-cl.left b { font-size: 20px; color: #B0672F; }
 .bv-dk { display: flex; align-items: center; gap: 16px; margin-top: 10px; font-size: 13.5px; color: #4A5468; flex-wrap: wrap; }
 .bv-dk b { color: #1D2433; margin-left: 4px; }
-.bv-dk .bv-tag { margin-left: auto; }
+.bv-dk { color: #7A8499; }
 .bv-ds { border-top: 1px solid #F0F2F6; padding-top: 14px; }
 .bv-ds h4 { margin: 0 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: #7A8499; }
 .bv-ds h4 small { text-transform: none; letter-spacing: 0; font-weight: 500; margin-left: 6px; }
@@ -4555,26 +4562,22 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   }
   // the details of one service: a panel on the right (a sheet from the bottom on phones)
   function bvDetail(l, same, admin, M, st, pc) {
-    var D = BG.data, s2 = st(l), v = l.vendor ? (D.vendors || []).filter(function (x) { return x.name === l.vendor; })[0] : null;
-    var pays = l.vendor ? (D.payments || []).filter(function (x) { return x.vendor === l.vendor && bgNum(x.amount); }) : [];
-    var others = same.filter(function (x) { return x !== l; });
+    // only this line: what it is, and how its amount is made (cost × quantity = total, − paid = left)
+    var s2 = st(l), q = l.qty || (l.unit ? Math.round(l.total / l.unit * 100) / 100 : 1);
+    var row = function (sign, lab, val, cls) { return '<div class="bv-cl' + (cls ? ' ' + cls : '') + '"><span class="bv-sg">' + sign + '</span><span>' + lab + '</span><b>' + val + '</b></div>'; };
     var h = '<div class="bv-scrim" data-bvx></div><aside class="bv-dr" role="dialog" aria-modal="true" tabindex="-1" aria-label="' + esc(l.item) + '">' +
       '<div class="bv-dh"><div>' + (l.cat ? '<span class="bv-lab">' + esc(l.cat) + '</span>' : '') + '<h2>' + esc(l.item) + '</h2></div><button type="button" class="bv-x" data-bvx aria-label="Close">×</button></div>' +
       '<div class="bv-dv">' + (l.vendor ? esc(l.vendor) : '<span class="bv-mut">Not booked yet</span>') + '</div>' +
-      '<div class="bv-db"><span class="bv-lab">Total</span><b>' + M(l.total, l.cur) + '</b>' +
-        (l.qty && l.qty !== 1 && l.unit ? '<small>' + M(l.unit, l.cur) + ' × ' + l.qty.toLocaleString('en-US') + '</small>' : '') + '</div>' +
-      '<div class="bv-dp"><div class="bv-pb"><i style="width:' + pc(l.paid, l.total) + '%;background:' + (l.cur ? '#14A38B' : '#4F6BED') + '"></i></div>' +
-        '<div class="bv-dk"><span>Paid <b>' + (l.paid ? M(l.paid, l.cur) : '—') + '</b></span><span>Left to pay <b>' + M(l.left, l.cur) + '</b></span><span class="bv-tag ' + s2[1] + '">' + s2[0] + '</span></div></div>';
+      '<div class="bv-calc">' +
+        row('', 'Cost', l.unit ? M(l.unit, l.cur) : '—') +
+        row('×', 'Quantity', String(q).replace(/\B(?=(\d{3})+(?!\d))/g, ',')) +
+        (l.unit && q && Math.abs(l.unit * q - l.total) > 0.5 ? row('×', 'Multiplied in the sheet', String(Math.round(l.total / (l.unit * q) * 100) / 100)) : '') +
+        row('=', 'Total price', M(l.total, l.cur), 'tot') +
+        row('−', 'Paid', l.paid ? M(l.paid, l.cur) : M(0, l.cur), 'ok') +
+        row('=', 'Left to pay', M(l.left, l.cur), 'left') +
+      '</div>' +
+      '<div class="bv-dk"><span class="bv-tag ' + s2[1] + '">' + s2[0] + '</span><span>' + (l.cur ? 'In shekels' : 'In euros') + '</span></div>';
     if (admin && l.note) h += '<div class="bv-ds"><h4>Your note <small>only you see this</small></h4><p>' + esc(l.note) + '</p></div>';
-    if (pays.length) h += '<div class="bv-ds"><h4>Payments to ' + esc(l.vendor) + '</h4>' + pays.map(function (x) {
-      var rc = admin && x.receipt ? ' · <a href="' + esc(x.receipt) + '" target="_blank" rel="noopener">receipt ↗</a>' : '';
-      return '<div class="bv-dl"><span>' + esc(x.date || '') + (x.method ? ' · ' + esc(x.method) : '') + rc + '</span><b>' + M(x.amount, x.cur === '₪' || l.cur ? '₪' : '') + '</b></div>';
-    }).join('') + '</div>';
-    if (admin && v && v.contract) h += '<div class="bv-ds"><h4>Contract</h4><a href="' + esc(v.contract) + '" target="_blank" rel="noopener">Open the contract ↗</a></div>';
-    else if (v && v.hasContract) h += '<div class="bv-ds"><h4>Contract</h4><p>Signed ✓</p></div>';
-    if (others.length) h += '<div class="bv-ds"><h4>' + (l.vendor ? 'More from ' + esc(l.vendor) : 'Also not booked yet') + '</h4>' + others.map(function (x) {
-      return '<button type="button" class="bv-dl bv-do" data-bvo="' + esc(x.row) + '"><span>' + esc(x.item) + '</span><b>' + M(x.total, x.cur) + '</b></button>';
-    }).join('') + '</div>';
     return h + '</aside>';
   }
   $('budget').addEventListener('click', function (e) {
