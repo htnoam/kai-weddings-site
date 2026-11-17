@@ -710,6 +710,8 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .bv-py small { display: block; color: #7A8499; font-size: 12px; }
 .bv-py a, .bv-py > span { font-size: 12.5px; color: #2E3A9E; font-weight: 600; text-decoration: none; white-space: nowrap; }
 .bv-sheet b { color: #4A5468; }
+.bv-ct { color: #2E3A9E; font-weight: 600; text-decoration: none; }
+.bv-dv .bv-ct { font-size: 13px; margin-left: 10px; }
 .bv-undo { font: inherit; font-size: 12px; color: #7A8499; background: none; border: 1px solid #E3E8F0; border-radius: 7px; padding: 4px 9px; cursor: pointer; white-space: nowrap; }
 .bv-undo.sure { color: #FFFFFF; background: #C0453A; border-color: #C0453A; }
 @media (max-width: 759px) {
@@ -4545,7 +4547,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       '<div class="bv-k"><span class="bv-lab">Services</span><b>' + L.length + '</b><small>' + nV + (nV === 1 ? ' vendor' : ' vendors') + '</small></div></div>';
     var vend = '<section class="bv-box bv-vend"><h3>Vendors</h3>' + V.map(function (v) {
       var lf = both(v.e - v.ep, v.i - v.ip);
-      return '<div class="bv-v"><div class="bv-vt"><b>' + esc(v.name) + '</b><span>' + esc(both(v.e, v.i)) + '</span></div><small>' + (lf ? esc(lf) + ' left' : 'Paid in full ✓') + '</small>' +
+      return '<div class="bv-v"><div class="bv-vt"><b>' + esc(v.name) + '</b><span>' + esc(both(v.e, v.i)) + '</span></div><small>' + (lf ? esc(lf) + ' left' : 'Paid in full ✓') + bvContract(v.name, admin, ' · ') + '</small>' +
         '<div class="bv-pb"><i style="width:' + v.p + '%;background:' + (v.i && !v.e ? IL : E) + '"></i></div></div>';
     }).join('') + '</section>';
     var seg = '<div class="bv-seg" role="group" aria-label="Show">' + [['all', 'All'], ['left', 'Left to pay'], ['paid', 'Paid']].map(function (x) { return '<button type="button" data-bvf="' + x[0] + '" aria-pressed="' + (BV.f === x[0]) + '">' + x[1] + '</button>'; }).join('') + '</div>';
@@ -4571,13 +4573,19 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     return h + '<p class="bv-foot">Prepared by KAI Event Planners.</p></div>';
   }
   // the details of one service: a panel on the right (a sheet from the bottom on phones)
+  // a vendor's contract (from the Contracts tab): Noam gets the link, the couple only sees that it is signed
+  function bvContract(name, admin, sep) {
+    var v = ((BG.data && BG.data.vendors) || []).filter(function (x) { return x.name === name; })[0];
+    if (!v || !(v.contract || v.hasContract)) return '';
+    return sep + (admin && v.contract ? '<a class="bv-ct" href="' + esc(v.contract) + '" target="_blank" rel="noopener">Contract ↗</a>' : '<span class="bv-ct">Contract signed ✓</span>');
+  }
   function bvDetail(l, same, admin, M, st, pc) {
     // only this line: what it is, and how its amount is made (cost × quantity = total, − paid = left)
     var s2 = st(l), q = l.qty || (l.unit ? Math.round(l.total / l.unit * 100) / 100 : 1);
     var row = function (sign, lab, val, cls) { return '<div class="bv-cl' + (cls ? ' ' + cls : '') + '"><span class="bv-sg">' + sign + '</span><span>' + lab + '</span><b>' + val + '</b></div>'; };
     var h = '<div class="bv-scrim" data-bvx></div><aside class="bv-dr" role="dialog" aria-modal="true" tabindex="-1" aria-label="' + esc(l.item) + '">' +
       '<div class="bv-dh"><div>' + (l.cat ? '<span class="bv-lab">' + esc(l.cat) + '</span>' : '') + '<h2>' + esc(l.item) + '</h2></div><button type="button" class="bv-x" data-bvx aria-label="Close">×</button></div>' +
-      '<div class="bv-dv">' + (l.vendor ? esc(l.vendor) : '<span class="bv-mut">Not booked yet</span>') + '</div>' +
+      '<div class="bv-dv">' + (l.vendor ? esc(l.vendor) + bvContract(l.vendor, admin, '') : '<span class="bv-mut">Not booked yet</span>') + '</div>' +
       '<div class="bv-calc">' +
         row('', 'Cost', l.unit ? M(l.unit, l.cur) : '—') +
         row('×', 'Quantity', String(q).replace(/\B(?=(\d{3})+(?!\d))/g, ',')) +
