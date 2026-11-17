@@ -702,6 +702,16 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .bv-dl { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; font-size: 13.5px; width: 100%; }
 .bv-do { border: 0; border-bottom: 1px solid #F5F6F9; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; }
 .bv-do:hover span { color: #2E3A9E; }
+#dlg-pay { z-index: 70; }   /* above a service's details */
+.bv-pay { font: inherit; font-size: 13px; font-weight: 600; color: #FFFFFF; background: #2F3E55; border: 0; border-radius: 8px; padding: 7px 14px; cursor: pointer; }
+.bv-pay.wide { width: 100%; margin-top: 10px; padding: 10px 14px; font-size: 14px; }
+.bv-py { display: flex; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid #F3F4F8; font-size: 13.5px; }
+.bv-py > div { flex: 1; min-width: 0; }
+.bv-py small { display: block; color: #7A8499; font-size: 12px; }
+.bv-py a, .bv-py > span { font-size: 12.5px; color: #2E3A9E; font-weight: 600; text-decoration: none; white-space: nowrap; }
+.bv-sheet b { color: #4A5468; }
+.bv-undo { font: inherit; font-size: 12px; color: #7A8499; background: none; border: 1px solid #E3E8F0; border-radius: 7px; padding: 4px 9px; cursor: pointer; white-space: nowrap; }
+.bv-undo.sure { color: #FFFFFF; background: #C0453A; border-color: #C0453A; }
 @media (max-width: 759px) {
   .bv-dr { top: auto; left: 0; width: 100%; max-height: 86vh; border-radius: 22px 22px 0 0; padding: 18px 18px max(24px, env(safe-area-inset-bottom, 0px)); box-shadow: 0 -12px 40px -12px rgba(20,30,50,.3); }
   .bv-t tbody tr[data-bvo]:hover td { background: none; }
@@ -4518,7 +4528,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     };
     var h = '<div class="bv">';
     h += '<div class="bv-top"><h1>Budget</h1><span class="bv-sub">' + (D.synced ? 'Updated ' + esc(bgAgo(D.synced)) : '') + '</span><span class="grow"></span>' +
-      (admin ? '<a class="bv-gs" href="' + url + '" target="_blank" rel="noopener">Edit in Google Sheets ↗</a>' : '') + '</div>';
+      (admin ? '<a class="bv-gs" href="' + url + '" target="_blank" rel="noopener">Edit in Google Sheets ↗</a><button type="button" class="bv-pay" data-bvpay="">+ Payment</button>' : '') + '</div>';
     if (!L.length) return h + '<p class="bv-empty">Nothing in the budget yet.</p></div>';
     // phones: one summary card
     h += '<div class="bv-hero"><div class="bv-hr">' + bvRing(pc(T.ep, T.e) || pc(T.ip, T.i), 150, 10, '#3A4865', '#D8B878') +
@@ -4577,12 +4587,35 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
         row('=', 'Left to pay', M(l.left, l.cur), 'left') +
       '</div>' +
       '<div class="bv-dk"><span class="bv-tag ' + s2[1] + '">' + s2[0] + '</span><span>' + (l.cur ? 'In shekels' : 'In euros') + '</span></div>';
+    var D = BG.data, ps = (D.payments || []).filter(function (x) { return x.service && x.service === l.item && (!x.vendor || !l.vendor || x.vendor === l.vendor); }), inApp = 0;
+    ps.forEach(function (x) { inApp += bgNum(x.amount); });
+    if (ps.length || admin) {
+      h += '<div class="bv-ds"><h4>Payments</h4>' + ps.map(function (x) {
+        var rc = x.receipt ? '<a href="' + esc(x.receipt) + '" target="_blank" rel="noopener">Receipt ↗</a>' : x.hasReceipt ? '<span>Receipt ✓</span>' : '';
+        return '<div class="bv-py"><div><b>' + M(x.amount, x.cur || l.cur) + '</b><small>' + esc([x.date, x.method, x.by].filter(Boolean).join(' · ')) + '</small></div>' + rc +
+          (admin ? '<button type="button" class="bv-undo" data-bvundo="' + esc(x.row) + '">Undo</button>' : '') + '</div>';
+      }).join('') +
+      (l.paid - inApp > 0.5 ? '<div class="bv-py bv-sheet"><div><b>' + M(l.paid - inApp, l.cur) + '</b><small>entered in the sheet</small></div></div>' : '') +
+      (!ps.length && !(l.paid > 0) ? '<p class="bv-mut">No payments yet.</p>' : '') +
+      (admin ? '<button type="button" class="bv-pay wide" data-bvpay="' + esc(l.row) + '">+ Record a payment for this service</button>' : '') + '</div>';
+    }
     if (admin && l.note) h += '<div class="bv-ds"><h4>Your note <small>only you see this</small></h4><p>' + esc(l.note) + '</p></div>';
     return h + '</aside>';
   }
   $('budget').addEventListener('click', function (e) {
     var y = window.scrollY, o = e.target.closest('[data-bvo]'), x = e.target.closest('[data-bvx]');
     if (o || x) { if (e.target.closest('a')) return; BV.open = o ? o.dataset.bvo : null; bgRender(); window.scrollTo(window.scrollX, y); if (o) { var dr = $('budget').querySelector('.bv-dr'); if (dr) dr.focus(); } return; }
+  });
+  $('budget').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-bvpay]');
+    if (b) { payOpen('line', { line: b.dataset.bvpay }); return; }
+    var u = e.target.closest('[data-bvundo]'); if (!u || u.disabled) return;
+    if (!u.classList.contains('sure')) { u.classList.add('sure'); u.textContent = 'Sure? Undo'; setTimeout(function () { if (u.isConnected && u.classList.contains('sure') && !u.disabled) { u.classList.remove('sure'); u.textContent = 'Undo'; } }, 4000); return; }
+    u.disabled = true; u.textContent = 'Undoing…';
+    KAI.ready().then(function () { return KAI.sb.functions.invoke('budget-hub', { body: { action: 'budgetPayUndo', slug: EVENT, pay: Number(u.dataset.bvundo) } }); }).then(function (r) {
+      var res = r && r.data || {}; if (r.error || !res.ok) throw new Error(res.error || 'Couldn’t undo. Try again.');
+      toast('Payment undone – taken off the service’s Paid.'); load(true);
+    }).catch(function (x) { u.disabled = false; u.classList.remove('sure'); u.textContent = 'Undo'; toast(x.message, null, null, true); });
   });
   $('budget').addEventListener('keydown', function (e) {
     var o = e.target.closest && e.target.closest('tr[data-bvo]'); if (o && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); o.click(); }
@@ -6003,7 +6036,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function payToday() { var d = new Date(); return ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + '/' + d.getFullYear(); }
   function payOpen(mode, o) {
     o = o || {}; PAY.mode = mode; PAY.row = o.row || 0; PAY.vendor = o.vendor || ''; PAY.file = null; PAY.busy = false;
-    var pay = mode === 'pay';
+    var pay = mode === 'pay' || mode === 'line', line = mode === 'line'; PAY.line = o.line || '';
+    $('p-vendor').parentNode.firstChild.nodeValue = line ? 'For which service *' : 'Vendor *';
     $('pay-title').textContent = pay ? 'Record a payment' : mode === 'receipt' ? 'Add a receipt' : 'Add the contract';
     $('pay-fields').hidden = !pay; $('pay-fields').style.display = pay ? 'flex' : 'none';
     $('pay-what').hidden = pay; $('pay-what').textContent = mode === 'receipt' ? 'Payment: ' + (o.what || '') : 'Vendor: ' + PAY.vendor;
@@ -6011,16 +6045,28 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     $('p-save').textContent = pay ? 'Save payment' : 'Save'; $('p-save').disabled = false;
     if (pay) {
       var names = []; (BG.data.vendors || []).forEach(function (v) { if (v.name !== BGK_NV && names.indexOf(v.name) < 0) names.push(v.name); });
-      $('p-vendor').innerHTML = '<option value="">' + (names.length ? 'Choose…' : 'No vendors yet – add them in the sheet') + '</option>' + names.map(function (n) { return '<option>' + esc(n) + '</option>'; }).join('');
+      $('p-vendor').innerHTML = line ? payLineOptions() : '<option value="">' + (names.length ? 'Choose…' : 'No vendors yet – add them in the sheet') + '</option>' + names.map(function (n) { return '<option>' + esc(n) + '</option>'; }).join('');
       $('p-amount').value = ''; $('p-date').value = payToday(); $('p-by').value = ''; $('p-method').value = ''; $('p-note').value = '';
-      if (o.vendor) $('p-vendor').value = o.vendor;
+      if (line && o.line) $('p-vendor').value = String(o.line); else if (o.vendor) $('p-vendor').value = o.vendor;
       payCurFor($('p-vendor').value);
     }
     payShowFile(); $('p-err').hidden = true; $('p-auto').hidden = true; PAY.ocr = 0; payAutoClear(); $('dlg-pay').hidden = false;
     setTimeout(function () { (pay ? $('p-vendor') : $('p-drop')).focus(); }, 30);
   }
   // the currency follows the vendor (a vendor paid in shekels), and can be changed
-  function payCurFor(name) { var v = (BG.data.vendors || []).filter(function (x) { return x.name === name; })[0]; $('p-cur').value = v && v.cur === '₪' ? '₪' : '€'; $('p-cur').classList.remove('auto'); }
+  function payCurFor(name) {
+    if (PAY.mode === 'line') { var l0 = payLine(name); $('p-cur').value = l0 && l0.cur === '₪' ? '₪' : '€'; $('p-cur').classList.remove('auto'); return; }
+    var v = (BG.data.vendors || []).filter(function (x) { return x.name === name; })[0]; $('p-cur').value = v && v.cur === '₪' ? '₪' : '€'; $('p-cur').classList.remove('auto'); }
+  // the services to choose from (by vendor), and one service by its sheet row
+  function payLines() { return ((BG.data && BG.data.lines) || []).filter(function (l) { return l.item && l.row; }); }
+  function payLine(row) { return payLines().filter(function (l) { return String(l.row) === String(row); })[0] || null; }
+  function payLineOptions() {
+    var g = {}, order = [];
+    payLines().forEach(function (l) { var v = String(l.vendor || '').trim(); v = !v || /^(na|n\/a|-)$/i.test(v) ? 'Not booked yet' : v; if (!g[v]) { g[v] = []; order.push(v); } g[v].push(l); });
+    return '<option value="">Choose…</option>' + order.map(function (v) {
+      return '<optgroup label="' + esc(v) + '">' + g[v].map(function (l) { var left = bgNum(l.total) - bgNum(l.paid); return '<option value="' + esc(l.row) + '">' + esc(l.item) + (bgNum(l.total) ? ' · ' + (left > 0.005 ? bgMoney(left, l.cur) + ' left' : 'paid') : '') + '</option>'; }).join('') + '</optgroup>';
+    }).join('');
+  }
   $('p-vendor').addEventListener('change', function () { payCurFor(this.value); });
   function payShowFile() {
     var f = PAY.file; $('p-empty').hidden = !!f; $('p-has').hidden = !f;
@@ -6051,7 +6097,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       r.readAsDataURL(f);
     });
   }
-  function payTake(f) { if (!f) return; payErr(''); payReadFile(f).then(function (x) { PAY.file = x; payShowFile(); if (PAY.mode === 'pay') payOcr(x); }, function (e) { payErr(e.message); }); }
+  function payTake(f) { if (!f) return; payErr(''); payReadFile(f).then(function (x) { PAY.file = x; payShowFile(); if (PAY.mode === 'pay' || PAY.mode === 'line') payOcr(x); }, function (e) { payErr(e.message); }); }
   // ----- Reading the receipt: Google reads the text (Hub › budgetOcr), and the form is filled from it. Noam checks before saving. -----
   function payAuto(t, ok) { var a = $('p-auto'); a.hidden = !t; a.className = 'pay-auto' + (ok ? ' ok' : ''); a.innerHTML = t; }
   function payAutoClear() { ['p-vendor', 'p-amount', 'p-cur', 'p-date', 'p-method', 'p-note'].forEach(function (id) { $(id).classList.remove('auto'); }); }
@@ -6110,13 +6156,18 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var id = ++PAY.ocr;
     payAuto('<span class="spin"></span>Reading the receipt…');
     KAI.ready().then(function () { return KAI.sb.functions.invoke('budget-hub', { body: { action: 'budgetOcr', slug: EVENT, file: { name: file.name, mime: file.mime, data: file.data } } }); }).then(function (r) {
-      if (id !== PAY.ocr || $('dlg-pay').hidden || PAY.mode !== 'pay') return;
+      if (id !== PAY.ocr || $('dlg-pay').hidden || (PAY.mode !== 'pay' && PAY.mode !== 'line')) return;
       var res = r && r.data || {};
       if (r.error || !res.ok) throw new Error(res.error || '');
       var f = payParse(res.text), got = [];
       var put = function (elId, v, empty) { var el = $(elId); if (v == null || v === '' || !empty(el)) return; el.value = v; if (el.value === String(v)) { el.classList.add('auto'); got.push(elId); } };
+      if (PAY.mode === 'line') {   // the receipt's vendor picks that vendor's first service still to pay
+        var fl = !$('p-vendor').value && f.vendor ? payLines().filter(function (l) { return String(l.vendor || '').trim() === f.vendor; }).sort(function (a, b) { return (bgNum(b.total) - bgNum(b.paid) > 0.005) - (bgNum(a.total) - bgNum(a.paid) > 0.005); })[0] : null;
+        if (fl) { $('p-vendor').value = String(fl.row); $('p-vendor').classList.add('auto'); got.push('p-vendor'); payCurFor(fl.row); }
+      } else {
       put('p-vendor', f.vendor, function (el) { return !el.value; });
       if (got.indexOf('p-vendor') > -1) payCurFor(f.vendor);
+      }
       put('p-cur', f.cur, function (el) { return el.value !== f.cur; });
       put('p-amount', f.amount != null ? String(f.amount) : '', function (el) { return !el.value.trim(); });
       put('p-date', f.date, function (el) { return !el.value.trim() || el.value === payToday(); });
@@ -6168,14 +6219,15 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   $('payform').addEventListener('submit', function (e) {
     e.preventDefault(); if (PAY.busy) return;
     var body = { slug: EVENT };
-    if (PAY.mode === 'pay') {
+    if (PAY.mode === 'pay' || PAY.mode === 'line') {
       var amt = parseFloat(String($('p-amount').value).replace(/[€₪,\s]/g, '')), dt = $('p-date').value.trim();
-      if (!$('p-vendor').value) return payErr('Choose the vendor.');
+      if (!$('p-vendor').value) return payErr(PAY.mode === 'line' ? 'Choose the service.' : 'Choose the vendor.');
       if (!(amt > 0)) return payErr('Type the amount.');
       var m = /^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})$/.exec(dt); if (!m) return payErr('Write the date as dd/mm/yyyy.');
       dt = ('0' + m[1]).slice(-2) + '/' + ('0' + m[2]).slice(-2) + '/' + m[3];
       body.action = 'budgetPay'; body.vendor = $('p-vendor').value; body.amount = amt; body.currency = $('p-cur').value; body.date = dt;
       body.by = $('p-by').value; body.method = $('p-method').value; body.note = $('p-note').value.trim();
+      if (PAY.mode === 'line') { var pl = payLine($('p-vendor').value); if (!pl) return payErr('Choose the service.'); body.action = 'budgetPayLine'; body.line = pl.row; body.check = pl.item; delete body.vendor; }
     } else {
       if (!PAY.file) return payErr(PAY.mode === 'contract' ? 'Add the contract file.' : 'Add the receipt.');
       body.action = PAY.mode === 'contract' ? 'budgetContract' : 'budgetReceipt'; body.vendor = PAY.vendor; body.row = PAY.row;
@@ -6186,9 +6238,9 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       var res = r && r.data || {};
       if (r.error || !res.ok) throw new Error(res.error || 'Couldn’t save. Check your connection and try again.');
       PAY.busy = false; $('dlg-pay').hidden = true;
-      toast(body.action === 'budgetPay' ? 'Payment saved in the sheet.' : body.action === 'budgetContract' ? 'Contract saved in the couple’s Contracts folder.' : 'Receipt saved in the couple’s Payments folder.');
+      toast(body.action === 'budgetPayLine' ? 'Payment saved – added to the service’s Paid in the sheet.' : body.action === 'budgetPay' ? 'Payment saved in the sheet.' : body.action === 'budgetContract' ? 'Contract saved in the couple’s Contracts folder.' : 'Receipt saved in the couple’s Payments folder.');
       load(true);
-    }).catch(function (x) { PAY.busy = false; $('p-save').disabled = false; $('p-save').textContent = PAY.mode === 'pay' ? 'Save payment' : 'Save'; payErr(x.message); });
+    }).catch(function (x) { PAY.busy = false; $('p-save').disabled = false; $('p-save').textContent = PAY.mode === 'pay' || PAY.mode === 'line' ? 'Save payment' : 'Save'; payErr(x.message); });
   });
   function bgkAct(b) {
     var k = b.dataset.bgk;
