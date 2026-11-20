@@ -1,0 +1,44 @@
+/* All rules are scoped to the Tasks pilot. */
+#kai-tasks { width:100%; color:var(--text); }
+#kai-tasks .kt-header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
+#kai-tasks h1 { margin:0; font-size:24px; }
+#kai-tasks h2 { margin:0; font-size:20px; }
+#kai-tasks .kt-toolbar { display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
+#kai-tasks input:not([type=checkbox]), #kai-tasks select, #kai-tasks textarea { font:inherit; font-size:16px; color:var(--text); background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:8px 10px; min-width:0; }
+#kai-tasks .kt-toolbar input { flex:1; min-width:160px; }
+#kai-tasks .kt-layout { display:flex; gap:12px; align-items:flex-start; }
+#kai-tasks .kt-table { flex:1; min-width:0; background:var(--surface); border:1px solid var(--line); border-radius:6px; overflow:hidden; }
+#kai-tasks .kt-labels { display:flex; justify-content:space-between; background:var(--soft-surface); padding:9px 14px; font-weight:600; border-bottom:1px solid var(--line); }
+#kai-tasks .kt-row { display:flex; gap:12px; align-items:center; min-height:64px; padding:8px 12px; border-bottom:1px solid var(--row-line); }
+#kai-tasks .kt-row:last-child { border-bottom:0; }
+#kai-tasks .kt-row input { width:22px; height:22px; accent-color:var(--ink); flex-shrink:0; }
+#kai-tasks .kt-info { flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+#kai-tasks .kt-title { padding:2px 0; background:none; border:0; text-align:start; font-weight:600; font-size:17px; overflow-wrap:anywhere; }
+#kai-tasks .kt-meta { color:var(--soft); font-size:14px; }
+#kai-tasks .kt-status { border-radius:5px; padding:3px 9px; font-size:14px; white-space:nowrap; }
+#kai-tasks .kt-open { color:var(--ink); background:var(--tent-bg); }
+#kai-tasks .kt-progress { color:var(--warn); background:var(--warn-bg); }
+#kai-tasks .kt-status.kt-done { color:var(--ok); background:var(--ok-bg); }
+#kai-tasks .kt-row.kt-done .kt-title { text-decoration:line-through; color:var(--soft); }
+#kai-tasks .kt-empty { margin:0; padding:24px 12px; text-align:center; color:var(--soft); }
+#kai-tasks .kt-error { color:var(--bad); margin:8px 0; }
+#kai-tasks .kt-error:empty { display:none; }
+#kai-tasks .kt-editor { width:340px; flex-shrink:0; padding:14px; background:var(--surface); border:1px solid var(--line); border-radius:6px; position:sticky; top:14px; max-height:calc(100dvh - 28px); overflow:auto; }
+#kai-tasks .kt-editor-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+#kai-tasks .kt-close { width:36px; height:36px; background:none; border:1px solid var(--line); border-radius:6px; font-size:24px; }
+#kai-tasks .kt-form { display:flex; flex-direction:column; gap:12px; }
+#kai-tasks .kt-field { display:flex; flex-direction:column; gap:5px; font-weight:600; }
+#kai-tasks .kt-field textarea { resize:vertical; min-height:96px; font-weight:400; }
+#kai-tasks .kt-editor-actions { display:flex; gap:8px; }
+#kai-tasks .kt-editor-actions .primary { flex:1; justify-content:center; }
+#kai-tasks .kt-delete { color:var(--bad); }
+@media (max-width:759px) {
+  #kai-tasks .kt-toolbar { gap:6px; }
+  #kai-tasks .kt-toolbar input { flex-basis:100%; }
+  #kai-tasks .kt-toolbar select { flex:1; width:0; }
+  #kai-tasks .kt-header { margin-bottom:10px; }
+  #kai-tasks .kt-labels { display:none; }
+  #kai-tasks .kt-row { gap:9px; padding:9px; min-height:70px; }
+  #kai-tasks .kt-status { padding:3px 7px; }
+  #kai-tasks .kt-editor { position:fixed; inset:0; z-index:90; width:100%; max-height:none; border:0; border-radius:0; padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(20px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left)); }
+}

@@ -4080,7 +4080,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   };
 
   function schedLoad(list, wedding) {
-    SC.on = Array.isArray(list); SC.wedding = wedding || {}; $('sect').hidden = !SC.on && !BG.on; $('s-sched').hidden = !SC.on;
+    SC.on = Array.isArray(list); SC.wedding = wedding || {}; $('sect').hidden = !SC.on && !BG.on && !window.KaiTasks; $('s-sched').hidden = !SC.on;
     if (!SC.on) { if (SECT === 'sched' || SECT === 'brief' || (SECT === 'budget' && !BG.on)) showSect('guests'); return; }
     if (SC.dirty || SC.saving || ($('sched').contains(document.activeElement) && document.activeElement.tagName !== 'BUTTON')) return;   // don't wipe what Noam is typing
     SC.rows = list; scSort();
@@ -4091,6 +4091,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   // Three sections: guests (the list), sched (schedule), brief (questions). The last two hide the guest list's own bars.
   var SECT = 'guests';
   function showSect(name) {
+    if (SECT === 'tasks' && name !== 'tasks' && window.KaiTasks && !KaiTasks.canLeave()) return;
     if (SECT === 'sched' && name !== 'sched') schedFlush();
     if (SECT === 'budget' && name !== 'budget') bgFlush();
     SECT = name;
@@ -4098,6 +4099,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     $('sched').hidden = name !== 'sched'; $('brief').hidden = name !== 'brief'; $('budget').hidden = name !== 'budget';
     ['guests', 'sched', 'brief', 'budget'].forEach(function (k) { $('s-' + k).classList.toggle('on', name === k); });
     try { history.replaceState(null, '', name === 'sched' ? '#schedule' : name === 'brief' ? '#questions' : name === 'budget' ? '#budget' : location.pathname + location.search); } catch (e) {}
+    if (window.KaiTasks) KaiTasks.setSection(name);
     if (name === 'budget') bgRender();
     if (name === 'sched') { schedRender(); try { localStorage.setItem('kai-onb-sched-' + EVENT, '1'); } catch (e) {} }
     if (name === 'brief') { BR.edit = false; briefRender(); }
@@ -6941,6 +6943,13 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     };
   }
 
+  // Demo-only pilot: other event portals do not load or initialize Tasks.
+  if (EVENT === 'demo-wedding') {
+    window.KaiTaskHost = { slug: EVENT, showSection: showSect,
+      isReady: function () { return $('gate').hidden && !$('app').hidden; } };
+    var taskScript = document.createElement('script');
+    taskScript.src = '/v2/tasks.js'; document.body.appendChild(taskScript);
+  }
   loadCols();
   load(false);
 })();
