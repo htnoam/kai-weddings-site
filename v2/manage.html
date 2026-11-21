@@ -30,6 +30,28 @@
 @media (max-width:900px),(pointer:coarse){input:not([type=checkbox]):not([type=radio]),select,textarea{font-size:16px!important}}
 /* Phones: the page itself never scrolls sideways; wide tables keep their own scroll. */
 @media (max-width:759px){html{overflow-x:hidden}}
+
+/* Guest creation: same fields and handlers, fixed heading and single-line actions. */
+#dlg { overflow:hidden; }
+#addform { padding:0; gap:0; max-height:calc(100dvh - 72px); overflow:hidden; background:var(--bg); }
+#addform .ag-head { display:grid; grid-template-columns:44px minmax(0,1fr) 44px; align-items:center; direction:ltr; gap:8px; padding:16px; flex-shrink:0; background:var(--surface); border-bottom:1px solid var(--hair); }
+#addform h2 { text-align:center; overflow-wrap:anywhere; }
+#addform .ag-close { width:44px; height:44px; border:0; background:transparent; border-radius:8px; color:var(--ink); font-size:30px; cursor:pointer; }
+#addform .ag-close:focus-visible { outline:2px solid var(--ink); outline-offset:2px; }
+#addform .ag-body { flex:1 1 auto; min-height:0; overflow-y:auto; overscroll-behavior-y:contain; -webkit-overflow-scrolling:touch; padding:12px 16px 16px; }
+#addform .ag-card { display:flex; flex-direction:column; gap:12px; padding:14px; background:var(--surface); border:1px solid var(--hair); border-radius:10px; }
+#addform .f input, #addform .f select, #addform .f textarea { min-width:0; height:46px; border-radius:8px; font-size:16px; }
+#addform .f textarea { height:auto; min-height:80px; }
+#addform .ag-footer { flex-shrink:0; padding:10px max(16px,env(safe-area-inset-right,0px)) max(12px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px)); background:var(--surface); border-top:1px solid var(--hair); }
+#addform .ag-footer .err:not([hidden]) { padding-bottom:8px; }
+#addform .act { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; padding:0; direction:ltr; }
+#addform .act button { min-width:0; width:100%; min-height:44px; height:auto; padding:10px 6px; border-radius:8px; font-size:14px; white-space:nowrap; justify-content:center; }
+@media(max-width:759px) {
+ #dlg { padding:0; }
+ #addform { width:100%; max-width:none; height:100dvh; max-height:100dvh; border-radius:0; box-shadow:none; }
+ #addform .ag-head { padding-top:max(16px,env(safe-area-inset-top,0px)); }
+ #addform .act button { font-size:clamp(12px,3.4vw,14px); }
+}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Cormorant+Garamond:wght@600&display=swap">
@@ -1582,7 +1604,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
 
 <div class="overlay" id="dlg" hidden>
   <form class="dialog" id="addform" role="dialog" aria-modal="true" aria-labelledby="dlg-title" novalidate>
-    <h2 id="dlg-title">Add Guest</h2>
+    <div class="ag-head"><span aria-hidden="true"></span><h2 id="dlg-title">Add Guest</h2><button type="button" class="ag-close" id="a-cancel" aria-label="Close add guest">×</button></div>
+    <div class="ag-body"><div class="ag-card">
     <div class="two">
       <label class="f">First Name *<input id="a-first" autocomplete="off"></label>
       <label class="f">Last Name *<input id="a-last" autocomplete="off"></label>
@@ -1594,12 +1617,12 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     </div>
     <label class="f">Guest Group<input id="a-group" list="groups" placeholder="Choose existing or type a new one" autocomplete="off"></label>
     <label class="f">Notes<textarea id="a-notes" rows="2"></textarea></label>
-    <p class="err" id="a-err" hidden></p>
+    </div></div>
+    <div class="ag-footer"><p class="err" id="a-err" role="alert" hidden></p>
     <div class="act">
-      <button type="button" class="btn" id="a-cancel">Cancel</button>
       <button type="button" class="btn" id="a-another" style="color:var(--ink);border-color:var(--ink)">Save &amp; add another</button>
-      <button type="submit" class="btn primary" id="a-save">Save</button>
-    </div>
+      <button type="submit" class="btn primary" id="a-save">Save and exit</button>
+    </div></div>
   </form>
 </div>
 
