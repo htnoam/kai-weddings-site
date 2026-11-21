@@ -167,30 +167,30 @@ input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--ink); marg
   .panel { position: fixed; inset: 0; z-index: 30; max-height: none; border-radius: 0; border: none; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(24px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
 }
 
-/* Phones: fixed contact heading and save/exit bar, with independently scrolling cards. */
+/* Phones: fixed guest heading and save-and-exit bar, with independently scrolling cards. */
 .panel.pm { padding: 0; gap: 0; background: var(--bg); overflow: hidden; overscroll-behavior: none; }
 .panel.pm > * { flex-shrink: 0; }
 .pm .pm-hd { z-index: 2; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 16px max(16px, env(safe-area-inset-left, 0px)); background: var(--surface); border-bottom: 1px solid var(--hair); }
 .pm .pm-top { display: flex; align-items: center; gap: 12px; direction: ltr; }
 .pm .pm-title { flex: 1; min-width: 0; text-align: left; }
 .pm .pm-top .name { font-size: 21px; overflow-wrap: anywhere; }
-.pm .pm-contacts { display: flex; gap: 10px; flex: none; }
-.pm .pm-contact { width: 44px; height: 44px; flex: 0 0 44px; padding: 0; border: none; border-radius: 50%; background: var(--ink-soft); color: var(--ink); display: grid; place-items: center; text-decoration: none; }
-.pm .pm-contact svg { width: 23px; height: 23px; }
-.pm .pm-contact.pm-wa { background: #ECF9EE; color: #20A849; }
-.pm .pm-contact:disabled { opacity: .4; }
-.pm .pm-contact:focus-visible, .pm .pm-delete-guest:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.pm .pm-close { width: 44px; height: 44px; flex: 0 0 44px; padding: 10px; border: none; border-radius: 8px; background: transparent; color: var(--ink); display: grid; place-items: center; cursor: pointer; }
+.pm .pm-close svg { width: 24px; height: 24px; }
+.pm .pm-close:focus-visible, .pm .pm-detail-action:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.panel.pm.pm-dismissing { pointer-events: none; }
 .pm .pm-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior-y: contain; -webkit-overflow-scrolling: touch; padding: 12px max(16px, env(safe-area-inset-right, 0px)) 16px max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 10px; }
 .pm .pm-body > * { flex-shrink: 0; }
 .pm .pm-footer { background: var(--surface); border-top: 1px solid var(--hair); padding: 10px max(16px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
-.pm .pm-editbuttons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; direction: ltr; }
-.pm .pm-editbuttons button { min-height: 50px; padding: 10px 8px; border-radius: 10px; font-size: 16px; justify-content: center; }
+.pm .pm-editbuttons { display: flex; direction: ltr; }
+.pm .pm-editbuttons button { width: 100%; min-height: 44px; height: auto; padding: 10px 14px; border-radius: 8px; font-size: 16px; justify-content: center; }
 .pm .pm-draft-state, .pm .pm-draft-error { font-size: 14px; line-height: 1.35; padding-bottom: 8px; }
 .pm .pm-draft-state { color: var(--muted); }
 .pm .pm-draft-state.saved { color: var(--ok); }
 .pm .pm-draft-error { color: var(--bad); }
-.pm .pm-delete-guest { align-self: flex-start; min-height: 44px; border: none; background: transparent; color: var(--bad); padding: 8px 2px; font: inherit; font-size: 14px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
-.pm .pm-delete-row { border-top: 1px solid var(--row-line); padding-top: 6px; margin-top: 2px; }
+.pm .pm-detail-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 16px; direction: ltr; border-top: 1px solid var(--row-line); padding-top: 6px; margin-top: 2px; }
+.pm .pm-detail-action { min-height: 44px; border: none; background: transparent; padding: 8px 2px; font: inherit; font-size: 14px; font-weight: 400; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.pm .pm-delete-guest { color: var(--bad); }
+.pm .pm-add-family { color: var(--ink); }
 #guest-leave { width: min(420px, calc(100vw - 32px)); max-height: calc(100dvh - 40px); overflow: auto; border: 1px solid var(--line); border-radius: 12px; padding: 22px; background: var(--surface); color: var(--text); }
 #guest-leave::backdrop { background: #0006; }
 #guest-leave h2 { font-size: 20px; margin: 0 0 10px; }
@@ -233,9 +233,7 @@ input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--ink); marg
 .pm-leg.go .pm-seg button.on { background: #2E3A9E; border-color: #2E3A9E; }
 .pm-leg.back .pm-seg button.on { background: #856425; border-color: #856425; }
 .pm .hist { border-top: none; padding-top: 0; }
-.pm .pm-add-family { width: 100%; min-height: 46px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 14px; border: 1px solid #D5DAF3; border-radius: 8px; background: var(--ink-soft); color: var(--ink); font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; }
-.pm .pm-add-family svg { width: 19px; height: 19px; flex: none; }
-.pm .pm-add-family:active { background: #E3E6F7; }
+
 
 .fab { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(20px, calc(env(safe-area-inset-bottom, 0px) + 12px)); height: 52px; padding: 0 20px; border: none; border-radius: 999px; background: var(--ink); color: #FFFFFF; font-size: 16px; font-weight: 600; display: none; align-items: center; gap: 8px; box-shadow: 0 10px 24px -8px rgba(46,58,158,.6); z-index: 10; }
 
@@ -2362,7 +2360,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       var nextGuest = S.open; S.open = PD.no;
       pdLeave(function () { PD = null; S.open = nextGuest; render(); }); return;
     }
-    if (!g || g.deleted) { PD = null; p.hidden = true; PO = { no: null }; return; }
+    if (!g || g.deleted) { clearPhoneMotion(); PD = null; p.hidden = true; PO = { no: null }; return; }
     if (p.dataset.no === String(g.no) && !p.hidden && p.contains(document.activeElement) && document.activeElement.tagName !== 'BUTTON') return;
     p.dataset.no = g.no; p.hidden = false;
     var phoneUI = window.matchMedia('(max-width: 759px)').matches;
@@ -2430,8 +2428,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     state.classList.toggle('saved', !dirty && !PD.saving);
     $('pm-draft-error').textContent = PD.error || '';
     $('pm-draft-error').hidden = !PD.error;
-    $('panel').querySelectorAll('button:not(.pm-contact),input,select,textarea').forEach(function (el) { el.disabled = !!PD.saving; });
-    $('pm-save').textContent = PD.saving ? 'Saving…' : 'Save changes';
+    $('panel').querySelectorAll('button,input,select,textarea').forEach(function (el) { el.disabled = !!PD.saving; });
+    $('pm-save').textContent = PD.saving ? 'Saving…' : 'Save and exit';
     var name = $('panel').querySelector('.pm-title bdi');
     if (name) name.textContent = [PD.values.first != null ? PD.values.first : PD.base.first, PD.values.last != null ? PD.values.last : PD.base.last].join(' ').trim();
   }
@@ -2510,9 +2508,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function renderPanelPhone(p, g) {
     var body = p.querySelector('.pm-body'), scrollTop = PO.no === g.no && body ? body.scrollTop : 0;
     pdEnsure(g);
-    var contactPhone = g.phone;
     g = Object.assign({}, g, PD.values);
-    if (PO.no !== g.no) PO = { no: g.no, det: false, fl: false, hotel: false, more: false, hist: false };
+    if (PO.no !== g.no) { clearPhoneMotion(); PO = { no: g.no, det: false, fl: false, hotel: false, more: false, hist: false }; }
     var same = live().filter(function (x) { return x.phone && x.phone === g.phone && x.no !== g.no; });
     var inp = function (k, label, o) { o = o || {}; return '<label class="f">' + esc(label) + '<input data-pf="' + k + '" value="' + esc(o.val != null ? o.val : (g[k] || '')) + '"' + (o.ph ? ' placeholder="' + o.ph + '"' : '') + (o.tel ? ' type="tel" inputmode="tel"' : '') + (o.list ? ' list="' + o.list + '"' : '') + '></label>'; };
     var card = function (k, ic, title, sum, cls, body) {
@@ -2528,14 +2525,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var fd = flDone(g), hotel = g.room || g.table || g.checkIn || g.checkOut;
     var flSum = fd ? esc('There ' + String(g.arrDate || '').slice(0, 5) + ' ' + g.arrTime + ' · ' + g.arrFlight + (g.arrBus ? ' · ' + busTxt(g.arrBus) : '')) + '<br>' + esc('Back ' + String(g.depDate || '').slice(0, 5) + ' ' + g.depTime + ' · ' + g.depFlight + (g.depBus ? ' · ' + busTxt(g.depBus) : ''))
       : 'Missing: ' + [!(g.arrFlight && g.arrTime) ? 'flight there' : '', !(g.depFlight && g.depTime) ? 'flight back' : ''].filter(Boolean).join(' and ');
-    var contact = function (label, wa, icon) {
-      var attrs = ' class="pm-contact' + (wa ? ' pm-wa' : '') + '" aria-label="' + label + '" title="' + (contactPhone ? label : 'No saved phone number') + '"';
-      return contactPhone ? '<a' + attrs + ' href="' + (wa ? waLink(contactPhone) : 'tel:' + esc(contactPhone)) + '"' + (wa ? ' target="_blank" rel="noopener"' : '') + '>' + icon + '</a>' : '<button type="button"' + attrs + ' disabled>' + icon + '</button>';
-    };
     p.innerHTML =
-      '<div class="pm-hd"><div class="pm-top"><div class="pm-title"><div class="name"><bdi>' + esc(g.first + ' ' + g.last) + '</bdi></div></div><div class="pm-contacts">' +
-      contact('Call guest', false, '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 2.8c.5-.2 1.1 0 1.4.5l2 3.8c.2.5.2 1-.2 1.4l-1.6 1.6a15.2 15.2 0 0 0 5.7 5.7l1.6-1.6c.4-.4.9-.4 1.4-.2l3.8 2c.5.3.7.9.5 1.4l-1 3c-.2.5-.7.8-1.2.8C10 21.2 2.8 14 2.8 5c0-.5.3-1 .8-1.2z"/></svg>') +
-      contact('WhatsApp guest', true, '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a9 9 0 0 1-13.3 7.9L3 21l1.5-4.8A9 9 0 1 1 21 11.5z"/><path d="M8 7.5c0 4 3.5 7.5 7.5 7.5l1-2-2-1-1 1c-1.5-.7-2.8-2-3.5-3.5l1-1-1-2z"/></svg>') + '</div></div></div>' +
+      '<div class="pm-hd"><div class="pm-top"><div class="pm-title"><div class="name"><bdi>' + esc(g.first + ' ' + g.last) + '</bdi></div></div><button type="button" class="pm-close" id="pm-close" aria-label="Close guest details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19"/></svg></button></div></div>' +
       '<div class="pm-body">' +
       card('det', '👤', 'Details', esc([g.age, g.notes].filter(Boolean).join(' · ')), '',
         '<div class="two">' + inp('first', 'First Name') + inp('last', 'Last Name') + '</div>' +
@@ -2544,8 +2535,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
         inp('phone', 'Phone (family)', { tel: 1, val: prettyPhone(g.phone) }) + inp('phone2', 'Own Phone', { tel: 1, ph: 'Optional', val: g.phone2 ? prettyPhone(g.phone2) : '' }) +
         inp('group', 'Guest Group', { list: 'groups' }) + '<label class="f">Notes<textarea data-pf="notes" rows="3">' + esc(g.notes) + '</textarea></label>' +
         (same.length ? '<div class="same">Same phone as:' + same.map(function (x) { return '<button type="button" data-open="' + x.no + '">' + esc(x.first + ' ' + x.last) + '</button>'; }).join('') + '</div>' : '') +
-        '<button type="button" class="pm-add-family" data-family="' + g.no + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7" r="3"/><path d="M3 21v-2a6 6 0 0 1 12 0v2M19 8v6M16 11h6"/></svg>Add family member</button>' +
-        '<div class="pm-delete-row"><button type="button" class="pm-delete-guest" data-delete="' + g.no + '">Delete guest</button></div>') +
+        '<div class="pm-detail-actions"><button type="button" class="pm-detail-action pm-delete-guest" data-delete="' + g.no + '">Delete guest</button><button type="button" class="pm-detail-action pm-add-family" data-family="' + g.no + '">Add family member</button></div>') +
       card('fl', '✈', 'Flights', flSum, fd ? 'ok' : 'miss', leg('arr', 'There · landing', 'Airport → hotel', S.shuttlesGo) + leg('dep', 'Back · take-off', 'Hotel → airport', S.shuttlesBack)) +
       card('hotel', '🛏', 'Hotel & table', hotel ? esc('Room ' + (g.room || '—') + ' · Table ' + (g.table || '—') + (g.checkIn || g.checkOut ? ' · ' + String(g.checkIn || '').slice(0, 5) + '–' + String(g.checkOut || '').slice(0, 5) : '')) : 'Not assigned yet', '',
         '<div class="two">' + inp('checkIn', 'Check In', { ph: 'DD/MM/YYYY' }) + inp('checkOut', 'Check Out', { ph: 'DD/MM/YYYY' }) + '</div><div class="two">' + inp('room', 'Room #') + inp('table', 'Table #') + '</div>') +
@@ -2556,10 +2546,10 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
         }).join('')) : '') +
       card('hist', '🕘', 'History', esc('Last updated: ' + (g.updated || '—')), '', '<div class="hist"><div id="p-hist" class="meta">Loading…</div></div>') +
       '</div>' +
-      '<div class="pm-footer" id="pm-editbar"><div class="pm-draft-state" id="pm-draft-state" role="status" hidden></div><div class="pm-draft-error" id="pm-draft-error" role="alert" hidden></div><div class="pm-editbuttons"><button type="button" class="btn" id="pm-exit">Exit</button><button type="button" class="btn primary" id="pm-save">Save changes</button></div></div>';
+      '<div class="pm-footer" id="pm-editbar"><div class="pm-draft-state" id="pm-draft-state" role="status" hidden></div><div class="pm-draft-error" id="pm-draft-error" role="alert" hidden></div><div class="pm-editbuttons"><button type="button" class="btn primary" id="pm-save">Save and exit</button></div></div>';
     p.querySelector('.pm-body').scrollTop = scrollTop;
-    $('pm-exit').onclick = closePhoneGuest;
-    $('pm-save').onclick = function () { pdSave(); };
+    $('pm-close').onclick = closePhoneGuest;
+    $('pm-save').onclick = function () { pdSave(finishPhoneGuest); };
     pdSync();
     var no = g.no;
     api('history', { no: no }).then(function (res) {
@@ -2570,16 +2560,51 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     }).catch(function () { var h = $('p-hist'); if (h) h.textContent = 'Couldn’t load activity.'; });
     if (Date.now() - (S.savedAt || 0) < 2500) setTimeout(function () { if (PD && PD.no === no) pdSync(); }, 2500 - (Date.now() - S.savedAt));
   }
+  var pmMotion = null;
+  function clearPhoneMotion() {
+    if (pmMotion) {
+      clearTimeout(pmMotion.timer);
+      $('panel').removeEventListener('transitionend', pmMotion.end);
+      pmMotion = null;
+    }
+    var p = $('panel'); p.style.transition = ''; p.style.transform = ''; p.classList.remove('pm-dismissing');
+  }
+  function movePhoneGuest(dismiss, after) {
+    var p = $('panel');
+    if (pmMotion) { clearTimeout(pmMotion.timer); p.removeEventListener('transitionend', pmMotion.end); pmMotion = null; }
+    if (p.hidden || !p.classList.contains('pm') || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !dismiss && !p.style.transform) {
+      clearPhoneMotion(); if (after) after(); return;
+    }
+    var motion = { no: S.open };
+    motion.end = function (e) {
+      if (e && (e.target !== p || e.propertyName !== 'transform') || pmMotion !== motion) return;
+      clearPhoneMotion(); if (after && S.open === motion.no) after();
+    };
+    pmMotion = motion;
+    // Keep the dragged position through release; animate from there instead of resetting it.
+    p.getBoundingClientRect();
+    p.style.transition = 'transform 200ms cubic-bezier(.2,.7,.3,1)';
+    p.classList.toggle('pm-dismissing', dismiss);
+    p.addEventListener('transitionend', motion.end);
+    p.style.transform = dismiss ? 'translateY(100%)' : 'translateY(0)';
+    motion.timer = setTimeout(function () { motion.end(); }, 250);
+  }
+  function finishPhoneGuest() {
+    movePhoneGuest(true, function () { PD = null; S.open = null; render(); });
+  }
   function closePhoneGuest() {
     var p = $('panel'), el = document.activeElement;
+    if (PD && PD.saving || p.classList.contains('pm-dismissing')) return;
     if (el && p.contains(el) && el.matches('[data-pf]')) el.blur();
-    pdLeave(function () { PD = null; S.open = null; render(); });
+    if (pdDirty()) movePhoneGuest(false);
+    pdLeave(finishPhoneGuest);
   }
-  // A deliberate downward pull at the top dismisses the phone guest; normal scrolling stays inside it.
+  // Pull down only at the top. Short/guarded pulls settle back; a clean dismissal continues down.
   (function () {
     var p = $('panel'), pull = null, moved = false, suppressClick = false;
-    function reset() { p.style.transform = ''; pull = null; moved = false; }
+    function reset() { var settle = moved; pull = null; moved = false; if (settle) movePhoneGuest(false); }
     p.addEventListener('touchstart', function (e) {
+      if (pmMotion) return;
       reset();
       var body = p.querySelector('.pm-body'), t = e.target;
       if (p.hidden || !p.classList.contains('pm') || PD && PD.saving || !body || body.scrollTop > 0 || e.touches.length !== 1 ||
@@ -2599,11 +2624,10 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     }, { passive: false });
     p.addEventListener('touchend', function () {
       if (!pull) return;
-      var dismiss = moved && pull.dy >= 100 && S.open === pull.no;
-      suppressClick = moved;
+      var dismiss = moved && pull.dy >= 100 && S.open === pull.no, settle = moved;
+      suppressClick = moved; pull = null; moved = false;
       if (suppressClick) setTimeout(function () { suppressClick = false; }, 400);
-      reset();
-      if (dismiss) closePhoneGuest();
+      if (dismiss) closePhoneGuest(); else if (settle) movePhoneGuest(false);
     }, { passive: true });
     p.addEventListener('touchcancel', reset, { passive: true });
     p.addEventListener('click', function (e) {
