@@ -2396,8 +2396,9 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     p.innerHTML =
       '<div class="pm-hd"><div class="pm-top"><div class="name">' + esc(g.first + ' ' + g.last) + ' <small>#' + g.no + '</small></div><span class="pm-saved' + (Date.now() - (S.savedAt || 0) < 1800 ? ' on' : '') + '">✓ Saved</span><button type="button" class="x" id="p-close" aria-label="Close guest details">×</button></div>' +
       (g.phone ? '<div class="pm-quick"><a class="pm-qa" href="tel:' + esc(g.phone) + '">📞 Call</a><a class="pm-qa pm-wa" href="' + waLink(g.phone) + '" target="_blank" rel="noopener">💬 WhatsApp</a></div>' : '') +
-      '<div class="pm-st">' + [['Confirmed', 'c'], ['Maybe', 'm'], ['Declined', 'd']].map(function (x) { return '<button type="button" data-pst="' + x[0] + '" class="' + x[1] + (g.status === x[0] ? ' on' : '') + '">' + x[0] + '</button>'; }).join('') + '</div></div>' +
-      card('det', '👤', 'Details', esc([prettyPhone(g.phone), g.age, g.group, g.notes].filter(Boolean).join(' · ')), '',
+      '</div>' +
+      card('det', '👤', 'Details', esc([g.status, prettyPhone(g.phone), g.age, g.group, g.notes].filter(Boolean).join(' · ')), '',
+        '<label class="f">RSVP Status<select data-pf="status">' + STATUSES.map(function (st) { return '<option value="' + esc(st) + '"' + (st === g.status ? ' selected' : '') + '>' + esc(st) + '</option>'; }).join('') + '</select></label>' +
         '<div class="two">' + inp('first', 'First Name') + inp('last', 'Last Name') + '</div>' +
         inp('phone', 'Phone (family)', { tel: 1, val: prettyPhone(g.phone) }) + inp('phone2', 'Own Phone', { tel: 1, ph: 'Optional', val: g.phone2 ? prettyPhone(g.phone2) : '' }) +
         '<div class="f">Age Group<div class="pm-seg">' + AGES.map(function (a) { return '<button type="button" data-page="' + a + '"' + (g.age === a ? ' class="on"' : '') + '>' + a + '</button>'; }).join('') + '</div></div>' +
