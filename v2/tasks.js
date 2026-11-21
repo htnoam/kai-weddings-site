@@ -151,7 +151,15 @@
     draft = task ? Object.assign({}, task) : { id: crypto.randomUUID(), version: 0, title: '', description: '', owner: '', due: null, period: currentPeriod(), starred: false, status: 'open' };
     editor.replaceChildren(); editor.hidden = false;
     var heading = element('div', 'kt-editor-head');
-    heading.append(element('h2', '', task ? task.title : 'משימה חדשה'), button('×', 'kt-close', closeEditor));
+    var remove = task ? button('', 'kt-delete', async function () {
+      if (!window.confirm('למחוק את המשימה ״' + draft.title + '״?')) return;
+      await submit('delete');
+    }) : element('span', 'kt-header-space');
+    if (task) {
+      remove.setAttribute('aria-label', 'מחיקת משימה');
+      remove.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V4h6v2M5 6l1 15h12l1-15M10 10v7M14 10v7"/></svg>';
+    } else remove.setAttribute('aria-hidden', 'true');
+    heading.append(remove, element('h2', '', task ? task.title : 'משימה חדשה'), button('×', 'kt-close', closeEditor));
     heading.lastChild.setAttribute('aria-label', 'סגירת עריכת משימה'); editor.appendChild(heading);
     var form = element('form', 'kt-form');
     var title = element('input'); title.required = true; title.maxLength = 200; title.value = draft.title;
@@ -160,8 +168,7 @@
     var starred=element('input');starred.type='checkbox';starred.checked=!!draft.starred;
     var status = select(statusNames, 'סטטוס'); status.value = draft.status;
     var description = element('textarea'); description.rows = 4; description.maxLength = 5000; description.value = draft.description;
-    var body = element('div', 'kt-editor-body'), details = element('details', 'kt-details');
-    details.appendChild(element('summary', '', 'פרטי המשימה'));
+    var body = element('div', 'kt-editor-body'), details = element('div', 'kt-details');
     var content = element('div', 'kt-details-content');
     content.append(field('שם המשימה', title, 'title'), field('אחראי', owner, 'owner'), field('תקופה', period, 'period'),
       field('סטטוס', status, 'status'), field('משימה חשובה ★', starred, 'starred'), field('תיאור', description, 'description'));
@@ -171,12 +178,7 @@
     var errBox = element('p', 'kt-error'); errBox.setAttribute('role', 'alert'); footer.append(state, errBox);
     var actions = element('div', 'kt-editor-actions');
     var save = button('Save and exit', 'btn primary'); save.type = 'submit'; actions.appendChild(save);
-    save.addEventListener('click', function () { if (!title.value.trim()) details.open = true; });
-    saveEditor = function () { if (!title.value.trim()) details.open = true; form.requestSubmit(); };
-    if (task) content.appendChild(button('מחיקת משימה', 'kt-delete', async function () {
-      if (!window.confirm('למחוק את המשימה ״' + draft.title + '״?')) return;
-      await submit('delete');
-    }));
+    saveEditor = function () { form.requestSubmit(); };
     footer.appendChild(actions); form.appendChild(footer); editor.appendChild(form);
     form.addEventListener('input', function () { state.textContent = dirty() ? 'Unsaved changes' : ''; });
     form.addEventListener('change', function () { state.textContent = dirty() ? 'Unsaved changes' : ''; });
@@ -185,7 +187,7 @@
       if (!title.value.trim()) { title.setCustomValidity('יש למלא שם משימה.'); title.reportValidity(); return; }
       title.setCustomValidity(''); await submit('save');
     });
-    title.addEventListener('input', function () { title.setCustomValidity(''); });
+    title.addEventListener('input', function () { title.setCustomValidity(''); heading.querySelector('h2').textContent = title.value.trim() || 'משימה חדשה'; });
     async function submit(action) {
       var payload = fields();
       if (action === 'save' && task && !dirty()) { var next = pendingExit; pendingExit = null; if (next) { draft = null; next(); } else hideEditor(); return; }
