@@ -4322,7 +4322,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function showSect(name) {
     if (name !== 'guests' && PD && (pdDirty() || PD.saving)) { pdLeave(function () { PD = null; S.open = null; render(); showSect(name); }); return; }
     if (name !== 'guests' && PD) { PD = null; S.open = null; render(); }
-    if (SECT === 'tasks' && name !== 'tasks' && window.KaiTasks && !KaiTasks.canLeave()) return;
+    if (SECT === 'tasks' && name !== 'tasks' && window.KaiTasks && !KaiTasks.canLeave(function () { showSect(name); })) return;
     if (SECT === 'sched' && name !== 'sched') schedFlush();
     if (SECT === 'budget' && name !== 'budget') bgFlush();
     SECT = name;

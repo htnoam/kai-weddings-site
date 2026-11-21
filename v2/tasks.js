@@ -11,7 +11,8 @@
   var tasks = [], active = false, loading = false, writing = false, draft = null;
   var statusNames = { open: 'פתוח', progress: 'בטיפול', done: 'הושלם' };
   var ownerNames = { '': 'ללא אחראי', planner: 'נועם', couple: 'הזוג' };
-  var root, list, error, search, ownerFilter, statusFilter, editor, lastFocus;
+  var root, list, error, search, ownerFilter, statusFilter, editor, lastFocus, leaveDialog, pendingExit, saveEditor;
+  var motionTimer;
 
   function element(tag, className, text) {
     var node = document.createElement(tag);
@@ -103,12 +104,24 @@
     finally { lock(false); await reload(true); }
   }
   function saveStatus(task,status) { return mutate(task,{status:status}); }
-  function closeEditor() {
-    if (writing) return;
-    if (draft && dirty() && !window.confirm('לסגור בלי לשמור את השינויים?')) return;
-    editor.hidden = true; draft = null;
-    if (lastFocus && lastFocus.isConnected) lastFocus.focus();
+  function hideEditor(after) {
+    function finish() {
+      clearTimeout(motionTimer); editor.style.transform = ''; editor.style.transition = '';
+      editor.hidden = true; draft = null;
+      if (lastFocus && lastFocus.isConnected) lastFocus.focus();
+      if (after) after();
+    }
+    if (window.matchMedia && window.matchMedia('(max-width:759px)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      editor.getBoundingClientRect(); editor.style.transition = 'transform 200ms cubic-bezier(.2,.7,.3,1)';
+      editor.style.transform = 'translateY(100%)'; motionTimer = setTimeout(finish, 210);
+    } else finish();
   }
+  function guardExit(action) {
+    if (writing) return;
+    if (!draft || !dirty()) { action(); return; }
+    pendingExit = action; leaveDialog.showModal(); leaveDialog.querySelector('.kt-stay').focus();
+  }
+  function closeEditor() { guardExit(function () { hideEditor(); }); }
   function fields() {
     return {
       id: draft.id, version: draft.version,
@@ -132,12 +145,13 @@
   }
   function openEditor(task) {
     if (writing) return;
-    if (draft && dirty() && !window.confirm('לפתוח משימה אחרת בלי לשמור את השינויים?')) return;
+    if (draft && dirty()) { guardExit(function () { draft = null; openEditor(task); }); return; }
+    clearTimeout(motionTimer); editor.style.transform = ''; editor.style.transition = '';
     lastFocus = document.activeElement;
     draft = task ? Object.assign({}, task) : { id: crypto.randomUUID(), version: 0, title: '', description: '', owner: '', due: null, period: currentPeriod(), starred: false, status: 'open' };
     editor.replaceChildren(); editor.hidden = false;
     var heading = element('div', 'kt-editor-head');
-    heading.append(element('h2', '', task ? 'עריכת משימה' : 'משימה חדשה'), button('×', 'kt-close', closeEditor));
+    heading.append(element('h2', '', task ? task.title : 'משימה חדשה'), button('×', 'kt-close', closeEditor));
     heading.lastChild.setAttribute('aria-label', 'סגירת עריכת משימה'); editor.appendChild(heading);
     var form = element('form', 'kt-form');
     var title = element('input'); title.required = true; title.maxLength = 200; title.value = draft.title;
@@ -146,16 +160,26 @@
     var starred=element('input');starred.type='checkbox';starred.checked=!!draft.starred;
     var status = select(statusNames, 'סטטוס'); status.value = draft.status;
     var description = element('textarea'); description.rows = 4; description.maxLength = 5000; description.value = draft.description;
-    form.append(field('שם המשימה', title, 'title'), field('אחראי', owner, 'owner'), field('תקופה', period, 'period'),
+    var body = element('div', 'kt-editor-body'), details = element('details', 'kt-details');
+    details.appendChild(element('summary', '', 'פרטי המשימה'));
+    var content = element('div', 'kt-details-content');
+    content.append(field('שם המשימה', title, 'title'), field('אחראי', owner, 'owner'), field('תקופה', period, 'period'),
       field('סטטוס', status, 'status'), field('משימה חשובה ★', starred, 'starred'), field('תיאור', description, 'description'));
-    var errBox = element('p', 'kt-error'); errBox.setAttribute('role', 'alert'); form.appendChild(errBox);
+    details.appendChild(content); body.appendChild(details); form.appendChild(body);
+    var footer = element('div', 'kt-editor-footer');
+    var state = element('div', 'kt-draft-state'); state.setAttribute('role', 'status');
+    var errBox = element('p', 'kt-error'); errBox.setAttribute('role', 'alert'); footer.append(state, errBox);
     var actions = element('div', 'kt-editor-actions');
-    var save = button('שמירה', 'btn primary'); save.type = 'submit'; actions.appendChild(save);
-    if (task) actions.appendChild(button('מחיקת משימה', 'btn kt-delete', async function () {
-      if (!window.confirm('למחוק את המשימה?')) return;
+    var save = button('Save and exit', 'btn primary'); save.type = 'submit'; actions.appendChild(save);
+    save.addEventListener('click', function () { if (!title.value.trim()) details.open = true; });
+    saveEditor = function () { if (!title.value.trim()) details.open = true; form.requestSubmit(); };
+    if (task) content.appendChild(button('מחיקת משימה', 'kt-delete', async function () {
+      if (!window.confirm('למחוק את המשימה ״' + draft.title + '״?')) return;
       await submit('delete');
     }));
-    form.appendChild(actions); editor.appendChild(form);
+    footer.appendChild(actions); form.appendChild(footer); editor.appendChild(form);
+    form.addEventListener('input', function () { state.textContent = dirty() ? 'Unsaved changes' : ''; });
+    form.addEventListener('change', function () { state.textContent = dirty() ? 'Unsaved changes' : ''; });
     form.addEventListener('submit', async function (event) {
       event.preventDefault();
       if (!title.value.trim()) { title.setCustomValidity('יש למלא שם משימה.'); title.reportValidity(); return; }
@@ -163,14 +187,16 @@
     });
     title.addEventListener('input', function () { title.setCustomValidity(''); });
     async function submit(action) {
-      var payload = fields(); lock(true); errBox.textContent = '';
+      var payload = fields();
+      if (action === 'save' && task && !dirty()) { var next = pendingExit; pendingExit = null; if (next) { draft = null; next(); } else hideEditor(); return; }
+      lock(true); errBox.textContent = ''; save.textContent = 'Saving…';
       try {
         await api(action, payload);
-        editor.hidden = true; draft = null; error.textContent = '';
+        var next = pendingExit; pendingExit = null; error.textContent = ''; if (next) { draft = null; next(); } else hideEditor();
       } catch (err) { errBox.textContent = message(err); }
-      finally { lock(false); await reload(true); }
+      finally { lock(false); save.textContent = 'Save and exit'; await reload(true); }
     }
-    title.focus();
+    heading.lastChild.focus();
   }
   function mount() {
     var style = document.createElement('link'); style.rel = 'stylesheet'; style.href = '/v2/tasks.css'; document.head.appendChild(style);
@@ -193,13 +219,49 @@
     list = element('div', 'kt-list'); table.appendChild(list);
     editor = element('aside', 'kt-editor'); editor.hidden = true; editor.setAttribute('aria-label', 'עריכת משימה');
     layout.append(table, editor); root.append(header, progress, views, toolbar, error, layout); document.querySelector('main.wrap').appendChild(root);
+    leaveDialog = element('dialog', 'kt-leave');
+    leaveDialog.setAttribute('aria-label', 'Unsaved changes');
+    leaveDialog.append(element('h2', '', 'Unsaved changes'), element('p', '', 'Save your task changes before leaving?'),
+      button('Save and exit', 'btn primary', function () { leaveDialog.close(); saveEditor(); }),
+      button('Continue editing', 'btn kt-stay', function () { pendingExit = null; leaveDialog.close(); }),
+      button('Exit without saving', 'btn', function () { var next = pendingExit; pendingExit = null; leaveDialog.close(); draft = null; if (next) next(); }));
+    leaveDialog.addEventListener('cancel', function () { pendingExit = null; });
+    root.appendChild(leaveDialog);
+    var pull = null, pullClickUntil = 0;
+    editor.addEventListener('click', function (e) { if (Date.now() < pullClickUntil) { e.preventDefault(); e.stopImmediatePropagation(); pullClickUntil = 0; } }, true);
+    editor.addEventListener('touchstart', function (e) {
+      var body = editor.querySelector('.kt-editor-body');
+      if (writing || !body || body.scrollTop > 0 || e.touches.length !== 1 || e.target.closest('input,textarea,select,button,label')) return;
+      clearTimeout(motionTimer); editor.style.transition = ''; pull = { x:e.touches[0].clientX, y:e.touches[0].clientY, dy:0 };
+    }, {passive:true});
+    editor.addEventListener('touchmove', function (e) {
+      if (!pull) return;
+      var body = editor.querySelector('.kt-editor-body'), dy = e.touches.length === 1 ? e.touches[0].clientY-pull.y : -1;
+      if (dy <= 0 || body.scrollTop > 0 || Math.abs(e.touches[0].clientX-pull.x)>dy) { pull=null; editor.style.transform=''; return; }
+      pull.dy=dy; if (e.cancelable) e.preventDefault(); editor.style.transform='translateY('+Math.min(dy*.65,180)+'px)';
+    }, {passive:false});
+    function release(cancel) {
+      if (!pull) return; var dismiss=!cancel && pull.dy>=100; if (pull.dy > 10) pullClickUntil = Date.now()+400; pull=null;
+      if (dismiss && !dirty()) { closeEditor(); return; }
+      editor.style.transition='transform 200ms ease-out'; editor.style.transform='translateY(0)';
+      motionTimer=setTimeout(function(){editor.style.transition='';editor.style.transform='';},210);
+      if (dismiss) closeEditor();
+    }
+    editor.addEventListener('touchend',function(){release(false);},{passive:true});
+    editor.addEventListener('touchcancel',function(){release(true);},{passive:true});
+
     window.KaiTasks = {
       setSection: function (name) {
         active = name === 'tasks'; root.hidden = !active; nav.classList.toggle('on', active);
         if (active) { history.replaceState(null, '', '#tasks'); reload(); }
         else if (draft) { editor.hidden = true; draft = null; }
       },
-      canLeave: function () { return !writing && (!draft || !dirty() || window.confirm('לצאת מהמשימות בלי לשמור את השינויים?')); }
+      canLeave: function (after) {
+        if (writing) return false;
+        if (!draft || !dirty()) return true;
+        if (after) { guardExit(function () { hideEditor(after); }); return false; }
+        return window.confirm('לצאת מהמשימות בלי לשמור את השינויים?');
+      }
     };
     document.getElementById('sect').hidden = false;
     render();
@@ -210,7 +272,7 @@
       if (writing || dirty()) { event.preventDefault(); event.returnValue = ''; }
     });
     document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape' && active && !editor.hidden && !writing) { event.preventDefault(); closeEditor(); }
+      if (event.key === 'Escape' && active && !editor.hidden && !writing && !leaveDialog.open) { event.preventDefault(); closeEditor(); }
     });
   }
   async function start() {
