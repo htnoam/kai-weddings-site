@@ -6823,14 +6823,18 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   }
   // Presentation only: schedule records, inline editing and persistence stay unchanged.
   function scMobileLayout(box, order) {
+    box.classList.remove('sc-phone');
+    SC.phoneSelect = null;
     if (!window.matchMedia('(max-width: 759px)').matches) return;
     box.classList.add('sc-phone');
+    var phoneHebrew = window.KaiLocale && KaiLocale.lang('sched') === 'he';
+    var moreLabel = phoneHebrew ? 'פעולות נוספות' : 'More actions';
     if (order.indexOf(SC.mobileDay) < 0) SC.mobileDay = order[0];
     var bar = box.querySelector('.sc-bar');
     if (bar && S.admin) {
       var tools = document.createElement('details'); tools.className = 'sc-phone-tools';
       var summary = document.createElement('summary'); summary.textContent = '•••';
-      summary.setAttribute('aria-label', kl('Schedule','sched') + ' · ' + kl('More actions','sched'));
+      summary.setAttribute('aria-label', kl('Schedule','sched') + ' · ' + moreLabel);
       tools.appendChild(summary); bar.before(tools); tools.appendChild(bar);
     }
     var tabs = document.createElement('div'); tabs.className = 'sc-phone-days';
@@ -6849,21 +6853,26 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       b.id = 'sc-phone-tab-' + i; b.setAttribute('aria-controls','sc-phone-day-' + i);
       sections[i].id = 'sc-phone-day-' + i; sections[i].setAttribute('role','tabpanel'); sections[i].setAttribute('aria-labelledby',b.id);
       b.onclick = function() { select(day); };
-      b.onkeydown = function(e) { if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return; e.preventDefault(); var next = (i + (e.key === 'ArrowRight' ? 1 : -1) + order.length) % order.length; select(order[next]); tabs.children[next].focus(); };
+      b.onkeydown = function(e) { if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return; e.preventDefault(); var rtl = box.dir === 'rtl', delta = e.key === 'ArrowRight' ? 1 : -1; var next = (i + (rtl ? -delta : delta) + order.length) % order.length; select(order[next]); tabs.children[next].focus(); };
       tabs.appendChild(b);
     });
     var title = box.querySelector('.km-module-title');
     if (title && order.length) title.after(tabs);
     select(SC.mobileDay);
     SC.phoneSelect = select;
+    if (!box.scPhoneMenusBound) {
+      box.scPhoneMenusBound = true;
+      document.addEventListener('pointerdown', function(e) { box.querySelectorAll('details[open]').forEach(function(menu) { if (!menu.contains(e.target)) menu.open = false; }); });
+      box.addEventListener('keydown', function(e) { if (e.key !== 'Escape') return; var menu = e.target.closest('details[open]'); if (menu) { e.preventDefault(); menu.open = false; menu.querySelector('summary').focus(); } });
+    }
     box.querySelectorAll('.sc-row.ed').forEach(function(row) {
       var acts = row.querySelector('.sc-acts'); if (!acts) return;
       var menu = document.createElement('details'); menu.className = 'sc-phone-rowmenu';
-      var toggle = document.createElement('summary'); toggle.textContent = '•••'; toggle.setAttribute('aria-label',kl('More actions','sched'));
+      var toggle = document.createElement('summary'); toggle.textContent = '•••'; toggle.setAttribute('aria-label',moreLabel);
       menu.appendChild(toggle); acts.before(menu); menu.appendChild(acts);
     });
     var footer = document.createElement('p'); footer.className = 'sc-phone-foot';
-    footer.textContent = kl('Changes save automatically.','sched'); box.appendChild(footer);
+    footer.textContent = phoneHebrew ? 'השינויים נשמרים אוטומטית.' : 'Changes save automatically.'; box.appendChild(footer);
   }
   // The ceremony row links to the ceremony brief (with the number of open questions).
   function scBriefLink(r) {

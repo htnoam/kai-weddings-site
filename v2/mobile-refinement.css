@@ -81,3 +81,12 @@
  .km-pilot #sched.sc-phone .sc-row.off{background:#f5f5f7}
  .km-pilot #sched.sc-phone .sc-row.sunrow{background:#fbf3e2}
 }
+
+@media(max-width:759px){
+ .km-pilot #sched[dir=rtl].sc-phone .km-module-title{margin:0 0 4px 48px;letter-spacing:0}
+ .km-pilot #sched[dir=rtl] .sc-phone-tools{right:auto;left:0}
+ .km-pilot #sched[dir=rtl] .sc-phone-tools .sc-bar{right:auto;left:0}
+ .km-pilot #sched[dir=rtl] .sc-phone-rowmenu .sc-acts{right:auto;left:0}
+ .km-pilot #sched.sc-phone .sc-t{direction:ltr;text-align:left}
+ .km-pilot #sched .sc-phone-tools>summary:focus-visible,.km-pilot #sched .sc-phone-rowmenu>summary:focus-visible,.km-pilot #sched .sc-phone-days button:focus-visible{outline:2px solid #007aff;outline-offset:2px;border-radius:7px}
+}

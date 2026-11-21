@@ -25,6 +25,11 @@ async function setup(lang='he',mods={budget:'en',brief:'en',tasks:'en'},slug='de
  assert.equal(q('#sc-phone-tab-1').getAttribute('aria-selected'),'true','selected day retained after edit');
  assert(q('#sc-phone-day-1 .sc-row.red'),'red action still works');
  assert.equal(q('#sc-phone-day-1 [data-sck=what]').value,'Next day','content unchanged');
+ const menu=q('.sc-phone-rowmenu');menu.open=true;
+ q('.sc-phone-foot').dispatchEvent(new w.Event('pointerdown',{bubbles:true}));assert(!menu.open,'outside tap closes menu');
+ menu.open=true;menu.querySelector('summary').dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));assert(!menu.open,'Escape closes menu');
  assert.deepEqual(t.errs,[]);w.close();
+ t=await setup('he',{});t.q('#s-sched').click();assert.equal(t.q('#sched').dir,'rtl');assert(t.q('#sc-phone-tab-0').textContent.includes('יוני'),'Hebrew day labels');
+ t.q('#sc-phone-tab-0').dispatchEvent(new t.w.KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true}));assert.equal(t.q('#sc-phone-tab-1').getAttribute('aria-selected'),'true','RTL keyboard navigation');t.w.close();
  console.log('PASS: day tabs, selection retained across render, inline fields, all existing row/admin actions, content preserved');
 })().catch(e=>{console.error(e);process.exit(1)});
