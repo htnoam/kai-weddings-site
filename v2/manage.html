@@ -6815,10 +6815,55 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     }).join('');
     if (admin) h += ("<div class=\"sc-newday\"><button type=\"button\" class=\"btn\" id=\"sc-addday\">"+""+kl("+ Add a day","sched")+""+"</button><input id=\"sc-dayin\" placeholder=\"DD/MM/YYYY\" inputmode=\"numeric\" hidden aria-label=\""+""+kl("New day","sched")+""+"\"></div>");
     box.innerHTML = h;
+    if (EVENT === 'demo-wedding') scMobileLayout(box, order);
     box.querySelectorAll('[data-gobrief]').forEach(function (b) { b.onclick = function () { schedFlush(); showSect('brief'); }; });
-    if ($('sc-reds')) $('sc-reds').onclick = function () { var el = box.querySelector('.sc-row.red, .sc-nl.red, .sc-notes li.red'); if (el) { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); el.animate([{ background: '#F7E1E1' }, { background: 'transparent' }], 1400); } };
+    if ($('sc-reds')) $('sc-reds').onclick = function () { var el = box.querySelector('.sc-row.red, .sc-nl.red, .sc-notes li.red'); if (el) { var section = el.closest('.sc-day'); if (section && section.classList.contains('sc-phone-inactive') && SC.phoneSelect) SC.phoneSelect(order[Array.from(box.querySelectorAll('.sc-day')).indexOf(section)]); el.scrollIntoView({ block: 'center', behavior: 'smooth' }); el.animate([{ background: '#F7E1E1' }, { background: 'transparent' }], 1400); } };
     if (admin) schedBind();
     scCommentsBind(box);
+  }
+  // Presentation only: schedule records, inline editing and persistence stay unchanged.
+  function scMobileLayout(box, order) {
+    if (!window.matchMedia('(max-width: 759px)').matches) return;
+    box.classList.add('sc-phone');
+    if (order.indexOf(SC.mobileDay) < 0) SC.mobileDay = order[0];
+    var bar = box.querySelector('.sc-bar');
+    if (bar && S.admin) {
+      var tools = document.createElement('details'); tools.className = 'sc-phone-tools';
+      var summary = document.createElement('summary'); summary.textContent = '•••';
+      summary.setAttribute('aria-label', kl('Schedule','sched') + ' · ' + kl('More actions','sched'));
+      tools.appendChild(summary); bar.before(tools); tools.appendChild(bar);
+    }
+    var tabs = document.createElement('div'); tabs.className = 'sc-phone-days';
+    tabs.setAttribute('role','tablist'); tabs.setAttribute('aria-label',kl('Schedule','sched'));
+    var sections = Array.from(box.querySelectorAll('.sc-day'));
+    function select(day) {
+      SC.mobileDay = day;
+      tabs.querySelectorAll('button').forEach(function(b,i) { b.setAttribute('aria-selected', String(order[i] === day)); b.tabIndex = order[i] === day ? 0 : -1; });
+      sections.forEach(function(section,i) { section.classList.toggle('sc-phone-inactive',order[i] !== day); });
+    }
+    order.forEach(function(day,i) {
+      var b = document.createElement('button'); b.type = 'button'; b.setAttribute('role','tab');
+      var iso = scIso(day), date = iso && new Date(iso + 'T12:00:00');
+      var locale = window.KaiLocale && KaiLocale.lang('sched') === 'he' ? 'he-IL' : 'en-GB';
+      b.textContent = date && !isNaN(date) ? date.toLocaleDateString(locale,{weekday:'short',day:'numeric',month:'short'}) : day;
+      b.id = 'sc-phone-tab-' + i; b.setAttribute('aria-controls','sc-phone-day-' + i);
+      sections[i].id = 'sc-phone-day-' + i; sections[i].setAttribute('role','tabpanel'); sections[i].setAttribute('aria-labelledby',b.id);
+      b.onclick = function() { select(day); };
+      b.onkeydown = function(e) { if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return; e.preventDefault(); var next = (i + (e.key === 'ArrowRight' ? 1 : -1) + order.length) % order.length; select(order[next]); tabs.children[next].focus(); };
+      tabs.appendChild(b);
+    });
+    var title = box.querySelector('.km-module-title');
+    if (title && order.length) title.after(tabs);
+    select(SC.mobileDay);
+    SC.phoneSelect = select;
+    box.querySelectorAll('.sc-row.ed').forEach(function(row) {
+      var acts = row.querySelector('.sc-acts'); if (!acts) return;
+      var menu = document.createElement('details'); menu.className = 'sc-phone-rowmenu';
+      var toggle = document.createElement('summary'); toggle.textContent = '•••'; toggle.setAttribute('aria-label',kl('More actions','sched'));
+      menu.appendChild(toggle); acts.before(menu); menu.appendChild(acts);
+    });
+    var footer = document.createElement('p'); footer.className = 'sc-phone-foot';
+    footer.textContent = kl('Changes save automatically.','sched'); box.appendChild(footer);
   }
   // The ceremony row links to the ceremony brief (with the number of open questions).
   function scBriefLink(r) {
@@ -6931,7 +6976,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       if (e.key !== 'Enter') return;
       var m = /^(\d{1,2})[\/.](\d{1,2})[\/.](\d{2,4})$/.exec(normDate(this.value)), d = m && scPad(m[1]) + '/' + scPad(m[2]) + '/' + (m[3].length === 2 ? '20' + m[3] : m[3]);
       if (!d || !scName(d)) { toast('Write the day as DD/MM/YYYY, e.g. 09/05/2027.'); return; }
-      SC.days.push(d); schedRender();
+      SC.days.push(d); SC.mobileDay = d; schedRender();
       var b = $('sched').querySelector('[data-scadd="' + d + '"]'); if (b) b.click();
     });
     $('sc-paste').onclick = function () { schedFlush(); SC.mode = 'paste'; schedRender(); };
