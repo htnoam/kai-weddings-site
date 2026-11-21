@@ -220,20 +220,6 @@ input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--ink); marg
 .pm .pm-actions summary { cursor: pointer; padding: 10px 4px; min-height: 40px; }
 .pm .pm-delete-action { display: block; min-height: 44px; padding: 8px 12px; margin-top: 4px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--bad); font: inherit; }
 
-/* Explicit saving belongs only to the phone guest card. */
-.pm.pm-dirty { padding-bottom:calc(116px + env(safe-area-inset-bottom,0px)); }
-.pm .pm-editbar { position:fixed;bottom:0;left:0;right:0;z-index:33;padding:12px 16px max(12px,env(safe-area-inset-bottom,0px));background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -3px 12px #00000008; }
-.pm .pm-editbar .pm-editbuttons { display:flex;gap:10px; }
-.pm .pm-editbar button { min-height:46px;flex:1; }
-.pm .pm-draft-state { font-size:13px;color:var(--muted);margin-bottom:7px; }
-.pm .pm-draft-error { color:var(--bad);font-size:14px;margin-bottom:8px; }
-#guest-leave { width:min(420px,calc(100vw - 32px));max-height:calc(100dvh - 40px);overflow:auto;border:1px solid var(--line);border-radius:12px;padding:22px;background:var(--surface);color:var(--text); }
-#guest-leave::backdrop { background:#0006; }
-#guest-leave h2 { font-size:20px;margin:0 0 10px; }
-#guest-leave p { margin:0 0 18px;color:var(--muted); }
-#guest-leave .guest-leave-buttons { display:flex;flex-direction:column;gap:9px; }
-#guest-leave button { min-height:44px;justify-content:center; }
-
 .fab { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(20px, calc(env(safe-area-inset-bottom, 0px) + 12px)); height: 52px; padding: 0 20px; border: none; border-radius: 999px; background: var(--ink); color: #FFFFFF; font-size: 16px; font-weight: 600; display: none; align-items: center; gap: 8px; box-shadow: 0 10px 24px -8px rgba(46,58,158,.6); z-index: 10; }
 
 .menu { position: fixed; z-index: 50; min-width: 240px; background: #FFFFFF; border: 1px solid var(--hair); border-radius: 8px; box-shadow: 0 16px 40px -12px rgba(0,0,0,.35); padding: 6px; display: flex; flex-direction: column; }
@@ -1602,16 +1588,6 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   </form>
 </div>
 
-<dialog id="guest-leave" role="alertdialog" aria-labelledby="guest-leave-title" aria-describedby="guest-leave-description">
-  <h2 id="guest-leave-title">Unsaved changes</h2>
-  <p id="guest-leave-description">Save your changes before leaving this guest?</p>
-  <div class="guest-leave-buttons">
-    <button type="button" class="btn primary" id="guest-leave-save">Save changes</button>
-    <button type="button" class="btn" id="guest-leave-stay" autofocus>Continue editing</button>
-    <button type="button" class="btn" id="guest-leave-discard">Leave without saving</button>
-  </div>
-</dialog>
-
 <div class="overlay" id="dlg2" hidden>
   <form class="dialog" id="pickform" role="dialog" aria-modal="true" aria-labelledby="pick-title" novalidate>
     <h2 id="pick-title"></h2>
@@ -2356,18 +2332,12 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   // ---------- side panel ----------
   function renderPanel() {
     var p = $('panel'), g = S.open != null ? byNo(S.open) : null;
-    if (PD && pdDirty() && (!g || g.deleted || g.no !== PD.no)) {
-      var nextGuest = S.open; S.open = PD.no;
-      pdLeave(function () { PD = null; S.open = nextGuest; render(); }); return;
-    }
-    if (!g || g.deleted) { PD = null; p.hidden = true; PO = { no: null }; return; }
+    if (!g || g.deleted) { p.hidden = true; PO = { no: null }; return; }
     if (p.dataset.no === String(g.no) && !p.hidden && p.contains(document.activeElement) && document.activeElement.tagName !== 'BUTTON') return;
     p.dataset.no = g.no; p.hidden = false;
     var phoneUI = window.matchMedia('(max-width: 759px)').matches;
-    if (PD && (pdDirty() || PD.saving)) phoneUI = true;
     p.classList.toggle('pm', phoneUI);
     if (phoneUI) { renderPanelPhone(p, g); return; }
-    PD = null;
     var same = live().filter(function (x) { return x.phone && x.phone === g.phone && x.no !== g.no; });
     p.innerHTML =
       '<div class="hd"><div><div class="meta">Guest No. ' + g.no + (g.group ? ' · ' + esc(g.group) : '') + '</div><div class="name">' + esc(g.first + ' ' + g.last) + '</div></div>' +
@@ -2399,94 +2369,6 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
 
   // ---------- guest details on phones: cards that open and close ----------
   var PO = { no: null };
-
-  var PD = null, pdNext = null;
-  function pdNormal(k,v) {
-    v = String(v == null ? '' : v);
-    if (k === 'phone') return normPhone(v);
-    if (k === 'phone2') return v.trim() ? normPhone(v) : '';
-    if (TYPE[k] === 'date') return normDate(v);
-    if (TYPE[k] === 'time') return normTime(v);
-    return v.trim();
-  }
-  function pdChanges() {
-    var fields = {}; if (!PD) return fields;
-    Object.keys(PD.values).forEach(function(k) {
-      var v = pdNormal(k,PD.values[k]);
-      if (v !== pdNormal(k,PD.base[k])) fields[k] = v;
-    }); return fields;
-  }
-  function pdDirty() { return !!PD && Object.keys(pdChanges()).length > 0; }
-  function pdSync() {
-    var bar = $('pm-editbar'); if (!bar || !PD) return;
-    var dirty = pdDirty(); bar.hidden = !dirty && !PD.error && !PD.saving;
-    $('panel').classList.toggle('pm-dirty', !bar.hidden);
-    $('pm-draft-state').textContent = PD.saving ? 'Saving changes…' : dirty ? 'Changes are not saved yet' : '';
-    $('pm-draft-error').textContent = PD.error || '';
-    $('panel').querySelectorAll('button,input,select,textarea').forEach(function(el){el.disabled=!!PD.saving;});
-    $('pm-save').disabled = !!PD.saving || !dirty;
-    if (dirty || PD.saving) {var saved=$('panel').querySelector('.pm-saved');if(saved)saved.classList.remove('on');}
-  }
-  function pdStage(fields) {
-    if (!PD || PD.saving) return;
-    Object.assign(PD.values,fields); PD.error = ''; pdSync();
-  }
-  function pdReset() {
-    if (!PD || PD.saving) return;
-    var no = PD.no; PD = null;
-    // Drop focus before re-rendering so the existing caret-preservation guard does not keep old values.
-    if ($('panel').contains(document.activeElement) && document.activeElement.blur) document.activeElement.blur();
-    render();
-  }
-  async function pdSave(after) {
-    if (!PD || PD.saving) return;
-    var fields = pdChanges(), no = PD.no;
-    if (!Object.keys(fields).length) { if (after) after(); return; }
-    var errs = validate(fields);
-    if (errs.length) { PD.error=errs.join(' '); pdSync(); return; }
-    PD.saving=true;PD.error='';pdSync();saving('busy');
-    try {
-      // Check the latest saved values for fields touched in this draft; send only changed fields.
-      var latest = await api('list'), guest = latest.guests.filter(function(g){return g.no === no;})[0];
-      if (!guest || guest.deleted) throw new Error('This guest is no longer available. Your edits remain here.');
-      Object.assign(byNo(no),guest);
-      if (Object.keys(fields).some(function(k){return pdNormal(k,guest[k]) !== pdNormal(k,PD.base[k]) && pdNormal(k,guest[k]) !== fields[k];}))
-        throw new Error('These details were changed by someone else. Your edits remain here. Cancel your edits to load the latest guest details.');
-      var alreadySaved=Object.keys(fields).every(function(k){return pdNormal(k,guest[k])===fields[k];});
-      var res=alreadySaved ? {guest:guest} : await api('update',{no:no,fields:fields});
-      Object.assign(byNo(no),guest,res.guest);PD=null;S.savedAt=Date.now();saving('ok');
-      if (after) after();
-      else { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); render(); }
-    } catch (err) {
-      if (PD) { PD.saving=false;PD.error=err.server || /remain here|someone else/.test(err.message) ? err.message : 'Couldn’t save. Your changes are still here. Check your connection and try again.';pdSync(); }
-      saving('err');
-    }
-  }
-  function pdLeave(action) {
-    if (PD && PD.saving) return;
-    if (!pdDirty()) { PD=null;action();return; }
-    if ($('guest-leave').open) return;
-    pdNext=action;$('guest-leave-description').textContent='Save changes to '+PD.base.first+' '+PD.base.last+' before leaving?';
-    $('guest-leave').showModal();$('guest-leave-stay').focus();
-  }
-  function pdStay() { pdNext=null;$('guest-leave').close(); }
-  $('guest-leave-stay').onclick=pdStay;
-  $('guest-leave').addEventListener('cancel',function(e){e.preventDefault();pdStay();});
-  $('guest-leave').addEventListener('keydown',function(e){e.stopPropagation();});
-  $('guest-leave-save').onclick=function(){var action=pdNext;pdNext=null;$('guest-leave').close();pdSave(function(){PD=null;if(action)action();});};
-  $('guest-leave-discard').onclick=function(){var action=pdNext;pdNext=null;$('guest-leave').close();PD=null;if(action)action();};
-  window.addEventListener('beforeunload',function(e){if(pdDirty() || PD && PD.saving){e.preventDefault();e.returnValue='';}});
-  // Escape from a mobile guest follows the same three-way close flow, including when focus is in a field.
-  document.addEventListener('keydown',function(e){
-    if(e.key==='Escape' && PD && !$('panel').hidden && !$('guest-leave').open){e.preventDefault();e.stopImmediatePropagation();pdLeave(function(){PD=null;S.open=null;render();});}
-  },true);
-  // Normal navigation and sign-out must not silently discard a phone draft.
-  document.addEventListener('click',function(e){
-    var t=e.target.closest('a[href],.signout');
-    if(!t || !pdDirty() || t.target==='_blank' || /^(tel:|mailto:|javascript:)/.test(t.getAttribute('href')||''))return;
-    e.preventDefault();e.stopImmediatePropagation();pdLeave(function(){PD=null;t.click();});
-  },true);
-
   function flDone(g) { return !!(g.arrFlight && g.arrTime && g.depFlight && g.depTime); }
   function busOpts(list, cur) {
     var o = String(list || '').split(/[,;\s]+/).filter(function (x) { return /^\d{1,2}:\d{2}$/.test(x); }).concat(['Taxi', 'Own']);
@@ -2495,8 +2377,6 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   }
   function busTxt(v) { return v === 'Taxi' ? 'Taxi' : v === 'Own' ? 'Own way' : /^\d{1,2}:\d{2}$/.test(v || '') ? 'Shuttle ' + v : (v || ''); }
   function renderPanelPhone(p, g) {
-    if (!PD || PD.no !== g.no) PD={no:g.no,base:Object.assign({},g),values:{},saving:false,error:''};
-    g=Object.assign({},g,PD.values);
     if (PO.no !== g.no) PO = { no: g.no, det: false, fl: false, hotel: false, more: false, hist: false };
     var same = live().filter(function (x) { return x.phone && x.phone === g.phone && x.no !== g.no; });
     var inp = function (k, label, o) { o = o || {}; return '<label class="f">' + esc(label) + '<input data-pf="' + k + '" value="' + esc(o.val != null ? o.val : (g[k] || '')) + '"' + (o.ph ? ' placeholder="' + o.ph + '"' : '') + (o.tel ? ' type="tel" inputmode="tel"' : '') + (o.list ? ' list="' + o.list + '"' : '') + '></label>'; };
@@ -2518,12 +2398,13 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       (g.phone ? '<div class="pm-quick"><a class="pm-qa" href="tel:' + esc(g.phone) + '">📞 Call</a><a class="pm-qa pm-wa" href="' + waLink(g.phone) + '" target="_blank" rel="noopener">💬 WhatsApp</a></div>' : '') +
       '</div>' +
       card('det', '👤', 'Details', esc([g.status, prettyPhone(g.phone), g.age, g.group, g.notes].filter(Boolean).join(' · ')), '',
-        '<label class="f">RSVP Status<select data-pf="status">' + STATUSES.map(function (st) { return '<option value="' + esc(st) + '"' + (st === g.status ? ' selected' : '') + '>' + esc(st) + '</option>'; }).join('') + '</select></label>' +
         '<div class="two">' + inp('first', 'First Name') + inp('last', 'Last Name') + '</div>' +
+        '<div class="two"><label class="f">Age Group<select data-pf="age">' + AGES.map(function (a) { return '<option value="' + esc(a) + '"' + (a === g.age ? ' selected' : '') + '>' + esc(a) + '</option>'; }).join('') + '</select></label>' +
+        '<label class="f">RSVP Status<select data-pf="status">' + STATUSES.map(function (st) { return '<option value="' + esc(st) + '"' + (st === g.status ? ' selected' : '') + '>' + esc(st) + '</option>'; }).join('') + '</select></label></div>' +
         inp('phone', 'Phone (family)', { tel: 1, val: prettyPhone(g.phone) }) + inp('phone2', 'Own Phone', { tel: 1, ph: 'Optional', val: g.phone2 ? prettyPhone(g.phone2) : '' }) +
-        '<div class="f">Age Group<div class="pm-seg">' + AGES.map(function (a) { return '<button type="button" data-page="' + a + '"' + (g.age === a ? ' class="on"' : '') + '>' + a + '</button>'; }).join('') + '</div></div>' +
         inp('group', 'Guest Group', { list: 'groups' }) + '<label class="f">Notes<textarea data-pf="notes" rows="3">' + esc(g.notes) + '</textarea></label>' +
         (same.length ? '<div class="same">Same phone as:' + same.map(function (x) { return '<button type="button" data-open="' + x.no + '">' + esc(x.first + ' ' + x.last) + '</button>'; }).join('') + '</div>' : '') +
+        '<p class="meta" style="margin:0">Changes save automatically when you finish editing a field.</p>' +
         '<button type="button" class="btn" data-family="' + g.no + '">Add family member</button>') +
       card('fl', '✈', 'Flights', flSum, fd ? 'ok' : 'miss', leg('arr', 'There · landing', 'Airport → hotel', S.shuttlesGo) + leg('dep', 'Back · take-off', 'Hotel → airport', S.shuttlesBack)) +
       card('hotel', '🛏', 'Hotel & table', hotel ? esc('Room ' + (g.room || '—') + ' · Table ' + (g.table || '—') + (g.checkIn || g.checkOut ? ' · ' + String(g.checkIn || '').slice(0, 5) + '–' + String(g.checkOut || '').slice(0, 5) : '')) : 'Not assigned yet', '',
@@ -2534,11 +2415,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
           return inp(c.k, c.label, { ph: c.type === 'date' ? 'DD/MM/YYYY' : c.type === 'time' ? 'HH:MM' : '' });
         }).join('')) : '') +
       card('hist', '🕘', 'History', esc('Last updated: ' + (g.updated || '—')), '', '<div class="hist"><div id="p-hist" class="meta">Loading…</div></div>') +
-      '<details class="pm-actions"><summary>More actions</summary><button type="button" class="pm-delete-action" data-delete="' + g.no + '">Delete guest…</button></details>' +
-      '<div class="pm-editbar" id="pm-editbar" hidden><div class="pm-draft-state" id="pm-draft-state" role="status"></div><div class="pm-draft-error" id="pm-draft-error" role="alert"></div><div class="pm-editbuttons"><button type="button" class="btn primary" id="pm-save">Save changes</button><button type="button" class="btn" id="pm-cancel">Cancel</button></div></div>';
-    $('p-close').onclick = function () { pdLeave(function(){PD=null;S.open=null;render();}); };
-    $('pm-save').onclick=function(){pdSave();};
-    $('pm-cancel').onclick=pdReset; pdSync();
+      '<details class="pm-actions"><summary>More actions</summary><button type="button" class="pm-delete-action" data-delete="' + g.no + '">Delete guest…</button></details>';
+    $('p-close').onclick = function () { S.open = null; render(); };
     var no = g.no;
     api('history', { no: no }).then(function (res) {
       var h = $('p-hist'); if (!h || S.open !== no) return;
@@ -2554,22 +2432,19 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var f = {};
     if (b.dataset.pst) f.status = b.dataset.pst;
     else if (b.dataset.page) f.age = b.dataset.page;
-    else f[b.dataset.pbus] = Object.assign({},byNo(S.open),PD ? PD.values : {})[b.dataset.pbus] === b.dataset.v ? '' : b.dataset.v;   // tap the chosen one again to clear it
-    if (PD && $('panel').classList.contains('pm')) { pdStage(f);renderPanelPhone($('panel'),byNo(S.open)); }
-    else update(S.open, f);
+    else f[b.dataset.pbus] = byNo(S.open)[b.dataset.pbus] === b.dataset.v ? '' : b.dataset.v;   // tap the chosen one again to clear it
+    update(S.open, f);
   });
 
-  $('panel').addEventListener('input',function(e){var el=e.target.closest('[data-pf]');if(el && PD && $('panel').classList.contains('pm')){var f={};f[el.dataset.pf]=el.value;pdStage(f);}});
   $('panel').addEventListener('change', function (e) {
     var el = e.target.closest('[data-pf]'); if (!el || S.open == null) return;
-    var f = {}; f[el.dataset.pf] = el.value;
-    if (PD && $('panel').classList.contains('pm')) pdStage(f);else update(S.open, f);
+    var f = {}; f[el.dataset.pf] = el.value; update(S.open, f);
   });
   $('panel').addEventListener('click', function (e) {
     var b = e.target.closest('[data-open],[data-family],[data-delete]'); if (!b) return;
     if (b.dataset.open) { S.open = Number(b.dataset.open); render(); }
-    else if (b.dataset.family) pdLeave(function(){openAdd(byNo(Number(b.dataset.family)));});
-    else if (b.dataset.delete) pdLeave(function(){del([Number(b.dataset.delete)]);});
+    else if (b.dataset.family) openAdd(byNo(Number(b.dataset.family)));
+    else if (b.dataset.delete) del([Number(b.dataset.delete)]);
   });
 
   // ---------- writes ----------
@@ -2777,7 +2652,6 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function gSelRows() { var seen = {}; return gCells().filter(function (x) { var g = byNo(x.no); if (seen[x.no] || !g || g.deleted) return false; seen[x.no] = 1; return true; }).map(function (x) { return x.no; }); }
   function tdOf(no, k) { return $('tbody').querySelector('tr[data-no="' + no + '"] td[data-k="' + k + '"]'); }
   function gridOn() {
-    if ($('guest-leave').open) return false;
     if (!G.c || S.editing || window.innerWidth < 760 || $('app').hidden || !$('grid').offsetParent) return false;
     if (!$('dlg').hidden || !$('dlg2').hidden || !$('menu').hidden || !$('fpop').hidden || !$('dlg-imp').hidden) return false;
     var a = document.activeElement;
@@ -4227,8 +4101,6 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   // Three sections: guests (the list), sched (schedule), brief (questions). The last two hide the guest list's own bars.
   var SECT = 'guests';
   function showSect(name) {
-    if (name !== 'guests' && PD && pdDirty()) {pdLeave(function(){PD=null;S.open=null;render();showSect(name);});return;}
-    if (name !== 'guests' && PD && PD.saving) return;
     if (SECT === 'tasks' && name !== 'tasks' && window.KaiTasks && !KaiTasks.canLeave()) return;
     if (SECT === 'sched' && name !== 'sched') schedFlush();
     if (SECT === 'budget' && name !== 'budget') bgFlush();
