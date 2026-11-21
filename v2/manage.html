@@ -167,18 +167,27 @@ input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--ink); marg
   .panel { position: fixed; inset: 0; z-index: 30; max-height: none; border-radius: 0; border: none; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(24px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
 }
 
-/* Phones: a guest's details as cards that open and close (sticky top with name, call / WhatsApp and status) */
-.panel.pm { padding-top: 0; gap: 10px; background: var(--bg); }
+/* Phones: fixed guest heading and contact bar, with independently scrolling cards. */
+.panel.pm { padding: 0; gap: 0; background: var(--bg); overflow: hidden; overscroll-behavior: none; }
 .panel.pm > * { flex-shrink: 0; }
-.pm .pm-hd { position: sticky; top: 0; z-index: 2; margin: 0 -16px; padding: max(12px, env(safe-area-inset-top, 0px)) 16px 10px; background: var(--surface); border-bottom: 1px solid var(--hair); display: flex; flex-direction: column; gap: 10px; }
-.pm .pm-top { display: flex; align-items: center; gap: 10px; }
-.pm .pm-top .name { flex: 1; min-width: 0; font-size: 21px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pm .pm-hd { z-index: 2; padding: max(8px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) 18px max(12px, env(safe-area-inset-left, 0px)); background: var(--surface); border-bottom: 1px solid var(--hair); }
+.pm .pm-drag { width: 44px; height: 4px; border-radius: 999px; background: var(--line); margin: 0 auto 8px; }
+.pm .pm-top { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: center; gap: 10px; direction: ltr; }
+.pm .pm-title { min-width: 0; text-align: center; position: relative; }
+.pm .pm-top .name { font-size: 21px; overflow-wrap: anywhere; }
 .pm .pm-top .name small { font-size: 13px; color: var(--soft); font-weight: 500; }
-.pm .pm-saved { font-size: 13px; font-weight: 600; color: var(--ok); opacity: 0; transition: opacity .25s; white-space: nowrap; }
+.pm .pm-saved { position: absolute; top: 100%; left: 0; right: 0; font-size: 13px; font-weight: 600; color: var(--ok); opacity: 0; transition: opacity .25s; white-space: nowrap; }
 .pm .pm-saved.on { opacity: 1; }
-.pm .x { border-radius: 999px; }
+.pm .x, .pm .pm-delete-icon { width: 44px; height: 44px; border: none; border-radius: 999px; background: transparent; display: grid; place-items: center; padding: 0; cursor: pointer; }
+.pm .x { color: var(--ink); font-size: 28px; }
+.pm .pm-delete-icon { color: var(--bad); }
+.pm .pm-delete-icon svg { width: 21px; height: 21px; }
+.pm .x:active, .pm .pm-delete-icon:active { background: var(--soft-surface); }
+.pm .pm-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior-y: contain; -webkit-overflow-scrolling: touch; padding: 12px max(16px, env(safe-area-inset-right, 0px)) 16px max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 10px; }
+.pm .pm-body > * { flex-shrink: 0; }
+.pm .pm-footer { background: var(--surface); border-top: 1px solid var(--hair); padding: 10px max(16px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
 .pm-quick { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.pm-qa { height: 40px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); display: flex; align-items: center; justify-content: center; gap: 7px; font-weight: 600; font-size: 14.5px; text-decoration: none; color: var(--text); }
+.pm-qa { height: 46px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); display: flex; align-items: center; justify-content: center; gap: 7px; font-weight: 600; font-size: 16px; text-decoration: none; color: var(--text); }
 .pm-qa.pm-wa { color: #1A7F43; border-color: #BFE3CC; background: #F2FBF5; }
 .pm-st { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
 .pm-st button { min-height: 44px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); font-weight: 600; font-size: 14.5px; }
@@ -216,9 +225,9 @@ input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--ink); marg
 .pm-leg.go .pm-seg button.on { background: #2E3A9E; border-color: #2E3A9E; }
 .pm-leg.back .pm-seg button.on { background: #856425; border-color: #856425; }
 .pm .hist { border-top: none; padding-top: 0; }
-.pm .pm-actions { margin-top: 4px; color: var(--soft); font-size: 14px; }
-.pm .pm-actions summary { cursor: pointer; padding: 10px 4px; min-height: 40px; }
-.pm .pm-delete-action { display: block; min-height: 44px; padding: 8px 12px; margin-top: 4px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--bad); font: inherit; }
+.pm .pm-add-family { width: 100%; min-height: 46px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 14px; border: 1px solid #D5DAF3; border-radius: 8px; background: var(--ink-soft); color: var(--ink); font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; }
+.pm .pm-add-family svg { width: 19px; height: 19px; flex: none; }
+.pm .pm-add-family:active { background: #E3E6F7; }
 
 .fab { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(20px, calc(env(safe-area-inset-bottom, 0px) + 12px)); height: 52px; padding: 0 20px; border: none; border-radius: 999px; background: var(--ink); color: #FFFFFF; font-size: 16px; font-weight: 600; display: none; align-items: center; gap: 8px; box-shadow: 0 10px 24px -8px rgba(46,58,158,.6); z-index: 10; }
 
@@ -2377,6 +2386,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   }
   function busTxt(v) { return v === 'Taxi' ? 'Taxi' : v === 'Own' ? 'Own way' : /^\d{1,2}:\d{2}$/.test(v || '') ? 'Shuttle ' + v : (v || ''); }
   function renderPanelPhone(p, g) {
+    var body = p.querySelector('.pm-body'), scrollTop = PO.no === g.no && body ? body.scrollTop : 0;
     if (PO.no !== g.no) PO = { no: g.no, det: false, fl: false, hotel: false, more: false, hist: false };
     var same = live().filter(function (x) { return x.phone && x.phone === g.phone && x.no !== g.no; });
     var inp = function (k, label, o) { o = o || {}; return '<label class="f">' + esc(label) + '<input data-pf="' + k + '" value="' + esc(o.val != null ? o.val : (g[k] || '')) + '"' + (o.ph ? ' placeholder="' + o.ph + '"' : '') + (o.tel ? ' type="tel" inputmode="tel"' : '') + (o.list ? ' list="' + o.list + '"' : '') + '></label>'; };
@@ -2394,10 +2404,9 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var flSum = fd ? esc('There ' + String(g.arrDate || '').slice(0, 5) + ' ' + g.arrTime + ' · ' + g.arrFlight + (g.arrBus ? ' · ' + busTxt(g.arrBus) : '')) + '<br>' + esc('Back ' + String(g.depDate || '').slice(0, 5) + ' ' + g.depTime + ' · ' + g.depFlight + (g.depBus ? ' · ' + busTxt(g.depBus) : ''))
       : 'Missing: ' + [!(g.arrFlight && g.arrTime) ? 'flight there' : '', !(g.depFlight && g.depTime) ? 'flight back' : ''].filter(Boolean).join(' and ');
     p.innerHTML =
-      '<div class="pm-hd"><div class="pm-top"><div class="name">' + esc(g.first + ' ' + g.last) + ' <small>#' + g.no + '</small></div><span class="pm-saved' + (Date.now() - (S.savedAt || 0) < 1800 ? ' on' : '') + '">✓ Saved</span><button type="button" class="x" id="p-close" aria-label="Close guest details">×</button></div>' +
-      (g.phone ? '<div class="pm-quick"><a class="pm-qa" href="tel:' + esc(g.phone) + '">📞 Call</a><a class="pm-qa pm-wa" href="' + waLink(g.phone) + '" target="_blank" rel="noopener">💬 WhatsApp</a></div>' : '') +
-      '</div>' +
-      card('det', '👤', 'Details', esc([g.status, prettyPhone(g.phone), g.age, g.group, g.notes].filter(Boolean).join(' · ')), '',
+      '<div class="pm-hd"><div class="pm-drag" aria-hidden="true"></div><div class="pm-top"><button type="button" class="pm-delete-icon" data-delete="' + g.no + '" aria-label="Delete guest" title="Delete guest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V4h6v2M5 6l1 14h12l1-14M10 10v6M14 10v6"/></svg></button><div class="pm-title"><div class="name"><bdi>' + esc(g.first + ' ' + g.last) + '</bdi> <small>#' + g.no + '</small></div><span class="pm-saved' + (Date.now() - (S.savedAt || 0) < 1800 ? ' on' : '') + '">✓ Saved</span></div><button type="button" class="x" id="p-close" aria-label="Close guest details">×</button></div></div>' +
+      '<div class="pm-body">' +
+      card('det', '👤', 'Details', esc([g.age, g.notes].filter(Boolean).join(' · ')), '',
         '<div class="two">' + inp('first', 'First Name') + inp('last', 'Last Name') + '</div>' +
         '<div class="two"><label class="f">Age Group<select data-pf="age">' + AGES.map(function (a) { return '<option value="' + esc(a) + '"' + (a === g.age ? ' selected' : '') + '>' + esc(a) + '</option>'; }).join('') + '</select></label>' +
         '<label class="f">RSVP Status<select data-pf="status">' + STATUSES.map(function (st) { return '<option value="' + esc(st) + '"' + (st === g.status ? ' selected' : '') + '>' + esc(st) + '</option>'; }).join('') + '</select></label></div>' +
@@ -2405,7 +2414,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
         inp('group', 'Guest Group', { list: 'groups' }) + '<label class="f">Notes<textarea data-pf="notes" rows="3">' + esc(g.notes) + '</textarea></label>' +
         (same.length ? '<div class="same">Same phone as:' + same.map(function (x) { return '<button type="button" data-open="' + x.no + '">' + esc(x.first + ' ' + x.last) + '</button>'; }).join('') + '</div>' : '') +
         '<p class="meta" style="margin:0">Changes save automatically when you finish editing a field.</p>' +
-        '<button type="button" class="btn" data-family="' + g.no + '">Add family member</button>') +
+        '<button type="button" class="pm-add-family" data-family="' + g.no + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7" r="3"/><path d="M3 21v-2a6 6 0 0 1 12 0v2M19 8v6M16 11h6"/></svg>Add family member</button>') +
       card('fl', '✈', 'Flights', flSum, fd ? 'ok' : 'miss', leg('arr', 'There · landing', 'Airport → hotel', S.shuttlesGo) + leg('dep', 'Back · take-off', 'Hotel → airport', S.shuttlesBack)) +
       card('hotel', '🛏', 'Hotel & table', hotel ? esc('Room ' + (g.room || '—') + ' · Table ' + (g.table || '—') + (g.checkIn || g.checkOut ? ' · ' + String(g.checkIn || '').slice(0, 5) + '–' + String(g.checkOut || '').slice(0, 5) : '')) : 'Not assigned yet', '',
         '<div class="two">' + inp('checkIn', 'Check In', { ph: 'DD/MM/YYYY' }) + inp('checkOut', 'Check Out', { ph: 'DD/MM/YYYY' }) + '</div><div class="two">' + inp('room', 'Room #') + inp('table', 'Table #') + '</div>') +
@@ -2415,8 +2424,10 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
           return inp(c.k, c.label, { ph: c.type === 'date' ? 'DD/MM/YYYY' : c.type === 'time' ? 'HH:MM' : '' });
         }).join('')) : '') +
       card('hist', '🕘', 'History', esc('Last updated: ' + (g.updated || '—')), '', '<div class="hist"><div id="p-hist" class="meta">Loading…</div></div>') +
-      '<details class="pm-actions"><summary>More actions</summary><button type="button" class="pm-delete-action" data-delete="' + g.no + '">Delete guest…</button></details>';
-    $('p-close').onclick = function () { S.open = null; render(); };
+      '</div>' +
+      (g.phone ? '<div class="pm-footer"><div class="pm-quick"><a class="pm-qa" href="tel:' + esc(g.phone) + '">📞 Call</a><a class="pm-qa pm-wa" href="' + waLink(g.phone) + '" target="_blank" rel="noopener">💬 WhatsApp</a></div></div>' : '');
+    p.querySelector('.pm-body').scrollTop = scrollTop;
+    $('p-close').onclick = closePhoneGuest;
     var no = g.no;
     api('history', { no: no }).then(function (res) {
       var h = $('p-hist'); if (!h || S.open !== no) return;
@@ -2426,6 +2437,51 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     }).catch(function () { var h = $('p-hist'); if (h) h.textContent = 'Couldn’t load activity.'; });
     if (Date.now() - (S.savedAt || 0) < 1800) setTimeout(function () { var e = p.querySelector('.pm-saved'); if (e) e.classList.remove('on'); }, 1800 - (Date.now() - S.savedAt));
   }
+  function closePhoneGuest() {
+    var p = $('panel'), el = document.activeElement;
+    // Finish the current field before a swipe closes the guest, just as a normal blur does.
+    if (el && p.contains(el) && el.matches('[data-pf]')) el.blur();
+    S.open = null; render();
+  }
+  // A deliberate downward pull at the top dismisses the phone guest; normal scrolling stays inside it.
+  (function () {
+    var p = $('panel'), pull = null, moved = false, suppressClick = false;
+    function reset() { p.style.transform = ''; pull = null; moved = false; }
+    p.addEventListener('touchstart', function (e) {
+      reset();
+      var body = p.querySelector('.pm-body'), t = e.target;
+      if (p.hidden || !p.classList.contains('pm') || !body || body.scrollTop > 0 || e.touches.length !== 1 ||
+          t.closest('input,textarea,select,label,a,[contenteditable],button:not(.pm-ch)')) return;
+      pull = { x: e.touches[0].clientX, y: e.touches[0].clientY, no: S.open, dy: 0 };
+    }, { passive: true });
+    p.addEventListener('touchmove', function (e) {
+      if (!pull) return;
+      var body = p.querySelector('.pm-body');
+      if (e.touches.length !== 1 || S.open !== pull.no || !body || body.scrollTop > 0) { reset(); return; }
+      var dx = e.touches[0].clientX - pull.x, dy = e.touches[0].clientY - pull.y;
+      if (!moved && Math.max(Math.abs(dx), Math.abs(dy)) < 10) return;
+      if (!moved && (dy <= 0 || Math.abs(dx) > dy)) { reset(); return; }
+      moved = true; pull.dy = Math.max(0, dy);
+      if (e.cancelable) e.preventDefault();
+      p.style.transform = 'translateY(' + Math.min(pull.dy * .65, 180) + 'px)';
+    }, { passive: false });
+    p.addEventListener('touchend', function () {
+      if (!pull) return;
+      var dismiss = moved && pull.dy >= 100 && S.open === pull.no;
+      suppressClick = moved;
+      if (suppressClick) setTimeout(function () { suppressClick = false; }, 400);
+      reset();
+      if (dismiss) closePhoneGuest();
+    }, { passive: true });
+    p.addEventListener('touchcancel', reset, { passive: true });
+    p.addEventListener('click', function (e) {
+      if (suppressClick) { e.preventDefault(); e.stopImmediatePropagation(); suppressClick = false; }
+    }, true);
+    // Keep these buttons mounted until their click when an edited field is about to blur.
+    p.addEventListener('mousedown', function (e) {
+      if (p.classList.contains('pm') && e.target.closest('#p-close,.pm-delete-icon,.pm-add-family')) e.preventDefault();
+    });
+  })();
   $('panel').addEventListener('click', function (e) {
     var b = e.target.closest('[data-pt],[data-pst],[data-page],[data-pbus]'); if (!b || S.open == null) return;
     if (b.dataset.pt) { PO[b.dataset.pt] = !PO[b.dataset.pt]; b.setAttribute('aria-expanded', String(!!PO[b.dataset.pt])); b.closest('.pm-card').classList.toggle('open', !!PO[b.dataset.pt]); return; }
@@ -4001,7 +4057,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var st = document.createElement('style');
     st.textContent = '.ptr{position:fixed;left:50%;top:-44px;z-index:400;width:36px;height:36px;margin-left:-18px;border-radius:50%;background:#fff;color:#4A3B6B;box-shadow:0 4px 14px -4px rgba(0,0,0,.3);display:grid;place-items:center;transition:opacity .15s;opacity:0;pointer-events:none}.ptr.go svg{animation:ptrspin .8s linear infinite}@keyframes ptrspin{to{transform:rotate(360deg)}}';
     document.head.appendChild(st);
-    var blocked = function (t) { return window.innerWidth >= 760 || (t && t.closest && t.closest('textarea, input, select, [role="dialog"], .sheet, #pushsheet, #br-allv, .dlg, #sect')); };
+    var blocked = function (t) { return window.innerWidth >= 760 || (t && t.closest && t.closest('textarea, input, select, [role="dialog"], .sheet, #pushsheet, #br-allv, .dlg, #sect, #panel')); };
     document.addEventListener('touchstart', function (e) { y0 = !busy && window.scrollY <= 0 && e.touches.length === 1 && !blocked(e.target) ? e.touches[0].clientY : null; dy = 0; }, { passive: true });
     document.addEventListener('touchmove', function (e) {
       if (y0 == null) return; dy = e.touches[0].clientY - y0;
