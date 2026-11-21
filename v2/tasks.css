@@ -99,3 +99,7 @@
  #kai-tasks .kt-editor { padding:0; border-radius:0; height:100dvh; overscroll-behavior:none; }
  #kai-tasks .kt-editor-head { padding:max(16px,env(safe-area-inset-top,0px)) 16px 16px; }
 }
+
+#kai-tasks .kt-important { min-height:44px; padding:10px 14px; border:1px solid var(--line); border-radius:8px; background:var(--surface); color:var(--muted); font:inherit; font-size:16px; cursor:pointer; }
+#kai-tasks .kt-important[aria-pressed=true] { background:var(--ink-soft); border-color:var(--ink); color:var(--ink); font-weight:600; }
+#kai-tasks .kt-important:focus-visible { outline:2px solid var(--ink); outline-offset:2px; }
