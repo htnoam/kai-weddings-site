@@ -216,7 +216,9 @@ input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--ink); marg
 .pm-leg.go .pm-seg button.on { background: #2E3A9E; border-color: #2E3A9E; }
 .pm-leg.back .pm-seg button.on { background: #856425; border-color: #856425; }
 .pm .hist { border-top: none; padding-top: 0; }
-.pm .pm-del { height: 44px; border-radius: 8px; border: 1px solid #E3C7C7; background: var(--surface); color: var(--bad); font-weight: 600; width: 100%; }
+.pm .pm-actions { margin-top: 4px; color: var(--soft); font-size: 14px; }
+.pm .pm-actions summary { cursor: pointer; padding: 10px 4px; min-height: 40px; }
+.pm .pm-delete-action { display: block; min-height: 44px; padding: 8px 12px; margin-top: 4px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--bad); font: inherit; }
 
 .fab { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(20px, calc(env(safe-area-inset-bottom, 0px) + 12px)); height: 52px; padding: 0 20px; border: none; border-radius: 999px; background: var(--ink); color: #FFFFFF; font-size: 16px; font-weight: 600; display: none; align-items: center; gap: 8px; box-shadow: 0 10px 24px -8px rgba(46,58,158,.6); z-index: 10; }
 
@@ -2330,7 +2332,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   // ---------- side panel ----------
   function renderPanel() {
     var p = $('panel'), g = S.open != null ? byNo(S.open) : null;
-    if (!g || g.deleted) { p.hidden = true; return; }
+    if (!g || g.deleted) { p.hidden = true; PO = { no: null }; return; }
     if (p.dataset.no === String(g.no) && !p.hidden && p.contains(document.activeElement) && document.activeElement.tagName !== 'BUTTON') return;
     p.dataset.no = g.no; p.hidden = false;
     var phoneUI = window.matchMedia('(max-width: 759px)').matches;
@@ -2375,11 +2377,11 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   }
   function busTxt(v) { return v === 'Taxi' ? 'Taxi' : v === 'Own' ? 'Own way' : /^\d{1,2}:\d{2}$/.test(v || '') ? 'Shuttle ' + v : (v || ''); }
   function renderPanelPhone(p, g) {
-    if (PO.no !== g.no) PO = { no: g.no, det: false, fl: !flDone(g), hotel: false, more: false, hist: false };
+    if (PO.no !== g.no) PO = { no: g.no, det: false, fl: false, hotel: false, more: false, hist: false };
     var same = live().filter(function (x) { return x.phone && x.phone === g.phone && x.no !== g.no; });
     var inp = function (k, label, o) { o = o || {}; return '<label class="f">' + esc(label) + '<input data-pf="' + k + '" value="' + esc(o.val != null ? o.val : (g[k] || '')) + '"' + (o.ph ? ' placeholder="' + o.ph + '"' : '') + (o.tel ? ' type="tel" inputmode="tel"' : '') + (o.list ? ' list="' + o.list + '"' : '') + '></label>'; };
     var card = function (k, ic, title, sum, cls, body) {
-      return '<section class="pm-card' + (PO[k] ? ' open' : '') + '"><button type="button" class="pm-ch" data-pt="' + k + '"><span class="ic">' + ic + '</span><span class="t"><b>' + esc(title) + '</b><span class="' + (cls || '') + '">' + sum + '</span></span><span class="chev"></span></button><div class="pm-cb">' + body + '</div></section>';
+      return '<section class="pm-card' + (PO[k] ? ' open' : '') + '"><button type="button" class="pm-ch" data-pt="' + k + '" aria-expanded="' + (!!PO[k]) + '"><span class="ic">' + ic + '</span><span class="t"><b>' + esc(title) + '</b><span class="' + (cls || '') + '">' + sum + '</span></span><span class="chev"></span></button><div class="pm-cb">' + body + '</div></section>';
     };
     var leg = function (pre, t, sub, list) {
       var dt = pre + 'Date', tm = pre + 'Time', fl = pre + 'Flight', bs = pre + 'Bus';
@@ -2411,7 +2413,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
           return inp(c.k, c.label, { ph: c.type === 'date' ? 'DD/MM/YYYY' : c.type === 'time' ? 'HH:MM' : '' });
         }).join('')) : '') +
       card('hist', '🕘', 'History', esc('Last updated: ' + (g.updated || '—')), '', '<div class="hist"><div id="p-hist" class="meta">Loading…</div></div>') +
-      '<button type="button" class="pm-del" data-delete="' + g.no + '">Delete guest</button>';
+      '<details class="pm-actions"><summary>More actions</summary><button type="button" class="pm-delete-action" data-delete="' + g.no + '">Delete guest…</button></details>';
     $('p-close').onclick = function () { S.open = null; render(); };
     var no = g.no;
     api('history', { no: no }).then(function (res) {
@@ -2424,7 +2426,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   }
   $('panel').addEventListener('click', function (e) {
     var b = e.target.closest('[data-pt],[data-pst],[data-page],[data-pbus]'); if (!b || S.open == null) return;
-    if (b.dataset.pt) { PO[b.dataset.pt] = !PO[b.dataset.pt]; b.closest('.pm-card').classList.toggle('open', !!PO[b.dataset.pt]); return; }
+    if (b.dataset.pt) { PO[b.dataset.pt] = !PO[b.dataset.pt]; b.setAttribute('aria-expanded', String(!!PO[b.dataset.pt])); b.closest('.pm-card').classList.toggle('open', !!PO[b.dataset.pt]); return; }
     var f = {};
     if (b.dataset.pst) f.status = b.dataset.pst;
     else if (b.dataset.page) f.age = b.dataset.page;
@@ -2466,6 +2468,12 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       .catch(function (e) { before.forEach(function (b) { Object.assign(byNo(b.no), b); }); saving('err'); toast(e.server ? e.message : 'Couldn’t save. Try again.', null, null, true); render(); });
   }
   function del(nos) {
+    // Every deletion entry point (phone, desktop, menu, bulk and keyboard) shares this guard.
+    nos = nos.filter(function (n, i, a) { var g = byNo(n); return a.indexOf(n) === i && g && !g.deleted; });
+    if (!nos.length) return;
+    var names = nos.map(function (n) { var g = byNo(n); return (g.first + ' ' + g.last).trim() + ' (#' + n + ')'; });
+    var question = nos.length === 1 ? 'Move this guest to Deleted guests?' : 'Move these ' + nos.length + ' guests to Deleted guests?';
+    if (!window.confirm(question + '\n\n' + names.join('\n') + '\n\nYou can restore ' + (nos.length === 1 ? 'this guest' : 'these guests') + ' from Deleted guests.')) return;
     nos.forEach(function (n) { byNo(n).deleted = true; delete S.checked[n]; });
     if (nos.indexOf(S.open) > -1) S.open = null;
     render(); saving('busy');
