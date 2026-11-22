@@ -816,7 +816,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
   .bv-box { padding: 14px 16px; }
   .bv-lh { flex-direction: column; align-items: stretch; }
   .bv-seg button { flex: 1; }
-  .bv-t thead, .bv-t .bv-vn, .bv-t .bv-p, .bv-t .bv-l, .bv-t .bv-s { display: none; }
+  .bv-t thead, .bv-t .bv-vn, .bv-t .bv-u, .bv-t .bv-q, .bv-t .bv-p, .bv-t .bv-l, .bv-t .bv-s { display: none; }
   .bv-t .bv-ph { display: block; }
   .bv-t td { padding: 11px 2px; }
 }
@@ -4840,13 +4840,14 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     }).join('') + '</section>';
     var seg = ("<div class=\"bv-seg\" role=\"group\" aria-label=\""+""+kl("Show","budget")+""+"\">") + [['all', 'All'], ['left', 'Left to pay'], ['paid', 'Paid']].map(function (x) { return '<button type="button" data-bvf="' + x[0] + '" aria-pressed="' + (BV.f === x[0]) + '">' + kl(x[1],'budget') + '</button>'; }).join('') + '</div>';
     var list = ("<section class=\"bv-box bv-list\"><div class=\"bv-lh\"><h3>"+""+kl("Services","budget")+""+"</h3>") + seg + '</div>' +
-      ("<table class=\"bv-t\"><thead><tr><th>"+""+kl("Service","budget")+""+"</th><th>"+""+kl("Vendor","budget")+""+"</th><th class=\"n\">"+""+kl("Cost","budget")+""+"</th><th class=\"n\">"+""+kl("Paid","budget")+""+"</th><th class=\"n\">"+""+kl("Left","budget")+""+"</th><th class=\"n\">"+""+kl("Status","budget")+""+"</th></tr></thead><tbody>") +
+      ("<table class=\"bv-t\"><thead><tr><th>"+""+kl("Service","budget")+""+"</th><th>"+""+kl("Vendor","budget")+""+"</th><th class=\"n bv-u\">"+""+kl("Unit cost","budget")+""+"</th><th class=\"n bv-q\">"+""+kl("Quantity","budget")+""+"</th><th class=\"n\">"+""+kl("Total price","budget")+""+"</th><th class=\"n\">"+""+kl("Paid","budget")+""+"</th><th class=\"n\">"+""+kl("Left","budget")+""+"</th><th class=\"n\">"+""+kl("Status","budget")+""+"</th></tr></thead><tbody>") +
       (shown.length ? shown.map(function (l) {
         var s2 = st(l);
         return '<tr data-bvo="' + esc(l.row) + ("\" tabindex=\"0\" title=\""+""+kl("Open the details","budget")+""+"\"><td><b>") + esc(l.item) + '</b>' + (l.cat ? '<small>' + esc(l.cat) + '</small>' : '') + '<small class="bv-ph">' + esc(l.vendor || kl('Not booked yet','budget')) + '</small>' + (EVENT === 'demo-wedding' ? '<small class="bv-payline">'+kl('Paid','budget')+' '+M(l.paid,l.cur)+' · '+kl('Remaining','budget')+' '+M(l.left,l.cur)+'</small>' : '') + '</td>' +
-          '<td class="bv-vn">' + (l.vendor ? esc(l.vendor) : '<span class="bv-mut">—</span>') + '</td><td class="n bv-c">' + M(l.total, l.cur) + '<small class="bv-ph bv-' + s2[1] + '">' + (s2[1] === 'part' ? M(l.left, l.cur) + ' ' + kl('Left to pay','budget') : s2[1] === 'ok' ? kl('Paid ✓','budget') : kl('Not paid yet','budget')) + '</small></td><td class="n bv-p">' + (l.paid ? M(l.paid, l.cur) : '—') + '</td>' +
+          '<td class="bv-vn">' + (l.vendor ? esc(l.vendor) : '<span class="bv-mut">—</span>') + '</td>' +
+          '<td class="n bv-u">' + (l.unit ? M(l.unit, l.cur) : '<span class="bv-mut">—</span>') + '</td><td class="n bv-q">' + (l.qty ? String(l.qty).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '<span class="bv-mut">—</span>') + '</td><td class="n bv-c">' + M(l.total, l.cur) + '<small class="bv-ph bv-' + s2[1] + '">' + (s2[1] === 'part' ? M(l.left, l.cur) + ' ' + kl('Left to pay','budget') : s2[1] === 'ok' ? kl('Paid ✓','budget') : kl('Not paid yet','budget')) + '</small></td><td class="n bv-p">' + (l.paid ? M(l.paid, l.cur) : '—') + '</td>' +
           '<td class="n bv-l"><b>' + M(l.left, l.cur) + '</b></td><td class="n bv-s"><span class="bv-tag ' + s2[1] + '">' + kl(s2[0],'budget') + '</span></td></tr>';
-      }).join('') : ("<tr><td colspan=\"6\" class=\"bv-mut\">"+""+kl("Nothing here.","budget")+""+"</td></tr>")) + '</tbody></table></section>';
+      }).join('') : ("<tr><td colspan=\"8\" class=\"bv-mut\">"+""+kl("Nothing here.","budget")+""+"</td></tr>")) + '</tbody></table></section>';
     // where the money goes: one bar per category (only when the lines have categories)
     var cmap = {}, C = [];
     L.forEach(function (l) { var k = l.cat || ''; if (!cmap[k]) { cmap[k] = []; C.push(k); } cmap[k].push(l); });
