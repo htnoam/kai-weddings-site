@@ -103,6 +103,22 @@
   body.km-app .km-dim:not([hidden]) { animation: kmfade .25s ease; }
   body.km-app .km-dim.km-out { opacity: 0; transition: opacity .2s ease; pointer-events: none; }
   @keyframes kmup { from { transform: translateY(100%); } }
+  @keyframes kmdown { to { transform: translateY(100%); } }
+  @keyframes kmfadeout { to { opacity: 0; } }
+  /* the portal's other windows: bottom sheets that slide up, and slide down when they close (app-shell.js leaves a copy to slide away) */
+  body.km-app .overlay { align-items: flex-end; padding: 0; overflow: hidden; }
+  body.km-app .overlay > .dialog { max-width: none; width: 100%; border-radius: 16px 16px 0 0; max-height: calc(100dvh - 44px - env(safe-area-inset-top, 0px)); overflow-y: auto; padding-top: 30px; padding-bottom: max(18px, env(safe-area-inset-bottom, 0px)); position: relative; box-shadow: 0 -10px 30px rgba(0,0,0,.15); }
+  body.km-app .overlay > .dialog::before, body.km-app .msheet::before, body.km-app #budget .bv-dr::before { content: ''; position: absolute; left: 50%; top: 8px; width: 40px; height: 5px; margin-left: -20px; border-radius: 3px; background: #C9C4BA; z-index: 2; }
+  body.km-app .msheet .grab { display: none; }
+  body.km-app .msheet { padding-top: 14px; }
+  body.km-app #addform { padding: 0; height: calc(100dvh - 44px - env(safe-area-inset-top, 0px)); max-height: calc(100dvh - 44px - env(safe-area-inset-top, 0px)); overflow: hidden; }
+  body.km-app #addform .ag-head { padding-top: 24px; border-radius: 16px 16px 0 0; }
+  body.km-app .overlay:not([hidden]), body.km-app .mscrim:not([hidden]), body.km-app #pushsheet:not([hidden]), body.km-app .bgk-sheet:not([hidden]) .bgk-shade, body.km-app .bv-scrim.km-in { animation: kmfade .25s ease; }
+  body.km-app .overlay:not([hidden]) > .dialog, body.km-app .msheet:not([hidden]), body.km-app #pushsheet:not([hidden]) .ps-in, body.km-app .bgk-sheet:not([hidden]) .bgk-sh, body.km-app .bv-dr.km-in { animation: kmup .3s cubic-bezier(.2,.7,.3,1); }
+  body.km-app .km-closing { pointer-events: none !important; }
+  body.km-app .overlay.km-closing, body.km-app .mscrim.km-closing, body.km-app #budget .bv-scrim.km-closing, body.km-app .bgk-sheet.km-closing .bgk-shade { animation: kmfadeout .28s ease forwards; }
+  body.km-app #pushsheet.km-closing { animation: kmfadeout .28s ease forwards; }
+  body.km-app .overlay.km-closing > .dialog, body.km-app .msheet.km-closing, body.km-app #pushsheet.km-closing .ps-in, body.km-app .bgk-sheet.km-closing .bgk-sh, body.km-app #budget .bv-dr.km-closing { animation: kmdown .28s cubic-bezier(.4,0,.8,.6) forwards; }
   @keyframes kmfade { from { opacity: 0; } }
   /* tasks: the editor as a tall sheet over the dimmed list */
   body.km-app .km-tdim { z-index: 89; }
@@ -142,4 +158,4 @@
   @keyframes kmspin { to { transform: rotate(360deg); } }
   body.km-app .installbar { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
 }
-@media (max-width: 759px) and (prefers-reduced-motion: reduce) { body.km-app .panel.pm, body.km-app .panel.pm:not([hidden]), body.km-app #kai-tasks .kt-editor:not([hidden]), body.km-app .km-dim:not([hidden]) { transition: none; animation: none; } }
+@media (max-width: 759px) and (prefers-reduced-motion: reduce) { body.km-app .panel.pm, body.km-app .panel.pm:not([hidden]), body.km-app #kai-tasks .kt-editor:not([hidden]), body.km-app .km-dim:not([hidden]), body.km-app .overlay > .dialog, body.km-app .overlay, body.km-app .msheet, body.km-app .mscrim, body.km-app .ps-in, body.km-app .bgk-sh, body.km-app .bv-dr, body.km-app .bv-scrim { transition: none; animation: none !important; } }

@@ -167,7 +167,7 @@
   };
   // keep tabs, add button, counts and badges in step with whatever the portal redraws
   var raf = 0;
-  function refreshBits() { raf = 0; drawTabs(); drawAdd(); drawNav(); if (cur === 'guests') drawCount(); if (cur === 'more') drawMore(); if (typeof tasksSheet === 'function') tasksSheet(); }
+  function refreshBits() { raf = 0; drawTabs(); drawAdd(); drawNav(); if (cur === 'guests') drawCount(); if (cur === 'more') drawMore(); if (typeof tasksSheet === 'function') tasksSheet(); if (typeof watchWindows === 'function') watchWindows(); }
   new MutationObserver(function () { if (!raf) raf = requestAnimationFrame(refreshBits); })
     .observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'class'] });
 
@@ -285,6 +285,36 @@
   }
   tdim.addEventListener('click', function () { var x = document.querySelector('#kai-tasks .kt-editor .kt-close'); if (x) x.click(); });
   document.addEventListener('kai-tasks-changed', tasksSheet);
+
+  // ---------- every other bottom window moves the same way: slides up when it opens, slides down when it closes ----------
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  function ghost(el, where) {   // a still copy slides away; the real window is already closed
+    if (!phone.matches || reduceMotion.matches || !el) return;
+    // the copy keeps the ids so it looks exactly the same; it sits after the real one, so the page still finds the real one first
+    var c = el.cloneNode(true); c.removeAttribute('hidden'); c.classList.add('km-closing'); c.classList.remove('km-in');
+    c.setAttribute('aria-hidden', 'true'); c.inert = true;
+    (where || el.parentNode || document.body).appendChild(c);
+    setTimeout(function () { c.remove(); }, 320);
+  }
+  var watched = [];
+  function watchWindows() {   // some windows are made only when first used (e.g. Notifications), so this runs again on page changes
+    ['dlg', 'dlg2', 'dlg-imp', 'dlg-pay', 'msheet', 'mscrim', 'pushsheet', 'bgk-sheet'].forEach(function (id) {
+      var el = $(id); if (!el || watched.indexOf(el) > -1) return; watched.push(el);
+      new MutationObserver(function (m) { if (m.some(function (r) { return r.oldValue === null; }) && el.hidden) ghost(el); })
+        .observe(el, { attributes: true, attributeFilter: ['hidden'], attributeOldValue: true });
+    });
+  }
+  watchWindows();
+  (function () {   // the budget's service details are drawn again on every change, so follow them by presence
+    var box = $('budget'), had = null, hadScrim = null;
+    if (!box) return;
+    new MutationObserver(function () {
+      var dr = box.querySelector('.bv-dr:not(.km-closing)'), sc = box.querySelector('.bv-scrim:not(.km-closing)');
+      if (dr && !had) { dr.classList.add('km-in'); if (sc) sc.classList.add('km-in'); }
+      if (!dr && had) { ghost(had, box); if (hadScrim) ghost(hadScrim, box); }
+      had = dr; hadScrim = sc;
+    }).observe(box, { childList: true, subtree: true });
+  })();
 
   // Dates and times already open the phone's own wheel (the portal's .dtp fields), so nothing to add here.
 
