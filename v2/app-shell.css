@@ -1,0 +1,126 @@
+/* Demo-only app layer, design "Option 1 – preferred" (Navy & Sand), Design 1. Loaded only when body has .km-app (Demo).
+   Computer: the look only (colours, font, corners). Phone (≤759px): the app layout. Nothing here hides a field. */
+
+/* ---------- computer: the Option 1 look, same layout ---------- */
+@media (min-width: 760px) {
+  body.km-app { --ink:#2F3E55; --ink-dark:#243044; --ink-soft:#E9EDF3; --tent:#2F3E55; --tent-bg:#E9EDF3; --bg:#F4F2EE; --surface:#FFFFFF; --soft-surface:#FAF9F6;
+    --text:#1F1F21; --muted:#3F3F45; --soft:#6E6E75; --line:#DDD9D0; --hair:#E9E5DD; --row-line:#EFECE6;
+    --ok:#2F7D45; --ok-bg:#E6F2E9; --warn:#9A6A12; --warn-bg:#F7EDD8; --bad:#B23A3A; --bad-bg:#F6E5E5; --serif:var(--sans); }
+  body.km-app .couple { font: 700 24px/1.1 var(--sans); color: var(--text); }
+  body.km-app .btn, body.km-app .search, body.km-app .sel, body.km-app input, body.km-app select, body.km-app textarea { border-radius: 8px; }
+  body.km-app .btn.primary { background: var(--ink); border-color: var(--ink); }
+  body.km-app .fab { box-shadow: 0 10px 24px -8px rgba(47,62,85,.55); }
+  body.km-app .bv-rg circle:nth-child(2), body.km-app .km-budget .km-arc { stroke: #C9A46A !important; }
+  body.km-app .bv-rg circle:first-child, body.km-app .km-budget .km-track { stroke: #EFE9DD !important; }
+  body.km-app .bv-pb { background: #EFE9DD; } body.km-app .bv-pb i { background: #C9A46A !important; }
+  body.km-app .bg-ct th { background: var(--ink); }
+  body.km-app .km-tabs, body.km-app .km-navt, body.km-app .km-add, body.km-app .km-count, body.km-app .km-page, body.km-app .km-offline, body.km-app .km-ptr, body.km-app .km-dim { display: none !important; }
+  body.km-app .km-pin { display: contents; }
+}
+
+/* ---------- phone: the app ---------- */
+@media (max-width: 759px) {
+  body.km-app { padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+  body.km-app .km-budget .km-arc { stroke: #C9A46A; } body.km-app .km-budget .km-track { stroke: #EFE9DD; }
+
+  /* top bar: account on the left, name (or the section once scrolled) in the middle, the add button on the right */
+  body.km-app .top { position: sticky; top: 0; z-index: 40; background: rgba(244,242,238,.96); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid transparent; transition: border-color .2s, background .2s; }
+  body.km-app.km-scrolled .top { background: rgba(250,249,246,.97); border-bottom-color: var(--hair); }
+  body.km-app .top-in { position: relative; height: 52px; padding: 0 16px; flex-wrap: nowrap; gap: 8px; }
+  body.km-app .top .brand, body.km-app #sumline, body.km-app #stats, body.km-app #refresh, body.km-app #sect, body.km-app .sect-scrim, body.km-app #fab { display: none !important; }
+  body.km-app .top .me { order: -1; margin-right: auto; gap: 8px; z-index: 1; }
+  body.km-app .top .me .avatar { width: 32px; height: 32px; font-size: 14px; }
+  body.km-app .top .me .save { font-size: 13px; }
+  body.km-app .km-navt { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); max-width: calc(100% - 210px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 600 16px/1.2 var(--sans); color: var(--text); pointer-events: none; }
+  body.km-app .km-add { margin-left: auto; z-index: 1; height: 34px; padding: 0 14px; border: 0; border-radius: 999px; background: var(--ink); color: #fff; font: 600 15px/1 var(--sans); white-space: nowrap; }
+  body.km-app .km-add:active { opacity: .8; }
+
+  /* bottom tabs */
+  body.km-app .km-tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; display: flex; padding: 6px 4px env(safe-area-inset-bottom, 0px); background: rgba(255,255,255,.96); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-top: 1px solid var(--hair); }
+  body.km-app .km-tabs button { position: relative; flex: 1; min-height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border: 0; background: none; color: #8A8A91; font: 600 11.5px/1.1 var(--sans); padding: 2px 0 6px; }
+  body.km-app .km-tabs button.on { color: var(--ink); }
+  body.km-app .km-tabs em { position: absolute; top: 2px; left: calc(50% + 6px); min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--bad); color: #fff; font: 700 11px/18px var(--sans); font-style: normal; text-align: center; }
+
+  /* big titles */
+  body.km-app h1.km-title, body.km-app .km-h1, body.km-app #sched .km-module-title, body.km-app .bv-top h1, body.km-app #kai-tasks .kt-header h1 { font: 700 34px/1.12 var(--sans) !important; letter-spacing: -.5px; color: var(--text); margin: 0; }
+  body.km-app .wrap { padding-top: 6px; }
+
+  /* guests: counts under the title; search, ⋯ and views pinned under the top bar */
+  body.km-app .km-count { margin: -6px 0 0; font-size: 14px; color: var(--soft); }
+  body.km-app.in-sched .km-count { display: none; }
+  body.km-app .km-pin { position: sticky; top: 52px; z-index: 20; display: flex; flex-direction: column; gap: 10px; margin: 0 -16px; padding: 8px 16px 10px; background: var(--bg); }
+  body.km-app.km-scrolled .km-pin { background: rgba(244,242,238,.98); box-shadow: 0 6px 10px -10px rgba(0,0,0,.35); }
+  body.km-app .km-pin .tabrow { margin: 0; }
+  body.km-app .search { background: #E9E5DD; }
+  body.km-app .vtabs { background: #E9E5DD; border-radius: 9px; padding: 3px; }
+  body.km-app .vt.on { box-shadow: 0 1px 2px rgba(0,0,0,.08); color: var(--text); }
+  body.km-app #sched .sc-phone-days { position: sticky; top: 52px; z-index: 20; box-shadow: 0 0 0 8px var(--bg); }
+  body.km-app #kai-tasks .kt-views { position: sticky; top: 52px; z-index: 20; box-shadow: 0 0 0 8px var(--bg); }
+
+  /* the section's own add buttons and Refresh buttons: the top bar and pull-to-refresh do these now */
+  body.km-app #sched .sc-addrow, body.km-app #budget .bv-pay, body.km-app #kai-tasks .kt-header .btn.primary, body.km-app #kai-tasks .kt-toolbar > .btn { display: none !important; }
+  body.km-app #budget .bv-top .bv-gs { flex-basis: 100%; }
+
+  /* home and more */
+  body.km-app .km-page { display: flex; flex-direction: column; gap: 0; }
+  body.km-app .km-sub { margin: 4px 0 14px; font-size: 14px; color: var(--soft); }
+  body.km-app #km-more .km-h1 { margin-bottom: 14px; }
+  body.km-app .km-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  body.km-app .km-kpi { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 12px 14px; border: 0; border-radius: 12px; background: #fff; text-align: left; font-family: var(--sans); color: var(--text); }
+  body.km-app .km-kpi small { font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: #8A8A91; }
+  body.km-app .km-kpi b { font-size: 24px; line-height: 1.2; font-weight: 700; }
+  body.km-app .km-kpi b.warn { color: var(--warn); } body.km-app .km-kpi b.bad { color: var(--bad); }
+  body.km-app .km-kpi span { font-size: 13px; color: var(--soft); min-height: 1em; }
+  body.km-app .km-grp { margin: 2px 0 7px 16px; font-size: 12.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: #8A8A91; }
+  body.km-app .km-list { background: #fff; border-radius: 12px; overflow: hidden; margin-bottom: 16px; }
+  body.km-app .km-li { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 10px 14px; border: 0; border-bottom: 1px solid var(--hair); background: #fff; text-align: left; font-family: var(--sans); color: var(--text); }
+  body.km-app .km-li:last-child { border-bottom: 0; }
+  body.km-app .km-li > svg { flex: none; color: #8A8A91; }
+  body.km-app .km-mi > svg:first-child { color: var(--ink); }
+  body.km-app .km-li .tx { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+  body.km-app .km-li .tx b { font-size: 16px; font-weight: 600; }
+  body.km-app .km-mi .tx b { font-weight: 500; }
+  body.km-app .km-li .tx small { font-size: 13.5px; color: var(--soft); }
+  body.km-app .km-li em { min-width: 22px; height: 22px; padding: 0 7px; border-radius: 11px; background: var(--bad); color: #fff; font: 700 13px/22px var(--sans); font-style: normal; text-align: center; }
+  body.km-app .km-li i { font-style: normal; font-size: 14px; color: var(--soft); }
+  body.km-app .km-today .tm { width: 52px; flex: none; font-size: 16px; }
+  body.km-app .km-today.now { background: var(--ink-soft); }
+  body.km-app .km-today .nowl { color: var(--ink) !important; font-weight: 600; }
+
+  /* the guest card as a sheet */
+  body.km-app .km-dim { position: fixed; inset: 0; z-index: 61; background: rgba(20,22,28,.35); }
+  body.km-app .panel.pm { inset: auto 0 0 0; top: 30vh; z-index: 62; border-radius: 16px 16px 0 0; box-shadow: 0 -10px 30px rgba(0,0,0,.15); transition: top .28s cubic-bezier(.2,.7,.3,1); }
+  body.km-app .panel.pm.km-full { top: calc(env(safe-area-inset-top, 0px) + 10px); }
+  body.km-app .pm .pm-hd { padding-top: 0; border-radius: 16px 16px 0 0; }
+  body.km-app .km-grab { display: block; width: 100%; height: 22px; margin: 0; padding: 0; border: 0; background: none; position: relative; }
+  body.km-app .km-grab::before { content: ''; position: absolute; left: 50%; top: 8px; width: 40px; height: 5px; margin-left: -20px; border-radius: 3px; background: #C9C4BA; }
+  body.km-app .km-qs { display: flex; align-items: center; gap: 10px; margin-top: 2px; font-size: 14px; color: var(--soft); }
+  body.km-app .km-qs span:first-child { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  body.km-app .km-pill { flex: none; padding: 3px 10px; border-radius: 999px; font-size: 13px; font-weight: 700; background: var(--soft-surface); color: var(--soft); }
+  body.km-app .km-pill.ok { background: var(--ok-bg); color: var(--ok); } body.km-app .km-pill.warn { background: var(--warn-bg); color: var(--warn); } body.km-app .km-pill.bad { background: var(--bad-bg); color: var(--bad); }
+  body.km-app .km-qb { display: flex; gap: 10px; margin-top: 12px; }
+  body.km-app .km-qbtn { flex: 1; height: 46px; display: flex; align-items: center; justify-content: center; gap: 8px; border-radius: 10px; background: var(--ink); color: #fff; font-size: 16px; font-weight: 600; text-decoration: none; }
+
+  /* big choices */
+  body.km-app .km-as { position: fixed; inset: 0; z-index: 95; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; padding: 0 10px calc(10px + env(safe-area-inset-bottom, 0px)); background: rgba(20,22,28,.35); }
+  body.km-app .km-as-in { background: #fff; border-radius: 14px; overflow: hidden; }
+  body.km-app .km-as-h { padding: 12px 16px; text-align: center; font-size: 13px; color: #8A8A91; border-bottom: 1px solid var(--hair); }
+  body.km-app .km-as button { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 56px; border: 0; border-bottom: 1px solid var(--hair); background: #fff; font: 600 19px/1.2 var(--sans); color: var(--ink); }
+  body.km-app .km-as-in button:last-child { border-bottom: 0; }
+  body.km-app .km-as button.ok { color: var(--ok); } body.km-app .km-as button.warn { color: var(--warn); } body.km-app .km-as button.bad { color: var(--bad); }
+  body.km-app .km-as button i { width: 9px; height: 9px; border-radius: 50%; background: currentColor; }
+  body.km-app .km-as button.on { background: #FAF9F6; }
+  body.km-app .km-as .km-as-x { border: 0; border-radius: 14px; font-weight: 700; }
+
+  /* feedback */
+  body.km-app .toast { bottom: calc(86px + env(safe-area-inset-bottom, 0px)); width: calc(100% - 32px); max-width: 480px; justify-content: space-between; padding: 14px 16px; border-radius: 14px; background: #26282C; font-size: 15.5px; box-shadow: 0 10px 30px -8px rgba(0,0,0,.5); }
+  body.km-app .toast.bad { background: var(--bad); }
+  body.km-app .toast button { color: #C9A46A; font-size: 15.5px; }
+  body.km-app .km-offline { position: fixed; left: 0; right: 0; top: calc(env(safe-area-inset-top, 0px) + 52px); z-index: 45; padding: 8px 16px; background: var(--warn-bg); color: var(--warn); font-size: 14px; font-weight: 600; text-align: center; }
+  body.km-app .km-ptr { position: fixed; left: 50%; top: calc(env(safe-area-inset-top, 0px) + 40px); z-index: 39; width: 40px; height: 40px; margin-top: -40px; display: grid; place-items: center; border-radius: 50%; background: #fff; color: var(--ink); box-shadow: 0 4px 14px rgba(0,0,0,.15); opacity: 0; transform: translate(-50%,0); pointer-events: none; }
+  body.km-app .km-ptr.on { opacity: 1; }
+  body.km-app .km-ptr.spin svg { animation: kmspin .8s linear infinite; }
+  @keyframes kmspin { to { transform: rotate(360deg); } }
+  body.km-app .installbar { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+}
+@media (max-width: 759px) and (prefers-reduced-motion: reduce) { body.km-app .panel.pm { transition: none; } }

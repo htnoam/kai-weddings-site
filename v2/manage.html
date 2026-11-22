@@ -1490,6 +1490,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
 </style>
 <style id="freeze"></style>
 <link rel="stylesheet" href="/v2/mobile-refinement.css">
+<link rel="stylesheet" href="/v2/app-shell.css">
 </head>
 <body>
 <header class="top">
@@ -4361,12 +4362,14 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     SECT = name; if (window.KaiLocale) KaiLocale.section(name);
     document.body.classList.toggle('in-sched', name !== 'guests');
     $('sched').hidden = name !== 'sched'; $('brief').hidden = name !== 'brief'; $('budget').hidden = name !== 'budget';
+    ['home', 'more'].forEach(function (k) { var el = $('km-' + k); if (el) el.hidden = name !== k; });   // Demo phone app only
     ['guests', 'sched', 'brief', 'budget'].forEach(function (k) { $('s-' + k).classList.toggle('on', name === k); });
     try { history.replaceState(null, '', name === 'sched' ? '#schedule' : name === 'brief' ? '#questions' : name === 'budget' ? '#budget' : location.pathname + location.search); } catch (e) {}
     if (window.KaiTasks) KaiTasks.setSection(name);
     if (name === 'budget') bgRender();
     if (name === 'sched') { schedRender(); try { localStorage.setItem('kai-onb-sched-' + EVENT, '1'); } catch (e) {} }
     if (name === 'brief') { BR.edit = false; briefRender(); }
+    if (window.KaiApp) KaiApp.onSect(name);
   }
   // Phones: the ☰ side menu (the same section buttons, sliding in from the left)
   function menuOpen(o) {
@@ -7278,6 +7281,42 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       isReady: function () { return $('gate').hidden && !$('app').hidden; } };
     var taskScript = document.createElement('script');
     taskScript.src = '/v2/tasks.js'; document.body.appendChild(taskScript);
+  }
+  // Demo-only app layer (phone: tabs, home, sheet card; computer: Option 1 look). It reads the same data and calls the same actions.
+  if (EVENT === 'demo-wedding') {
+    window.KaiAppHost = {
+      show: showSect, sect: function () { return SECT; }, admin: function () { return !!S.admin; },
+      refresh: function () { return load(false); }, toast: toast,
+      canAddGuest: function () { return $('fab').classList.contains('show') && !S.trash; }, addGuest: function () { openAdd(null); },
+      closeGuest: closePhoneGuest, waLink: waLink, prettyPhone: prettyPhone,
+      canInstall: canInstall, openInstall: openInstall, openPush: openPushSheet,
+      home: function () {
+        var g = live(), c = { Confirmed: 0, Maybe: 0, Declined: 0 };
+        g.forEach(function (x) { if (c[x.status] != null) c[x.status]++; });
+        var d = { couple: $('couple').textContent, date: SC.wedding && SC.wedding.date || '', guests: g.length, rsvp: c, budget: null, brief: null, today: null };
+        if (BG.on && BG.data) {
+          var b = { e: 0, ep: 0, i: 0, ip: 0, vend: {} };
+          (BG.data.lines || []).forEach(function (l) {
+            var t = bgNum(l.total), p = bgNum(l.paid), k = l.cur === '₪' ? 'i' : 'e'; if (!l.item || !t) return;
+            b[k] += t; b[k + 'p'] += p;
+            var v = String(l.vendor || '').trim(); if (!v || /^(na|n\/a|-)$/i.test(v)) return;
+            var o = b.vend[v + k] = b.vend[v + k] || { name: v, cur: k === 'i' ? '₪' : '', left: 0 }; o.left += t - p;
+          });
+          b.vend = Object.keys(b.vend).map(function (k) { return b.vend[k]; }).filter(function (o) { return o.left > 0.005; })
+            .sort(function (x, y) { return (y.left / (y.cur ? 3.9 : 1)) - (x.left / (x.cur ? 3.9 : 1)); });
+          b.money = bgMoney; d.budget = b;
+        }
+        if (BR.on) { var bc = brCounts(); d.brief = { done: bc[0], total: bc[1] }; }
+        if (SC.on) {
+          var t = new Date(), td = ('0' + t.getDate()).slice(-2) + '/' + ('0' + (t.getMonth() + 1)).slice(-2) + '/' + t.getFullYear();
+          var rows = SC.rows.filter(function (r) { return r.day === td && (S.admin || r.couple !== false); });
+          if (rows.length) d.today = { day: td, rows: rows.map(function (r) { return { time: r.time, until: r.until, what: r.what, where: r.where }; }) };
+        }
+        return d;
+      }
+    };
+    document.body.classList.add('km-app');
+    var appScript = document.createElement('script'); appScript.src = '/v2/app-shell.js'; document.body.appendChild(appScript);
   }
   if (EVENT === 'demo-wedding' && window.KaiLocale) {
     document.body.classList.add('km-pilot');

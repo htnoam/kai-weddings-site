@@ -50,6 +50,7 @@
   }
   function setData(result) {
     tasks = result.tasks; weddingDate = result.wedding_date || weddingDate; myOwner = result.my_owner || myOwner;
+    document.dispatchEvent(new Event('kai-tasks-changed'));   // the Demo app's home screen re-counts
   }
   function taskRow(task) {
     var row = element('div', 'kt-row' + (task.status === 'done' ? ' kt-done' : ''));
@@ -268,6 +269,9 @@
         if (active) { history.replaceState(null, '', '#tasks'); reload(); }
         else if (draft) { editor.hidden = true; draft = null; }
       },
+      counts: function () { return { done: tasks.filter(function (t) { return t.status === 'done'; }).length, total: tasks.length,
+        next: tasks.filter(function (t) { return t.status !== 'done' && (t.starred || t.important); }).map(function (t) { return t.title; }) }; },
+      reload: function () { return reload(); },
       canLeave: function (after) {
         if (writing) return false;
         if (!draft || !dirty()) return true;

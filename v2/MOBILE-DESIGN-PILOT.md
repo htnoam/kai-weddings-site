@@ -21,3 +21,11 @@ Verification:
 Run DOM tests with Node and jsdom 31.0.1 installed: `node v2/tests/portal-language.cjs` and `node v2/tests/language-settings.cjs`.
 
 Rollback: revert this commit's frontend changes. The additive RPC can remain unused or be dropped with its exact signature `public.kai_portal_language(text,jsonb,text)`; no existing API was replaced.
+
+## App layer – Option 1 preferred, Design 1 (22/11/2026)
+
+Demo only (`body.km-app`, set with `window.KaiAppHost` in manage.html). Files: `v2/app-shell.js`, `v2/app-shell.css`; pilot colours in `mobile-refinement.css` switched to Navy & Sand + Assistant.
+- Computer: look only (tokens, font, corners, gold rings). Layout unchanged.
+- Phone: bottom tabs (Home, Guests, Schedule, Budget, More → Questions, Tasks), Home summary ("Today" on schedule days), top-bar add button that presses each section's own add button, search/views pinned, guest card as a half sheet (pull up / open a section for all fields), big choices for short lists (guest card, task editor, add guest), pull to refresh, offline line, dark toasts.
+- No field, value, API or save path changed. `showSect` only also hides `#km-home` / `#km-more` and calls `KaiApp.onSect`. Tasks exposes `KaiTasks.counts()` / `reload()`.
+- Rollback: remove the `KaiAppHost` block and the `app-shell.css` link.
