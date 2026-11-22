@@ -4727,6 +4727,13 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     }); });
     K.left = K.total - K.paid; K.guests = bgNum(D.guests); return K;
   }
+  // Budget page in Hebrew (when the event's language setting says so): the "updated" time
+  function bvHe() { return !!(window.KaiLocale && KaiLocale.enabled && KaiLocale.lang('budget') === 'he'); }
+  function bvAgoHe(iso) {
+    var t = Date.parse(iso || ''); if (!t) return 'עוד לא';
+    var m = Math.round((Date.now() - t) / 60000);
+    return m < 1 ? 'עכשיו' : m < 60 ? 'לפני ' + m + ' דק׳' : m < 1440 ? 'לפני ' + Math.round(m / 60) + ' שע׳' : new Date(t).toLocaleDateString('en-GB');
+  }
   function bgAgo(iso) {
     var t = Date.parse(iso || ''); if (!t) return 'not yet';
     var m = Math.round((Date.now() - t) / 60000);
@@ -4808,26 +4815,26 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
         '<span class="bv-kv"><i style="background:' + col + ("\"></i>"+""+kl("Paid","budget")+" "+"<b>") + M(p, c) + ("</b></span><span class=\"bv-kv\"><i></i>"+""+kl("Left to pay","budget")+" "+"<b>") + M(t - p, c) + '</b></span></div></div>';
     };
     var h = '<div class="bv">';
-    h += ("<div class=\"bv-top\"><h1>"+""+kl("Budget","budget")+""+"</h1><span class=\"bv-sub\">") + (D.synced ? 'Updated ' + esc(bgAgo(D.synced)) : '') + '</span><span class="grow"></span>' +
+    h += ("<div class=\"bv-top\"><h1>"+""+kl("Budget","budget")+""+"</h1><span class=\"bv-sub\">") + (D.synced ? (bvHe() ? 'עודכן ' + esc(bvAgoHe(D.synced)) : 'Updated ' + esc(bgAgo(D.synced))) : '') + '</span><span class="grow"></span>' +
       (admin ? '<a class="bv-gs" href="' + url + ("\" target=\"_blank\" rel=\"noopener\">"+""+kl("Edit in Google Sheets ↗","budget")+""+"</a><button type=\"button\" class=\"bv-pay\" data-bvpay=\"\">"+""+kl("+ Payment","budget")+""+"</button>") : '') + '</div>';
     if (!L.length) return h + ("<p class=\"bv-empty\">"+""+kl("Nothing in the budget yet.","budget")+""+"</p></div>");
     h += kmBudgetSummary((T.e || !T.i ? [{total:T.e,paid:T.ep,cur:''}] : []).concat(T.i ? [{total:T.i,paid:T.ip,cur:'₪'}] : []));
     // phones: one summary card
     h += '<div class="bv-hero"><div class="bv-hr">' + bvRing(pc(T.ep, T.e) || pc(T.ip, T.i), 150, 10, '#3A4865', '#D8B878') +
       ("<div><small>"+""+kl("Left to pay","budget")+""+"</small><b>") + (both(T.e - T.ep, T.i - T.ip) ? (T.e ? M(T.e - T.ep, '') : M(T.i - T.ip, '₪')) : '–') + '</b>' + (T.e && T.i ? '<small>+ ' + M(T.i - T.ip, '₪') + '</small>' : '') + '</div></div>' +
-      '<small>' + (T.e ? pc(T.ep, T.e) + '% of the euro budget is paid' : pc(T.ip, T.i) + '% is paid') + '</small></div>' +
+      '<small>' + (bvHe() ? 'שולמו ' + (T.e ? pc(T.ep, T.e) + '% מהעלויות ביורו' : pc(T.ip, T.i) + '%') : T.e ? pc(T.ep, T.e) + '% of the euro budget is paid' : pc(T.ip, T.i) + '% is paid') + '</small></div>' +
       ("<div class=\"bv-pair\"><div><small>"+""+kl("Total","budget")+""+"</small><b>") + (T.e ? M(T.e, '') : M(T.i, '₪')) + '</b>' + (T.e && T.i ? '<em>+ ' + M(T.i, '₪') + '</em>' : '') + '</div>' +
       ("<div><small>"+""+kl("Paid","budget")+""+"</small><b>") + (T.e ? M(T.ep, '') : M(T.ip, '₪')) + '</b>' + (T.e && T.i ? '<em>+ ' + M(T.ip, '₪') + '</em>' : '') + '</div></div>';
     // computers: one small card per currency
     // computers: one strip across the page – how much is paid, then the numbers side by side (shekels under the euros)
     var P = T.e ? pc(T.ep, T.e) : pc(T.ip, T.i), nV = V.filter(function (v) { return v.name !== 'Not booked yet'; }).length;
     var kpi = function (lab, e, i, cls) { return '<div class="bv-k' + (cls ? ' ' + cls : '') + '"><span class="bv-lab">' + kl(lab,'budget') + '</span><b>' + (T.e ? M(e, '') : M(i, '₪')) + '</b>' + (T.e && T.i ? '<small>+ ' + M(i, '₪') + '</small>' : '') + '</div>'; };
-    h += '<div class="bv-strip"><div class="bv-k bv-kr"><div class="bv-rw">' + bvRing(P, 64, 7, '#EEF1F6', T.e ? E : IL) + '<b>' + P + ("%</b></div><div><span class=\"bv-lab\">"+""+kl("Paid so far","budget")+""+"</span><small>") + (T.e ? 'of the euro budget' : 'of the budget') + '</small></div></div>' +
+    h += '<div class="bv-strip"><div class="bv-k bv-kr"><div class="bv-rw">' + bvRing(P, 64, 7, '#EEF1F6', T.e ? E : IL) + '<b>' + P + ("%</b></div><div><span class=\"bv-lab\">"+""+kl("Paid so far","budget")+""+"</span><small>") + kl(T.e ? 'of the euro budget' : 'of the budget', 'budget') + '</small></div></div>' +
       kpi('Total', T.e, T.i) + kpi('Paid', T.ep, T.ip, 'ok') + kpi('Left to pay', T.e - T.ep, T.i - T.ip, 'acc') +
-      ("<div class=\"bv-k\"><span class=\"bv-lab\">"+""+kl("Services","budget")+""+"</span><b>") + L.length + '</b><small>' + nV + (nV === 1 ? ' vendor' : ' vendors') + '</small></div></div>';
+      ("<div class=\"bv-k\"><span class=\"bv-lab\">"+""+kl("Services","budget")+""+"</span><b>") + L.length + '</b><small>' + nV + ' ' + kl(nV === 1 ? 'vendor' : 'vendors', 'budget') + '</small></div></div>';
     var vend = ("<section class=\"bv-box bv-vend\"><h3>"+""+kl("Vendors","budget")+""+"</h3>") + V.map(function (v) {
       var lf = both(v.e - v.ep, v.i - v.ip);
-      return '<div class="bv-v"><div class="bv-vt"><b>' + esc(v.name) + '</b><span>' + esc(both(v.e, v.i)) + '</span></div><small>' + (lf ? esc(lf) + ' ' + kl('Left','budget') : 'Paid in full ✓') + bvContract(v.name, admin, ' · ') + '</small>' +
+      return '<div class="bv-v"><div class="bv-vt"><b>' + esc(v.name === 'Not booked yet' ? kl('Not booked yet', 'budget') : v.name) + '</b><span>' + esc(both(v.e, v.i)) + '</span></div><small>' + (lf ? esc(lf) + ' ' + kl('Left','budget') : kl('Paid in full ✓', 'budget')) + bvContract(v.name, admin, ' · ') + '</small>' +
         '<div class="bv-pb"><i style="width:' + v.p + '%;background:' + (v.i && !v.e ? IL : E) + '"></i></div></div>';
     }).join('') + '</section>';
     var seg = ("<div class=\"bv-seg\" role=\"group\" aria-label=\""+""+kl("Show","budget")+""+"\">") + [['all', 'All'], ['left', 'Left to pay'], ['paid', 'Paid']].map(function (x) { return '<button type="button" data-bvf="' + x[0] + '" aria-pressed="' + (BV.f === x[0]) + '">' + kl(x[1],'budget') + '</button>'; }).join('') + '</div>';
@@ -4841,11 +4848,11 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       }).join('') : ("<tr><td colspan=\"6\" class=\"bv-mut\">"+""+kl("Nothing here.","budget")+""+"</td></tr>")) + '</tbody></table></section>';
     // where the money goes: one bar per category (only when the lines have categories)
     var cmap = {}, C = [];
-    L.forEach(function (l) { var k = l.cat || 'Other'; if (!cmap[k]) { cmap[k] = []; C.push(k); } cmap[k].push(l); });
+    L.forEach(function (l) { var k = l.cat || ''; if (!cmap[k]) { cmap[k] = []; C.push(k); } cmap[k].push(l); });
     C = C.map(function (k) { var t = tot(cmap[k]); t.name = k; t.w = t.e + t.i / 3.9; return t; }).sort(function (a, b) { return b.w - a.w; });
     var cmax = C.length ? C[0].w : 1;
     var cats = C.length > 1 ? ("<section class=\"bv-box bv-cats\"><h3>"+""+kl("Where the money goes","budget")+""+"</h3>") + C.map(function (c) {
-      return '<div class="bv-cr"><div class="bv-vt"><span class="bv-cn">' + esc(c.name) + '</span><span>' + esc(both(c.e, c.i)) + '</span></div><div class="bv-pb"><i style="width:' + Math.max(3, Math.round(100 * c.w / cmax)) + '%;background:#C9A46A"></i></div></div>';
+      return '<div class="bv-cr"><div class="bv-vt"><span class="bv-cn">' + esc(c.name || kl('Other', 'budget')) + '</span><span>' + esc(both(c.e, c.i)) + '</span></div><div class="bv-pb"><i style="width:' + Math.max(3, Math.round(100 * c.w / cmax)) + '%;background:#C9A46A"></i></div></div>';
     }).join('') + '</section>' : '';
     h += '<div class="bv-main">' + list + '<aside class="bv-side">' + vend + cats + '</aside></div>';
     var o = BV.open != null ? L.filter(function (l) { return String(l.row) === String(BV.open); })[0] : null;
@@ -4874,20 +4881,20 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
         row('−', 'Paid', l.paid ? M(l.paid, l.cur) : M(0, l.cur), 'ok') +
         row('=', 'Left to pay', M(l.left, l.cur), 'left') +
       '</div>' +
-      '<div class="bv-dk"><span class="bv-tag ' + s2[1] + '">' + kl(s2[0],'budget') + '</span><span>' + (l.cur ? 'In shekels' : 'In euros') + '</span></div>';
+      '<div class="bv-dk"><span class="bv-tag ' + s2[1] + '">' + kl(s2[0],'budget') + '</span><span>' + kl(l.cur ? 'In shekels' : 'In euros', 'budget') + '</span></div>';
     var D = BG.data, ps = (D.payments || []).filter(function (x) { return x.service && x.service === l.item && (!x.vendor || !l.vendor || x.vendor === l.vendor); }), inApp = 0;
     ps.forEach(function (x) { inApp += bgNum(x.amount); });
     if (ps.length || admin) {
       h += ("<div class=\"bv-ds\"><h4>"+""+kl("Payments","budget")+""+"</h4>") + ps.map(function (x) {
-        var rc = x.receipt ? '<a href="' + esc(x.receipt) + ("\" target=\"_blank\" rel=\"noopener\">"+""+kl("Receipt ↗","budget")+""+"</a>") : x.hasReceipt ? '<span>Receipt ✓</span>' : '';
+        var rc = x.receipt ? '<a href="' + esc(x.receipt) + ("\" target=\"_blank\" rel=\"noopener\">"+""+kl("Receipt ↗","budget")+""+"</a>") : x.hasReceipt ? '<span>' + kl('Receipt ✓', 'budget') + '</span>' : '';
         return '<div class="bv-py"><div><b>' + M(x.amount, x.cur || l.cur) + '</b><small>' + esc([x.date, x.method, x.by].filter(Boolean).join(' · ')) + '</small></div>' + rc +
           (admin ? '<button type="button" class="bv-undo" data-bvundo="' + esc(x.row) + ("\">"+""+kl("Undo","budget")+""+"</button>") : '') + '</div>';
       }).join('') +
-      (l.paid - inApp > 0.5 ? '<div class="bv-py bv-sheet"><div><b>' + M(l.paid - inApp, l.cur) + '</b><small>entered in the sheet</small></div></div>' : '') +
+      (l.paid - inApp > 0.5 ? '<div class="bv-py bv-sheet"><div><b>' + M(l.paid - inApp, l.cur) + '</b><small>' + kl('entered in the sheet', 'budget') + '</small></div></div>' : '') +
       (!ps.length && !(l.paid > 0) ? ("<p class=\"bv-mut\">"+""+kl("No payments yet.","budget")+""+"</p>") : '') +
-      (admin ? '<button type="button" class="bv-pay wide" data-bvpay="' + esc(l.row) + '">+ Record a payment for this service</button>' : '') + '</div>';
+      (admin ? '<button type="button" class="bv-pay wide" data-bvpay="' + esc(l.row) + '">' + kl('+ Record a payment for this service', 'budget') + '</button>' : '') + '</div>';
     }
-    if (admin && l.note) h += '<div class="bv-ds"><h4>Your note <small>only you see this</small></h4><p>' + esc(l.note) + '</p></div>';
+    if (admin && l.note) h += '<div class="bv-ds"><h4>' + kl('Your note', 'budget') + ' <small>' + kl('only you see this', 'budget') + '</small></h4><p>' + esc(l.note) + '</p></div>';
     return h + '</aside>';
   }
   $('budget').addEventListener('click', function (e) {
@@ -4898,8 +4905,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var b = e.target.closest('[data-bvpay]');
     if (b) { payOpen('line', { line: b.dataset.bvpay }); return; }
     var u = e.target.closest('[data-bvundo]'); if (!u || u.disabled) return;
-    if (!u.classList.contains('sure')) { u.classList.add('sure'); u.textContent = 'Sure? Undo'; setTimeout(function () { if (u.isConnected && u.classList.contains('sure') && !u.disabled) { u.classList.remove('sure'); u.textContent = kl("Undo","budget"); } }, 4000); return; }
-    u.disabled = true; u.textContent = 'Undoing…';
+    if (!u.classList.contains('sure')) { u.classList.add('sure'); u.textContent = kl('Sure? Undo', 'budget'); setTimeout(function () { if (u.isConnected && u.classList.contains('sure') && !u.disabled) { u.classList.remove('sure'); u.textContent = kl("Undo","budget"); } }, 4000); return; }
+    u.disabled = true; u.textContent = kl('Undoing…', 'budget');
     KAI.ready().then(function () { return KAI.sb.functions.invoke('budget-hub', { body: { action: 'budgetPayUndo', slug: EVENT, pay: Number(u.dataset.bvundo) } }); }).then(function (r) {
       var res = r && r.data || {}; if (r.error || !res.ok) throw new Error(res.error || 'Couldn’t undo. Try again.');
       toast('Payment undone – taken off the service’s Paid.'); load(true);
@@ -7321,7 +7328,15 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   if (EVENT === 'demo-wedding' && window.KaiLocale) {
     document.body.classList.add('km-pilot');
     KaiLocale.ready = KaiLocale.load(EVENT).then(function () { KaiLocale.static(); $('km-guests-title').textContent=kl('Guests','guests'); loadCols(); return load(false); }).catch(function () { loadCols(); return load(false); });
-  } else { loadCols(); load(false); }
+  } else {
+    loadCols(); load(false);
+    // Other events: a language setting is optional (set per event on the server). When there is one, re-draw in that language.
+    if (window.KaiLocale) KaiLocale.load(EVENT).then(function () {
+      if (!KaiLocale.enabled) return;
+      // No KaiLocale.static() here: the page may already show the couple's own content, which must never be translated.
+      if (!$('app').hidden) { render(); if (SECT === 'budget') bgRender(); else if (SECT === 'sched') schedRender(); else if (SECT === 'brief') briefRender(); }
+    }).catch(function () {});
+  }
 })();
 </script>
 <script src="/v2/esc.js"></script>

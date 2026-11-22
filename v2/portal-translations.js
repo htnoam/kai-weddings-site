@@ -351,5 +351,15 @@ KaiLocale.setDictionary({
  "Answer type": "סוג תשובה",
  "Topic name": "שם הנושא",
  "+ Add question": "הוספת שאלה",
- "+ Add topic": "הוספת נושא"
+ "+ Add topic": "הוספת נושא",
+ "vendor": "ספק",
+ "vendors": "ספקים",
+ "Receipt ✓": "קבלה ✓",
+ "entered in the sheet": "נרשם בגיליון",
+ "Multiplied in the sheet": "מוכפל בגיליון",
+ "+ Record a payment for this service": "+ רישום תשלום לשירות הזה",
+ "Your note": "ההערה שלך",
+ "only you see this": "רק אתה רואה",
+ "Sure? Undo": "בטוח? ביטול",
+ "Undoing…": "מבטל…"
 });

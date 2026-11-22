@@ -7,7 +7,7 @@
  api.t=function(text,module){if(!enabled)return text;var key=reverse[text]||text;return api.lang(module||active)==='he' ? (dict[key]||text) : key;};
  api.setDictionary=function(data){dict=data;Object.keys(data).forEach(function(k){reverse[data[k]]=k;});};
  api.rpc=async function(slug,values,revision){await KAI.ready();var r=await KAI.sb.rpc('kai_portal_language',{p_slug:slug,p_values:values||null,p_revision:revision==null?null:revision});if(r.error)throw r.error;return r.data;};
- api.load=async function(slug){if(slug!=='demo-wedding')return;var r=await api.rpc(slug);if(!r.enabled)return;cfg=r.config;api.config=cfg;enabled=api.enabled=true;api.permissions=r;api.section(active);return r;};
+ api.load=async function(slug){if(!slug)return;var r=await api.rpc(slug);if(!r.enabled)return;cfg=r.config;api.config=cfg;enabled=api.enabled=true;api.permissions=r;api.section(active);return r;};
  api.section=function(module){active=module; if(!enabled)return;document.documentElement.lang=cfg.default;document.documentElement.dir=cfg.default==='he'?'rtl':'ltr';
   [['app','guests'],['sched','sched'],['brief','brief'],['budget','budget'],['kai-tasks','tasks'],['panel','guests'],['dlg','guests'],['bgk-sheet','budget'],['dlg-pay','budget']].forEach(function(pair){var el=document.getElementById(pair[0]);if(el){el.lang=api.lang(pair[1]);el.dir=el.lang==='he'?'rtl':'ltr';}});
  };
