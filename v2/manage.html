@@ -689,7 +689,9 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 }
 .bx-under { order: 3; }
 /* the budget page (view only), 17 Nov 2026 */
-#budget:has(.bv) { max-width: 1240px; width: 100%; margin: 0 auto; }
+#budget:has(.bv) { max-width: 1680px; width: 100%; margin: 0 auto; }
+.wrap:has(> #budget:not([hidden]) .bv) { max-width: 1720px; }   /* the budget uses wide screens; other pages keep 1360px */
+@media (min-width: 760px) { .bv-t th.n, .bv-t td.n { padding-left: 16px; padding-right: 16px; } }
 @media (min-width: 760px) { body:has(#budget:not([hidden]) .bv) { height: auto; min-height: 100%; } body:has(#budget:not([hidden]) .bv) .wrap { flex: none; min-height: 0; } }
 .bv { display: flex; flex-direction: column; gap: 18px; color: #1D2433; font-variant-numeric: tabular-nums; }
 .bv-top { display: flex; align-items: baseline; gap: 12px; }
