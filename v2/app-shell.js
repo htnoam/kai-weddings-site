@@ -115,10 +115,20 @@
     } else {
       h += '<h1 class="km-h1">' + esc(t('Hi') + ' ' + d.couple) + '</h1><p class="km-sub">' + esc([dmy(d.date), n > 0 ? n + ' ' + t(n === 1 ? 'day to go' : 'days to go') : ''].filter(Boolean).join(' · ')) + '</p>';
     }
-    var k = [kpi('guests', 'Guests', (d.rsvp.Confirmed || 0) + ' / ' + d.guests, t('confirmed'))];
+    // Confirmed guests: the number (centred), then one small column per age group of the event
+    var AGEW = { Adult: 'Adults', Teen: 'Teens', Child: 'Children', Baby: 'Babies' };
+    var k = ['<button type="button" class="km-kpi km-kg" data-go="guests"><small>' + esc(t('Confirmed')) + '</small><span class="km-hn"><b>' + (d.rsvp.Confirmed || 0) + '</b><i>' + esc(t('of')) + ' ' + d.guests + '</i></span>' +
+      '<span class="km-t3">' + (d.ages || []).map(function (a) { return '<span><b>' + a[1] + '</b><i>' + esc(t(AGEW[a[0]] || a[0])) + '</i></span>'; }).join('') + '</span></button>'];
+    // Left to pay: euros and shekels the same size; with one currency, a bigger amount, its total and how much is paid
     if (d.budget) {
-      var b = d.budget, e = b.e - b.ep, i = b.i - b.ip, main1 = e > 0.005 || !(i > 0.005) ? b.money(Math.max(e, 0), '') : b.money(i, '₪');
-      k.push(kpi('budget', 'Left to pay', esc(main1), e > 0.005 && i > 0.005 ? '+ ' + b.money(i, '₪') : (e > 0.005 || i > 0.005 ? '' : t('All paid ✓')), 'warn'));
+      var b = d.budget, cs = [];
+      if (b.e > 0.005) cs.push({ c: '', name: 'Euros', left: Math.max(b.e - b.ep, 0), tot: b.e, paid: b.ep });
+      if (b.i > 0.005) cs.push({ c: '₪', name: 'Shekels', left: Math.max(b.i - b.ip, 0), tot: b.i, paid: b.ip });
+      var inner = cs.length > 1 ? cs.map(function (x) { return '<span class="km-m"><i>' + esc(t(x.name)) + '</i><b>' + esc(b.money(x.left, x.c)) + '</b></span>'; }).join('')
+        : cs.length ? '<span class="km-hn"><b>' + esc(b.money(cs[0].left, cs[0].c)) + '</b></span><span class="km-of">' + esc(t('of')) + ' ' + esc(b.money(cs[0].tot, cs[0].c)) + '</span>' +
+          '<span class="km-pb"><i style="width:' + Math.min(100, Math.round(cs[0].paid / cs[0].tot * 100)) + '%"></i></span><span class="km-of">' + Math.round(cs[0].paid / cs[0].tot * 100) + '% ' + esc(t('paid')) + '</span>'
+        : '<span class="km-of">' + esc(t('Nothing yet')) + '</span>';
+      k.push('<button type="button" class="km-kpi km-kb' + (cs.length > 1 ? ' two' : '') + '" data-go="budget"><small>' + esc(t('Left to pay')) + '</small>' + inner + '</button>');
     }
     if (tk && tk.total) k.push(kpi('tasks', 'Tasks', tk.done + ' / ' + tk.total, t('done')));
     if (d.brief && d.brief.total) { var left = d.brief.total - d.brief.done; k.push(kpi('brief', 'Questions', String(left), t(left ? 'to answer' : 'all answered ✓'), left ? 'bad' : '')); }

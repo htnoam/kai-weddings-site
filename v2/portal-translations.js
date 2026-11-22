@@ -362,5 +362,8 @@ KaiLocale.setDictionary({
  "only you see this": "רק אתה רואה",
  "Sure? Undo": "בטוח? ביטול",
  "Undoing…": "מבטל…",
- "Unit cost": "מחיר ליחידה"
+ "Unit cost": "מחיר ליחידה",
+ "Teens": "בני נוער",
+ "Euros": "יורו",
+ "Shekels": "שקלים"
 });

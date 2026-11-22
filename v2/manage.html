@@ -7305,6 +7305,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
         var g = live(), c = { Confirmed: 0, Maybe: 0, Declined: 0 };
         g.forEach(function (x) { if (c[x.status] != null) c[x.status]++; });
         var d = { couple: $('couple').textContent, date: SC.wedding && SC.wedding.date || '', guests: g.length, rsvp: c, budget: null, brief: null, today: null };
+        d.ages = AGES.map(function (a) { return [a, g.filter(function (x) { return x.status === 'Confirmed' && x.age === a; }).length]; });   // the event's own age groups
         if (BG.on && BG.data) {
           var b = { e: 0, ep: 0, i: 0, ip: 0, vend: {} };
           (BG.data.lines || []).forEach(function (l) {
