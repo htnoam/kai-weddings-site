@@ -167,7 +167,7 @@
   };
   // keep tabs, add button, counts and badges in step with whatever the portal redraws
   var raf = 0;
-  function refreshBits() { raf = 0; drawTabs(); drawAdd(); drawNav(); if (cur === 'guests') drawCount(); if (cur === 'more') drawMore(); }
+  function refreshBits() { raf = 0; drawTabs(); drawAdd(); drawNav(); if (cur === 'guests') drawCount(); if (cur === 'more') drawMore(); if (typeof tasksSheet === 'function') tasksSheet(); }
   new MutationObserver(function () { if (!raf) raf = requestAnimationFrame(refreshBits); })
     .observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'class'] });
 
@@ -225,7 +225,10 @@
   function sheet() {
     var on = sheetOn();
     if (on && !lastOpen) panel.classList.remove('km-full');   // every opening starts half way
-    lastOpen = on; if (dim.hidden !== !on) dim.hidden = !on; document.body.classList.toggle('km-sheet', on);
+    // closing already slides the card down (the portal's own motion); the dim fades out with it
+    dim.classList.toggle('km-out', on && panel.classList.contains('pm-dismissing'));
+    if (dim.hidden !== !on) dim.hidden = !on;
+    lastOpen = on; document.body.classList.toggle('km-sheet', on);
     if (on) quick();
   }
   new MutationObserver(function () { sheet(); }).observe(panel, { attributes: true, attributeFilter: ['hidden', 'class'], childList: true });
@@ -270,6 +273,18 @@
   function grab(e) { var s = e.target.closest && e.target.closest('select'); if (!pickable(s)) return; if (e.cancelable) e.preventDefault(); s.focus({ preventScroll: true }); choose(s); }
   document.addEventListener('touchstart', grab, { passive: false });
   document.addEventListener('mousedown', function (e) { if (phone.matches && window.matchMedia('(pointer: coarse)').matches) grab(e); });
+
+  // ---------- tasks: the editor opens as a tall sheet over the dimmed list; tapping outside closes it (with the usual unsaved-changes question) ----------
+  var tdim = document.createElement('div'); tdim.className = 'km-dim km-tdim'; tdim.hidden = true; document.body.appendChild(tdim);
+  var tWatch = null;
+  function tasksSheet() {
+    var ed = document.querySelector('#kai-tasks .kt-editor');
+    if (ed && ed !== tWatch) { tWatch = ed; new MutationObserver(tasksSheet).observe(ed, { attributes: true, attributeFilter: ['hidden'] }); }
+    var on = !!(ed && !ed.hidden && phone.matches && cur === 'tasks');
+    if (tdim.hidden !== !on) tdim.hidden = !on;
+  }
+  tdim.addEventListener('click', function () { var x = document.querySelector('#kai-tasks .kt-editor .kt-close'); if (x) x.click(); });
+  document.addEventListener('kai-tasks-changed', tasksSheet);
 
   // Dates and times already open the phone's own wheel (the portal's .dtp fields), so nothing to add here.
 

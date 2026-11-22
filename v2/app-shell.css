@@ -51,6 +51,10 @@
   body.km-app .km-pin { position: sticky; top: 52px; z-index: 20; display: flex; flex-direction: column; gap: 10px; margin: 0 -16px; padding: 8px 16px 10px; background: var(--bg); }
   body.km-app.km-scrolled .km-pin { background: rgba(244,242,238,.98); box-shadow: 0 6px 10px -10px rgba(0,0,0,.35); }
   body.km-app .km-pin .tabrow { margin: 0; }
+  body.km-app .km-pin > * { min-width: 0; max-width: 100%; }
+  body.km-app .km-pin .vtabs { overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  body.km-app .km-pin .vtabs::-webkit-scrollbar { display: none; }
+  html:has(body.km-app), body.km-app { overflow-x: clip; }
   body.km-app .search { background: #E9E5DD; }
   body.km-app .vtabs { background: #E9E5DD; border-radius: 9px; padding: 3px; }
   body.km-app .vt.on { box-shadow: 0 1px 2px rgba(0,0,0,.08); color: var(--text); }
@@ -91,6 +95,18 @@
   body.km-app .km-dim { position: fixed; inset: 0; z-index: 61; background: rgba(20,22,28,.35); }
   body.km-app .panel.pm { inset: auto 0 0 0; top: 30vh; z-index: 62; border-radius: 16px 16px 0 0; box-shadow: 0 -10px 30px rgba(0,0,0,.15); transition: top .28s cubic-bezier(.2,.7,.3,1); }
   body.km-app .panel.pm.km-full { top: calc(env(safe-area-inset-top, 0px) + 10px); }
+  /* the card slides up when it opens (closing already slides down) */
+  body.km-app .panel.pm:not([hidden]) { animation: kmup .3s cubic-bezier(.2,.7,.3,1); }
+  body.km-app .km-dim:not([hidden]) { animation: kmfade .25s ease; }
+  body.km-app .km-dim.km-out { opacity: 0; transition: opacity .2s ease; pointer-events: none; }
+  @keyframes kmup { from { transform: translateY(100%); } }
+  @keyframes kmfade { from { opacity: 0; } }
+  /* tasks: the editor as a tall sheet over the dimmed list */
+  body.km-app .km-tdim { z-index: 89; }
+  body.km-app #kai-tasks .kt-editor { top: calc(env(safe-area-inset-top, 0px) + 44px); height: auto; border-radius: 16px 16px 0 0; box-shadow: 0 -10px 30px rgba(0,0,0,.15); }
+  body.km-app #kai-tasks .kt-editor:not([hidden]) { animation: kmup .3s cubic-bezier(.2,.7,.3,1); }
+  body.km-app #kai-tasks .kt-editor-head { position: relative; padding-top: 26px; border-radius: 16px 16px 0 0; }
+  body.km-app #kai-tasks .kt-editor-head::before { content: ''; position: absolute; left: 50%; top: 8px; width: 40px; height: 5px; margin-left: -20px; border-radius: 3px; background: #C9C4BA; }
   body.km-app .pm .pm-hd { padding-top: 0; border-radius: 16px 16px 0 0; }
   body.km-app .km-grab { display: block; width: 100%; height: 22px; margin: 0; padding: 0; border: 0; background: none; position: relative; }
   body.km-app .km-grab::before { content: ''; position: absolute; left: 50%; top: 8px; width: 40px; height: 5px; margin-left: -20px; border-radius: 3px; background: #C9C4BA; }
@@ -123,4 +139,4 @@
   @keyframes kmspin { to { transform: rotate(360deg); } }
   body.km-app .installbar { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
 }
-@media (max-width: 759px) and (prefers-reduced-motion: reduce) { body.km-app .panel.pm { transition: none; } }
+@media (max-width: 759px) and (prefers-reduced-motion: reduce) { body.km-app .panel.pm, body.km-app .panel.pm:not([hidden]), body.km-app #kai-tasks .kt-editor:not([hidden]), body.km-app .km-dim:not([hidden]) { transition: none; animation: none; } }
