@@ -58,7 +58,7 @@
     check.setAttribute('aria-label', (check.checked ? 'פתיחה מחדש של ' : 'סימון כהושלמה: ') + task.title);
     check.addEventListener('change', function () { saveStatus(task, check.checked ? 'done' : 'open'); });
     var title = button(task.title, 'kt-title', function () { openEditor(task); }); title.disabled = writing;
-    var details = element('div','kt-info'); details.append(title,element('span','kt-meta',(window.kl ? kl(ownerNames[task.owner],'tasks') : ownerNames[task.owner]) + (task.status === 'progress' ? ' · בטיפול' : '')));
+    var details = element('div','kt-info'); details.append(title,element('span','kt-meta',(window.kl ? kl(ownerNames[task.owner],'tasks') : ownerNames[task.owner]) + (task.status === 'progress' ? ' · ' + (window.kl ? kl('בטיפול','tasks') : 'בטיפול') : '')));
     var star = button(task.starred ? '★' : '☆', 'kt-star' + (task.starred ? ' kt-starred' : ''), function () { mutate(task,{starred:!task.starred}); });
     star.setAttribute('aria-label','סימון כחשובה: '+task.title); star.setAttribute('aria-pressed',String(!!task.starred)); star.disabled=writing;
     row.append(check,details,star); return row;

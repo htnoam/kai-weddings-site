@@ -48,10 +48,13 @@
   /* guests: counts under the title; search, ⋯ and views pinned under the top bar */
   body.km-app .km-count { margin: -6px 0 0; font-size: 14px; color: var(--soft); }
   body.km-app.in-sched .km-count { display: none; }
-  body.km-app .km-pin { position: sticky; top: 52px; z-index: 20; display: flex; flex-direction: column; gap: 10px; margin: 0 -16px; padding: 8px 16px 10px; background: var(--bg); }
+  body.km-app .km-pin { position: sticky; top: 52px; z-index: 20; display: flex; flex-direction: column; gap: 10px; width: 100vw; margin: 0 calc(50% - 50vw); padding: 8px 16px 10px; background: var(--bg); box-sizing: border-box; }
   body.km-app.km-scrolled .km-pin { background: rgba(244,242,238,.98); box-shadow: 0 6px 10px -10px rgba(0,0,0,.35); }
   body.km-app .km-pin .tabrow { margin: 0; }
   body.km-app .km-pin > * { min-width: 0; max-width: 100%; }
+  /* menus and sheets of the portal open above the tab bar (it sits at z-index 50) */
+  body.km-app .mscrim, body.km-app .scrim, body.km-app .fscrim, body.km-app .xscrim { z-index: 63; }
+  body.km-app .msheet, body.km-app .menu, body.km-app .fpop, body.km-app .exmenu { z-index: 64; }
   body.km-app .km-pin .vtabs { overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
   body.km-app .km-pin .vtabs::-webkit-scrollbar { display: none; }
   html:has(body.km-app), body.km-app { overflow-x: clip; }
