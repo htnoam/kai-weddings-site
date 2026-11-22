@@ -34,7 +34,7 @@
  @media(max-width:359px){.km-budget .km-currency{grid-template-columns:minmax(0,1fr) 96px;gap:8px}.km-budget .km-ring{width:96px;height:96px}.km-budget dl>div{font-size:13px}.km-budget{padding:12px!important}.km-pilot .card .wa{width:36px;flex-basis:36px}}
 }
 
-@media(max-width:759px){.km-pilot [dir=rtl] .card .l2{text-align:right}.km-pilot .bv-t .bv-ph{font-size:13px;color:var(--soft)}.km-pilot .bv-t .bv-payline{display:block;font-size:13px;color:var(--soft);font-weight:400;margin-top:4px}.bv-payline{display:none}}
+@media(max-width:759px){.km-pilot [dir=rtl] .card .l2{text-align:right}.km-pilot .bv-t .bv-ph{font-size:13px;color:var(--soft)}.km-pilot .bv-t .bv-payline{display:none}.bv-payline{display:none}}
 
 /* Schedule phone layout: same records and controls, compact day-by-day presentation. */
 @media(max-width:759px){
@@ -89,4 +89,11 @@
  .km-pilot #sched[dir=rtl] .sc-phone-rowmenu .sc-acts{right:auto;left:0}
  .km-pilot #sched.sc-phone .sc-t{direction:ltr;text-align:left}
  .km-pilot #sched .sc-phone-tools>summary:focus-visible,.km-pilot #sched .sc-phone-rowmenu>summary:focus-visible,.km-pilot #sched .sc-phone-days button:focus-visible{outline:2px solid #007aff;outline-offset:2px;border-radius:7px}
+}
+
+/* Budget header on phones: title and "Updated" on one line, the two buttons side by side under it */
+@media(max-width:759px){
+ .km-pilot .bv-top{flex-wrap:wrap;align-items:baseline;row-gap:10px}
+ .km-pilot .bv-top .grow{flex-basis:100%;height:0}
+ .km-pilot .bv-top .bv-gs,.km-pilot .bv-top .bv-pay{flex:1 1 0;min-height:44px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;font-size:15px;border-radius:10px}
 }
