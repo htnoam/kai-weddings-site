@@ -7338,6 +7338,12 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     // Other events: a language setting is optional (set per event on the server). When there is one, re-draw in that language.
     if (window.KaiLocale) KaiLocale.load(EVENT).then(function () {
       if (!KaiLocale.enabled) return;
+      // Tasks: on for events where Noam switched it on (settings › Tasks = on); the server says so with the language setting
+      var pm = KaiLocale.permissions && KaiLocale.permissions.modules;
+      if (pm && pm.tasks && !window.KaiTaskHost) {
+        window.KaiTaskHost = { slug: EVENT, showSection: showSect, isReady: function () { return $('gate').hidden && !$('app').hidden; } };
+        var ts = document.createElement('script'); ts.src = '/v2/tasks.js'; document.body.appendChild(ts);
+      }
       // No KaiLocale.static() here: the page may already show the couple's own content, which must never be translated.
       if (!$('app').hidden) { render(); if (SECT === 'budget') bgRender(); else if (SECT === 'sched') schedRender(); else if (SECT === 'brief') briefRender(); }
     }).catch(function () {});

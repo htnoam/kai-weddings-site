@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   var host = window.KaiTaskHost;
-  if (!host || host.slug !== 'demo-wedding') return;
+  if (!host || !host.slug) return;   // the portal loads this only for the Demo and for events with Tasks switched on (the server checks too)
 
   var weddingDate = null, myOwner = 'couple', view = 'all', opened = {};
   var periods = { early: '6 חודשים ומעלה לפני החתונה', months3to6: '3–6 חודשים לפני החתונה', months1to3: 'חודש עד 3 חודשים לפני החתונה', weeks2to4: 'שבוע עד חודש לפני החתונה', lastweek: 'בשבוע האחרון' };
