@@ -153,6 +153,10 @@
     lastFocus = document.activeElement;
     draft = task ? Object.assign({}, task) : { id: crypto.randomUUID(), version: 0, title: '', description: '', owner: '', due: null, period: currentPeriod(), starred: false, status: 'open' };
     editor.replaceChildren(); editor.hidden = false;
+    // computer: if the editor runs below the screen, scroll so its Save button is in view
+    if (!(window.matchMedia && window.matchMedia('(max-width:759px)').matches)) setTimeout(function () {
+      var r = editor.getBoundingClientRect(); if (r.bottom > window.innerHeight - 8) window.scrollBy({ top: Math.min(r.top - 14, r.bottom - window.innerHeight + 14), behavior: 'smooth' });
+    }, 0);
     var heading = element('div', 'kt-editor-head');
     var remove = task ? button('', 'kt-delete', async function () {
       if (!(await askDelete(draft.title))) return;
