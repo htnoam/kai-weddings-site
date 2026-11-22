@@ -140,6 +140,22 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .ghbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: #FFF6E5; border: 1px solid #E8D3A6; border-radius: 6px; padding: 8px 12px; margin-bottom: 10px; font-size: 13.5px; color: #6B4A0E; }
 .ghbar input { flex: 1 1 260px; height: 30px; border: 1px solid var(--line); border-radius: 4px; padding: 0 8px; font-size: 13.5px; }
 .ecards { display: none; }
+/* Computer, 22/11/2026: the table fits a laptop (location under the date, long lines wrap), the ⋯ menu stays on the right edge, a title with a count */
+.evhead { display: none; }
+@media (min-width: 760px) {
+  .evhead { display: block; margin: 4px 0 12px; } .evhead h1 { margin: 0; font: 700 26px/1.2 var(--sans, 'Assistant', system-ui); color: #2F3E55; } .evhead p { margin: 2px 0 0; font-size: 14px; color: var(--soft); }
+  .tact #signout { order: 99; }
+  #rows td:first-child { white-space: normal; min-width: 250px; max-width: 300px; }
+  .evplace { color: var(--muted); font-size: 12.5px; }
+  .tablewrap td.num .sub { white-space: normal; max-width: 150px; margin-left: auto; line-height: 1.3; }
+  .tablewrap th:last-child, .tablewrap td:last-child { position: sticky; right: 0; z-index: 1; background: var(--surface); box-shadow: -1px 0 0 var(--line); }
+  .tablewrap th:last-child { background: #F1EFEA; }
+  .tablewrap tbody tr:hover td:last-child { background: #F8F7F3; }
+  .tablewrap tr.ended td:last-child { background: var(--soft-surface); }
+  .tablewrap td[colspan] { position: static; box-shadow: none; }
+  main.wrap { position: relative; }
+  .ev-fade { position: absolute; width: 30px; pointer-events: none; z-index: 3; background: linear-gradient(to left, rgba(31,31,33,.13), rgba(31,31,33,0)); }
+}
 @media (max-width: 759px) {
   .tablewrap { display: none; }
   .ecards { display: flex; flex-direction: column; gap: 10px; }
@@ -236,12 +252,13 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     <input id="gh-key" type="password" placeholder="Paste the GitHub key (github_pat_…)" autocomplete="off">
     <button type="button" class="btn sm primary" id="gh-save">Save key</button>
   </div>
+  <div class="evhead"><h1>Events</h1><p id="evcount"></p></div>
   <div class="evsearch" id="evsearch" hidden><input type="search" id="evq" placeholder="Search events (names, place, date)" autocomplete="off" aria-label="Search events"></div>
   <div class="gate" id="gate">Loading events…</div>
   <div class="tablewrap" id="list" hidden>
     <table>
       <thead><tr>
-        <th>Event</th><th>Date</th><th>Location</th>
+        <th>Event</th><th>Date · Location</th>
         <th class="num">Guests</th><th class="num">Confirmed</th>
         <th class="num">Maybe</th><th class="num">Declined</th>
         <th>Open</th><th>Links <span class="sub">(tap to copy)</span></th><th></th>
@@ -557,6 +574,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     var active = EVENTS.filter(function (ev) { return ev.status !== 'Ended'; }).sort(byDate);
     var ended = EVENTS.filter(function (ev) { return ev.status === 'Ended'; }).sort(byDate);
     var shown = active.concat(SHOW_ENDED ? ended : []);
+    $('evcount').textContent = active.length + ' active' + (ended.length ? ' · ' + ended.length + ' ended' : '');
     // Search: couple names, link name, place, date (any part, e.g. "cyprus", "2027", "05/").
     $('evsearch').hidden = EVENTS.length < 2;
     var q = ($('evq').value || '').trim().toLowerCase();
@@ -591,12 +609,12 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
       var c = ev.counts || {}, n = function (v, cls) { return '<td class="num' + '"><span class="' + (v ? cls : 'sub') + '">' + (v == null ? '—' : v) + '</span></td>'; };
       return '<tr' + (ev.status === 'Ended' ? ' class="ended"' : '') + '>' +
         '<td><div class="couple">' + esc(ev.couple) + '</div><div class="sub">/' + esc(ev.slug) + (ev.status === 'Ended' ? ' · Ended' : '') + (ev.error ? ' · ' + esc(ev.error) : '') + '</div>' + welLine(ev) + needs(ev) + '</td>' +
-        '<td>' + esc(fmtDate(ev.date)) + (when(ev) ? '<div class="sub">' + esc(when(ev)) + '</div>' : '') + '</td><td>' + esc(ev.place) + '</td>' +
+        '<td>' + esc(fmtDate(ev.date)) + (ev.place ? '<div class="evplace">' + esc(ev.place) + '</div>' : '') + (when(ev) ? '<div class="sub">' + esc(when(ev)) + '</div>' : '') + '</td>' +
         n(c.total, '') +
         '<td class="num"><span class="' + (c.Confirmed ? 'c-ok' : 'sub') + '">' + (c.Confirmed == null ? '—' : c.Confirmed) + '</span>' + (ages(c) ? '<div class="sub">' + ages(c) + '</div>' : '') + '</td>' +
         n(c.Maybe, 'c-warn') + n(c.Declined, 'c-bad') +
         '<td><div class="links">' +
-          '<a class="btn sm primary" href="' + BASE + esc(ev.slug) + '/portal' + (ACODE ? '/' + esc(ACODE) : '') + '" target="_blank" rel="noopener">Guest list</a>' +
+          '<a class="btn sm primary" href="' + BASE + esc(ev.slug) + '/portal' + (ACODE ? '/' + esc(ACODE) : '') + '" target="_blank" rel="noopener">Open portal</a>' +
           '<button type="button" class="btn sm" data-editev="' + esc(ev.slug) + '">Edit event</button>' +
           (ev.rsvpOff ? '<button type="button" class="btn sm" data-rsvpon="' + esc(ev.slug) + '">+ RSVP form</button>' :
           '<a class="btn sm" href="' + BASE + esc(ev.slug) + '/rsvp" target="_blank" rel="noopener">RSVP</a>') +
@@ -613,7 +631,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
         '<div class="ec-n"><span><b>' + v(c.total) + '</b> guests</span><span class="c-ok"><b>' + v(c.Confirmed) + '</b> ✓</span><span class="c-warn"><b>' + v(c.Maybe) + '</b> maybe</span><span class="c-bad"><b>' + v(c.Declined) + '</b> ✗</span><span class="ec-chev" aria-hidden="true"></span></div></div>' +
         '<div class="ec-more">' +
         (ages(c) ? '<div class="sub">Confirmed: ' + ages(c) + '</div>' : '') + needs(ev) +
-        '<div class="ec-a"><a class="btn primary" href="' + BASE + esc(ev.slug) + '/portal' + (ACODE ? '/' + esc(ACODE) : '') + '" target="_blank" rel="noopener">Guest list</a>' +
+        '<div class="ec-a"><a class="btn primary" href="' + BASE + esc(ev.slug) + '/portal' + (ACODE ? '/' + esc(ACODE) : '') + '" target="_blank" rel="noopener">Open portal</a>' +
           '<button type="button" class="btn" data-editev="' + esc(ev.slug) + '">Edit event</button>' +
           (ev.rsvpOff ? '<button type="button" class="btn" data-rsvpon="' + esc(ev.slug) + '">+ RSVP form</button></div>' :
           '<a class="btn" href="' + BASE + esc(ev.slug) + '/rsvp" target="_blank" rel="noopener">RSVP</a></div>') +
@@ -1131,6 +1149,17 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
   });
   $('signout').addEventListener('click', function () { try { localStorage.removeItem('kai-v2-events'); } catch (x) {} KAI.signOut(); });
   $('refresh').addEventListener('click', load);
+  (function () {   // computer: a soft shadow before the ⋯ column while more of the table is hidden to the right
+    var w = $('list'), f = document.createElement('div'); f.className = 'ev-fade'; f.hidden = true; w.after(f);
+    var check = function () {
+      var more = window.matchMedia('(min-width: 760px)').matches && !w.hidden && w.scrollWidth - w.clientWidth - w.scrollLeft > 2;
+      f.hidden = !more; if (!more) return;
+      var last = w.querySelector('thead th:last-child'), lw = last ? last.offsetWidth : 0;
+      f.style.top = (w.offsetTop + 1) + 'px'; f.style.height = (w.offsetHeight - 2) + 'px'; f.style.left = (w.offsetLeft + w.offsetWidth - lw - 31) + 'px';
+    };
+    w.addEventListener('scroll', check, { passive: true }); window.addEventListener('resize', check);
+    if (window.ResizeObserver) { var ro = new ResizeObserver(check); ro.observe(w); ro.observe(w.querySelector('table')); }
+  })();
   load();
 })();
 </script>
