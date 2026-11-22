@@ -1491,6 +1491,33 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   .top .sect .sect-ev { display: block; margin-top: auto; padding: 12px 10px; color: var(--ink); font-weight: 700; font-size: 15px; text-decoration: none; }
   body.menu-open .sect-scrim { display: block; position: fixed; inset: 0; z-index: 69; background: rgba(20,20,30,.45); }
 }
+/* ===== Computer screens tidy-up (22/11/2026): a title on every screen, counters as buttons, "Saved" in words, headers that stay on top ===== */
+.sc-title, .sc-hint-desk { display: none; }
+@media (min-width: 760px) {
+  #km-guests-title, #sched .sc-title { display: block; margin: 0; font: 700 26px/1.2 var(--sans, 'Assistant', system-ui); letter-spacing: 0; color: #2F3E55; }
+  #km-guests-title { margin: 2px 0 -2px; }
+  #kai-tasks .kt-header h1, #budget .bv-top h1 { font-size: 26px; color: #2F3E55; }
+  #sched.sc { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 16px; row-gap: 12px; align-items: center; }
+  #sched.sc > * { grid-column: 1 / -1; }
+  #sched.sc > .sc-title { grid-column: 1; }
+  #sched.sc > .sc-title + .sc-bar { grid-column: 2; }
+  #sched .sc-bar .sc-hint { display: none; }
+  #sched .sc-hint-desk { display: block; margin: -4px 0 2px; }
+  #sched .sc-day { overflow: visible; }
+  #sched .sc-day > :last-child { border-radius: 0 0 6px 6px; }
+  #sched .sc-dh { position: sticky; top: 0; z-index: 4; border-radius: 6px 6px 0 0; }
+  #budget thead th { position: sticky; top: 0; z-index: 3; background: #FFFFFF; box-shadow: inset 0 -1px 0 var(--hair); }
+  .save.ok { font-size: 13px; } .save.ok svg { width: 14px; height: 14px; }
+  .top .stats { gap: 6px; }
+  .top .stat:not(.sub) { background: #F1EEE8 !important; border-radius: 999px; padding: 4px 12px; }
+  .top .stat:not(.sub):hover { background: #E6E1D8 !important; }
+  .top .stat .k { border-bottom: 0 !important; }
+  .top .stat:not(.total):not(.sub)::before { display: none; }
+  .top .stat.cur:not(.total) { background: #2F3E55 !important; }
+  .top .stat.cur:not(.total) .k, .top .stat.cur:not(.total) .v { color: #FFFFFF !important; }
+  #app .layout { position: relative; }
+  .tw-fade { position: absolute; width: 30px; pointer-events: none; z-index: 5; border-radius: 0 4px 4px 0; background: linear-gradient(to left, rgba(31,31,33,.13), rgba(31,31,33,0)); }
+}
 </style>
 <style id="freeze"></style>
 <link rel="stylesheet" href="/v2/mobile-refinement.css">
@@ -2792,6 +2819,18 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (c.type === 'select') el.addEventListener('change', function () { if (!opts.text) finish(true); });
   }
 
+  (function () {   // computer: a soft shadow on the table's right edge while more columns are hidden to the right
+    var w = document.querySelector('#app .tablewrap'); if (!w) return;
+    var f = document.createElement('div'); f.className = 'tw-fade'; f.hidden = true; w.after(f);
+    var check = function () {
+      var more = window.matchMedia('(min-width: 760px)').matches && w.offsetParent && w.scrollWidth - w.clientWidth - w.scrollLeft > 2;
+      f.hidden = !more; if (!more) return;
+      f.style.top = (w.offsetTop + 1) + 'px'; f.style.height = (w.offsetHeight - 2) + 'px'; f.style.left = (w.offsetLeft + w.offsetWidth - 31) + 'px';
+    };
+    w.addEventListener('scroll', check, { passive: true }); window.addEventListener('resize', check);
+    if (window.ResizeObserver) { var ro = new ResizeObserver(check); ro.observe(w); ro.observe($('grid')); }
+    check();
+  })();
   $('tbody').addEventListener('click', function (e) {
     var t = e.target;
     if (t.closest('[data-noedit]')) return;
@@ -6812,9 +6851,10 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (SC.mode === 'savetpl') { schedSaveTpl(); return; }
     scSort();
     var reds = SC.rows.reduce(function (a, r) { return a + (r.red ? 1 : 0) + r.notes.filter(function (n) { return n.red; }).length; }, 0);
-    var h = (EVENT === 'demo-wedding' ? '<h1 class="km-module-title">'+kl('Schedule','sched')+'</h1>' : '') + '<div class="sc-bar">' + (admin ? ("<span class=\"sc-hint\">"+""+kl("Click any text to change it. On a row or a single line: the flag marks it in red, the eye hides it from the couple.","sched")+""+"</span>") : '') +
+    var h = '<h1 class="' + (EVENT === 'demo-wedding' ? 'km-module-title ' : '') + 'sc-title">'+kl('Schedule','sched')+'</h1>' + '<div class="sc-bar">' + (admin ? ("<span class=\"sc-hint\">"+""+kl("Click any text to change it. On a row or a single line: the flag marks it in red, the eye hides it from the couple.","sched")+""+"</span>") : '') +
       '<span class="grow"></span>' + (reds ? '<button type="button" class="sc-redcount" id="sc-reds">' + reds + (reds === 1 ? ' needs attention' : ' need attention') + '</button>' : '') +
-      (admin && SC.rows.length ? ("<button type=\"button\" class=\"btn\" id=\"sc-savetpl\">"+""+kl("Save as template","sched")+""+"</button>") : '') + (admin ? ("<button type=\"button\" class=\"btn\" id=\"sc-copy\">"+""+kl("Copy from another event","sched")+""+"</button><button type=\"button\" class=\"btn\" id=\"sc-paste\">"+""+kl("Paste from Word","sched")+""+"</button>") : '') + '</div>';
+      (admin && SC.rows.length ? ("<button type=\"button\" class=\"btn\" id=\"sc-savetpl\">"+""+kl("Save as template","sched")+""+"</button>") : '') + (admin ? ("<button type=\"button\" class=\"btn\" id=\"sc-copy\">"+""+kl("Copy from another event","sched")+""+"</button><button type=\"button\" class=\"btn\" id=\"sc-paste\">"+""+kl("Paste from Word","sched")+""+"</button>") : '') + '</div>' +
+      (admin ? '<p class="sc-hint sc-hint-desk">' + kl("Click any text to change it. On a row or a single line: the flag marks it in red, the eye hides it from the couple.","sched") + '</p>' : '');
     var open = BR.on ? brCounts()[1] - brCounts()[0] : 0;
     if (!admin && open) h += '<div class="sc-banner" dir="' + (brLang() === 'he' ? 'rtl' : 'ltr') + '">' + BR_T[brLang()].banner(open) + '<button type="button" class="btn primary" data-gobrief>' + BR_T[brLang()].go + '</button></div>';
     var days = {}, order = [];
