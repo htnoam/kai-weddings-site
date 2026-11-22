@@ -196,7 +196,7 @@ KaiLocale.setDictionary({
  "Edit task": "עריכת משימה",
  "Close task editor": "סגירת עריכת משימה",
  "Delete task": "מחיקת משימה",
- "+ Add task": "הוספת משימה",
+ "+ Add task": "+ הוספת משימה",
  "Search tasks": "חיפוש משימה",
  "No owner": "ללא אחראי",
  "Couple": "הזוג",
