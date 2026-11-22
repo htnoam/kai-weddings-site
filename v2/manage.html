@@ -714,6 +714,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .bv-t tbody tr[data-bvo]:focus-visible { outline: 2px solid #4F6BED; outline-offset: -2px; }
 .bv-scrim { position: fixed; inset: 0; background: rgba(20,26,40,.28); z-index: 60; }
 .bv-dr { position: fixed; top: 0; right: 0; bottom: 0; width: min(420px, 100%); z-index: 61; background: #FFFFFF; box-shadow: -12px 0 40px -12px rgba(20,30,50,.3); overflow-y: auto; padding: 22px 24px 30px; display: flex; flex-direction: column; gap: 18px; outline: none; }
+@media (min-width: 760px) { #budget[dir=rtl] .bv-dr { right: auto; left: 0; box-shadow: 12px 0 40px -12px rgba(20,30,50,.3); } }   /* Hebrew page: the details open on the left */
 .bv-dh { display: flex; align-items: flex-start; gap: 12px; }
 .bv-dh > div { flex: 1; min-width: 0; }
 .bv-dh h2 { margin: 2px 0 0; font-size: 21px; line-height: 1.25; }
