@@ -105,3 +105,17 @@
 #kai-tasks .kt-important:focus-visible { outline:2px solid var(--ink); outline-offset:2px; }
 
 #kai-tasks .kt-del .kt-del-yes { background:var(--bad,#B23A3A); border-color:var(--bad,#B23A3A); color:#fff; font-weight:600; }
+
+/* Computer: columns for description, who is responsible and status (22/11/2026). The phone keeps its own row. */
+#kai-tasks .kt-desc, #kai-tasks .kt-col-owner, #kai-tasks .kt-col-status, #kai-tasks .kt-colhead { display:none; }
+@media (min-width:760px) {
+  #kai-tasks .kt-row, #kai-tasks .kt-colhead { display:grid; grid-template-columns:22px minmax(0,1fr) 150px 120px 40px; column-gap:18px; align-items:center; }
+  #kai-tasks .kt-colhead { padding:8px 12px 6px; font-size:12px; font-weight:700; letter-spacing:.05em; color:var(--soft); border-bottom:1px solid var(--row-line); }
+  #kai-tasks .kt-meta { display:none; }
+  #kai-tasks .kt-desc { display:block; font-size:13.5px; color:var(--soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #kai-tasks .kt-col-owner { display:block; font-size:14.5px; color:var(--muted, #3F3F45); }
+  #kai-tasks .kt-col-status { display:inline-block; justify-self:start; font-size:13px; font-weight:600; padding:3px 10px; border-radius:999px; background:#EFEDE8; color:#5C5C63; }
+  #kai-tasks .kt-col-status.kt-st-progress { background:#FBF1DC; color:#9A6A12; }
+  #kai-tasks .kt-col-status.kt-st-done { background:#E6F2E9; color:#2F7D45; }
+  #kai-tasks .kt-star { justify-self:center; }
+}

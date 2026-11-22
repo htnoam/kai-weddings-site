@@ -90,6 +90,7 @@ KaiLocale.setDictionary({
  "Category": "קטגוריה",
  "Due date": "מועד תשלום",
  "Status": "סטטוס",
+ "Task": "משימה",
  "Payments": "תשלומים",
  "Payment": "תשלום",
  "+ Payment": "הוספת תשלום",

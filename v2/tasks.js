@@ -63,7 +63,11 @@
     var details = element('div','kt-info'); details.append(title,element('span','kt-meta',(window.kl ? kl(ownerNames[task.owner],'tasks') : ownerNames[task.owner]) + (task.status === 'progress' ? ' · ' + (window.kl ? kl('בטיפול','tasks') : 'בטיפול') : '')));
     var star = button(task.starred ? '★' : '☆', 'kt-star' + (task.starred ? ' kt-starred' : ''), function () { mutate(task,{starred:!task.starred}); });
     star.setAttribute('aria-label','סימון כחשובה: '+task.title); star.setAttribute('aria-pressed',String(!!task.starred)); star.disabled=writing;
-    row.append(check,details,star); return row;
+    // computer only (tasks.css): first line of the description, who is responsible and the status, in columns
+    var desc = String(task.description || '').split('\n')[0].trim(); if (desc) details.append(element('span','kt-desc',desc));
+    var ownerCol = element('span','kt-col-owner',window.kl ? kl(ownerNames[task.owner] || ownerNames[''],'tasks') : (ownerNames[task.owner] || ownerNames['']));
+    var statusCol = element('span','kt-col-status kt-st-' + task.status,window.kl ? kl(statusNames[task.status] || '','tasks') : (statusNames[task.status] || ''));
+    row.append(check,details,ownerCol,statusCol,star); return row;
   }
   function render() {
     list.replaceChildren();
@@ -83,7 +87,9 @@
       var summary=element('summary','kt-period');summary.appendChild(element('span','kt-period-name',window.kl ? kl(periods[key],'tasks') : periods[key]));
       if(key===current)summary.appendChild(element('span','kt-current',window.kl ? kl('התקופה הנוכחית','tasks') : (window.kl ? kl("התקופה הנוכחית","tasks") : "התקופה הנוכחית")));
       summary.appendChild(element('span','kt-count',all.filter(function(t){return t.status==='done';}).length+'/'+all.length));
-      var body=element('div','kt-period-rows');items.forEach(function(t){body.appendChild(taskRow(t));});group.append(summary,body);
+      var body=element('div','kt-period-rows');
+      var head=element('div','kt-colhead');head.append(element('span'),element('span','',window.kl ? kl('משימה','tasks') : 'משימה'),element('span','',window.kl ? kl('אחראי','tasks') : 'אחראי'),element('span','',window.kl ? kl('סטטוס','tasks') : 'סטטוס'),element('span'));body.appendChild(head);
+      items.forEach(function(t){body.appendChild(taskRow(t));});group.append(summary,body);
       group.addEventListener('toggle',function(){if(group.isConnected)opened[key]=group.open;});list.appendChild(group);
     });
   }
