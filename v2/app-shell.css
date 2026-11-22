@@ -144,6 +144,15 @@
   body.km-app #sumv:not([hidden]) .sv-in, body.km-app #br-allv:not([hidden]) .ba-in, body.km-app .menu.sheet:not([hidden]) { animation: kmup .3s cubic-bezier(.2,.7,.3,1); }
   body.km-app #sumv.km-closing, body.km-app #br-allv.km-closing, body.km-app .scrim.km-closing, body.km-app .xscrim.km-closing { animation: kmfadeout .28s ease forwards; }
   body.km-app #sumv.km-closing .sv-in, body.km-app #br-allv.km-closing .ba-in, body.km-app .menu.sheet.km-closing { animation: kmdown .28s cubic-bezier(.4,0,.8,.6) forwards; }
+  /* opening screen (only when opened from the home-screen icon) */
+  body.km-app .km-splash { position: fixed; inset: 0; z-index: 400; background: #F4F2EE; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; transition: opacity .4s ease; }
+  body.km-app .km-splash.out { opacity: 0; pointer-events: none; }
+  body.km-app .km-sp-i { width: 96px; height: 96px; border-radius: 22px; background: #2F3E55; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 10px 24px -10px rgba(0,0,0,.4); }
+  body.km-app .km-sp-i b { color: #fff; font: 700 28px/1 var(--sans); letter-spacing: 5px; margin-left: 5px; }
+  body.km-app .km-sp-i i { width: 27px; height: 3px; border-radius: 2px; background: #C9A46A; }
+  body.km-app .km-sp-n { margin-top: 10px; font: 600 34px/1.15 'Cormorant Garamond', Georgia, serif; color: #2F3E55; text-align: center; padding: 0 24px; min-height: 40px; }
+  body.km-app .km-sp-d { font-size: 15px; color: #8A8A91; letter-spacing: .12em; min-height: 18px; }
+  body.km-app .km-sp-f { position: absolute; bottom: calc(48px + env(safe-area-inset-bottom, 0px)); font-size: 13px; color: #8A8A91; letter-spacing: .14em; }
   /* the save status in the top bar never runs into the title */
   body.km-app .top .me .save { max-width: 88px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   body.km-app .km-closing { pointer-events: none !important; }

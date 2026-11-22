@@ -334,6 +334,68 @@
     }).observe(box, { childList: true, subtree: true });
   })();
 
+  // ---------- pull a window down to close it (like the guest card) ----------
+  // Each window closes with its own close button, so unsaved-changes questions still appear; if it stays open, it springs back.
+  var PULL = [
+    ['#dlg > .dialog', '#addform .ag-close'], ['#dlg2 > .dialog', null], ['#dlg-imp > .dialog', null], ['#dlg-pay > .dialog', '#p-cancel'],
+    ['#msheet', null], ['#pushsheet .ps-in', null], ['#bgk-sheet .bgk-sh', '#bgk-shade'], ['#budget .bv-dr', '#budget .bv-x'],
+    ['#sumv .sv-in', null], ['#br-allv .ba-in', '[data-brall="close"]'], ['.menu.sheet', '#scrim']
+  ];
+  function closerFor(sheet, sel) {
+    if (sel) return document.querySelector(sel);
+    var b = Array.prototype.find.call(sheet.querySelectorAll('button'), function (x) { return x.offsetParent && /^(cancel|close|done|ביטול|סגירה|×|✕)$/i.test(x.textContent.trim()) || x.matches('[aria-label*="Close" i],[aria-label*="סגירה"]'); });
+    return b || null;
+  }
+  (function () {
+    var drag = null;
+    document.addEventListener('touchstart', function (e) {
+      drag = null; if (!phone.matches || e.touches.length !== 1 || e.target.closest('input,textarea,select,[contenteditable],.km-closing')) return;
+      for (var i = 0; i < PULL.length; i++) {
+        var sh = e.target.closest(PULL[i][0]); if (!sh || sh.hidden || sh.closest('[hidden]')) continue;
+        for (var n = e.target; n && n !== sh.parentNode; n = n.parentNode) {   // only when what's under the finger is scrolled to the top
+          if (n.nodeType === 1 && n.scrollHeight > n.clientHeight + 2 && /auto|scroll/.test(getComputedStyle(n).overflowY) && n.scrollTop > 0) return;
+        }
+        drag = { sh: sh, sel: PULL[i][1], y: e.touches[0].clientY, dy: 0, on: false }; return;
+      }
+    }, { passive: true });
+    document.addEventListener('touchmove', function (e) {
+      if (!drag) return; var dy = e.touches[0].clientY - drag.y;
+      if (!drag.on) { if (dy < 8) { if (dy < -4) drag = null; return; } drag.on = true; drag.sh.style.transition = 'none'; }
+      drag.dy = Math.max(0, dy); drag.sh.style.transform = 'translateY(' + drag.dy + 'px)'; if (e.cancelable) e.preventDefault();
+    }, { passive: false });
+    document.addEventListener('touchend', function () {
+      if (!drag) return; var d = drag; drag = null; if (!d.on) return;
+      var back = function () { d.sh.style.transition = 'transform .22s cubic-bezier(.2,.7,.3,1)'; d.sh.style.transform = ''; setTimeout(function () { d.sh.style.transition = ''; }, 240); };
+      if (d.dy < 90) { back(); return; }
+      var c = closerFor(d.sh, d.sel); if (c) c.click();
+      setTimeout(function () { var still = d.sh.isConnected && !d.sh.hidden && !d.sh.closest('[hidden]'); if (still) back(); else { d.sh.style.transform = ''; d.sh.style.transition = ''; } }, 60);
+    }, { passive: true });
+  })();
+
+  // ---------- the KAI icon on the home screen (navy "KAI" with a gold line), and an opening screen when it opens from there ----------
+  function kaiIcon() {
+    var at = document.querySelector('link[rel="apple-touch-icon"]'); if (at && at.getAttribute('href') !== '/app/icons/kai-a-180.png') at.setAttribute('href', '/app/icons/kai-a-180.png');
+    var l = $('manifest'); if (!l || l.href.indexOf('kai-a-') > -1 || l.href.indexOf('data:') !== 0) return;
+    try {
+      var m = JSON.parse(decodeURIComponent(l.href.slice(l.href.indexOf(',') + 1))), o = location.origin + '/app/icons/';
+      m.icons = [{ src: o + 'kai-a-192.png', sizes: '192x192', type: 'image/png' }, { src: o + 'kai-a-512.png', sizes: '512x512', type: 'image/png' }, { src: o + 'kai-a-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }];
+      m.background_color = '#F4F2EE'; l.href = 'data:application/manifest+json,' + encodeURIComponent(JSON.stringify(m));
+    } catch (e) { /* keep the portal's own */ }
+  }
+  kaiIcon(); new MutationObserver(kaiIcon).observe(document.head, { childList: true, subtree: true, attributes: true, attributeFilter: ['href'] });
+  (function () {
+    var standalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+    if (!standalone || !phone.matches) return;
+    var sp = document.createElement('div'); sp.className = 'km-splash'; sp.setAttribute('aria-hidden', 'true');
+    sp.innerHTML = '<div class="km-sp-i"><b>KAI</b><i></i></div><div class="km-sp-n"></div><div class="km-sp-d"></div><div class="km-sp-f">KAI EVENT PLANNERS</div>';
+    document.body.appendChild(sp);
+    var t0 = Date.now(), done = false;
+    function fill() { var n = $('couple').textContent.trim(); if (n) sp.querySelector('.km-sp-n').textContent = n; try { var d = H.home().date, m = /^(\d{4})-(\d{2})-(\d{2})/.exec(d || ''); if (m) sp.querySelector('.km-sp-d').textContent = m[3] + ' · ' + m[2] + ' · ' + m[1]; } catch (e) {} }
+    function end() { if (done) return; done = true; fill(); setTimeout(function () { sp.classList.add('out'); setTimeout(function () { sp.remove(); }, 450); }, Math.max(0, 1100 - (Date.now() - t0))); }
+    var w = setInterval(function () { fill(); if (!$('app').hidden || (window.location.hash && document.querySelector('main.wrap > :not([hidden])'))) { clearInterval(w); end(); } }, 120);
+    setTimeout(function () { clearInterval(w); end(); }, 6000);   // never keep it longer than this
+  })();
+
   // Dates and times already open the phone's own wheel (the portal's .dtp fields), so nothing to add here.
 
   phone.addEventListener && phone.addEventListener('change', function () { drawTabs(); drawAdd(); sheet(); });

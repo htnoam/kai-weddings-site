@@ -365,5 +365,8 @@ KaiLocale.setDictionary({
  "Unit cost": "מחיר ליחידה",
  "Teens": "בני נוער",
  "Euros": "יורו",
- "Shekels": "שקלים"
+ "Shekels": "שקלים",
+ "Delete this task?": "למחוק את המשימה?",
+ "Delete task": "מחיקת המשימה",
+ "will be deleted for you and the couple. This can’t be undone.": "תימחק אצלך ואצל הזוג. אי אפשר לבטל את זה."
 });

@@ -12,6 +12,8 @@
   var statusNames = { open: 'פתוח', progress: 'בטיפול', done: 'הושלם' };
   var ownerNames = { '': 'ללא אחראי', planner: 'נועם', couple: 'הזוג' };
   var root, list, error, search, ownerFilter, statusFilter, editor, lastFocus, leaveDialog, pendingExit, saveEditor;
+  var deleteDialog, askDelete = function () { return Promise.resolve(window.confirm('Delete this task?')); };
+  function L(t) { return window.kl ? kl(t, 'tasks') : t; }
   var motionTimer;
 
   function element(tag, className, text) {
@@ -153,7 +155,7 @@
     editor.replaceChildren(); editor.hidden = false;
     var heading = element('div', 'kt-editor-head');
     var remove = task ? button('', 'kt-delete', async function () {
-      if (!window.confirm('למחוק את המשימה ״' + draft.title + '״?')) return;
+      if (!(await askDelete(draft.title))) return;
       await submit('delete');
     }) : element('span', 'kt-header-space');
     if (task) {
@@ -240,6 +242,22 @@
       button('Exit without saving', 'btn', function () { var next = pendingExit; pendingExit = null; leaveDialog.close(); draft = null; if (next) next(); }));
     leaveDialog.addEventListener('cancel', function () { pendingExit = null; });
     root.appendChild(leaveDialog);
+    // "Delete this task?" in the same style as "Unsaved changes" (instead of the browser's own box)
+    deleteDialog = element('dialog', 'kt-leave kt-del');
+    deleteDialog.setAttribute('aria-label', L('Delete this task?'));
+    var delText = element('p', '');
+    deleteDialog.append(element('h2', '', L('Delete this task?')), delText,
+      button(L('Delete task'), 'btn kt-del-yes', function () { deleteDialog.close('yes'); }),
+      button(L('Cancel'), 'btn kt-stay', function () { deleteDialog.close('no'); }));
+    askDelete = function (title) {
+      delText.textContent = '“' + (title || '') + '” ' + L('will be deleted for you and the couple. This can’t be undone.');
+      return new Promise(function (done) {
+        deleteDialog.returnValue = '';
+        deleteDialog.addEventListener('close', function once() { deleteDialog.removeEventListener('close', once); done(deleteDialog.returnValue === 'yes'); });
+        deleteDialog.showModal(); deleteDialog.querySelector('.kt-stay').focus();
+      });
+    };
+    root.appendChild(deleteDialog);
     var pull = null, pullClickUntil = 0;
     editor.addEventListener('click', function (e) { if (Date.now() < pullClickUntil) { e.preventDefault(); e.stopImmediatePropagation(); pullClickUntil = 0; } }, true);
     editor.addEventListener('touchstart', function (e) {
