@@ -7249,7 +7249,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   function brEditRender() {
     $('brief').dir = (window.KaiLocale && KaiLocale.enabled ? KaiLocale.lang('brief') : brLang()) === 'he' ? 'rtl' : 'ltr';
     var D = BR.data;
-    var h = ("<div class=\"br-h\"><h1>"+""+kl("עריכת השאלות","brief")+""+"</h1><span class=\"br-saved\" id=\"br-saved\"></span><span class=\"grow\"></span><button type=\"button\" class=\"btn\" id=\"br-tpl\" title=\"השאלון הזה יהיה ההתחלה של כל חתונה חדשה\">' + kl('Save as default questionnaire','brief') + '</button><button type=\"button\" class=\"btn primary\" id=\"br-done\">' + kl('Done editing','brief') + '</button></div>") +
+    var h = ("<div class=\"br-h\"><h1>"+""+kl("עריכת השאלות","brief")+""+"</h1><span class=\"br-saved\" id=\"br-saved\"></span><span class=\"grow\"></span><button type=\"button\" class=\"btn\" id=\"br-tpl\" title=\"השאלון הזה יהיה ההתחלה של כל חתונה חדשה\">"+kl("Save as default questionnaire","brief")+"</button><button type=\"button\" class=\"btn primary\" id=\"br-done\">"+kl("Done editing","brief")+"</button></div>") +
       '<p class="sc-hint" style="margin:0">משנים ניסוח, סוג תשובה, מוחקים או מוסיפים. השינויים כאן הם לאירוע הזה בלבד. תשובות שכבר נכתבו נשמרות.</p>';
     h += D.sections.map(function (s, si) {
       return '<section class="br-sec"><div class="br-sh"><input data-brst="' + si + '" value="' + esc(s.title) + '" aria-label="שם הנושא"><button type="button" class="btn" data-brsdel="' + si + '">' + kl('Delete topic','brief') + '</button></div>' +

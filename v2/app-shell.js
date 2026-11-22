@@ -177,7 +177,10 @@
   };
   // keep tabs, add button, counts and badges in step with whatever the portal redraws
   var raf = 0;
-  function refreshBits() { raf = 0; drawTabs(); drawAdd(); drawNav(); if (cur === 'guests') drawCount(); if (cur === 'more') drawMore(); if (typeof tasksSheet === 'function') tasksSheet(); if (typeof watchWindows === 'function') watchWindows(); }
+  function refreshBits() { raf = 0; drawTabs(); drawAdd(); drawNav(); if (cur === 'guests') drawCount(); if (cur === 'more') drawMore(); if (typeof tasksSheet === 'function') tasksSheet(); if (typeof watchWindows === 'function') watchWindows();
+    var sv = document.querySelector('.top .me .save');   // phone: a short save note, the message at the bottom says the rest
+    if (phone.matches && sv && /^Not saved\s*[–-]/.test(sv.textContent)) { sv.title = sv.textContent; sv.textContent = 'Not saved'; }
+  }
   new MutationObserver(function () { if (!raf) raf = requestAnimationFrame(refreshBits); })
     .observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'class'] });
 
@@ -308,9 +311,14 @@
   }
   var watched = [];
   function watchWindows() {   // some windows are made only when first used (e.g. Notifications), so this runs again on page changes
-    ['dlg', 'dlg2', 'dlg-imp', 'dlg-pay', 'msheet', 'mscrim', 'pushsheet', 'bgk-sheet'].forEach(function (id) {
+    ['dlg', 'dlg2', 'dlg-imp', 'dlg-pay', 'msheet', 'mscrim', 'pushsheet', 'bgk-sheet', 'sumv', 'br-allv', 'menu', 'xmenu', 'scrim', 'xscrim'].forEach(function (id) {
       var el = $(id); if (!el || watched.indexOf(el) > -1) return; watched.push(el);
-      new MutationObserver(function (m) { if (m.some(function (r) { return r.oldValue === null; }) && el.hidden) ghost(el); })
+      new MutationObserver(function (m) {
+        if (!m.some(function (r) { return r.oldValue === null; }) || !el.hidden) return;
+        if (/^x?menu$/.test(id) && !el.classList.contains('sheet')) return;   // menus slide only when they open as a sheet from the bottom
+        if (/^x?scrim$/.test(id) && !document.querySelector('.menu.sheet.km-closing')) return;
+        ghost(el);
+      })
         .observe(el, { attributes: true, attributeFilter: ['hidden'], attributeOldValue: true });
     });
   }
