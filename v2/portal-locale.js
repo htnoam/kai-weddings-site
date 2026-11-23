@@ -17,7 +17,7 @@
   if(!staticRecords){staticRecords=[];['body'].forEach(function(id){
    var el=id==='body'?document.body:document.getElementById(id)||document.querySelector('.'+id);if(!el)return;
    var module='guests',w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),n;
-   while((n=w.nextNode())){var v=n.nodeValue,t=v.trim();if(!t)continue;if(n.parentElement.tagName==='OPTION'&&!n.parentElement.hasAttribute('value'))n.parentElement.value=t;if(!n.parentElement.closest('script,style,#couple,#who'))staticRecords.push({node:n,text:v,module:n.parentElement.closest('#sect')?'shell':n.parentElement.closest('#dlg-pay,#bgk-sheet')?'budget':module});}
+   while((n=w.nextNode())){var v=n.nodeValue,t=v.trim();if(!t)continue;if(n.parentElement.tagName==='OPTION'&&!n.parentElement.hasAttribute('value'))n.parentElement.value=t;if(!n.parentElement.closest('script,style,#couple,#who'))staticRecords.push({node:n,text:v,module:n.parentElement.closest('#s-budget')?'budget':n.parentElement.closest('#sect')?'shell':n.parentElement.closest('#dlg-pay,#bgk-sheet')?'budget':module});}
    el.querySelectorAll('[placeholder],[aria-label]').forEach(function(x){['placeholder','aria-label'].forEach(function(a){if(x.hasAttribute(a))staticRecords.push({node:x,attr:a,text:x.getAttribute(a),module:module});});});
   });}
   staticRecords.forEach(function(r){if(!r.node.isConnected)return;var t=r.text.trim(),v=r.text.replace(t,api.t(t,r.module));if(r.attr)r.node.setAttribute(r.attr,v);else r.node.nodeValue=v;});

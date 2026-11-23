@@ -7385,6 +7385,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
         window.KaiTaskHost = { slug: EVENT, showSection: showSect, isReady: function () { return $('gate').hidden && !$('app').hidden; } };
         var ts = document.createElement('script'); ts.src = '/v2/tasks.js'; document.body.appendChild(ts);
       }
+      // The Budget button in the side menu speaks the budget's language (Tasks does the same in tasks.js)
+      var sb = $('s-budget'), sbt = sb && sb.lastChild; if (sbt && sbt.nodeType === 3) sbt.nodeValue = kl('Budget', 'budget');
       // No KaiLocale.static() here: the page may already show the couple's own content, which must never be translated.
       if (!$('app').hidden) { render(); if (SECT === 'budget') bgRender(); else if (SECT === 'sched') schedRender(); else if (SECT === 'brief') briefRender(); }
     }).catch(function () {});

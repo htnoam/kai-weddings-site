@@ -228,7 +228,7 @@
     nav.innerHTML = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="m7 9 2 2 4-4M7 16h10"/></svg><span>משימות</span>';
     document.getElementById('sect').insertBefore(nav, document.getElementById('sect-ev'));
     root = element('section', 'kt-root'); root.id = 'kai-tasks'; root.lang = window.KaiLocale && KaiLocale.enabled ? KaiLocale.lang('tasks') : 'he'; root.dir = root.lang === 'he' ? 'rtl' : 'ltr'; root.hidden = true;
-    if (window.KaiLocale && KaiLocale.enabled) nav.querySelector('span').textContent = kl('Tasks','shell');
+    if (window.KaiLocale && KaiLocale.enabled) nav.querySelector('span').textContent = kl('Tasks','tasks');   // the menu button speaks the module's language
     root.setAttribute('aria-label', (window.kl ? kl("משימות","tasks") : "משימות"));
     var header = element('div', 'kt-header'); header.append(element('h1', '', window.kl ? kl('משימות','tasks') : (window.kl ? kl("משימות","tasks") : "משימות")), button('+ הוספת משימה', 'btn primary', function () { openEditor(); }));
     var progress=element('div','kt-progress-summary'); progressText=element('span');progressBar=element('progress');progressBar.setAttribute('aria-label',(window.kl ? kl("התקדמות המשימות","tasks") : "התקדמות המשימות"));progress.append(progressText,progressBar);
