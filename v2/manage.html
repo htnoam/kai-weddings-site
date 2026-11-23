@@ -4886,7 +4886,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       ("<table class=\"bv-t\"><thead><tr><th>"+""+kl("Service","budget")+""+"</th><th>"+""+kl("Vendor","budget")+""+"</th><th class=\"n bv-u\">"+""+kl("Unit cost","budget")+""+"</th><th class=\"n bv-q\">"+""+kl("Quantity","budget")+""+"</th><th class=\"n\">"+""+kl("Total price","budget")+""+"</th><th class=\"n\">"+""+kl("Paid","budget")+""+"</th><th class=\"n\">"+""+kl("Left","budget")+""+"</th><th class=\"n\">"+""+kl("Status","budget")+""+"</th></tr></thead><tbody>") +
       (shown.length ? shown.map(function (l) {
         var s2 = st(l);
-        return '<tr data-bvo="' + esc(l.row) + ("\" tabindex=\"0\" title=\""+""+kl("Open the details","budget")+""+"\"><td><b>") + esc(l.item) + '</b>' + (l.cat ? '<small>' + esc(l.cat) + '</small>' : '') + '<small class="bv-ph">' + esc(l.vendor || kl('Not booked yet','budget')) + '</small>' + (EVENT === 'demo-wedding' ? '<small class="bv-payline">'+kl('Paid','budget')+' '+M(l.paid,l.cur)+' · '+kl('Remaining','budget')+' '+M(l.left,l.cur)+'</small>' : '') + '</td>' +
+        return '<tr data-bvo="' + esc(l.row) + ("\" tabindex=\"0\" title=\""+""+kl("Open the details","budget")+""+"\"><td><b>") + esc(l.item) + '</b>' + (l.cat ? '<small>' + esc(l.cat) + '</small>' : '') + '<small class="bv-ph">' + esc(l.vendor || kl('Not booked yet','budget')) + '</small>' + '' + '</td>' +
           '<td class="bv-vn">' + (l.vendor ? esc(l.vendor) : '<span class="bv-mut">—</span>') + '</td>' +
           '<td class="n bv-u">' + (l.unit ? M(l.unit, l.cur) : '<span class="bv-mut">—</span>') + '</td><td class="n bv-q">' + (l.qty ? String(l.qty).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '<span class="bv-mut">—</span>') + '</td><td class="n bv-c">' + M(l.total, l.cur) + '<small class="bv-ph bv-' + s2[1] + '">' + (s2[1] === 'part' ? M(l.left, l.cur) + ' ' + kl('Left to pay','budget') : s2[1] === 'ok' ? kl('Paid ✓','budget') : kl('Not paid yet','budget')) + '</small></td><td class="n bv-p">' + (l.paid ? M(l.paid, l.cur) : '—') + '</td>' +
           '<td class="n bv-l"><b>' + M(l.left, l.cur) + '</b></td><td class="n bv-s"><span class="bv-tag ' + s2[1] + '">' + kl(s2[0],'budget') + '</span></td></tr>';
@@ -7370,7 +7370,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       }
     };
     document.body.classList.add('km-app');
-    if (EVENT === 'demo-wedding') document.body.classList.add('km-look1');   // the computer's "Option 1" colours stay on the Demo; other events keep their computer look
+    document.body.classList.add('km-look1');   // the computer's "Option 1" look (navy, plain font, gold budget ring) on every event – 23/11/2026
     var appScript = document.createElement('script'); appScript.src = '/v2/app-shell.js'; document.body.appendChild(appScript);
   }
   if (KM_APP) document.body.classList.add('km-pilot');
