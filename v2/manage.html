@@ -1754,6 +1754,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   'use strict';
   // v2 (Supabase): /v2/<event>/portal. Who you are (Noam or the couple) comes from the sign-in, not from the link.
   var EVENT = (location.pathname.split('/').filter(Boolean)[location.pathname.indexOf('/v2/') === 0 ? 1 : 0] || '').toLowerCase();
+  var KM_APP = !!EVENT;   // 23/11/2026: the phone app look (tabs, Home, sheet card) is on for every event – it was the Demo only
   var BASE = location.pathname.indexOf('/v2/') === 0 ? '/v2/' : '/';   // /v2/<event>/… or, after the move, the old /<event>/… links
   var KEY = '';
   var AGES = ['Adult', 'Child', 'Baby'];
@@ -2382,8 +2383,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       if (D && cellVal(g, D.k) !== lastD) { lastD = cellVal(g, D.k); html += '<div class="grph dhp' + (lastD ? '' : ' none') + '"><b>' + esc(dhLabel(D.k, lastD)) + '</b><span class="cnt">' + nGuests(D.n[lastD]) + '</span></div>'; }
       // Phone row: name, #, status dot; the second line shows what matters in the current view.
       html += '<div class="card' + (S.checked[g.no] ? ' sel-row' : '') + '" data-card="' + g.no + '">' +
-        '<div class="mn"><div class="l1"><button type="button" class="nm" data-open="' + g.no + '">' + esc(g.first + ' ' + g.last) + '</button>' + (EVENT === 'demo-wedding' ? '<span class="sd ' + esc(g.status) + '" role="img" aria-label="' + esc(kl(g.status, 'guests')) + '" title="' + esc(kl(g.status, 'guests')) + '"></span>' : '') + '<span class="no">#' + g.no + '</span></div>' +
-        '<div class="l2">' + (EVENT === 'demo-wedding' && !S.view && !S.missing ? esc([kl(g.age,'guests'), g.group].filter(Boolean).join(' · ')) : cardLine(g)) + '</div></div>' + (EVENT === 'demo-wedding' ? '' : '<span class="sd ' + esc(g.status) + '" title="' + esc(g.status) + '"></span>') +
+        '<div class="mn"><div class="l1"><button type="button" class="nm" data-open="' + g.no + '">' + esc(g.first + ' ' + g.last) + '</button>' + (KM_APP ? '<span class="sd ' + esc(g.status) + '" role="img" aria-label="' + esc(kl(g.status, 'guests')) + '" title="' + esc(kl(g.status, 'guests')) + '"></span>' : '') + '<span class="no">#' + g.no + '</span></div>' +
+        '<div class="l2">' + (KM_APP && !S.view && !S.missing ? esc([kl(g.age,'guests'), g.group].filter(Boolean).join(' · ')) : cardLine(g)) + '</div></div>' + (KM_APP ? '' : '<span class="sd ' + esc(g.status) + '" title="' + esc(g.status) + '"></span>') +
         (S.trash ? '<button type="button" class="btn" data-restore="' + g.no + ("\" style=\"height:34px\">"+""+kl("Restore","guests")+""+"</button>")
           : (g.phone ? '<a class="wa tel" href="tel:' + esc(normPhone(g.phone)) + '" aria-label="Call ' + esc(g.first) + '"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg></a>' +
             '<a class="wa" href="' + waLink(g.phone) + '" target="_blank" rel="noopener" aria-label="WhatsApp ' + esc(g.first) + '"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.6-5.2A8.5 8.5 0 1 1 21 11.5z"></path></svg></a>' : '')) +
@@ -4826,7 +4827,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
   }
 
   function kmBudgetSummary(currencies) {
-    if (EVENT !== 'demo-wedding') return '';
+    if (!KM_APP) return '';
     return ("<section class=\"km-budget\" aria-label=\""+""+kl("Payment overview","budget")+""+"\"><h2>") + kl('Payment overview','budget') + '</h2>' + currencies.map(function(c){
       var pct = c.total > 0 ? Math.round(c.paid / c.total * 100) : 0, arc = Math.max(0,Math.min(100,pct));
       var row=function(label,n,cls){return '<div><dt>'+kl(label,'budget')+'</dt><dd class="'+(cls||'')+'">'+bgMoney(n,c.cur)+'</dd></div>';};
@@ -6851,7 +6852,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     if (SC.mode === 'savetpl') { schedSaveTpl(); return; }
     scSort();
     var reds = SC.rows.reduce(function (a, r) { return a + (r.red ? 1 : 0) + r.notes.filter(function (n) { return n.red; }).length; }, 0);
-    var h = '<h1 class="' + (EVENT === 'demo-wedding' ? 'km-module-title ' : '') + 'sc-title">'+kl('Schedule','sched')+'</h1>' + '<div class="sc-bar">' + (admin ? ("<span class=\"sc-hint\">"+""+kl("Click any text to change it. On a row or a single line: the flag marks it in red, the eye hides it from the couple.","sched")+""+"</span>") : '') +
+    var h = '<h1 class="' + (KM_APP ? 'km-module-title ' : '') + 'sc-title">'+kl('Schedule','sched')+'</h1>' + '<div class="sc-bar">' + (admin ? ("<span class=\"sc-hint\">"+""+kl("Click any text to change it. On a row or a single line: the flag marks it in red, the eye hides it from the couple.","sched")+""+"</span>") : '') +
       '<span class="grow"></span>' + (reds ? '<button type="button" class="sc-redcount" id="sc-reds">' + reds + (reds === 1 ? ' needs attention' : ' need attention') + '</button>' : '') +
       (admin && SC.rows.length ? ("<button type=\"button\" class=\"btn\" id=\"sc-savetpl\">"+""+kl("Save as template","sched")+""+"</button>") : '') + (admin ? ("<button type=\"button\" class=\"btn\" id=\"sc-copy\">"+""+kl("Copy from another event","sched")+""+"</button><button type=\"button\" class=\"btn\" id=\"sc-paste\">"+""+kl("Paste from Word","sched")+""+"</button>") : '') + '</div>' +
       (admin ? '<p class="sc-hint sc-hint-desk">' + kl("Click any text to change it. On a row or a single line: the flag marks it in red, the eye hides it from the couple.","sched") + '</p>' : '');
@@ -6870,7 +6871,7 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     }).join('');
     if (admin) h += ("<div class=\"sc-newday\"><button type=\"button\" class=\"btn\" id=\"sc-addday\">"+""+kl("+ Add a day","sched")+""+"</button><input id=\"sc-dayin\" placeholder=\"DD/MM/YYYY\" inputmode=\"numeric\" hidden aria-label=\""+""+kl("New day","sched")+""+"\"></div>");
     box.innerHTML = h;
-    if (EVENT === 'demo-wedding') scMobileLayout(box, order);
+    if (KM_APP) scMobileLayout(box, order);
     box.querySelectorAll('[data-gobrief]').forEach(function (b) { b.onclick = function () { schedFlush(); showSect('brief'); }; });
     if ($('sc-reds')) $('sc-reds').onclick = function () { var el = box.querySelector('.sc-row.red, .sc-nl.red, .sc-notes li.red'); if (el) { var section = el.closest('.sc-day'); if (section && section.classList.contains('sc-phone-inactive') && SC.phoneSelect) SC.phoneSelect(order[Array.from(box.querySelectorAll('.sc-day')).indexOf(section)]); el.scrollIntoView({ block: 'center', behavior: 'smooth' }); el.animate([{ background: '#F7E1E1' }, { background: 'transparent' }], 1400); } };
     if (admin) schedBind();
@@ -7334,8 +7335,8 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
     var taskScript = document.createElement('script');
     taskScript.src = '/v2/tasks.js'; document.body.appendChild(taskScript);
   }
-  // Demo-only app layer (phone: tabs, home, sheet card; computer: Option 1 look). It reads the same data and calls the same actions.
-  if (EVENT === 'demo-wedding') {
+  // The app layer (phone: tabs, home, sheet card; computer: Option 1 look), on every event. It reads the same data and calls the same actions.
+  if (KM_APP) {
     window.KaiAppHost = {
       show: showSect, sect: function () { return SECT; }, admin: function () { return !!S.admin; },
       refresh: function () { return load(false); }, toast: toast,
@@ -7369,10 +7370,11 @@ body.in-sched #app, body.in-sched #stats, body.in-sched #sumline, body.in-sched 
       }
     };
     document.body.classList.add('km-app');
+    if (EVENT === 'demo-wedding') document.body.classList.add('km-look1');   // the computer's "Option 1" colours stay on the Demo; other events keep their computer look
     var appScript = document.createElement('script'); appScript.src = '/v2/app-shell.js'; document.body.appendChild(appScript);
   }
+  if (KM_APP) document.body.classList.add('km-pilot');
   if (EVENT === 'demo-wedding' && window.KaiLocale) {
-    document.body.classList.add('km-pilot');
     KaiLocale.ready = KaiLocale.load(EVENT).then(function () { KaiLocale.static(); $('km-guests-title').textContent=kl('Guests','guests'); loadCols(); return load(false); }).catch(function () { loadCols(); return load(false); });
   } else {
     loadCols(); load(false);

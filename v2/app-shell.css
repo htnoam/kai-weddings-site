@@ -3,17 +3,17 @@
 
 /* ---------- computer: the Option 1 look, same layout ---------- */
 @media (min-width: 760px) {
-  body.km-app { --ink:#2F3E55; --ink-dark:#243044; --ink-soft:#E9EDF3; --tent:#2F3E55; --tent-bg:#E9EDF3; --bg:#F4F2EE; --surface:#FFFFFF; --soft-surface:#FAF9F6;
+  body.km-app.km-look1 { --ink:#2F3E55; --ink-dark:#243044; --ink-soft:#E9EDF3; --tent:#2F3E55; --tent-bg:#E9EDF3; --bg:#F4F2EE; --surface:#FFFFFF; --soft-surface:#FAF9F6;
     --text:#1F1F21; --muted:#3F3F45; --soft:#6E6E75; --line:#DDD9D0; --hair:#E9E5DD; --row-line:#EFECE6;
     --ok:#2F7D45; --ok-bg:#E6F2E9; --warn:#9A6A12; --warn-bg:#F7EDD8; --bad:#B23A3A; --bad-bg:#F6E5E5; --serif:var(--sans); }
-  body.km-app .couple { font: 700 24px/1.1 var(--sans); color: var(--text); }
-  body.km-app .btn, body.km-app .search, body.km-app .sel, body.km-app input, body.km-app select, body.km-app textarea { border-radius: 8px; }
-  body.km-app .btn.primary { background: var(--ink); border-color: var(--ink); }
-  body.km-app .fab { box-shadow: 0 10px 24px -8px rgba(47,62,85,.55); }
-  body.km-app .bv-rg circle:nth-child(2), body.km-app .km-budget .km-arc { stroke: #C9A46A !important; }
-  body.km-app .bv-rg circle:first-child, body.km-app .km-budget .km-track { stroke: #EFE9DD !important; }
-  body.km-app .bv-pb { background: #EFE9DD; } body.km-app .bv-pb i { background: #C9A46A !important; }
-  body.km-app .bg-ct th { background: var(--ink); }
+  body.km-app.km-look1 .couple { font: 700 24px/1.1 var(--sans); color: var(--text); }
+  body.km-app.km-look1 .btn, body.km-app.km-look1 .search, body.km-app.km-look1 .sel, body.km-app.km-look1 input, body.km-app.km-look1 select, body.km-app.km-look1 textarea { border-radius: 8px; }
+  body.km-app.km-look1 .btn.primary { background: var(--ink); border-color: var(--ink); }
+  body.km-app.km-look1 .fab { box-shadow: 0 10px 24px -8px rgba(47,62,85,.55); }
+  body.km-app.km-look1 .bv-rg circle:nth-child(2), body.km-app.km-look1 .km-budget .km-arc { stroke: #C9A46A !important; }
+  body.km-app.km-look1 .bv-rg circle:first-child, body.km-app.km-look1 .km-budget .km-track { stroke: #EFE9DD !important; }
+  body.km-app.km-look1 .bv-pb { background: #EFE9DD; } body.km-app.km-look1 .bv-pb i { background: #C9A46A !important; }
+  body.km-app.km-look1 .bg-ct th { background: var(--ink); }
   body.km-app .km-tabs, body.km-app .km-navt, body.km-app .km-add, body.km-app .km-count, body.km-app .km-page, body.km-app .km-offline, body.km-app .km-ptr, body.km-app .km-dim { display: none !important; }
   body.km-app .km-pin { display: contents; }
 }
