@@ -717,7 +717,7 @@ td.miss { background: #FFF6DE; box-shadow: inset 0 0 0 1px #F0D48A; }
 .bv-t tbody tr[data-bvo]:focus-visible { outline: 2px solid #4F6BED; outline-offset: -2px; }
 @media (min-width: 760px) {   /* every other service row lightly shaded, so the eye stays on the row across the table (25/11/2026) */
   .bv-t tbody tr[data-bvo]:nth-child(even of tr[data-bvo]:not([hidden])) td { background: #F4F1EA; }
-  .bv-t tbody tr[data-bvo]:hover td { background: #EAE5DB; }
+  .bv-t tbody tr[data-bvo]:hover td { background: transparent; }   /* no highlight under the mouse (the shading already guides the eye); the hand pointer still shows a row opens */
 }
 .bv-scrim { position: fixed; inset: 0; background: rgba(20,26,40,.28); z-index: 60; }
 .bv-dr { position: fixed; top: 0; right: 0; bottom: 0; width: min(420px, 100%); z-index: 61; background: #FFFFFF; box-shadow: -12px 0 40px -12px rgba(20,30,50,.3); overflow-y: auto; padding: 22px 24px 30px; display: flex; flex-direction: column; gap: 18px; outline: none; }
