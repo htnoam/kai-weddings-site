@@ -127,6 +127,20 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .f.chk input { width: 18px; height: 18px; accent-color: var(--ink); margin: 0; }
 .f textarea { resize: vertical; min-height: 60px; line-height: 1.45; }
 .dialog.wide { max-width: 860px; }
+/* Edit RSVP form (25/11/2026): 4 tabs, the buttons always visible at the bottom, normal font in the boxes, suggestions in light grey italics */
+#form-e { padding: 0; gap: 0; max-height: calc(100vh - 88px); overflow: hidden; }
+#form-e .eh { padding: 22px 24px 0; border-bottom: 1px solid var(--hair); } #form-e .eh h2 { margin: 0 0 12px; }
+.etabs { display: flex; gap: 2px; overflow-x: auto; } .etabs button { border: 0; background: none; font: inherit; font-size: 15px; font-weight: 600; color: var(--soft); padding: 9px 14px; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; }
+.etabs button.on { color: var(--ink); border-bottom-color: var(--ink); }
+#form-e .ebody { overflow-y: auto; padding: 18px 24px; flex: 1; min-height: 0; overscroll-behavior: contain; }
+#form-e .epane { display: flex; flex-direction: column; gap: 12px; } #form-e .epane[hidden] { display: none; }
+#form-e .epane > .sec:first-child { border-top: 0; padding-top: 0; margin-top: 0; }
+#form-e .ewide { grid-column: 1 / -1; }
+#form-e textarea { font-family: inherit; }
+#form-e input::placeholder, #form-e textarea::placeholder { color: #A6A6AD; font-style: italic; opacity: 1; }
+#form-e .err { margin: 0; padding: 8px 24px 0; }
+#form-e .act { margin: 0; padding: 12px 24px; border-top: 1px solid var(--hair); background: var(--soft-surface); flex-wrap: wrap; }
+#e-apply.done { color: var(--ok); border-color: var(--ok); }
 .cols2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px; }
 .cols2 .he { direction: rtl; }
 .cols2 > *, .cols2 .f input, .cols2 .f select, .cols2 .f textarea { min-width: 0; }
@@ -347,20 +361,25 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
 </div>
 <div class="overlay" id="dlg-e" hidden>
   <form class="dialog wide" id="form-e" role="dialog" aria-modal="true" aria-labelledby="e-title" novalidate>
-    <h2 id="e-title">Edit RSVP form</h2>
+    <div class="eh"><h2 id="e-title">Edit RSVP form</h2>
+      <div class="etabs" role="tablist"><button type="button" role="tab" data-etab="0" class="on">Design &amp; photos</button><button type="button" role="tab" data-etab="1">Invitation texts</button><button type="button" role="tab" data-etab="2">Guest area</button><button type="button" role="tab" data-etab="3">Travel</button></div></div>
+    <div class="ebody">
+    <div class="epane" data-epane="0">
     <div class="cols2">
       <label class="f">Dates line on the invitation (optional)<input data-k="Dates Line" placeholder="e.g. 03 – 05 . 06 . 2027"></label>
       <label class="f">Form opens in<select data-k="Default Language"><option value="he">Hebrew</option><option value="en">English</option></select></label>
       <label class="f">Invitation design<select data-k="Template"><option value="">Classic: envelope and form</option><option value="Grand">Grand: full wedding site (schedule, flights, form)</option></select></label>
       <label class="f">First page<select data-k="Hero Layout"><option value="">Classic: text above, photo at the bottom</option><option value="Magazine">Magazine: whole photo on top, names below</option></select></label>
-      <label class="f">Colours<select data-k="Theme"><option value="">Classic: linen and cobalt</option><option value="Sage">Sage: ivory, mint envelope, olive branches (Magazine first page)</option></select></label>
+      <label class="f ewide">Colours<select data-k="Theme"><option value="">Classic: linen and cobalt</option><option value="Sage">Sage: ivory, mint envelope, olive branches (Magazine first page)</option></select></label>
     </div>
     <div class="sec">Photos</div>
     <div class="cols2">
       <div class="f">Main photo of the invitation<div class="img-row" data-img="Hero Image"></div></div>
       <div class="f">WhatsApp preview photo<div class="img-row" data-img="Share Image"></div></div>
     </div>
-    <div class="sec">Texts · leave a field empty to use the default</div>
+    </div>
+    <div class="epane" data-epane="1" hidden>
+    <div class="sec">Texts · leave empty to use the suggestion in grey</div>
     <div class="cols2">
       <label class="f">Envelope title · English<input data-k="Invited EN" placeholder="You’re invited"></label>
       <label class="f he">כותרת המעטפה · עברית<input data-k="Invited HE" placeholder="אתם מוזמנים"></label>
@@ -386,6 +405,8 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
       <label class="f">Small note · English<input data-k="Hosting Note EN"></label>
       <label class="f he">הערה קטנה · עברית<input data-k="Hosting Note HE"></label>
     </div>
+    </div>
+    <div class="epane" data-epane="2" hidden>
     <div class="sec">Guest area · events.kaiwedd.com/<span id="e-slug"></span>/guests</div>
     <div class="cols2">
       <label class="f chk"><input type="checkbox" data-k="Portal RSVP" data-default="on"> RSVP per family member</label>
@@ -395,6 +416,8 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
       <label class="f">Event info · English<textarea data-k="Info EN" rows="4" placeholder="One line per item. A schedule line: 14/09 | Welcome evening | 19:30 · Pool bar"></textarea></label>
       <label class="f he">מידע על האירוע · עברית<textarea data-k="Info HE" rows="4" placeholder="שורה לכל פריט. שורת לוח זמנים: 14/09 | ערב קבלת פנים | 19:30 · בר הבריכה"></textarea></label>
     </div>
+    </div>
+    <div class="epane" data-epane="3" hidden>
     <div class="sec">Travel · guest area (shows with "Flight details"; each part only when filled in)</div>
     <div class="cols2">
       <label class="f">Shuttles there · times from the airport<input data-k="Shuttles Go" placeholder="09:00, 11:00"></label>
@@ -408,6 +431,8 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
       <label class="f">Hotel email (stay extension requests)<input data-k="Hotel Email" type="email" placeholder="reservations@hotel.com"></label>
     </div>
     <p class="hint" style="margin:0">Shuttle days are the event's start date (there) and end date (back). Flight line: airline | flight no. | take-off | landing.</p>
+    </div>
+    </div>
     <p class="err" id="e-err" hidden></p>
     <div class="act">
       <a class="btn" id="e-view" target="_blank" rel="noopener">Open the form</a>
@@ -415,6 +440,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
       <button type="button" class="btn" id="e-grand" hidden>Grand site texts…</button>
       <span style="flex:1"></span>
       <button type="button" class="btn" id="e-cancel">Cancel</button>
+      <button type="button" class="btn" id="e-apply">Apply</button>
       <button type="submit" class="btn primary" id="e-save">Save</button>
     </div>
   </form>
@@ -942,7 +968,7 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
     var ev = EVENTS.filter(function (x) { return x.slug === slug; })[0]; if (!ev) return;
     EDIT = { slug: slug, vals: {} };
     $('e-title').textContent = 'Edit RSVP form · ' + ev.couple; $('e-view').href = BASE + slug + '/rsvp'; $('e-portal').href = BASE + slug + '/guests'; $('e-slug').textContent = BASE.slice(1) + slug; $('e-err').hidden = true;
-    $('dlg-e').hidden = false; $('e-save').disabled = true;
+    $('dlg-e').hidden = false; $('e-save').disabled = $('e-apply').disabled = true; eTab(0);
     document.querySelectorAll('#form-e [data-k]').forEach(function (el) { el.value = ''; });
     api('rsvpInfo', { e: slug }).then(function (res) {
       var o = res.event; EDIT.vals = o; EDIT.vals['Couple Names'] = o.couple; EDIT.vals['Wedding Date'] = fmtDate(o.date); EDIT.vals['Location'] = o.place;
@@ -951,21 +977,30 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
       EDIT.vals['Client Email'] = ev.email || ''; EDIT.vals['Sunset Time'] = ev.sunset || ''; EDIT.vals['Start Date'] = fmtDate(ev.start); EDIT.vals['End Date'] = fmtDate(ev.end);
       EDIT.vals['Venue'] = ev.venue || (ev.country ? '' : cut > 0 ? ev.place.slice(0, cut).trim() : ev.place || '');
       EDIT.vals['Country'] = ev.country || (ev.venue ? '' : cut > 0 ? ev.place.slice(cut + 1).trim() : '');
-      fillEdit(); $('e-save').disabled = false; EDIT.ev = ev; showGrandBtn();
+      fillEdit(); $('e-save').disabled = $('e-apply').disabled = false; EDIT.ev = ev; showGrandBtn();
     }).catch(function (e) { $('e-err').textContent = e.server ? e.message : 'Couldn’t load the form texts.'; $('e-err').hidden = false; });
   }
   ['rows', 'ecards'].forEach(function (id) { $(id).addEventListener('click', function (e) { var b = e.target.closest('[data-edit]'); if (b) openEdit(b.dataset.edit); }); });
   $('e-cancel').addEventListener('click', function () { $('dlg-e').hidden = true; });
-  $('form-e').addEventListener('submit', function (e) {
-    e.preventDefault();
+  function eTab(i) { document.querySelectorAll('#form-e [data-etab]').forEach(function (b) { b.classList.toggle('on', b.dataset.etab === String(i)); b.setAttribute('aria-selected', b.dataset.etab === String(i)); });
+    document.querySelectorAll('#form-e [data-epane]').forEach(function (p) { p.hidden = p.dataset.epane !== String(i); }); document.querySelector('#form-e .ebody').scrollTop = 0; }
+  document.querySelector('#form-e .etabs').addEventListener('click', function (e) { var b = e.target.closest('[data-etab]'); if (b) eTab(b.dataset.etab); });
+  // Apply = save and stay in the window; Save = save and close.
+  $('e-apply').addEventListener('click', function () { saveEdit(false); });
+  $('form-e').addEventListener('submit', function (e) { e.preventDefault(); saveEdit(true); });
+  function saveEdit(close) {
     var vals = {};
     document.querySelectorAll('#form-e [data-k]').forEach(function (el) { vals[el.dataset.k] = el.type === 'checkbox' ? (el.checked ? 'on' : 'off') : el.value; });
     ['Hero Image', 'Share Image'].forEach(function (k) { vals[k] = EDIT.vals[k] || ''; });
-    $('e-save').disabled = true; $('e-save').textContent = 'Saving…';
-    api('saveSettings', { e: EDIT.slug, settings: vals }).then(function () { $('dlg-e').hidden = true; toast('Saved. The form shows the new texts now.'); load(); })
-      .catch(function (x) { $('e-err').textContent = x.server ? x.message : 'Couldn’t save. Try again.'; $('e-err').hidden = false; })
-      .then(function () { $('e-save').disabled = false; $('e-save').textContent = 'Save'; });
-  });
+    var btn = close ? $('e-save') : $('e-apply'); $('e-save').disabled = $('e-apply').disabled = true; btn.textContent = 'Saving…'; $('e-err').hidden = true;
+    api('saveSettings', { e: EDIT.slug, settings: vals }).then(function () {
+      Object.keys(vals).forEach(function (k) { EDIT.vals[k] = vals[k]; });
+      if (close) { $('dlg-e').hidden = true; toast('Saved. The form shows the new texts now.'); }
+      else { $('e-apply').classList.add('done'); $('e-apply').textContent = 'Saved ✓'; setTimeout(function () { $('e-apply').classList.remove('done'); $('e-apply').textContent = 'Apply'; }, 2200); }
+      load(); })
+      .catch(function (x) { $('e-err').textContent = x.server ? x.message : 'Couldn’t save. Try again.'; $('e-err').hidden = false; if (!close) $('e-apply').textContent = 'Apply'; })
+      .then(function () { $('e-save').disabled = $('e-apply').disabled = false; $('e-save').textContent = 'Save'; if (!$('e-apply').classList.contains('done')) $('e-apply').textContent = 'Apply'; });
+  }
   var upKey = '';
   $('form-e').addEventListener('click', function (e) {
     var up = e.target.closest('[data-up]'), rm = e.target.closest('[data-rm]');
