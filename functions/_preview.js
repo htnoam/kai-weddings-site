@@ -10,8 +10,10 @@ export async function preview(ctx) {
   const url = new URL(ctx.request.url), seg = url.pathname.split('/').filter(Boolean), v2 = seg[0] === 'v2';
   const slug = ((v2 ? seg[1] : seg[0]) || '').toLowerCase();
   const guests = seg[seg.length - 1] === 'guests';   // the guest area: same photo, its own title
+  // The guest page is asked for by its own address, so the site's usual rules pick exactly the page guests always got.
+  // (25/11/2026: asking for /v2/portal served the management portal by mistake – never again a made-up address here.)
   const own = !v2 && !guests && slug === 'maya-yotam';
-  const res = await ctx.env.ASSETS.fetch(new URL(guests ? '/v2/portal' : own ? '/maya-yotam/' : '/v2/rsvp', url), ctx.request);
+  const res = await ctx.env.ASSETS.fetch((guests ? url : new URL(own ? '/maya-yotam/' : '/v2/rsvp', url)), ctx.request);
   if (!/^[a-z0-9-]{1,40}$/.test(slug) || !(res.headers.get('content-type') || '').includes('text/html')) return res;
   let st = null;
   try {
@@ -30,6 +32,7 @@ export async function preview(ctx) {
     '<meta property="og:description" content="' + esc(desc) + '">\n' +
     (img ? '<meta property="og:image" content="' + esc(img) + '">\n<meta name="twitter:card" content="summary_large_image">\n' : '');
   let html = await res.text();
+  if (guests && html.indexOf('<title>Guest Portal</title>') < 0) return new Response(html, { status: res.status, headers: res.headers });   // safety: only the guest page gets the guest-area preview
   const headers = new Headers(res.headers); headers.delete('content-length');
   if (html.indexOf('property="og:title"') > -1) return new Response(html, { status: res.status, headers });   // the event's own page has its own preview
   html = html.replace(/<title>[^<]*<\/title>/, '<title>' + esc(title) + '</title>').replace('<head>', '<head>\n' + meta);

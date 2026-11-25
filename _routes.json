@@ -1,5 +1,5 @@
 {
   "version": 1,
-  "include": ["/*/rsvp", "/*/rsvp/", "/v2/*/rsvp", "/v2/*/rsvp/", "/amit-or", "/amit-or/", "/demo-wedding", "/demo-wedding/"],
+  "include": ["/*/rsvp", "/*/rsvp/", "/v2/*/rsvp", "/v2/*/rsvp/", "/amit-or", "/amit-or/", "/demo-wedding", "/demo-wedding/", "/*/guests", "/*/guests/", "/v2/*/guests", "/v2/*/guests/"],
   "exclude": []
 }
