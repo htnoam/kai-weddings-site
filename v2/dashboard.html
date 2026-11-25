@@ -1166,6 +1166,17 @@ tr.ended td { color: var(--soft); background: var(--soft-surface); }
 </script>
 <script src="/app/dtpick.js"></script>
 <script src="/v2/esc.js"></script>
+<script>
+/* No hover pop-ups (25/11/2026): the browser's small grey boxes ("Guest No. 121 · click to select" and the like) are switched off everywhere.
+   Buttons that show only an icon keep the words for screen readers. */
+(function () {
+  function strip(el) { var t = el.getAttribute('title'); if (t == null) return; if (t && !el.hasAttribute('aria-label') && !(el.textContent || '').trim()) el.setAttribute('aria-label', t); el.removeAttribute('title'); }
+  function sweep(n) { if (n.nodeType !== 1) return; strip(n); n.querySelectorAll('[title]').forEach(strip); }
+  sweep(document.documentElement);
+  new MutationObserver(function (ms) { ms.forEach(function (m) { if (m.type === 'attributes') strip(m.target); else m.addedNodes.forEach(sweep); }); })
+    .observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['title'] });
+})();
+</script>
 </body>
 </html>
 
